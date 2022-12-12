@@ -1,7 +1,7 @@
 {
-  "name": "gleason-lance",
-  "displayName": "gleason lance",
-  "description": "Gleason Language Application for NC",
+  "name": "lance",
+  "displayName": "lance",
+  "description": "Language Application for NC",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.73.0"
@@ -22,12 +22,27 @@
     ],
     "configuration":[
         {
-            "title": "gleason-lance",
+            "title": "lance",
             "properties": {
-                "gleason-lance.messageText":{
+                "lance.messageText":{
                     "type": "string",
                     "default": "Hello World",
                     "description": "Specifies the text to be shown in the message"
+                },
+                "lanceServer.maxNumberOfProblems": {
+                    "type": "number",
+                    "default": 100,
+                    "description": "Controls the maximum number of problems produced by the server."
+                },
+                "lanceServer.trace.server": {
+                    "type": "string",
+                    "enum": [
+                        "off",
+                        "messages",
+                        "verbose"
+                    ],
+                    "default": "verbose",
+                    "description": "Traces the communication between VSCode and the lanceServer service."
                 }
             }
         }
@@ -53,5 +68,9 @@
     "mocha": "^10.1.0",
     "typescript": "^4.8.4",
     "@vscode/test-electron": "^2.2.0"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^8.0.2",
+    "vscode-languageserver-protocol": "^3.17.2"
   }
 }
