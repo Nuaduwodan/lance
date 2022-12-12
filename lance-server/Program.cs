@@ -1,6 +1,31 @@
-﻿using OmniSharp.Extensions.LanguageServer.Server;
+﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Server;
 
-LanguageServerOptions options = new LanguageServerOptions();
-options.WithInput();
+namespace LanceServer
+{
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            MainAsync(args).Wait();
+        }
+        
+        private static async Task MainAsync(string[] args)
+        {
+            var server = await LanguageServer.From(
+                options =>
+                    options
+                        .WithInput(Console.OpenStandardInput())
+                        .WithOutput(Console.OpenStandardOutput())
+                        .ConfigureLogging(
+                            x => x
+                                .AddLanguageProtocolLogging()
+                                .SetMinimumLevel(LogLevel.Debug)
+                        )
+                        .WithHandler<TextDocumentHandler>()     
+            ).ConfigureAwait(false);
 
-LanguageServer.Create(options => {});
+            await server.WaitForExit.ConfigureAwait(false);
+        }
+    }
+}
