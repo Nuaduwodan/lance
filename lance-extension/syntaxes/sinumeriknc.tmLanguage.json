@@ -1,0 +1,357 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "sinumeriknc",
+	"scopeName": "source.sinumeriknc",
+	"patterns": [
+        { "include": "#comment" },
+        { "include": "#constant" },
+        { "include": "#entity" },
+        { "include": "#keyword" },
+        { "include": "#meta" },
+        { "include": "#string" },
+        { "include": "#support" },
+        { "include": "#variable" },
+        { "include": "#punctuation" }
+    ],
+    "repository": {
+        "comment": {
+            "patterns": [{
+                "match": "(;).*$\\n?",
+                "name": "comment.line.semicolon.sinumeriknc"
+            }]
+        },
+        "constant": {
+            "patterns": [{ 
+                "include": "#constant.numeric" 
+            },
+            { 
+                "include": "#constant.character" 
+            },
+            { 
+                "include": "#constant.language" 
+            },
+            { 
+                "include": "#constant.other" 
+            }
+            ],
+            "repository":{
+                "constant.numeric":{
+                    "patterns":[
+                        {
+                            "name": "constant.numeric.real.sinumeriknc",
+                            "match": "\\b-?[0-9]*\\.[0-9]+\\b"
+                        },
+                        {
+                            "name": "constant.numeric.int.sinumeriknc",
+                            "match": "\\b-?[0-9]+\\b"
+                        },
+                        {
+                            "name": "constant.numeric.bin.sinumeriknc",
+                            "match": "(?i)'B([01]{8})+'"
+                        },
+                        {
+                            "name": "constant.numeric.hex.sinumeriknc",
+                            "match": "(?i)'H([0-9A-F]{2})+'"
+                        }]
+                },
+                "constant.language": {
+                    "patterns": [{
+                        "name": "constant.language.bool.sinumeriknc",
+                        "match": "(?i)\\b(true|false)\\b"
+                    },
+                    {
+                        "name": "constant.language.pi.sinumeriknc",
+                        "match": "(?i)\\$PI\\b"
+                    }]
+                },
+                "constant.other": {
+                    "patterns": [{
+                        "name": "constant.other.hide.sinumeriknc",
+                        "match": "^\\s*\\/[0-7]?"
+                    }]
+                }
+            }
+        },
+        "entity": {
+            "patterns": [{ 
+                "include": "#entity.name" 
+            }],
+            "repository":{
+                "entity.name":{
+                    "patterns":[{
+                        "name": "entity.name.function.toolCorrection.sinumeriknc",
+                        "match": "(?i)\\bD[0-9]+|\\bD\\b|\\bDL\\b"
+                    },
+                    {
+                        "name": "entity.name.function.feedWord.sinumeriknc",
+                        "match": "(?i)\\b(F[0-9])+|\\bF\\b|\\bF[ABDZ]{1,2}\\b"
+                    },
+                    {
+                        "name": "entity.name.function.gcode.sinumeriknc",
+                        "match": "(?i)\\b(G[0-9]{1,3})+|\\bG\\b"
+                    },
+                    {
+                        "name": "entity.name.function.hcode.sinumeriknc",
+                        "match": "(?i)\\b(H[0-9]{1,2})+|\\bH\\b"
+                    },
+                    {
+                        "name": "entity.name.function.cycles.sinumeriknc",
+                        "match": "(?i)\bL[0-9]+\b"
+                    },
+                    {
+                        "name": "entity.name.function.mcode.sinumeriknc",
+                        "match": "(?i)\\b(M[0-9]{1,4})+|\\bM\\b"
+                    },
+                    {
+                        "name": "entity.name.function.subprogrammLoops.sinumeriknc",
+                        "match": "(?i)(\\bP)[0-9]{1,4}|\\bP\\b"
+                    },
+                    {
+                        "name": "entity.name.function.toolSpeed.sinumeriknc",
+                        "match": "(?i)(\\bS)[0-9]{1,2}|\\bS\\b"
+                    },
+                    {
+                        "name": "entity.name.section.linenumber.sinumeriknc",
+                        "match": "(?i)\\bN[0-9]+\\b"
+                    },
+                    {
+                        "name": "entity.name.section.label.sinumeriknc",
+                        "match": "\\b__.+?\\b"
+                    }]
+                }
+            }
+        },
+        "keyword": {
+            "patterns": [{ 
+                "include": "#keyword.control" 
+            },
+            { 
+                "include": "#keyword.operator" 
+            },
+            { 
+                "include": "#keyword.other" 
+            }],
+            "repository":{
+                "keyword.control":{
+                    "patterns":[{
+                        "name": "keyword.control.while.sinumeriknc",
+                        "match": "(?i)\\b(while|endwhile)\\b"
+                    },
+                    {
+                        "name": "keyword.control.for.sinumeriknc",
+                        "match": "(?i)\\b(for|to|endfor)\\b"
+                    },
+                    {
+                        "name": "keyword.control.loop.sinumeriknc",
+                        "match": "(?i)\\b(loop|endloop)\\b"
+                    },
+                    {
+                        "name": "keyword.control.repeat.sinumeriknc",
+                        "match": "(?i)\\b(repeat|until)\\b"
+                    },
+                    {
+                        "name": "keyword.control.if.sinumeriknc",
+                        "match": "(?i)\\b(if|else|endif)\\b"
+                    },
+                    {
+                        "name": "keyword.control.goto.sinumeriknc",
+                        "match": "(?i)\\b(goto|gotob|gotoc|gotof|gotos)\\b"
+                    },
+                    {
+                        "name": "keyword.control.label.sinumeriknc",
+                        "match": "(?i)\\bendlabel\\b"
+                    },
+                    {
+                        "name": "keyword.control.sync.sinumeriknc",
+                        "match": "(?i)\\b(when|whenever|do|cancel)\\b"
+                    },
+                    {
+                        "name": "keyword.control.return.sinumeriknc",
+                        "match": "(?i)\\bret\\b"
+                    },
+                    {
+                        "name": "keyword.control.call.sinumeriknc",
+                        "match": "(?i)\\b(pcall|extcall|callpath|call)\\b"
+                    }]
+                },
+                "keyword.operator":{
+                    "patterns":[{
+                        "name": "keyword.operator.assignment.sinumeriknc",
+                        "match": "="
+                    },
+                    {
+                        "name": "keyword.operator.arithmetik.sinumeriknc",
+                        "match": "(?i)\\*|\\*\\*|\\+|-|\\/\\/|\\/|%"
+                    },
+                    {
+                        "name": "keyword.operator.bool.sinumeriknc",
+                        "match": "(?i)\\b(not|b_not|b_and|b_xor|b_or|and|xor|or)\\b"
+                    },
+                    {
+                        "name": "keyword.operator.comparison.sinumeriknc",
+                        "match": "==|>=|<=|<>|<(?!<)|>"
+                    },
+                    {
+                        "name": "keyword.operator.string.sinumeriknc",
+                        "match": "<<"
+                    }]
+                },
+                "keyword.other":{
+                    "patterns":[{
+                        "name": "keyword.other.proc.sinumeriknc",
+                        "match": "(?i)\\b(proc|endproc)\\b"
+                    },
+                    {
+                        "name": "keyword.other.extern.sinumeriknc",
+                        "match": "(?i)\\bextern\\b"
+                    },
+                    {
+                        "name": "keyword.other.macro.sinumeriknc",
+                        "match": "(?i)\\b(define|as)\\b"
+                    },
+                    {
+                        "name": "keyword.other.define.sinumeriknc",
+                        "match": "(?i)\\b(redef|def)\\b"
+                    },
+                    {
+                        "name": "keyword.other.var.sinumeriknc",
+                        "match": "(?i)\\bvar\\b"
+                    },
+                    {
+                        "name": "keyword.other.set.sinumeriknc",
+                        "match": "(?i)\\bset\\b"
+                    },
+                    {
+                        "name": "keyword.other.modifier.range.sinumeriknc",
+                        "match": "(?i)\\b(nck|nc|chan)\\b"
+                    },
+                    {
+                        "name": "keyword.other.modifier.preprocessing.sinumeriknc",
+                        "match": "(?i)\\b(synr|synw|synrw)\\b"
+                    },
+                    {
+                        "name": "keyword.other.modifier.access.sinumeriknc",
+                        "match": "(?i)\\bap(r|w)(p|b)?\\b"
+                    },
+                    {
+                        "name": "keyword.other.modifier.unit.sinumeriknc",
+                        "match": "(?i)\\bphu\\b"
+                    },
+                    {
+                        "name": "keyword.other.modifier.limit.sinumeriknc",
+                        "match": "(?i)\\b(u|l)li\\b"
+                    }]
+                }
+            }
+        },
+        "string": {
+            "patterns": [
+                { "include": "#string.quoted" }
+            ],
+            "repository": {
+                "string.quoted": {
+                    "patterns": [{
+                        "name": "string.quoted.double.sinumeriknc",
+                        "begin": "\"",
+                        "end": "\"",
+                        "patterns": [{
+                            "match": "\\\\.",
+                            "name": "invalid.illegal.unrecognized-string-escape.json"
+                        }]
+                    }]
+                }
+            }
+        },
+        "support":{
+            "patterns": [
+                { "include": "#support.function" },
+                { "include": "#support.type" },
+                { "include": "#support.variable" }
+            ],
+            "repository": {
+                "support.function": {
+                    "patterns": [{
+                        "name": "support.function.math.sinumeriknc",
+                        "match": "(?i)\\b(abs|bmod|mod|bdiv|div|sin|cos|tan|atan2|sqrt|pot|minval)\\b"
+                    },
+                    {
+                        "name": "support.function.string.sinumeriknc",
+                        "match": "(?i)\\b(strlen|substr|sprint|tolower|toupper|isnumber|number)\\b"
+                    },
+                    {
+                        "name": "support.function.file.sinumeriknc",
+                        "match": "(?i)\\b(read|write|isfile|delete)\\b"
+                    },
+                    {
+                        "name": "support.function.variable.sinumeriknc",
+                        "match": "(?i)\\b(getvardim|getvarap|getvardft|getvarlim|getvarphu|getvartyp)\\b"
+                    },
+                    {
+                        "name": "support.function.quickack.sinumeriknc",
+                        "match": "(?i)\\bqu\\b"
+                    },
+                    {
+                        "name": "support.function.jerk.sinumeriknc",
+                        "match": "(?i)\\b(jerka|jerklim|jerklima)\\b"
+                    },
+                    {
+                        "name": "support.function.unsorted.sinumeriknc",
+                        "match": "(?i)\\b(ac|acc|acclima|acn|acos|acp|actblocno|addframe|adis|adispos|adisposa|alf|amirror|ang|ap|apx|ar|arot|arot|arots|ascale|asin|aspline|atol|atrans|auxfudel|auxfudelg|auxfumseq|auxfusync|ax|axctswe|axctswec|axctswed|axname|axstring|axtochan|axtoint|axtospi|bauto|block|blsync|bnat|bound|brisk|briska|bspline|btan|cac|cacn|cacp|calcdat|calcposi|case|cdc|cdof|cdof2|cdon|cfc|cfin|cfine|cftcp|chandata|chf|chkdm|chkdno|chr|cic|cip|clearm|clrint|cmirror|coarsea|collpair|compcad|compcurv|complete|compof|compon|contdcon|contpron|corrof|coupdef|coupdel|coupof|coupofs|coupon|couponc|coupres|cp|cpbc|cpdef|cpdel|cpfmof|cpfmon|cpfmson|cpfpos|cpfrs|cpla|cplctid|cpldef|cpldel|cplden|cplinsc|cplintr|cplnum|cplof|cplon|cploutsc|cplouttr|cplpos|cplsetval|cpmalarm|cpmbrake|cpmprt|cpmreset|cpmstart|cpof|cpon|cprecof|cprecon|cpres|cprot|cprotdef|cpsettype|cpsyncop|cpsyncop2|cpsyncov|cpsynfip|cpsynfip2|cpsynfiv|cr|crot|crots|crpl|cscale|cspline|ct|ctab|ctabdef|ctabdel|ctabend|ctabexists|ctabfno|ctabfpol|ctabfseg|ctabid|ctabinv|ctabislock|ctablock|ctabmemtyp|ctabmpol|ctabmseg|ctabno|ctabnomem|ctabperiod|ctabpol|ctabpolid|ctabseg|ctabsegid|ctabsev|ctabssv|ctabtep|ctabtev|ctabtmax|ctabtmin|ctabtsp|ctabtsv|ctabunlock|ctol|ctrans|cut2d|cut2df|cut3dc|cut3dcc|cut3dccd|cut3df|cut3dff|cut3dfs|cutconof|cutconon|cutmod|dac|dc|default|delayfstof|delayfston|deldl|deldtg|delmlowner|delmlres|delmt|delobj|delt|deltc|deltoolenv|diacycofa|diam90|diam90a|diamchan|diamchana|diamcycof|diamof|diamofa|diamon|diamona|dic|dilf|disable|disc|discl|displof|displon|dispr|disr|disrp|dite|dits|dl|drfof|drive|drivea|dynfinish|dynnorm|dynpos|dynrough|dynsemifin|dzero|eauto|egdef|egdel|egofc|egofs|egon|egonsyn|egonsyne|enable|enat|esrr|esrs|etan|every|ex|execstring|exectab|execute|exp|extclose|extopen|fctdef|fcub|fda|fendnorm|ffwof|ffwon|fgref|fgroup|fi|fifoctrl|filedate|fileinfo|filesize|filestat|filetime|finea|fl|flin|fma|fnorm|foc|focof|focon|fp|fpo|fpr|fpraof|fpraon|frame|frc|frcm|from|ftoc|ftocof|ftocon|ftocof|ftocon|fxs|fxst|fxsw|geoax|get|getactt|getacttd|getd|getdno|getexet|getfreeloc|getselt|gett|gettcor|gettenv|gp|gwpsof|gwpson|ic|id|ids|index|inicf|inipo|inire|init|initial|intersec|inttoax|invccw|invcw|invframe|ip|ipobrka|ipoenda|iptrlock|iptrunlock|isaxis|isd|isocall|isvar|kont|kontc|kontt|lead|leadof|leadon|lentoax|lfof|lfon|lfpos|lftxt|lfwp|liftfast|lims|ln|lock|longhole|masldef|masldel|maslof|maslofs|maslon|match|maxval|mcall|meac|meaframe|meas|measa|measure|meaw|meawa|mi|mindex|minval|mirror|mmc|modaxval|mov|movt|msg|mvtool|msgs|nametoint|newconf|newmt|newt|norm|nprot|nprotdef|oemipo1|oemipo2|of|offn|oma1|oma2|oma3|oma4|oma5|offn|oriaxes|oriaxpos|oric|oriconccw|oriconcw|oriconio|oriconto|oricurve|orid|orieuler|orimks|oripath|oriplane|orireset|orirota|orirotc|orirotr|orirott|orirpy|orirpy2|oris|orisof|orison|orivect|orivirt1|orivirt2|oriwks|os|osb|osc|oscill|osctrl|osd|ose|osnsc|osof|osp1|osp2|oss|osse|ost|ost1|ost2|otol|ovr|ovra|ovrrap|parot|parotof|pdelayof|pdelayon|phi|pl|pm|po|pocket3|pocket4|polf|polfa|polfmask|polfmlin|poly|polypath|pon|pons|pos|posa|posm|posmt|posp|posrange|pr|prepro|preseton|preseton|prio|prloc|prota|protd|prots|psi|ptp|ptpg0|punchacc|putftoc|putftocf|pw|rac|rdisable|redef|release|rep|repeatb|reposa|reposh|reposha|reposl|reposq|reposqa|reset|resetmon|ret|ric|rindex|rmb|rmbbl|rme|rmebl|rmi|rmibl|rmn|rmnbl|rnd|rndm|rot|rots|round|roundup|rp|rpl|rt|rtliof|rtlion|save|sblof|sblon|sc|scale|scc|scpara|sd|setal|setdno|setint|setm|setms|setmth|setpiece|setta|settcor|settia|sf|sirelay|sirelin|sirelout|sireltime|slot1|slot2|soft|softa|son|sons|spath|spcof|spcon|spi|spif1|spif2|splinepath|spn|spof|spos|spos|sposa|spp|sr|sra|st|sta|start|startfifo|stat|stolf|stopfifo|stopre|stopreof|stringis|supa|svc|synfct|tang|tangdel|tangof|tangon|tca|tcarr|tci|tcoabs|tcofr|tcofrx|tcofry|tcofrz|theta|tilt|tlift|tml|tmof|tmon|toff|toffl|toffof|toffon|toffr|toframe|toframex|toframey|toframez|toolenv|toolgnt|toolgt|torot|torotof|torotx|toroty|torotz|towbcs|towkcs|towmcs|towstd|towtcs|towwcs|tr|traang|tracon|tracyl|trafoof|trailof|trailon|trans|transmit|traori|trunc|tu|turn|unlock|upath|velolim|velolima|waitc|waite|waitenc|waitm|waitmc|waitp|waits|walcs0|walcs1|walcs2|walcs3|walcs4|walcs5|walcs6|walcs7|walcs8|walcs9|walcs10|walimof|walimon|wrtpr)\\b"
+                    }]
+                },
+                "support.type": {
+                    "patterns": [{
+                        "match": "(?i)\\b(axis|bool|char|frame|int|real|string)\\b",
+                        "name": "support.type.sinumeriknc"
+                    }]
+                },
+                "support.variable": {
+                    "patterns": [{
+                        "name": "support.variable.system.sinumeriknc",
+                        "match": "(?i)((\\$((A|C|M|N|O|P|S|T|V|\\$M|\\$S)\\w?|EPS)|SYG)_|\\$\\$)\\w+"
+                    },
+                    {
+                        "name": "support.variable.axis.sinumeriknc",
+                        "match": "\\b(A|B|C|X|Y|Z)[0-9]{0,5}\\b"
+                    },
+                    {
+                        "name": "support.variable.rparam.sinumeriknc",
+                        "match": "(\\bR[0-9]{1,4})|\\bR\\b"
+                    }]
+                }
+            }
+        },
+        "variable": {
+            "patterns": [{
+                "name": "variable.sinumeriknc",
+                "match": "(?i)\\b[a-z_]{1,2}\\w*\\b"
+            }]
+        },
+        "punctuation": {
+            "patterns": [{
+                "name": "punctuation.brace.sinumeriknc",
+                "match": "\\(|\\)"
+            },
+            {
+                "name": "punctuation.bracket.sinumeriknc",
+                "match": "\\[|\\]"
+            },
+            {
+                "name": "punctuation.curly.sinumeriknc",
+                "match": "\\{|\\}"
+            },
+            {
+                "name": "punctuation.comma.sinumeriknc",
+                "match": ","
+            },
+            {
+                "name": "punctuation.doublecolon.sinumeriknc",
+                "match": ":"
+            },
+            {
+                "name": "punctuation.dot.sinumeriknc",
+                "match": "\\."
+            }]
+        }
+    }
+}

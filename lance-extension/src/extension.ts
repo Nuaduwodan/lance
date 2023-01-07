@@ -4,12 +4,10 @@ import * as vscode from 'vscode';
 import {
     LanguageClient,
     LanguageClientOptions,
-    SettingMonitor,
     ServerOptions,
     TransportKind,
-    InitializeParams,
-    StreamInfo,
-    createServerPipeTransport,
+    Executable,
+    SemanticTokenTypes
 } from "vscode-languageclient/node";
 
 let client: LanguageClient;
@@ -22,19 +20,15 @@ export function activate(context: vscode.ExtensionContext) {
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "lance" is now active!');
 
-    let serverOptions: ServerOptions = {
-        run: {
-            command: "dotnet",
-            args: ["../lance-server/bin/Debug/net6.0/LanceServer.dll"],
-            transport: TransportKind.pipe,
-        },
-        debug: {
-            command: "dotnet",
-            args: ["../lance-server/bin/Debug/net6.0/LanceServer.dll"],
-            transport: TransportKind.pipe,
-            runtime: "",
-        },
+    var fn = __dirname + '/../server/net6.0/LanceServer.exe';
+    const server: Executable =
+    {
+        command: fn,
+        args: [],
+        options: { shell: false, detached: false }
     };
+
+    const serverOptions: ServerOptions = server;
 
     let clientOptions: LanguageClientOptions = {
         documentSelector: [

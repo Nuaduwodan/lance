@@ -3,6 +3,10 @@
   "displayName": "lance",
   "description": "Language Application for NC",
   "version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Nuaduwodan/lance"
+	},
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -10,25 +14,30 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:gleason-lance.helloWorld"
+    "onLanguage:sinumeriknc"
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
+    "languages": [
       {
-        "command": "gleason-lance.helloWorld",
-        "title": "Hello World"
+        "id": "sinumeriknc",
+        "configuration": "./language-configuration.json",
+        "extensions": [
+          ".spf", ".mpf", ".def", ".tpl"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sinumeriknc",
+        "scopeName": "source.sinumeriknc",
+        "path": "./syntaxes/sinumeriknc.tmLanguage.json"
       }
     ],
     "configuration":[
         {
             "title": "lance",
             "properties": {
-                "lance.messageText":{
-                    "type": "string",
-                    "default": "Hello World",
-                    "description": "Specifies the text to be shown in the message"
-                },
                 "lanceServer.maxNumberOfProblems": {
                     "type": "number",
                     "default": 100,
@@ -50,11 +59,15 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "tsc -b",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^8.0.2",
+    "vscode-languageserver-protocol": "^3.17.2"
   },
   "devDependencies": {
     "@types/vscode": "^1.73.0",
@@ -68,9 +81,5 @@
     "mocha": "^10.1.0",
     "typescript": "^4.8.4",
     "@vscode/test-electron": "^2.2.0"
-  },
-  "dependencies": {
-    "vscode-languageclient": "^8.0.2",
-    "vscode-languageserver-protocol": "^3.17.2"
   }
 }
