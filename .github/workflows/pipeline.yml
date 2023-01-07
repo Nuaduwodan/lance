@@ -93,9 +93,11 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: server
-        
-    - name: copy server
-      run: move .\lance-server\bin\Debug\ .\lance-extension\server\
+        path: lance-extension/server
+    
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: lance-extension/server
 
     - name: install dependencies
       working-directory: .\lance-extension
