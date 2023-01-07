@@ -3,7 +3,7 @@
   "displayName": "Lance",
   "description": "Language Application for NC",
   "version": "0.0.1",
-  "publisher": "Yanik Bigler",
+  "publisher": "YanikBigler",
   "icon": "images/lance_icon_128.png",
 	"repository": {
 		"type": "git",
