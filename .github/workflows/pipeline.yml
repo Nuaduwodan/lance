@@ -69,7 +69,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: server
-        path: .\lance\lance-server\bin\Debug\
+        path: .\lance-server\bin\Debug\
       
   build_extension:
     needs: build_server
@@ -88,13 +88,29 @@ jobs:
         
     - name: install vsce
       run: npm -g install vsce
+        
+    - name: Download server artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: server
+        
+    - name: copy server
+      run: move .\lance-server\bin\Debug\ .\lance-extension\server\
 
     - name: install dependencies
-      working-directory: .\lance\lance-extension
+      working-directory: .\lance-extension
       run: npm ci
 
     - name: Execute build
+      working-directory: .\lance-extension
       run: npm run compile
       
     - name: package
+      working-directory: .\lance-extension
       run: vsce package
+      
+    - name: Upload Extension
+      uses: actions/upload-artifact@v3
+      with:
+        name: extension
+        path: .\lance-extension\*.vsix
