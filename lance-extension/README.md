@@ -9,7 +9,8 @@ Lance is an Extension which provides common language features for the g-code bas
 
 Syntax highlighting without semantic highlighting.
 
-\!\[Syntax highlighting\]\(images/syntax_highlighting.png\)
+![Syntax highlighting](images/syntax_highlighting.png)
+
 
 ## Extension Settings
 
