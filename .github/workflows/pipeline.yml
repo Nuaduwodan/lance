@@ -94,10 +94,6 @@ jobs:
       with:
         name: server
         path: lance-extension/server
-    
-    - name: Display structure of downloaded files
-      run: ls -R
-      working-directory: lance-extension/server
 
     - name: install dependencies
       working-directory: .\lance-extension
