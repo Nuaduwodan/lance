@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>LanceServer</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -8,7 +9,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.6" />
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.11.1" />
+        <PackageReference Include="LspTypes" Version="3.16.6" />
+        <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="17.1.8" />
     </ItemGroup>
-
+    
 </Project>
