@@ -4,8 +4,45 @@ grammar SinumerikNC;
  * Parser Rules
  */
 
-file: ;
+// temporary simple rules
+file: part* EOF;
+part
+    : type
+    | procedure
+    | INT
+    | REAL
+    | BLOCK_NUMBER
+    | PROGRAM_NAME_SIMPLE
+    | PROGRAM_NAME_EXTENDED
+    | OPEN_PAREN
+    | CLOSE_PAREN
+    | OPEN_BRACKET
+    | CLOSE_BRACKET
+    | LESS
+    | LESS_EQUAL
+    | GREATER
+    | GREATER_EQUAL
+    | EQUAL
+    | NOT_EQUAL
+    | LEFT_SHIFT
+    | RIGHT_SHIFT
+    | ADD
+    | INC
+    | SUB
+    | DEC
+    | MUL
+    | DIV
+    | MOD
+    | ASSIGNMENT
+    | PREPARATORY_FUNCTION
+    | COMMENT
+    | FEED_GROUP
+    | ABSOLUTE_COORDINATE
+    | INCREMENTAL_COORDINATE
+    | FEEDRATE;
 
+/*
+//// Functions
 // feedrate override
 feedrate_override_path: FEEDRATE_OVERRIDE_PATH '=' INT;
 feedrate_override_rapid_traverse_velocity: FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY '=' INT;
@@ -18,12 +55,27 @@ acceleration_compensation: ACCELERATION_COMPENSATION OPEN_BRACKET axis_spindle_i
 feedrate_override_path_handwheel: FEEDRATE_OVERRIDE_PATH_HANDWHEEL '=' INT;
 feedrate_override_axial_handwheel: FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL OPEN_BRACKET axis_identifier CLOSE_BRACKET '=' INT;
 
+//// Types
 // axis identifier
 axis_spindle_identifier: axis_identifier | spindle_identifier;
-axis_identifier: axis INT;
-spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT CLOSE_PAREN | SPINDLE INT;
+axis_identifier: axis INT_POSITIVE;
+spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT_POSITIVE CLOSE_PAREN | SPINDLE INT_POSITIVE;
 axis: A_AXIS | B_AXIS | C_AXIS | X_AXIS | Y_AXIS | Z_AXIS;
+*/
 
+//// Core
+// type
+type
+    : BOOL_TYPE
+    | CHAR_TYPE
+    | INT_TYPE
+    | REAL_TYPE
+    | STRING_TYPE
+    | AXIS_TYPE
+    | FRAME_TYPE;
+
+// procedure
+procedure : PROCEDURE PROGRAM_NAME_SIMPLE;
 
 /*
  * Lexer Rules
@@ -90,6 +142,7 @@ POSITIONING_IN_SECTIONS: P O S P;
 POSITIONING_IMMEDIATE: P O S A;
 SPINDLE_POSITIONING_DELAYED: S P O S;
 FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE: O V R A;
+PROCEDURE: P R O C;
 
 // 3 characters
 TOOL_CUTTING_SPEED: S V C;
@@ -112,12 +165,12 @@ ABSOLUTE_COORDINATE: A C;
 INCREMENTAL_COORDINATE: I C;
 DIRECT_APPROACH_COORDINATE: D C;
 FEEDRATE_OVERRIDE_PATH_HANDWHEEL: F D;
+BLOCK_NUMBER: N ID;
+ADDITIONAL_FUNCTION: M ID;
+AUXILIARY_FUNCTION: H ID;
+PREPARATORY_FUNCTION: G ID;
 
 // single character
-BLOCK_NUMBER: N;
-ADDITIONAL_FUNCTION: M;
-AUXILIARY_FUNCTION: H;
-PREPARATORY_FUNCTION: G;
 X_AXIS: X;
 Y_AXIS: Y;
 Z_AXIS: Z;
@@ -148,19 +201,23 @@ LESS : '<';
 LESS_EQUAL : '<=';
 GREATER : '>';
 GREATER_EQUAL : '>=';
+EQUAL : '==';
 NOT_EQUAL : '<>';
 LEFT_SHIFT : '<<';
 RIGHT_SHIFT : '>>';
 
-PLUS : '+';
-PLUS_PLUS : '++';
-MINUS : '-';
-MINUS_MINUS : '--';
+ADD : '+';
+INC : '++';
+SUB : '-';
+DEC : '--';
 MUL : '*';
 DIV : '/';
 MOD : '%';
 
+ASSIGNMENT: '=';
+
 DOLLAR : '$';
+POINT: '.';
 
 // reserved words
 RESERVED: C O N | P R N | A U X | N U L | C O M [1-9] | L P T [1-9];
@@ -170,8 +227,11 @@ PROGRAM_NAME_SIMPLE: [_a-zA-Z][a-zA-Z]NAME;
 PROGRAM_NAME_EXTENDED: NAME;
 
 // general
-INT: [0-9]+;
-WHITESPACE: [ \t]+;
+INT_POSITIVE: [0-9]+;
+INT: SUB? INT_POSITIVE;
+REAL: [0-9]* POINT [0-9]+;
+ID: [0]* INT_POSITIVE;
+WHITESPACE: [ \t]+ -> skip;
 NAME: [a-zA-Z0-9_]+;
 SKIP_BLOCK: ('/');
 NEWLINE: ('\r' '\n'? | '\n') -> skip;
