@@ -54,27 +54,22 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Install the .NET workload
     - name: Install .NET
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: 6.0.x
+      
+    - name: Execute build
+      run: dotnet build
 
-    # Execute all unit tests in the solution
     - name: Execute unit tests
-      working-directory: ./lance
       run: dotnet test
       
-    # Execute all unit tests in the solution
-    - name: Execute build
-      working-directory: ./lance
-      run: dotnet build
-      
-    - name: 'Upload Artifact'
+    - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: server
-        path: .\lance\lance-server\bin\Debug\
+        path: .\lance-server\bin\Debug\
       
   build_extension:
     needs: build_server
@@ -86,18 +81,38 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Install the .NET workload
-    - name: Install .NET
-      uses: actions/setup-dotnet@v3.0.3
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v3.6.0
       with:
-        dotnet-version: 6.0.x
+        node-version: 16.10.x
+        
+    - name: install vsce
+      run: npm -g install vsce
+        
+    - name: Download server artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: server
+        path: lance-extension/server
+    
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: lance-extension/server
 
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      working-directory: ./lance
-      run: dotnet test
-      
-    # Execute all unit tests in the solution
+    - name: install dependencies
+      working-directory: .\lance-extension
+      run: npm ci
+
     - name: Execute build
-      working-directory: ./lance
-      run: dotnet build
+      working-directory: .\lance-extension
+      run: npm run compile
+      
+    - name: package
+      working-directory: .\lance-extension
+      run: vsce package
+      
+    - name: Upload Extension
+      uses: actions/upload-artifact@v3
+      with:
+        name: extension
+        path: .\lance-extension\*.vsix
