@@ -105,7 +105,7 @@ jobs:
       
     - name: package
       working-directory: .\lance-extension
-      run: vsce package --no-rewrite-relative-links
+      run: vsce package --baseImagesUrl https://raw.githubusercontent.com/Nuaduwodan/lance/main/lance-extension/
       
     - name: Upload Extension
       uses: actions/upload-artifact@v3
