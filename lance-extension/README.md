@@ -11,14 +11,10 @@ Syntax highlighting without semantic highlighting.
 
 ![Syntax highlighting](images/syntax_highlighting.png)
 
-
 ## Extension Settings
 
-There aren't currently any settings having a meaningful impact. But you can change the colorscheme the highlighting is using by changing your theme and or by configuring some color customizations. see https://code.visualstudio.com/docs/getstarted/themes#_customizing-a-color-theme.
+There aren't currently any settings having a meaningful impact. But you can change the colorscheme the highlighting is using by changing your theme and or by configuring some color customizations. see [customizing a color theme](https://code.visualstudio.com/docs/getstarted/themes#_customizing-a-color-theme).
 
 ## Known Issues
 
-none
-
-## Release Notes
-See the file [CHANGELOG.md](CHANGELOG.md)
+currently none
