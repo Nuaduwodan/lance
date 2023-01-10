@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed 
+
+- moved changelog to the file CHANGELOG.md and linked it in the README.md
+
+### Fixed
+
+- Fixed image links in the README of published extensions
+
+## [0.0.1] - 2023-01-07
+
 ### Added 
 
 - syntax highlighting

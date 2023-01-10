@@ -21,6 +21,4 @@ There aren't currently any settings having a meaningful impact. But you can chan
 -
 
 ## Release Notes
-### 0.0.1
-
-Initial release with syntax highlighting without semantic highlighting.
+See the file [CHANGELOG.md](CHANGELOG.md)
