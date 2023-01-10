@@ -1,5 +1,5 @@
-# lance
-Language Appliance for Numerical Control codE of the sinumerik one cnc control system by siemens
+# Lance
+Language Appliance for Numerical Control code of the sinumerik one cnc control system by siemens
 
 ## Description
 Lance is an Extension which provides common language features for the g-code based NC language from Siemens. The grammar for these features is an own interpretation of the available manuals from Siemens for the control system SINUMERIK ONE of the CNC software version 6.20 released in july 2022. Primarily the manuals "Basic functions" and "NC programming" and secondarily the manuals "Axes and spindles
@@ -18,7 +18,7 @@ There aren't currently any settings having a meaningful impact. But you can chan
 
 ## Known Issues
 
--
+none
 
 ## Release Notes
 See the file [CHANGELOG.md](CHANGELOG.md)
