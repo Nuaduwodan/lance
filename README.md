@@ -2,6 +2,7 @@
 Language Appliance for Numerical Control code of the sinumerik one cnc control system by siemens
 
 For a description of the Extension see [lance-extension/README.md](lance-extension/README.md).
+
 For a changelog see [lance-extension/CHANGELOG.md](lance-extension/CHANGELOG.md).
 
 ## How to install
