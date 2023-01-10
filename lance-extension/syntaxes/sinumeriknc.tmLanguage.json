@@ -79,38 +79,6 @@
             "repository":{
                 "entity.name":{
                     "patterns":[{
-                        "name": "entity.name.function.toolCorrection.sinumeriknc",
-                        "match": "(?i)\\bD[0-9]+|\\bD\\b|\\bDL\\b"
-                    },
-                    {
-                        "name": "entity.name.function.feedWord.sinumeriknc",
-                        "match": "(?i)\\b(F[0-9])+|\\bF\\b|\\bF[ABDZ]{1,2}\\b"
-                    },
-                    {
-                        "name": "entity.name.function.gcode.sinumeriknc",
-                        "match": "(?i)\\b(G[0-9]{1,3})+|\\bG\\b"
-                    },
-                    {
-                        "name": "entity.name.function.hcode.sinumeriknc",
-                        "match": "(?i)\\b(H[0-9]{1,2})+|\\bH\\b"
-                    },
-                    {
-                        "name": "entity.name.function.cycles.sinumeriknc",
-                        "match": "(?i)\bL[0-9]+\b"
-                    },
-                    {
-                        "name": "entity.name.function.mcode.sinumeriknc",
-                        "match": "(?i)\\b(M[0-9]{1,4})+|\\bM\\b"
-                    },
-                    {
-                        "name": "entity.name.function.subprogrammLoops.sinumeriknc",
-                        "match": "(?i)(\\bP)[0-9]{1,4}|\\bP\\b"
-                    },
-                    {
-                        "name": "entity.name.function.toolSpeed.sinumeriknc",
-                        "match": "(?i)(\\bS)[0-9]{1,2}|\\bS\\b"
-                    },
-                    {
                         "name": "entity.name.section.linenumber.sinumeriknc",
                         "match": "(?i)\\bN[0-9]+\\b"
                     },
@@ -293,6 +261,38 @@
                     {
                         "name": "support.function.jerk.sinumeriknc",
                         "match": "(?i)\\b(jerka|jerklim|jerklima)\\b"
+                    },
+                    {
+                        "name": "support.function.toolCorrection.sinumeriknc",
+                        "match": "(?i)\\bD([0-9]+|L)\\b"
+                    },
+                    {
+                        "name": "support.function.feedWord.sinumeriknc",
+                        "match": "(?i)\\bF([0-9]+|[ABDZ]{1,2})\\b"
+                    },
+                    {
+                        "name": "support.function.gcode.sinumeriknc",
+                        "match": "(?i)\\bG[0-9]{0,3}\\b"
+                    },
+                    {
+                        "name": "support.function.hcode.sinumeriknc",
+                        "match": "(?i)\\bH[0-9]{0,2}\\b"
+                    },
+                    {
+                        "name": "support.function.cycles.sinumeriknc",
+                        "match": "(?i)\\bL[0-9]+\\b"
+                    },
+                    {
+                        "name": "support.function.mcode.sinumeriknc",
+                        "match": "(?i)\\bM[0-9]{0,4}\\b"
+                    },
+                    {
+                        "name": "support.function.subprogram.sinumeriknc",
+                        "match": "(?i)\\bP[0-9]{0,4}\\b"
+                    },
+                    {
+                        "name": "support.function.toolSpeed.sinumeriknc",
+                        "match": "(?i)\\bS[0-9]{0,2}\\b"
                     },
                     {
                         "name": "support.function.unsorted.sinumeriknc",
