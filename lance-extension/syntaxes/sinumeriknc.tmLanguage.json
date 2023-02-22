@@ -312,11 +312,11 @@
                     },
                     {
                         "name": "support.variable.axis.sinumeriknc",
-                        "match": "\\b(A|B|C|X|Y|Z)[0-9]{0,5}\\b"
+                        "match": "(?i)\\b(A|B|C|X|Y|Z)[0-9]{0,5}\\b"
                     },
                     {
                         "name": "support.variable.rparam.sinumeriknc",
-                        "match": "(\\bR[0-9]{1,4})|\\bR\\b"
+                        "match": "(?i)(\\$|\\b)R[0-9]{0,4}\\b"
                     }]
                 }
             }
