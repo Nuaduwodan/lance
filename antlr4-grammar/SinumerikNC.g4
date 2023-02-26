@@ -1,70 +1,287 @@
 grammar SinumerikNC;
 
+// it is not possible to use regex flags but the options can be overwritten per rule
+// see: https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md#lexer-rule-options
+options { caseInsensitive=true; }
+
+/*
+ * Lexer Rules
+ */
+
+// general
+ID: [0]* INT_POSITIVE;
+WHITESPACE: [ \t]+ -> skip;
+NAME: [a-z0-9_]+;
+NEWLINE: ('\r' '\n'? | '\n') -> skip;
+COMMENT: ';' ~[\r\n]* -> skip;
+HIDE: [ \t]*'/'[0-7]?;
+BLOCK_NUMBER: 'n'ID;
+
+
+////
+//// constant
+////
+// numeric
+INT_POSITIVE: [0-9]+;
+INT: SUB? INT_POSITIVE;
+REAL_POSITIVE: [0-9]* POINT [0-9]+;
+REAL: SUB? REAL_POSITIVE;
+BIN: 'B'([01]{8})+;
+HEX: 'H'([0-9A-F]{2})+;
+STRING: '"'~[\r\n]*'"';
+
+// language
+BOOL: 'true'|'false';
+PI: '$PI';
+
+
+////
+//// keywords
+////
+// control
+WHILE: 'while';
+WHILE_END: 'while';
+FOR: 'for';
+FOR_TO: 'to';
+FOR_END: 'endfor';
+LOOP: 'loop';
+LOOP_END: 'endloop';
+REPEAT: 'repeat';
+REPEAT_END: 'until';
+IF: 'if';
+ELSE: 'else';
+IF_END: 'endif';
+GOTO: 'goto';
+GOTO_B: 'gotob';
+GOTO_C: 'gotoc';
+GOTO_F: 'gotof';
+GOTO_S: 'gotos';
+LABEL_NAME: [a-z_]{2}[a-z0-9_]{0,30};
+LABEL: LABEL_NAME':';
+LABEL_END: 'endlabel';
+SYNC_WHEN: 'when';
+SYNC_WHENEVER: 'whenever';
+SYNC_DO: 'do';
+SYNC_CANCEL: 'cancel';
+RETURN: 'ret';
+CALL: 'call';
+CALL_P: 'pcall';
+CALL_EXT: 'extcall';
+CALL_PATH: 'callpath';
+
+// operators
+ASSIGNMENT: '=';
+
+ADD: '+';
+SUB: '-';
+MUL: '*';
+DIV: '/' | 'div';
+MOD: 'mod';
+
+EQUAL: '==';
+NOT_EQUAL: '<>';
+LESS: '<';
+GREATER: '>';
+LESS_EQUAL: '<=';
+GREATER_EQUAL: '>=';
+
+NOT: 'not';
+AND: 'and';
+OR: 'or';
+XOR: 'xor';
+
+NOT_B: 'b_not';
+AND_B: 'b_and';
+OR_B: 'b_or';
+XOR_B: 'b_xor';
+
+CONCAT: '<<';
+
+// modifier
+RANGE_NCK: 'nck';
+RANGE_NC: 'nc';
+RANGE_CHAN: 'chan';
+PRE_PROC_STOP_R: 'syncr';
+PRE_PROC_STOP_W: 'syncw';
+PRE_PROC_STOP_RW: 'syncrw';
+ACCESS_READ_PROGRAM: 'aprp';
+ACCESS_WRITE_PROGRAM: 'apwp';
+ACCESS_READ_OPI: 'aprb';
+ACCESS_WRITE_OPI: 'apwb';
+PHYS_UNIT: 'phy';
+LIMIT_UPPER: 'uli';
+LIMIT_LOWER: 'lli';
+
+// other
+PROC: 'proc';
+PROC_END: 'endproc';
+EXTERN: 'extern';
+DEFINE: 'def';
+VAR: 'var';
+MACRO_DEFINE: 'define';
+MACRO_AS: 'as';
+REDEFINE: 'redef';
+SET: 'set';
+
+
+////
+//// support
+////
+// types
+BOOL_TYPE: 'bool';
+CHAR_TYPE: 'char';
+INT_TYPE: 'int';
+REAL_TYPE: 'real';
+STRING_TYPE: 'string';
+AXIS_TYPE: 'axis';
+FRAME_TYPE: 'frame';
+
+// system variables
+SYS_VAR: '$'[$acmnopstv]{0,3}[a-z_]*; // could be improved
+
+// axis variables
+AXIS: [abcxyz][0-9]{0,5};
+
+// user variables
+R_PARAM: '$'?'r'[0-9]{1,4};
+
+
+////
+//// functions
+////
+// math
+SIN: 'sin';
+COS: 'cos';
+TAN: 'tan';
+ASIN: 'asin';
+ACOS: 'acos';
+ATAN2: 'atan2';
+SQRT: 'sqrt';
+ABS: 'abs';
+POT: 'pot';
+TRUNC: 'trunc';
+ROUND: 'round';
+LN: 'ln';
+EXP: 'exp';
+
+// math
+STR_LEN: 'strlen';
+
+// tool offset
+TOOL_OFFSET_LENGTH_RADIUS: 'tofflr';
+TOOL_OFFSET_LENGTH: 'toffl';
+TOOL_OFFSET_RADIUS: 'toffr';
+TOOL_OFFSET: 'toff';
+
+
+SET_MASTER_SPINDLE: 'setms';
+GRINDING_WHEEL_PERIPHERAL_SPEED_ON: 'gwpson';
+GRINDING_WHEEL_PERIPHERAL_SPEED_OFF: 'gwpsof';
+FEED_GROUP: 'fgroup';
+FEED_GROUP_EFFECTIVE_RADIUS: 'fgref';
+WAIT_FOR_POSITION: 'waitp';
+WAIT_FOR_MARKER: 'waitmc';
+WAIT_FOR_SPINDLE: 'waits';
+SPINDLE_POSITION_CONTROL_MODE_ON: 'spcon';
+SPINDLE_POSITION_CONTROL_MODE_OFF: 'spcof';
+SPINDLE_POSITIONING_IMMEDIATE: 'sposa';
+MOTION_END_FINE: 'finea';
+MOTION_END_COARSE: 'coarsea';
+MOTION_END_INTERPOLATION: 'ipoenda';
+MOTION_END_INTERPOLATION_BREAK: 'ipobrka';
+FEEDRATE_PATH_ROTARY_AXIS_ON: 'fpraon';
+FEEDRATE_PATH_ROTARY_AXIS_OFF: 'fpraof';
+FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY: 'ovrrap';
+
+// 4 characters
+TOOL_CORRECTION_SUPPRESSION: 'supd';
+MASTER_SPINDLE_SPEED_LIMIT: 'lims';
+POSITIONING_IN_SECTIONS: 'posp';
+POSITIONING_IMMEDIATE: 'posa';
+SPINDLE_POSITIONING_DELAYED: 'spos';
+FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE: 'ovra';
+
+// 3 characters
+TOOL_CUTTING_SPEED: 'svc';
+ABSOLUTE_COORDINATE_NEGATIVE: 'acn';
+ABSOLUTE_COORDINATE_POSITIVE: 'acp';
+POSITIONING_DELAYED: 'pos';
+CONSTANT_CUTTING_RATE_REFERENCE_AXIS: 'scc';
+FEEDRATE_PATH_ROTARY_AXIS: 'fpr';
+SPINDLE_IDENTIFIER: 'spi';
+FEEDRATE_OVERRIDE_PATH: 'ovr';
+ACCELERATION_COMPENSATION: 'acc';
+FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL: 'fda';
+
+// 2 characters
+FEEDRATE_LIMIT: 'fl';
+FEEDRATE_POSITION_AXIS: 'fa';
+ABSOLUTE_COORDINATE: 'ac';
+INCREMENTAL_COORDINATE: 'ic';
+DIRECT_APPROACH_COORDINATE: 'dc';
+FEEDRATE_OVERRIDE_PATH_HANDWHEEL: 'fd';
+ADDITIONAL_FUNCTION: 'm'ID;
+AUXILIARY_FUNCTION: 'h'ID;
+PREPARATORY_FUNCTION: 'g'ID;
+
+// single character
+X_AXIS: 'x';
+Y_AXIS: 'y';
+Z_AXIS: 'z';
+A_AXIS: 'a';
+B_AXIS: 'b';
+C_AXIS: 'c';
+SPINDLE: 's';
+FEEDRATE: 'f';
+TOOL: 't';
+TOOL_CORRECTION: 'd';
+
+// symbols
+OPEN_PAREN: '(';
+CLOSE_PAREN: ')';
+OPEN_BRACKET: '[';
+CLOSE_BRACKET: ']';
+
+
+DOLLAR: '$';
+POINT: '.';
+COMMA: ',';
+
+// reserved words
+RESERVED: 'con' | 'prn' | 'aux' | 'nul' | 'com'[1-9] | 'lpt'[1-9];
+
+// names
+PROGRAM_NAME_SIMPLE: [_a-z][a-z]NAME;
+PROGRAM_NAME_EXTENDED: NAME;
+
+
 /*
  * Parser Rules
  */
 
-// temporary simple rules
-file: part* EOF;
-part
-    : type
-    | procedure
-    | INT
-    | REAL
-    | BLOCK_NUMBER
-    | PROGRAM_NAME_SIMPLE
-    | PROGRAM_NAME_EXTENDED
-    | OPEN_PAREN
-    | CLOSE_PAREN
-    | OPEN_BRACKET
-    | CLOSE_BRACKET
-    | LESS
-    | LESS_EQUAL
-    | GREATER
-    | GREATER_EQUAL
-    | EQUAL
-    | NOT_EQUAL
-    | LEFT_SHIFT
-    | RIGHT_SHIFT
-    | ADD
-    | INC
-    | SUB
-    | DEC
-    | MUL
-    | DIV
-    | MOD
-    | ASSIGNMENT
-    | PREPARATORY_FUNCTION
-    | COMMENT
-    | FEED_GROUP
-    | ABSOLUTE_COORDINATE
-    | INCREMENTAL_COORDINATE
-    | FEEDRATE;
+file: block* EOF;
 
-/*
-//// Functions
-// feedrate override
-feedrate_override_path: FEEDRATE_OVERRIDE_PATH '=' INT;
-feedrate_override_rapid_traverse_velocity: FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY '=' INT;
-feedrate_override_position_or_spindle: FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE OPEN_BRACKET axis_spindle_identifier CLOSE_BRACKET '=' INT;
+block
+    : procedure
+    | statement;
 
-// acceleration compensation
-acceleration_compensation: ACCELERATION_COMPENSATION OPEN_BRACKET axis_spindle_identifier CLOSE_BRACKET '=' INT;
+// procedure
+procedure: PROC PROGRAM_NAME_SIMPLE OPEN_PAREN params CLOSE_PAREN statement* PROC_END;
 
-// feedrate override handwheel
-feedrate_override_path_handwheel: FEEDRATE_OVERRIDE_PATH_HANDWHEEL '=' INT;
-feedrate_override_axial_handwheel: FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL OPEN_BRACKET axis_identifier CLOSE_BRACKET '=' INT;
+params: param | param_out | param COMMA params | param_out COMMA params;
 
-//// Types
-// axis identifier
-axis_spindle_identifier: axis_identifier | spindle_identifier;
-axis_identifier: axis INT_POSITIVE;
-spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT_POSITIVE CLOSE_PAREN | SPINDLE INT_POSITIVE;
-axis: A_AXIS | B_AXIS | C_AXIS | X_AXIS | Y_AXIS | Z_AXIS;
-*/
+param_out: VAR param;
 
-//// Core
-// type
+param: type NAME;
+
+// statement
+statement
+    : if_statement
+    | while_statement;
+
+
+
+
 type
     : BOOL_TYPE
     | CHAR_TYPE
@@ -74,165 +291,23 @@ type
     | AXIS_TYPE
     | FRAME_TYPE;
 
-// procedure
-procedure : PROCEDURE PROGRAM_NAME_SIMPLE;
+//// Functions
+// feedrate override
+feedrate_override_path: FEEDRATE_OVERRIDE_PATH '= 'INT;
+feedrate_override_rapid_traverse_velocity: FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY '= 'INT;
+feedrate_override_position_or_spindle: FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE OPEN_BRACKET axis_spindle_identifier CLOSE_BRACKET '= 'INT;
 
-/*
- * Lexer Rules
- */
+// acceleration compensation
+acceleration_compensation: ACCELERATION_COMPENSATION OPEN_BRACKET axis_spindle_identifier CLOSE_BRACKET '= 'INT;
 
-// fragments
-fragment A: [a|A];
-fragment B: [b|B];
-fragment C: [c|C];
-fragment D: [d|D];
-fragment E: [e|E];
-fragment F: [f|F];
-fragment G: [g|G];
-fragment H: [h|H];
-fragment I: [i|I];
-fragment J: [j|J];
-fragment K: [k|K];
-fragment L: [l|L];
-fragment M: [m|M];
-fragment N: [n|N];
-fragment O: [o|O];
-fragment P: [p|P];
-fragment Q: [q|Q];
-fragment R: [r|R];
-fragment S: [s|S];
-fragment T: [t|T];
-fragment U: [u|U];
-fragment V: [v|V];
-fragment W: [w|W];
-fragment X: [x|X];
-fragment Y: [y|Y];
-fragment Z: [z|Z];
+// feedrate override handwheel
+feedrate_override_path_handwheel: FEEDRATE_OVERRIDE_PATH_HANDWHEEL '= 'INT;
+feedrate_override_axial_handwheel: FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL OPEN_BRACKET axis_identifier CLOSE_BRACKET '= 'INT;
 
-// function names
-// 5 or more characters
-DEFINE: D E F I N E;
-TOOL_OFFSET_LENGTH_RADIUS: T O F F L R;
-TOOL_OFFSET_LENGTH: T O F F L;
-TOOL_OFFSET_RADIUS: T O F F R;
-SET_MASTER_SPINDLE: S E T M S;
-GRINDING_WHEEL_PERIPHERAL_SPEED_ON: G W P S O N;
-GRINDING_WHEEL_PERIPHERAL_SPEED_OFF: G W P S O F;
-FEED_GROUP: F G R O U P;
-FEED_GROUP_EFFECTIVE_RADIUS: F G R E F;
-WAIT_FOR_POSITION: W A I T P;
-WAIT_FOR_MARKER: W A I T M C;
-WAIT_FOR_SPINDLE: W A I T S;
-SPINDLE_POSITION_CONTROL_MODE_ON: S P C O N;
-SPINDLE_POSITION_CONTROL_MODE_OFF: S P C O F;
-SPINDLE_POSITIONING_IMMEDIATE: S P O S A;
-MOTION_END_FINE: F I N E A;
-MOTION_END_COARSE: C O A R S E A;
-MOTION_END_INTERPOLATION: I P O E N D A;
-MOTION_END_INTERPOLATION_BREAK: I P O B R K A;
-FEEDRATE_PATH_ROTARY_AXIS_ON: F P R A O N;
-FEEDRATE_PATH_ROTARY_AXIS_OFF: F P R A O F;
-FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY: O V R R A P;
+//// Types
+// axis identifier
+axis_spindle_identifier: axis_identifier | spindle_identifier;
+axis_identifier: axis INT_POSITIVE;
+spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT_POSITIVE CLOSE_PAREN | SPINDLE INT_POSITIVE;
+axis: A_AXIS | B_AXIS | C_AXIS | X_AXIS | Y_AXIS | Z_AXIS;
 
-// 4 characters
-TOOL_CORRECTION_SUPPRESSION: S U P D;
-TOOL_OFFSET: T O F F;
-MASTER_SPINDLE_SPEED_LIMIT: L I M S;
-POSITIONING_IN_SECTIONS: P O S P;
-POSITIONING_IMMEDIATE: P O S A;
-SPINDLE_POSITIONING_DELAYED: S P O S;
-FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE: O V R A;
-PROCEDURE: P R O C;
-
-// 3 characters
-TOOL_CUTTING_SPEED: S V C;
-DEF: D E F;
-ABSOLUTE_COORDINATE_NEGATIVE: A C N;
-ABSOLUTE_COORDINATE_POSITIVE: A C P;
-POSITIONING_DELAYED: P O S;
-CONSTANT_CUTTING_RATE_REFERENCE_AXIS: S C C;
-FEEDRATE_PATH_ROTARY_AXIS: F P R;
-SPINDLE_IDENTIFIER: S P I;
-FEEDRATE_OVERRIDE_PATH: O V R;
-ACCELERATION_COMPENSATION: A C C;
-FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL: F D A;
-
-// 2 characters
-AS: A S;
-FEEDRATE_LIMIT: F L;
-FEEDRATE_POSITION_AXIS: F A;
-ABSOLUTE_COORDINATE: A C;
-INCREMENTAL_COORDINATE: I C;
-DIRECT_APPROACH_COORDINATE: D C;
-FEEDRATE_OVERRIDE_PATH_HANDWHEEL: F D;
-BLOCK_NUMBER: N ID;
-ADDITIONAL_FUNCTION: M ID;
-AUXILIARY_FUNCTION: H ID;
-PREPARATORY_FUNCTION: G ID;
-
-// single character
-X_AXIS: X;
-Y_AXIS: Y;
-Z_AXIS: Z;
-A_AXIS: A;
-B_AXIS: B;
-C_AXIS: C;
-SPINDLE: S;
-FEEDRATE: F;
-TOOL: T;
-TOOL_CORRECTION: D;
-
-// types
-BOOL_TYPE: B O O L;
-CHAR_TYPE: C H A R;
-INT_TYPE: I N T;
-REAL_TYPE: R E A L;
-STRING_TYPE: S T R I N G;
-AXIS_TYPE: A X I S;
-FRAME_TYPE: F R A M E;
-
-// symbols
-OPEN_PAREN : '(';
-CLOSE_PAREN : ')';
-OPEN_BRACKET : '[';
-CLOSE_BRACKET : ']';
-
-LESS : '<';
-LESS_EQUAL : '<=';
-GREATER : '>';
-GREATER_EQUAL : '>=';
-EQUAL : '==';
-NOT_EQUAL : '<>';
-LEFT_SHIFT : '<<';
-RIGHT_SHIFT : '>>';
-
-ADD : '+';
-INC : '++';
-SUB : '-';
-DEC : '--';
-MUL : '*';
-DIV : '/';
-MOD : '%';
-
-ASSIGNMENT: '=';
-
-DOLLAR : '$';
-POINT: '.';
-
-// reserved words
-RESERVED: C O N | P R N | A U X | N U L | C O M [1-9] | L P T [1-9];
-
-// names
-PROGRAM_NAME_SIMPLE: [_a-zA-Z][a-zA-Z]NAME;
-PROGRAM_NAME_EXTENDED: NAME;
-
-// general
-INT_POSITIVE: [0-9]+;
-INT: SUB? INT_POSITIVE;
-REAL: [0-9]* POINT [0-9]+;
-ID: [0]* INT_POSITIVE;
-WHITESPACE: [ \t]+ -> skip;
-NAME: [a-zA-Z0-9_]+;
-SKIP_BLOCK: ('/');
-NEWLINE: ('\r' '\n'? | '\n') -> skip;
-COMMENT: ';' ~[\r\n]* -> skip;
