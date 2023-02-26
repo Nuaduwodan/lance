@@ -149,7 +149,7 @@
                     },
                     {
                         "name": "keyword.operator.arithmetik.sinumeriknc",
-                        "match": "(?i)\\*|\\*\\*|\\+|-|\\/\\/|\\/|%"
+                        "match": "(?i)\\*|\\+|-|\\/"
                     },
                     {
                         "name": "keyword.operator.bool.sinumeriknc",
