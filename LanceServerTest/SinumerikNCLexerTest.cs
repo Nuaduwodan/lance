@@ -23,7 +23,8 @@ public class SinumerikNCLexerTest
         var actualTokenList = tokens.GetTokens();
 
         // Assert
-        Assert.Equal(expectedTokenCount, actualTokenList.Count());
+        Assert.Equal(expectedTokenCount, actualTokenList.Count);
+        Assert.Equal(SinumerikNCLexer.Eof, actualTokenList[0].Type);
     }
     
     [Fact]
@@ -45,7 +46,8 @@ public class SinumerikNCLexerTest
         var actualTokenList = tokens.GetTokens();
 
         // Assert
-        Assert.Equal(expectedTokenCount, actualTokenList.Count());
+        Assert.Equal(expectedTokenCount, actualTokenList.Count);
+        Assert.Equal(SinumerikNCLexer.Eof, actualTokenList[0].Type);
     }
     
     [Fact]
@@ -67,6 +69,10 @@ public class SinumerikNCLexerTest
         var actualTokenList = tokens.GetTokens();
 
         // Assert
-        Assert.Equal(expectedTokenCount, actualTokenList.Count());
+        Assert.Equal(expectedTokenCount, actualTokenList.Count);
+        Assert.Equal(SinumerikNCLexer.PROCEDURE, actualTokenList[0].Type);
+        Assert.Equal(SinumerikNCLexer.PROGRAM_NAME_SIMPLE, actualTokenList[1].Type);
+        Assert.Equal(SinumerikNCLexer.PROCEDURE_END, actualTokenList[2].Type);
+        Assert.Equal(SinumerikNCLexer.Eof, actualTokenList[3].Type);
     }
 }
