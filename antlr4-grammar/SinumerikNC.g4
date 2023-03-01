@@ -8,39 +8,12 @@ options { caseInsensitive=true; }
  * Lexer Rules
  */
 
-// general
-ID: [0]* INT_POSITIVE;
-WHITESPACE: [ \t]+ -> skip;
-NAME: [a-z0-9_]+;
-NEWLINE: ('\r' '\n'? | '\n') -> skip;
-COMMENT: ';' ~[\r\n]* -> skip;
-HIDE: [ \t]*'/'[0-7]?;
-BLOCK_NUMBER: 'n'ID;
-
-
-////
-//// constant
-////
-// numeric
-INT_POSITIVE: [0-9]+;
-INT: SUB? INT_POSITIVE;
-REAL_POSITIVE: [0-9]* POINT [0-9]+;
-REAL: SUB? REAL_POSITIVE;
-BIN: 'B'([01]{8})+;
-HEX: 'H'([0-9A-F]{2})+;
-STRING: '"'~[\r\n]*'"';
-
-// language
-BOOL: 'true'|'false';
-PI: '$PI';
-
-
 ////
 //// keywords
 ////
 // control
 WHILE: 'while';
-WHILE_END: 'while';
+WHILE_END: 'endwhile';
 FOR: 'for';
 FOR_TO: 'to';
 FOR_END: 'endfor';
@@ -56,8 +29,6 @@ GOTO_B: 'gotob';
 GOTO_C: 'gotoc';
 GOTO_F: 'gotof';
 GOTO_S: 'gotos';
-LABEL_NAME: [a-z_]{2}[a-z0-9_]{0,30};
-LABEL: LABEL_NAME':';
 LABEL_END: 'endlabel';
 SYNC_WHEN: 'when';
 SYNC_WHENEVER: 'whenever';
@@ -137,13 +108,13 @@ AXIS_TYPE: 'axis';
 FRAME_TYPE: 'frame';
 
 // system variables
-SYS_VAR: '$'[$acmnopstv]{0,3}[a-z_]*; // could be improved
+SYS_VAR: '$'[$acmnopstv]*[a-z_]*; // could be improved
 
 // axis variables
-AXIS: [abcxyz][0-9]{0,5};
+AXIS: [abcxyz][0-9]*;
 
 // user variables
-R_PARAM: '$'?'r'[0-9]{1,4};
+R_PARAM: '$'?'r'[0-9]+;
 
 
 ////
@@ -250,38 +221,104 @@ COMMA: ',';
 // reserved words
 RESERVED: 'con' | 'prn' | 'aux' | 'nul' | 'com'[1-9] | 'lpt'[1-9];
 
+
+
+// general
+ID: [0]* INT_POSITIVE;
+WHITESPACE: [ \t]+ -> skip;
+NAME: [a-z0-9_]+;
+NEWLINE: ('\r' '\n'? | '\n') -> skip;
+COMMENT: ';' ~[\r\n]* -> skip;
+HIDE: [ \t]*'/'[0-7]?;
+BLOCK_NUMBER: 'n'ID;
+
+
+////
+//// constant
+////
+// numeric
+INT_POSITIVE: [0-9]+;
+INT: SUB? INT_POSITIVE;
+REAL_POSITIVE: [0-9]* POINT [0-9]+;
+REAL: SUB? REAL_POSITIVE;
+BIN: 'B'[01]+;
+HEX: 'H'([0-9A-F][0-9A-F])+;
+
+// language
+BOOL: 'true'|'false';
+PI options { caseInsensitive=false; }: '$PI';
+STRING: '"'~[\r\n]*'"';
+
 // names
 PROGRAM_NAME_SIMPLE: [_a-z][a-z]NAME;
 PROGRAM_NAME_EXTENDED: NAME;
+LABEL_NAME: [a-z_][a-z_][a-z0-9_]*;
+LABEL: LABEL_NAME':';
 
 
 /*
  * Parser Rules
  */
 
-file: block* EOF;
+file: (block* | procedure) EOF;
 
 block
-    : procedure
-    | statement;
+    : statement;
 
 // procedure
-procedure: PROC PROGRAM_NAME_SIMPLE OPEN_PAREN params CLOSE_PAREN statement* PROC_END;
+procedure: PROC PROGRAM_NAME_SIMPLE OPEN_PAREN params? CLOSE_PAREN statement* PROC_END;
 
-params: param | param_out | param COMMA params | param_out COMMA params;
+params: param | paramOut | param COMMA params | paramOut COMMA params;
 
-param_out: VAR param;
+paramOut: VAR param;
 
 param: type NAME;
 
+// declaration
+
 // statement
 statement
-    : if_statement
-    | while_statement;
+    : ifStatement
+    | iterativeStatement
+    | jumpStatement;
 
+ifStatement: IF OPEN_PAREN expression CLOSE_PAREN statement (ELSE statement)?;
 
+iterativeStatement: WHILE OPEN_PAREN expression CLOSE_PAREN statement;
 
+jumpStatement
+    : GOTO NAME
+    | GOTO_B NAME
+    | GOTO_C NAME
+    | GOTO_F NAME
+    | GOTO_S NAME
+    | RETURN expression?;
 
+// expression
+primaryExpression
+    : NAME
+    | constant
+    | OPEN_PAREN expression CLOSE_PAREN;
+
+unaryExpression
+    : NOT primaryExpression
+    | NOT_B primaryExpression;
+
+multiplicativeExpression : unaryExpression ((MUL|DIV|MOD) unaryExpression)*;
+additiveExpression : multiplicativeExpression ((ADD|SUB) multiplicativeExpression)*;
+binaryAndExpression : additiveExpression (AND_B additiveExpression)*;
+binaryExclusiveOrExpression : binaryAndExpression (XOR_B binaryAndExpression)*;
+binaryInclusiveOrExpression : binaryExclusiveOrExpression (OR_B binaryExclusiveOrExpression)*;
+andExpression : binaryInclusiveOrExpression (AND binaryInclusiveOrExpression)*;
+exclusiveOrExpression : andExpression (XOR andExpression)*;
+inclusiveOrExpression : exclusiveOrExpression (OR exclusiveOrExpression)*;
+stringExpression : inclusiveOrExpression (CONCAT inclusiveOrExpression)*;
+relationalExpression : stringExpression ((EQUAL|NOT_EQUAL|LESS_EQUAL|GREATER_EQUAL|LESS|GREATER) stringExpression)*;
+
+expression
+    : relationalExpression;
+
+// basic
 type
     : BOOL_TYPE
     | CHAR_TYPE
@@ -290,6 +327,12 @@ type
     | STRING_TYPE
     | AXIS_TYPE
     | FRAME_TYPE;
+
+constant
+    : INT
+    | REAL
+    | HEX
+    | BIN;
 
 //// Functions
 // feedrate override
