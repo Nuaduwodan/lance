@@ -1,0 +1,40 @@
+{
+  "jsonrpc": "2.0",
+  "id": 0,
+  "result": {
+    "capabilities": {
+      "textDocumentSync": {
+        "openClose": true,
+        "change": 2,
+        "save": { "includeText": true }
+      },
+      "hoverProvider": false,
+      "definitionProvider": false,
+      "typeDefinitionProvider": false,
+      "implementationProvider": false,
+      "referencesProvider": false,
+      "documentHighlightProvider": false,
+      "documentSymbolProvider": false,
+      "documentFormattingProvider": false,
+      "documentRangeFormattingProvider": false,
+      "renameProvider": false,
+      "foldingRangeProvider": false,
+      "workspaceSymbolProvider": false,
+      "semanticTokensProvider": {
+        "Legend": {
+          "TokenTypes": [
+            "class",
+            "variable",
+            "enum",
+            "comment",
+            "string",
+            "keyword"
+          ],
+          "TokenModifiers": ["declaration", "documentation"]
+        },
+        "Range": false,
+        "Full": true
+      }
+    }
+  }
+}
