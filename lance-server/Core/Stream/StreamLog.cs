@@ -1,10 +1,8 @@
-﻿namespace LanceServer
-{
-    using System;
-    using System.IO;
-    using System.Text;
+﻿using System.Text;
 
-    class StreamLog : Stream
+namespace LanceServer.Core.Stream
+{
+    class StreamLog : System.IO.Stream
     {
         string _name;
 

@@ -2,10 +2,10 @@
 using StreamJsonRpc;
 using System.ComponentModel;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using LanceServer.DataModels;
-using LanceServer.Handlers;
-using Microsoft.VisualStudio.LanguageServer.Protocol;
+using LanceServer.Core.Stream;
+using LanceServer.Core.Workspace;
+using LanceServer.SemanticToken;
+using LspTypes;
 
 namespace LanceServer
 {
@@ -92,13 +92,13 @@ namespace LanceServer
                 }
 
                 var init_params = arg.ToObject<InitializeParams>();
-
+                
                 ServerCapabilities capabilities = new ServerCapabilities
                 {
                     TextDocumentSync = new TextDocumentSyncOptions
                     {
                         OpenClose = true,
-                        Change = TextDocumentSyncKind.Incremental,
+                        Change = TextDocumentSyncKind.Full,
                         Save = new SaveOptions
                         {
                             IncludeText = false
@@ -107,7 +107,7 @@ namespace LanceServer
 
                     CompletionProvider = null,
 
-                    HoverProvider = false,
+                    HoverProvider = true,
 
                     SignatureHelpProvider = null,
 
@@ -133,30 +133,20 @@ namespace LanceServer
 
                     RenameProvider = false,
 
-                    FoldingRangeProvider = new SumType<bool, FoldingRangeOptions>(false),
+                    FoldingRangeProvider = false,
 
                     ExecuteCommandProvider = null,
 
                     WorkspaceSymbolProvider = false,
                     
-                    SemanticTokensOptions = new SemanticTokensOptions()
+                    SemanticTokensProvider = new SemanticTokensOptions()
                     {
                         Full = true,
                         Range = false,
                         Legend = new SemanticTokensLegend()
                         {
-                            TokenTypes = new string[] {
-                                "class",
-                                "variable",
-                                "enum",
-                                "comment",
-                                "string",
-                                "keyword",
-                            },
-                            TokenModifiers = new string[] {
-                                "declaration",
-                                "documentation",
-                            }
+                            tokenTypes = SemanticTokenTypeHelper.GetTypes(),
+                            tokenModifiers = SemanticTokenModifierHelper.GetModifiers()
                         }
                     },
                 };
@@ -165,10 +155,9 @@ namespace LanceServer
                 {
                     Capabilities = capabilities
                 };
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject(result);
                 if (trace)
                 {
-                    System.Console.Error.WriteLine("--> " + json);
+                    System.Console.Error.WriteLine("--> " + Newtonsoft.Json.JsonConvert.SerializeObject(result));
                 }
                 return result;
             }
@@ -323,26 +312,9 @@ namespace LanceServer
             }
         }
         
-        public Document CheckDoc(Uri uri)
-        {
-            var fileName = uri.LocalPath;
-            Document document = new Document(fileName);
-            try
-            {
-                using (StreamReader sr = new StreamReader(fileName))
-                {
-                    string str = sr.ReadToEnd();
-                    document.Code = str;
-                }
-            }
-            catch (IOException exception)
-            {
-                System.Console.Error.WriteLine(exception.StackTrace);
-            }
-            return document;
-        }
-        
-        [JsonRpcMethod(Methods.TextDocumentSemanticTokensFullName)]
+        // Methods.TextDocumentSemanticTokensFullName is wrong according to the doc
+        // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#semanticTokensRegistrationOptions
+        [JsonRpcMethod(Methods.TextDocumentSemanticTokensFull)]
         public SemanticTokens SemanticTokens(JToken arg)
         {
             lock (_object)
@@ -356,7 +328,8 @@ namespace LanceServer
                         System.Console.Error.WriteLine(arg.ToString());
                     }
                     DocumentSymbolParams request = arg.ToObject<DocumentSymbolParams>();
-                    Document document = CheckDoc(request.TextDocument.Uri);
+                    
+                    Document document = Util.CheckDoc(new Uri(Uri.UnescapeDataString(request.TextDocument.Uri)));
                     
                     ICharStream stream = CharStreams.fromString(document.Code);
                     ITokenSource lexer = new SinumerikNCLexer(stream);
@@ -383,13 +356,48 @@ namespace LanceServer
                     
                     result = new SemanticTokens
                     {
-                        Data = tokenData.ToIntArray()
+                        Data = tokenData.ToDataFormat()
                     };
                     if (trace)
                     {
                         System.Console.Error.Write("returning semantictokens");
                         System.Console.Error.WriteLine(string.Join(" ", result.Data));
                     }
+                }
+                catch (Exception e)
+                {
+                    System.Console.Error.WriteLine(e.Message, MessageType.Info);
+                }
+                return result;
+            }
+        }
+
+        [JsonRpcMethod(Methods.TextDocumentHoverName)]
+        public LspTypes.Hover Hover(JToken arg)
+        {
+            lock (_object)
+            {
+                LspTypes.Hover result = null;
+                try
+                {
+                    if (trace)
+                    {
+                        System.Console.Error.WriteLine("<-- Hover");
+                        System.Console.Error.WriteLine(arg.ToString());
+                    }
+                    HoverParams request = arg.ToObject<HoverParams>();
+                    result = new LspTypes.Hover()
+                    {
+                        Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(new MarkupContent()
+                        {
+                            Kind = MarkupKind.PlainText, Value = "Test\n123"
+                        }),
+                        Range = new LspTypes.Range()
+                        {
+                            Start = new Position(0, 0),
+                            End = new Position(0, 10)
+                        }
+                    };
                 }
                 catch (Exception e)
                 {

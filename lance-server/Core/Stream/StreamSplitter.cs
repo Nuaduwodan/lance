@@ -1,10 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 
-namespace LanceServer
+namespace LanceServer.Core.Stream
 {
-    class StreamSplitter : Stream
+    class StreamSplitter : System.IO.Stream
     {
         [Flags]
         public enum StreamOwnership
@@ -16,7 +14,7 @@ namespace LanceServer
         }
         public enum SlaveFailAction
         {
-            Propogate,
+            Propagate,
             Ignore,
             Filter
         }
@@ -32,13 +30,13 @@ namespace LanceServer
             Seek
         }
 
-        private readonly Stream m_primaryStream;
-        private readonly Stream m_slaveStream;
+        private readonly System.IO.Stream m_primaryStream;
+        private readonly System.IO.Stream m_slaveStream;
         private StreamOwnership m_streamsOwned;
 
-        private SlaveFailAction m_readFailAction = SlaveFailAction.Propogate;
-        private SlaveFailAction m_writeFailAction = SlaveFailAction.Propogate;
-        private SlaveFailAction m_seekFailAction = SlaveFailAction.Propogate;
+        private SlaveFailAction m_readFailAction = SlaveFailAction.Propagate;
+        private SlaveFailAction m_writeFailAction = SlaveFailAction.Propagate;
+        private SlaveFailAction m_seekFailAction = SlaveFailAction.Propagate;
 
         private SlaveFailHandler m_slaveReadFailFilter;
         private SlaveFailHandler m_slaveWriteFailFilter;
@@ -46,7 +44,7 @@ namespace LanceServer
 
         private int m_lastReadResult;
         public StreamSplitter(
-            Stream primaryStream, Stream slaveStream,
+            System.IO.Stream primaryStream, System.IO.Stream slaveStream,
             StreamOwnership streamsOwned)
         {
             m_primaryStream = primaryStream;
@@ -73,8 +71,8 @@ namespace LanceServer
             set => m_streamsOwned = value;
         }
 
-        public Stream PrimaryStream => m_primaryStream;
-        public Stream SlaveStream => m_slaveStream;
+        public System.IO.Stream PrimaryStream => m_primaryStream;
+        public System.IO.Stream SlaveStream => m_slaveStream;
         public int LastReadResult => m_lastReadResult;
         public SlaveFailAction SlaveFailActions
         {
@@ -170,7 +168,7 @@ namespace LanceServer
             {
                 if (m_slaveWriteFailFilter != null)
                 {
-                    m_writeFailAction = SlaveFailAction.Propogate;
+                    m_writeFailAction = SlaveFailAction.Propagate;
                 }
 
                 m_slaveWriteFailFilter = value;
@@ -189,7 +187,7 @@ namespace LanceServer
             {
                 if (m_slaveReadFailFilter != null)
                 {
-                    m_readFailAction = SlaveFailAction.Propogate;
+                    m_readFailAction = SlaveFailAction.Propagate;
                 }
 
                 m_slaveReadFailFilter = value;
@@ -209,7 +207,7 @@ namespace LanceServer
             {
                 if (m_slaveSeekFailFilter != null)
                 {
-                    m_seekFailAction = SlaveFailAction.Propogate;
+                    m_seekFailAction = SlaveFailAction.Propagate;
                 }
 
                 m_slaveSeekFailFilter = value;
@@ -230,7 +228,7 @@ namespace LanceServer
         {
             m_primaryStream.Flush();
 
-            if (m_writeFailAction == SlaveFailAction.Propogate)
+            if (m_writeFailAction == SlaveFailAction.Propagate)
             {
                 m_slaveStream.Flush();
             }
@@ -258,7 +256,7 @@ namespace LanceServer
 
             m_primaryStream.SetLength(len);
 
-            if (m_seekFailAction == SlaveFailAction.Propogate)
+            if (m_seekFailAction == SlaveFailAction.Propagate)
             {
                 m_slaveStream.SetLength(m_slaveStream.Length + diff);
             }
@@ -282,7 +280,7 @@ namespace LanceServer
             m_lastReadResult = m_primaryStream.Read(buffer, offset, count);
             if (m_lastReadResult != 0)
             {
-                if (m_readFailAction == SlaveFailAction.Propogate)
+                if (m_readFailAction == SlaveFailAction.Propagate)
                 {
                     m_slaveStream.Write(buffer, offset, m_lastReadResult);
                 }
@@ -308,7 +306,7 @@ namespace LanceServer
         {
             m_primaryStream.Write(buffer, offset, count);
 
-            if (m_writeFailAction == SlaveFailAction.Propogate)
+            if (m_writeFailAction == SlaveFailAction.Propagate)
             {
                 m_slaveStream.Write(buffer, offset, count);
             }
@@ -338,7 +336,7 @@ namespace LanceServer
 
                 m_primaryStream.Position = value;
 
-                if (m_seekFailAction == SlaveFailAction.Propogate)
+                if (m_seekFailAction == SlaveFailAction.Propagate)
                 {
                     m_slaveStream.Position += diff;
                 }
@@ -411,7 +409,7 @@ namespace LanceServer
         private void HandleSlaveException(
             Exception exc, SlaveFailMethod method, SlaveFailAction action)
         {
-            if (action == SlaveFailAction.Propogate)
+            if (action == SlaveFailAction.Propagate)
             {
                 throw exc;
             }

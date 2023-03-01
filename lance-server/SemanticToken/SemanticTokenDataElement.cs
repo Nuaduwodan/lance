@@ -1,4 +1,4 @@
-﻿namespace LanceServer.DataModels
+﻿namespace LanceServer.SemanticToken
 {
     /// <summary>
     /// Represents a semantic token with the information necessary for the editor.

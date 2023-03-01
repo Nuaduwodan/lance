@@ -1,4 +1,4 @@
-﻿namespace LanceServer.DataModels
+﻿namespace LanceServer.Core.Workspace
 {
     /// <summary>
     /// Represents a single file and is used to cache data about it.

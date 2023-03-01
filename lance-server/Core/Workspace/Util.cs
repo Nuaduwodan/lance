@@ -1,4 +1,4 @@
-﻿namespace LanceServer
+﻿namespace LanceServer.Core.Workspace
 {
     /// <summary>
     /// Provides some helper functions
@@ -46,6 +46,25 @@
                 dirInfo.GetFiles(fileInfo.Name)[0].Name);
             _cache[filename] = result;
             return result;
+        }
+        
+        public static Document CheckDoc(Uri uri)
+        {
+            var filePath = uri.AbsolutePath;
+            Document document = new Document(filePath);
+            try
+            {
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    string str = sr.ReadToEnd();
+                    document.Code = str;
+                }
+            }
+            catch (IOException exception)
+            {
+                System.Console.Error.WriteLine(exception.StackTrace);
+            }
+            return document;
         }
     }
 }

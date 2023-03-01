@@ -1,7 +1,7 @@
-﻿namespace LanceServer.Handlers
+﻿using Microsoft.VisualStudio.LanguageServer.Protocol;
+
+namespace LanceServer.SemanticToken
 {
-    using LspTypes;
-    
     /// <summary>
     /// Class responsible for handling semantic token requests
     /// </summary>
@@ -18,12 +18,12 @@
             switch (tokenType)
             {
                 case SinumerikNCLexer.COMMENT:
-                    return (int) SemanticTokenTypes.Comment;
-                case SinumerikNCLexer.PROCEDURE:
+                    return (int) SemanticTokenTypeHelper.SemanticTokenType.Comment;
+                case SinumerikNCLexer.PROC:
                 case SinumerikNCLexer.AUXILIARY_FUNCTION:
                 case SinumerikNCLexer.ADDITIONAL_FUNCTION:
                 case SinumerikNCLexer.PREPARATORY_FUNCTION:
-                    return (int) SemanticTokenTypes.Keyword;
+                    return (int) SemanticTokenTypeHelper.SemanticTokenType.Keyword;
                 case SinumerikNCLexer.INT_TYPE:
                 case SinumerikNCLexer.AXIS_TYPE:
                 case SinumerikNCLexer.BOOL_TYPE:
@@ -31,23 +31,21 @@
                 case SinumerikNCLexer.REAL_TYPE:
                 case SinumerikNCLexer.FRAME_TYPE:
                 case SinumerikNCLexer.STRING_TYPE:
-                    return (int) SemanticTokenTypes.Type;
+                    return (int) SemanticTokenTypeHelper.SemanticTokenType.Type;
                 case SinumerikNCLexer.BLOCK_NUMBER:
-                    return (int) SemanticTokenTypes.Modifier;
+                    return (int) SemanticTokenTypeHelper.SemanticTokenType.Decorator;
                 case SinumerikNCLexer.REAL:
                 case SinumerikNCLexer.INT:
-                    return (int) SemanticTokenTypes.Number;
+                    return (int) SemanticTokenTypeHelper.SemanticTokenType.Number;
                 case SinumerikNCLexer.ADD:
-                case SinumerikNCLexer.INC:
                 case SinumerikNCLexer.SUB:
-                case SinumerikNCLexer.DEC:
-                    return (int) SemanticTokenTypes.Operator;
+                    return (int) SemanticTokenTypeHelper.SemanticTokenType.Operator;
                 // Names should be separated into their purposes
                 case SinumerikNCLexer.PROGRAM_NAME_SIMPLE:
                 case SinumerikNCLexer.PROGRAM_NAME_EXTENDED:
-                    return (int) SemanticTokenTypes.Variable;
+                    return (int) SemanticTokenTypeHelper.SemanticTokenType.Variable;
                 default:
-                    return (int) SemanticTokenTypes.Namespace;
+                    return (int) SemanticTokenTypeHelper.SemanticTokenType.Decorator;
             }
         }
     }
