@@ -1,10 +1,12 @@
 ﻿using Antlr4.Runtime;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LanceServerTest;
+namespace LanceServerTest.SemanticToken;
 
+[TestClass]
 public class SinumerikNCLexerTest
 {
-    [Fact]
+    [TestMethod]
     public void EmptyString()
     {
         // Arrange
@@ -23,11 +25,11 @@ public class SinumerikNCLexerTest
         var actualTokenList = tokens.GetTokens();
 
         // Assert
-        Assert.Equal(expectedTokenCount, actualTokenList.Count);
-        Assert.Equal(SinumerikNCLexer.Eof, actualTokenList[0].Type);
+        Assert.AreEqual(expectedTokenCount, actualTokenList.Count);
+        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[0].Type);
     }
     
-    [Fact]
+    [TestMethod]
     public void Whitespace()
     {
         // Arrange
@@ -46,17 +48,17 @@ public class SinumerikNCLexerTest
         var actualTokenList = tokens.GetTokens();
 
         // Assert
-        Assert.Equal(expectedTokenCount, actualTokenList.Count);
-        Assert.Equal(SinumerikNCLexer.Eof, actualTokenList[0].Type);
+        Assert.AreEqual(expectedTokenCount, actualTokenList.Count);
+        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[0].Type);
     }
     
-    [Fact]
+    [TestMethod]
     public void Procedure()
     {
         // Arrange
-        int expectedTokenCount = 4;
+        int expectedTokenCount = 6;
 
-        String code = "proc procedure\n\nendproc";
+        String code = "proc procedure()\n\nendproc";
         ICharStream stream = CharStreams.fromString(code);
         ITokenSource lexer = new SinumerikNCLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -69,10 +71,10 @@ public class SinumerikNCLexerTest
         var actualTokenList = tokens.GetTokens();
 
         // Assert
-        Assert.Equal(expectedTokenCount, actualTokenList.Count);
-        Assert.Equal(SinumerikNCLexer.PROCEDURE, actualTokenList[0].Type);
-        Assert.Equal(SinumerikNCLexer.PROGRAM_NAME_SIMPLE, actualTokenList[1].Type);
-        Assert.Equal(SinumerikNCLexer.PROCEDURE_END, actualTokenList[2].Type);
-        Assert.Equal(SinumerikNCLexer.Eof, actualTokenList[3].Type);
+        Assert.AreEqual(expectedTokenCount, actualTokenList.Count);
+        Assert.AreEqual(SinumerikNCLexer.PROC, actualTokenList[0].Type);
+        Assert.AreEqual(SinumerikNCLexer.PROGRAM_NAME_SIMPLE, actualTokenList[1].Type);
+        Assert.AreEqual(SinumerikNCLexer.PROC_END, actualTokenList[2].Type);
+        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[3].Type);
     }
 }

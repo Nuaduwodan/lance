@@ -1,45 +1,47 @@
-using LanceServer.DataModels;
+using LanceServer.SemanticToken;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LanceServerTest;
+namespace LanceServerTest.SemanticToken;
 
+[TestClass]
 public class SemanticTokenDataTest
 {
-    [Fact]
+    [TestMethod]
     public void EmptyData()
     {
         // Arrange
-        int[] expectedResult = Array.Empty<int>();
+        uint[] expectedResult = Array.Empty<uint>();
         
         var tokenData = new SemanticTokenData();
         
         // Act
-        var actualResult = tokenData.ToIntArray();
+        var actualResult = tokenData.ToDataFormat();
         
         // Assert
-        Assert.Equal(expectedResult, actualResult);
+        Assert.AreEqual(expectedResult, actualResult);
     }
     
-    [Fact]
+    [TestMethod]
     public void OneEntry()
     {
         // Arrange
-        int[] expectedResult = new[] { 1, 1, 1, 1, 0 };
+        uint[] expectedResult = new[] { 1u, 1u, 1u, 1u, 0u };
         
         var tokenData = new SemanticTokenData();
         tokenData.AddElement(new SemanticTokenDataElement(1, 1, 1, 1, 0));
         
         // Act
-        var actualResult = tokenData.ToIntArray();
+        var actualResult = tokenData.ToDataFormat();
         
         // Assert
-        Assert.Equal(expectedResult, actualResult);
+        Assert.AreEqual(expectedResult, actualResult);
     }
     
-    [Fact]
+    [TestMethod]
     public void MultipleEntry()
     {
         // Arrange
-        int[] expectedResult = new[] { 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0 };
+        uint[] expectedResult = new[] { 1u, 1u, 1u, 1u, 0u, 1u, 1u, 1u, 1u, 0u, 1u, 1u, 1u, 1u, 0u };
         
         var tokenData = new SemanticTokenData();
         tokenData.AddElement(new SemanticTokenDataElement(1, 1, 1, 1, 0));
@@ -47,9 +49,9 @@ public class SemanticTokenDataTest
         tokenData.AddElement(new SemanticTokenDataElement(1, 1, 1, 1, 0));
         
         // Act
-        var actualResult = tokenData.ToIntArray();
+        var actualResult = tokenData.ToDataFormat();
         
         // Assert
-        Assert.Equal(expectedResult, actualResult);
+        Assert.AreEqual(expectedResult, actualResult);
     }
 }
