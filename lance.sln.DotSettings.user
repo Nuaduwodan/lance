@@ -1,16 +1,14 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
+  &lt;Assembly Path="C:\Users\YBigler\.nuget\packages\microsoft.visualstudio.languageserver.protocol\17.2.8\lib\netstandard2.0\Microsoft.VisualStudio.LanguageServer.Protocol.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\YBigler\.nuget\packages\mstest.testframework\2.2.8\lib\netstandard1.0\Microsoft.VisualStudio.TestPlatform.TestFramework.dll" /&gt;&#xD;
+&lt;/AssemblyExplorer&gt;</s:String>
 	
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8bfb1b0e_002Dafdc_002D490a_002Dafc5_002D790fce28753c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="EmptyData" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8bfb1b0e_002Dafdc_002D490a_002Dafc5_002D790fce28753c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="EmptyData" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;MSTest::D2CADAF6-4434-49B5-AFFD-3802DBCA9E40::net6.0::LanceServerTest.UtilTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f5d6b17e_002Ddb78_002D4c66_002D9f88_002D3701b33bb1c5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SemanticTokenDataTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::D2CADAF6-4434-49B5-AFFD-3802DBCA9E40::net6.0::LanceServerTest.SemanticTokenDataTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::D2CADAF6-4434-49B5-AFFD-3802DBCA9E40::net6.0::LanceServerTest.SinumerikNCLexerTest.EmptyString&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::D2CADAF6-4434-49B5-AFFD-3802DBCA9E40::net6.0::LanceServerTest.SemanticTokenHandlerTest.TransformType&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::D2CADAF6-4434-49B5-AFFD-3802DBCA9E40::net6.0::LanceServerTest.SinumerikNCLexerTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::D2CADAF6-4434-49B5-AFFD-3802DBCA9E40::net6.0::LanceServerTest.SemanticTokenHandlerTest&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f5d6b17e_002Ddb78_002D4c66_002D9f88_002D3701b33bb1c5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SemanticTokenDataTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="C:\Users\YBigler\workspace\lance\LanceServerTest" Presentation="&amp;lt;LanceServerTest&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
