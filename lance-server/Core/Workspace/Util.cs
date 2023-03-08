@@ -47,17 +47,16 @@
             _cache[filename] = result;
             return result;
         }
-        
-        public static Document CheckDoc(Uri uri)
+
+        public static Document ReadDocument(Uri uri)
         {
-            var filePath = uri.AbsolutePath;
-            Document document = new Document(filePath);
+            Document document = new Document(uri);
             try
             {
-                using (StreamReader sr = new StreamReader(filePath))
+                using (StreamReader sr = new StreamReader(uri.AbsolutePath))
                 {
                     string str = sr.ReadToEnd();
-                    document.Code = str;
+                    document.Content = str;
                 }
             }
             catch (IOException exception)

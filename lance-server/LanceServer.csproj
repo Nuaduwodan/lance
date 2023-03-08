@@ -14,9 +14,5 @@
         <PackageReference Include="StreamJsonRpc" Version="2.6.121" />
         <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="17.2.8" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Core\Protocol" />
-    </ItemGroup>
     
 </Project>

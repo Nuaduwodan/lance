@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.LanguageServer.Protocol;
+﻿using Antlr4.Runtime;
+using LanceServer.Core.Workspace;
+using LspTypes;
 
 namespace LanceServer.SemanticToken
 {
@@ -7,6 +9,31 @@ namespace LanceServer.SemanticToken
     /// </summary>
     public class SemanticTokenHandler
     {
+
+        public SemanticTokens ProcessRequest(Document document, DocumentSymbolParams requestParams, CommonTokenStream tokens)
+        {
+            SemanticTokenData tokenData = new SemanticTokenData();
+            
+            int previousLine = 0;
+            int previousStartChar = 0;
+            while (tokens.LA(1) != IntStreamConstants.EOF)
+            {
+                tokens.Consume();
+                var token = tokens.LT(0);
+                int deltaLine = token.Line - previousLine;
+                int deltaChar = token.StartIndex - previousStartChar;
+                int length = token.StopIndex - token.StartIndex + 1;
+                int type = TransformType(token.Type);
+                tokenData.AddElement(new SemanticTokenDataElement(deltaLine, deltaChar, length, type, 0));
+                previousLine = token.Line;
+                previousStartChar = token.StartIndex;
+            }
+                    
+            return new SemanticTokens
+            {
+                Data = tokenData.ToDataFormat()
+            };
+        }
         
         /// <summary>
         /// Maps the token type as defined by the grammar to a type as defined by the LSP.

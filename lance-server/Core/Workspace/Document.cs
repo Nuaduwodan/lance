@@ -1,4 +1,7 @@
-﻿namespace LanceServer.Core.Workspace
+﻿using Antlr4.Runtime.Tree;
+using LanceServer.Core.SymbolTable;
+
+namespace LanceServer.Core.Workspace
 {
     /// <summary>
     /// Represents a single file and is used to cache data about it.
@@ -12,7 +15,7 @@
             get;
             set;
         }
-        public string Code
+        public string Content
         {
             get
             {
@@ -28,26 +31,45 @@
                 _content = value;
             }
         }
-        public string Encoding { get; set; }
-        public string FullPath { get; private set; }
 
-        public Document(string path, string encoding = "utf8")
+        private IParseTree _tree;
+
+        public IParseTree Tree
         {
-            FullPath = Util.GetProperFilePathCapitalization(path);
+            get
+            {
+                return _tree;
+            }
+            set
+            {
+                if (_tree != value)
+                {
+                    _tree = value;
+                }
+                Changed = false;
+            }
+        }
+        
+        public string Encoding { get; set; }
+        public Uri Uri { get; private set; }
+        
+        private Dictionary<string, Symbol> _symbols = new();
+
+        public Symbol GetSymbol(string symbolName)
+        {
+            return _symbols[symbolName];
+        }
+
+        public Document(Uri uri, string encoding = "utf8")
+        {
+            Uri = uri;
             Encoding = encoding;
             Changed = false;
         }
 
-        public Document FindDocument(string path)
+        public void AddSymbol(Symbol symbol)
         {
-            var normalized_path = Util.GetProperFilePathCapitalization(path);
-
-            if (normalized_path == this.FullPath)
-            {
-                return this;
-            }
-
-            return null;
+            _symbols.Add(symbol.Identifier, symbol);
         }
     }
 }

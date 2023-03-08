@@ -219,6 +219,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitFile(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFile(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -301,6 +307,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitBlock(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBlock(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -354,6 +366,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitProcedure(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitProcedure(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -438,6 +456,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitParams(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParams(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -517,6 +541,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitParamOut(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParamOut(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -562,6 +592,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitParam(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParam(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -613,6 +649,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitStatement(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -694,6 +736,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitIfStatement(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIfStatement(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -763,6 +811,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitIterativeStatement(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIterativeStatement(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -820,6 +874,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitJumpStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitJumpStatement(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -934,6 +994,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitPrimaryExpression(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitPrimaryExpression(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -1007,6 +1073,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitUnaryExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitUnaryExpression(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1084,6 +1156,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitMultiplicativeExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitMultiplicativeExpression(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1163,6 +1241,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitAdditiveExpression(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAdditiveExpression(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -1237,6 +1321,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitBinaryAndExpression(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBinaryAndExpression(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -1303,6 +1393,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitBinaryExclusiveOrExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBinaryExclusiveOrExpression(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1371,6 +1467,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitBinaryInclusiveOrExpression(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBinaryInclusiveOrExpression(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -1437,6 +1539,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitAndExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAndExpression(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1505,6 +1613,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitExclusiveOrExpression(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExclusiveOrExpression(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -1572,6 +1686,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitInclusiveOrExpression(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitInclusiveOrExpression(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -1638,6 +1758,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitStringExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitStringExpression(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1726,6 +1852,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitRelationalExpression(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitRelationalExpression(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -1793,6 +1925,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitExpression(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExpression(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -1839,6 +1977,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitType(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitType(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1892,6 +2036,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitConstant(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitConstant(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -1942,6 +2092,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitFeedrate_override_path(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_path(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -1987,6 +2143,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitFeedrate_override_rapid_traverse_velocity(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_rapid_traverse_velocity(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2038,6 +2200,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitFeedrate_override_position_or_spindle(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_position_or_spindle(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2096,6 +2264,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitAcceleration_compensation(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAcceleration_compensation(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -2148,6 +2322,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitFeedrate_override_path_handwheel(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_path_handwheel(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -2198,6 +2378,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitFeedrate_override_axial_handwheel(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_axial_handwheel(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2254,6 +2440,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitAxis_spindle_identifier(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAxis_spindle_identifier(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2320,6 +2512,12 @@ public partial class SinumerikNCParser : Parser {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitAxis_identifier(this);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAxis_identifier(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -2366,6 +2564,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitSpindle_identifier(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSpindle_identifier(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2435,6 +2639,12 @@ public partial class SinumerikNCParser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
 			if (typedListener != null) typedListener.ExitAxis(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAxis(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
