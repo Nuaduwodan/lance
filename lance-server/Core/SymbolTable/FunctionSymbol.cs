@@ -7,12 +7,13 @@ namespace LanceServer.Core.SymbolTable
     /// </summary>
     public class FunctionSymbol : Symbol
     {
-        private ParameterSymbol[] _parameters;
+        private readonly ParameterSymbol[] _parameters;
         private const string ParameterDelimiter = ", ";
 
         public FunctionSymbol(string identifier, SymbolType symbolType, Uri sourceDocument, Position position, ParameterSymbol[] parameters, string description = "") 
             : base(identifier, symbolType, sourceDocument, position, description)
         {
+            _parameters = parameters;
         }
 
         public override string GetCode()

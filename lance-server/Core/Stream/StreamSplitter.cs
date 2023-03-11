@@ -30,50 +30,50 @@ namespace LanceServer.Core.Stream
             Seek
         }
 
-        private readonly System.IO.Stream m_primaryStream;
-        private readonly System.IO.Stream m_slaveStream;
-        private StreamOwnership m_streamsOwned;
+        private readonly System.IO.Stream _primaryStream;
+        private readonly System.IO.Stream _slaveStream;
+        private StreamOwnership _streamsOwned;
 
-        private SlaveFailAction m_readFailAction = SlaveFailAction.Propagate;
-        private SlaveFailAction m_writeFailAction = SlaveFailAction.Propagate;
-        private SlaveFailAction m_seekFailAction = SlaveFailAction.Propagate;
+        private SlaveFailAction _readFailAction = SlaveFailAction.Propagate;
+        private SlaveFailAction _writeFailAction = SlaveFailAction.Propagate;
+        private SlaveFailAction _seekFailAction = SlaveFailAction.Propagate;
 
-        private SlaveFailHandler m_slaveReadFailFilter;
-        private SlaveFailHandler m_slaveWriteFailFilter;
-        private SlaveFailHandler m_slaveSeekFailFilter;
+        private SlaveFailHandler? _slaveReadFailFilter;
+        private SlaveFailHandler? _slaveWriteFailFilter;
+        private SlaveFailHandler? _slaveSeekFailFilter;
 
-        private int m_lastReadResult;
+        private int _lastReadResult;
         public StreamSplitter(
             System.IO.Stream primaryStream, System.IO.Stream slaveStream,
             StreamOwnership streamsOwned)
         {
-            m_primaryStream = primaryStream;
-            m_slaveStream = slaveStream;
-            m_streamsOwned = streamsOwned;
+            _primaryStream = primaryStream;
+            _slaveStream = slaveStream;
+            _streamsOwned = streamsOwned;
         }
         public override void Close()
         {
             Flush();
-            if ((m_streamsOwned & StreamOwnership.OwnPrimaryStream) > 0)
+            if ((_streamsOwned & StreamOwnership.OwnPrimaryStream) > 0)
             {
-                m_primaryStream.Close();
+                _primaryStream.Close();
             }
 
-            if ((m_streamsOwned & StreamOwnership.OwnSlaveStream) > 0)
+            if ((_streamsOwned & StreamOwnership.OwnSlaveStream) > 0)
             {
-                m_slaveStream.Close();
+                _slaveStream.Close();
             }
             base.Close();
         }
         public StreamOwnership StreamsOwned
         {
-            get => m_streamsOwned;
-            set => m_streamsOwned = value;
+            get => _streamsOwned;
+            set => _streamsOwned = value;
         }
 
-        public System.IO.Stream PrimaryStream => m_primaryStream;
-        public System.IO.Stream SlaveStream => m_slaveStream;
-        public int LastReadResult => m_lastReadResult;
+        public System.IO.Stream PrimaryStream => _primaryStream;
+        public System.IO.Stream SlaveStream => _slaveStream;
+        public int LastReadResult => _lastReadResult;
         public SlaveFailAction SlaveFailActions
         {
             set
@@ -84,7 +84,7 @@ namespace LanceServer.Core.Stream
             }
         }
 
-        public SlaveFailHandler SlaveFailFilters
+        public SlaveFailHandler? SlaveFailFilters
         {
             set
             {
@@ -96,7 +96,7 @@ namespace LanceServer.Core.Stream
 
         public SlaveFailAction SlaveReadFailAction
         {
-            get => m_readFailAction;
+            get => _readFailAction;
 
             set
             {
@@ -110,15 +110,15 @@ namespace LanceServer.Core.Stream
                 }
                 else
                 {
-                    m_slaveReadFailFilter = null;
-                    m_readFailAction = value;
+                    _slaveReadFailFilter = null;
+                    _readFailAction = value;
                 }
             }
         }
 
         public SlaveFailAction SlaveWriteFailAction
         {
-            get => m_writeFailAction;
+            get => _writeFailAction;
 
             set
             {
@@ -132,15 +132,15 @@ namespace LanceServer.Core.Stream
                 }
                 else
                 {
-                    m_slaveWriteFailFilter = null;
-                    m_writeFailAction = value;
+                    _slaveWriteFailFilter = null;
+                    _writeFailAction = value;
                 }
             }
         }
 
         public SlaveFailAction SlaveSeekFailAction
         {
-            get => m_seekFailAction;
+            get => _seekFailAction;
 
             set
             {
@@ -154,122 +154,122 @@ namespace LanceServer.Core.Stream
                 }
                 else
                 {
-                    m_slaveSeekFailFilter = null;
-                    m_seekFailAction = value;
+                    _slaveSeekFailFilter = null;
+                    _seekFailAction = value;
                 }
             }
         }
 
-        public SlaveFailHandler SlaveWriteFailFilter
+        public SlaveFailHandler? SlaveWriteFailFilter
         {
-            get => m_slaveWriteFailFilter;
+            get => _slaveWriteFailFilter;
 
             set
             {
-                if (m_slaveWriteFailFilter != null)
+                if (_slaveWriteFailFilter != null)
                 {
-                    m_writeFailAction = SlaveFailAction.Propagate;
+                    _writeFailAction = SlaveFailAction.Propagate;
                 }
 
-                m_slaveWriteFailFilter = value;
+                _slaveWriteFailFilter = value;
                 if (value != null)
                 {
-                    m_writeFailAction = SlaveFailAction.Filter;
+                    _writeFailAction = SlaveFailAction.Filter;
                 }
             }
         }
 
-        public SlaveFailHandler SlaveReadFailFilter
+        public SlaveFailHandler? SlaveReadFailFilter
         {
-            get => m_slaveReadFailFilter;
+            get => _slaveReadFailFilter;
 
             set
             {
-                if (m_slaveReadFailFilter != null)
+                if (_slaveReadFailFilter != null)
                 {
-                    m_readFailAction = SlaveFailAction.Propagate;
+                    _readFailAction = SlaveFailAction.Propagate;
                 }
 
-                m_slaveReadFailFilter = value;
+                _slaveReadFailFilter = value;
 
                 if (value != null)
                 {
-                    m_readFailAction = SlaveFailAction.Filter;
+                    _readFailAction = SlaveFailAction.Filter;
                 }
             }
         }
 
-        public SlaveFailHandler SlaveSeekFailFilter
+        public SlaveFailHandler? SlaveSeekFailFilter
         {
-            get => m_slaveSeekFailFilter;
+            get => _slaveSeekFailFilter;
 
             set
             {
-                if (m_slaveSeekFailFilter != null)
+                if (_slaveSeekFailFilter != null)
                 {
-                    m_seekFailAction = SlaveFailAction.Propagate;
+                    _seekFailAction = SlaveFailAction.Propagate;
                 }
 
-                m_slaveSeekFailFilter = value;
+                _slaveSeekFailFilter = value;
                 if (value != null)
                 {
-                    m_seekFailAction = SlaveFailAction.Filter;
+                    _seekFailAction = SlaveFailAction.Filter;
                 }
             }
         }
 
-        public override bool CanRead => m_primaryStream.CanRead;
+        public override bool CanRead => _primaryStream.CanRead;
 
-        public override bool CanSeek => m_primaryStream.CanSeek && m_slaveStream.CanSeek;
+        public override bool CanSeek => _primaryStream.CanSeek && _slaveStream.CanSeek;
 
-        public override bool CanWrite => m_primaryStream.CanWrite && m_slaveStream.CanWrite;
+        public override bool CanWrite => _primaryStream.CanWrite && _slaveStream.CanWrite;
 
         public override void Flush()
         {
-            m_primaryStream.Flush();
+            _primaryStream.Flush();
 
-            if (m_writeFailAction == SlaveFailAction.Propagate)
+            if (_writeFailAction == SlaveFailAction.Propagate)
             {
-                m_slaveStream.Flush();
+                _slaveStream.Flush();
             }
             else
             {
                 try
                 {
-                    m_slaveStream.Flush();
+                    _slaveStream.Flush();
                 }
                 catch (Exception exc)
                 {
                     HandleSlaveException(
                         exc, SlaveFailMethod.Write,
-                        m_writeFailAction
+                        _writeFailAction
                     );
                 }
             }
         }
 
-        public override long Length => m_primaryStream.Length;
+        public override long Length => _primaryStream.Length;
 
         public override void SetLength(long len)
         {
-            long diff = len - m_primaryStream.Length;
+            long diff = len - _primaryStream.Length;
 
-            m_primaryStream.SetLength(len);
+            _primaryStream.SetLength(len);
 
-            if (m_seekFailAction == SlaveFailAction.Propagate)
+            if (_seekFailAction == SlaveFailAction.Propagate)
             {
-                m_slaveStream.SetLength(m_slaveStream.Length + diff);
+                _slaveStream.SetLength(_slaveStream.Length + diff);
             }
             else
             {
                 try
                 {
-                    m_slaveStream.SetLength(m_slaveStream.Length + diff);
+                    _slaveStream.SetLength(_slaveStream.Length + diff);
                 }
                 catch (Exception exc)
                 {
                     HandleSlaveException(
-                        exc, SlaveFailMethod.Seek, m_seekFailAction
+                        exc, SlaveFailMethod.Seek, _seekFailAction
                     );
                 }
             }
@@ -277,50 +277,50 @@ namespace LanceServer.Core.Stream
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            m_lastReadResult = m_primaryStream.Read(buffer, offset, count);
-            if (m_lastReadResult != 0)
+            _lastReadResult = _primaryStream.Read(buffer, offset, count);
+            if (_lastReadResult != 0)
             {
-                if (m_readFailAction == SlaveFailAction.Propagate)
+                if (_readFailAction == SlaveFailAction.Propagate)
                 {
-                    m_slaveStream.Write(buffer, offset, m_lastReadResult);
+                    _slaveStream.Write(buffer, offset, _lastReadResult);
                 }
                 else
                 {
                     try
                     {
-                        m_slaveStream.Write(buffer, offset, m_lastReadResult);
+                        _slaveStream.Write(buffer, offset, _lastReadResult);
                     }
                     catch (Exception exc)
                     {
                         HandleSlaveException(
-                            exc, SlaveFailMethod.Read, m_readFailAction
+                            exc, SlaveFailMethod.Read, _readFailAction
                         );
                     }
                 }
             }
 
-            return m_lastReadResult;
+            return _lastReadResult;
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            m_primaryStream.Write(buffer, offset, count);
+            _primaryStream.Write(buffer, offset, count);
 
-            if (m_writeFailAction == SlaveFailAction.Propagate)
+            if (_writeFailAction == SlaveFailAction.Propagate)
             {
-                m_slaveStream.Write(buffer, offset, count);
+                _slaveStream.Write(buffer, offset, count);
             }
             else
             {
                 try
                 {
-                    m_slaveStream.Write(buffer, offset, count);
+                    _slaveStream.Write(buffer, offset, count);
                 }
                 catch (Exception exc)
                 {
                     HandleSlaveException(
                         exc, SlaveFailMethod.Write,
-                        m_writeFailAction
+                        _writeFailAction
                     );
                 }
             }
@@ -328,28 +328,28 @@ namespace LanceServer.Core.Stream
 
         public override long Position
         {
-            get => m_primaryStream.Position;
+            get => _primaryStream.Position;
 
             set
             {
-                long diff = value - m_primaryStream.Position;
+                long diff = value - _primaryStream.Position;
 
-                m_primaryStream.Position = value;
+                _primaryStream.Position = value;
 
-                if (m_seekFailAction == SlaveFailAction.Propagate)
+                if (_seekFailAction == SlaveFailAction.Propagate)
                 {
-                    m_slaveStream.Position += diff;
+                    _slaveStream.Position += diff;
                 }
                 else
                 {
                     try
                     {
-                        m_slaveStream.Position += diff;
+                        _slaveStream.Position += diff;
                     }
                     catch (Exception exc)
                     {
                         HandleSlaveException(
-                            exc, SlaveFailMethod.Seek, m_seekFailAction
+                            exc, SlaveFailMethod.Seek, _seekFailAction
                         );
                     }
                 }
@@ -380,15 +380,15 @@ namespace LanceServer.Core.Stream
 
             if (method == SlaveFailMethod.Read)
             {
-                action = m_slaveReadFailFilter(this, method, exc);
+                action = _slaveReadFailFilter(this, method, exc);
             }
             else if (method == SlaveFailMethod.Write)
             {
-                action = m_slaveWriteFailFilter(this, method, exc);
+                action = _slaveWriteFailFilter(this, method, exc);
             }
             else if (method == SlaveFailMethod.Seek)
             {
-                action = m_slaveSeekFailFilter(this, method, exc);
+                action = _slaveSeekFailFilter(this, method, exc);
             }
             else
             {

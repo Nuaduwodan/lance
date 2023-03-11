@@ -6,8 +6,6 @@ namespace LanceServer.Core.Stream
     {
         string _name;
 
-        private StreamLog() { }
-
         public StreamLog(string name) { _name = name; }
 
         public override bool CanRead { get { return false; } }
@@ -44,10 +42,10 @@ namespace LanceServer.Core.Stream
             DateTime now = DateTime.Now;
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Raw message from " + _name + " " + now.ToString("MM/dd/yyyy hh:mm:ss.fff tt"));
-            var truncated_array = new byte[count];
+            var truncatedArray = new byte[count];
             for (int i = offset; i < offset + count; ++i)
-                truncated_array[i - offset] = buffer[i];
-            string str = System.Text.Encoding.Default.GetString(truncated_array);
+                truncatedArray[i - offset] = buffer[i];
+            string str = System.Text.Encoding.Default.GetString(truncatedArray);
             sb.AppendLine("data (length " + str.Length + ")= '" + str + "'");
             System.Console.Error.WriteLine(sb.ToString());
         }
