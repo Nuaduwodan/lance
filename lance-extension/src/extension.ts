@@ -52,18 +52,6 @@ export function activate(context: vscode.ExtensionContext) {
         },
     };
 
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('lance.helloWorld', () => {
-        // The code you place here will be executed every time your command is executed
-        // Display a message box to the user
-        var message = vscode.workspace.getConfiguration('lance').get<string>('messageText') ?? "";
-        vscode.window.showInformationMessage(message);
-    });
-
-    context.subscriptions.push(disposable);
-
     // Create the language client and start the client.
     client = new LanguageClient("lance", "lance", serverOptions, clientOptions);
     client.registerProposedFeatures();

@@ -37,21 +37,36 @@
         {
             "title": "lance",
             "properties": {
-                "lanceServer.maxNumberOfProblems": {
-                    "type": "number",
-                    "default": 100,
-                    "description": "Controls the maximum number of problems produced by the server."
-                },
-                "lanceServer.trace.server": {
-                    "type": "string",
-                    "enum": [
-                        "off",
-                        "messages",
-                        "verbose"
-                    ],
-                    "default": "verbose",
-                    "description": "Traces the communication between VSCode and the lanceServer service."
-                }
+              "lanceServer.maxNumberOfProblems": {
+                "type": "number",
+                "default": 100,
+                "description": "Controls the maximum number of problems produced by the server."
+              },
+              "lanceServer.trace.server": {
+                "type": "string",
+                "enum": [
+                  "off",
+                  "messages",
+                  "verbose"
+                ],
+                "default": "verbose",
+                "description": "Traces the communication between VSCode and the lanceServer service."
+              },
+              "lanceServer.customizing.preprocessing":{
+                "type": "string",
+                "default": "../../preprocessing.json",
+                "description": "Specifies the path to the configuration to be used to pre process the code."
+              },
+              "lanceServer.customizing.globalSymbol.fileEndings":{
+                "type": "array",
+                "default": ["def"],
+                "description": "Specifies the file endings of files, which containing symbols should be interpreted as global symbols."
+              },
+              "lanceServer.customizing.globalSymbol.folderNames":{
+                "type": "array",
+                "default": ["cma.dir"],
+                "description": "Specifies the folder names, which containing files should be interpreted as global procedures."
+              }
             }
         }
     ]
