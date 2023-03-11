@@ -1,13 +1,23 @@
 ﻿using System.Text;
+using LanceServer.Core.Configuration;
 using LanceServer.Core.Workspace;
 using LspTypes;
 using Range = LspTypes.Range;
 
 namespace LanceServer.Hover
 {
+    /// <summary>
+    /// Handles hover requests and returns the respective data to be displayed
+    /// </summary>
     public class HoverHandler
     {
         private HoverVisitor visitor = new HoverVisitor();
+        private DocumentationConfiguration _documentation;
+
+        public HoverHandler(DocumentationConfiguration documentation)
+        {
+            _documentation = documentation;
+        }
 
         public LspTypes.Hover ProcessRequest(Document document, HoverParams requestParams, Workspace workspace)
         {

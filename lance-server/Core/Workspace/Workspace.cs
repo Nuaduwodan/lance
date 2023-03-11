@@ -1,4 +1,5 @@
-﻿using LanceServer.Core.SymbolTable;
+﻿using LanceServer.Core.Configuration;
+using LanceServer.Core.SymbolTable;
 
 namespace LanceServer.Core.Workspace
 {
@@ -7,13 +8,11 @@ namespace LanceServer.Core.Workspace
         private Dictionary<Uri, Document> _documents = new();
         private Dictionary<string, Symbol> _globalSymbols = new();
 
-        private readonly string[] _globalFileEndings;
-        private readonly string[] _globalDirectories;
+        private readonly SymbolTableConfiguration _config;
 
-        public Workspace(string[] globalFileEndings, string[] globalDirectories)
+        public Workspace(SymbolTableConfiguration config)
         {
-            _globalFileEndings = globalFileEndings;
-            _globalDirectories = globalDirectories;
+            _config = config;
         }
 
         public Document GetDocument(Uri uri)
@@ -79,14 +78,14 @@ namespace LanceServer.Core.Workspace
         {
             var fileEnding = Path.GetExtension(sourceDocument.AbsolutePath);
 
-            if (_globalFileEndings.Contains(fileEnding))
+            if (_config.GlobalFileEndings.Contains(fileEnding))
             {
                 return true;
             }
 
-            var directories = Path.GetDirectoryName(sourceDocument.AbsolutePath).Split(Path.DirectorySeparatorChar);
+            var directories = Path.GetDirectoryName(sourceDocument.AbsolutePath)!.Split(Path.DirectorySeparatorChar);
 
-            if (_globalDirectories.Intersect(directories).Any())
+            if (_config.GlobalDirectories.Intersect(directories).Any())
             {
                 return true;
             }

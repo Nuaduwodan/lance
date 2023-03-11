@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using LanceServer.Core.Configuration;
+using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
 using LanceServer.Hover;
 using LanceServer.Parser;
@@ -96,13 +97,15 @@ namespace LanceServer
                 var init_params = arg.ToObject<InitializeParams>();
                 
                 // Configuration
+                var _configurationManager = new ConfigurationManager(init_params.InitializationOptions);
+                
                 var globalFileEndings = new[] {"def"};
                 var globalDirectories = new[] {"CMA.DIR"};
 
                 _parserManager = new ParserManager();
-                _workspace = new Workspace(globalFileEndings, globalDirectories);
+                _workspace = new Workspace(_configurationManager.GetSymbolTableConfiguration());
                 _semanticTokenHandler = new SemanticTokenHandler();
-                _hoverHandler = new HoverHandler();
+                _hoverHandler = new HoverHandler(_configurationManager.GetDocumentationConfiguration());
 
                 ServerCapabilities capabilities = new ServerCapabilities
                 {
