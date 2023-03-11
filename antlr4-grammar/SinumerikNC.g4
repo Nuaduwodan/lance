@@ -107,15 +107,6 @@ STRING_TYPE: 'string';
 AXIS_TYPE: 'axis';
 FRAME_TYPE: 'frame';
 
-// system variables
-SYS_VAR: '$'[$acmnopstv]*[a-z_]*; // could be improved
-
-// axis variables
-AXIS: [abcxyz][0-9]*;
-
-// user variables
-R_PARAM: '$'?'r'[0-9]+;
-
 
 ////
 //// functions
@@ -191,9 +182,9 @@ ABSOLUTE_COORDINATE: 'ac';
 INCREMENTAL_COORDINATE: 'ic';
 DIRECT_APPROACH_COORDINATE: 'dc';
 FEEDRATE_OVERRIDE_PATH_HANDWHEEL: 'fd';
-ADDITIONAL_FUNCTION: 'm'ID;
-AUXILIARY_FUNCTION: 'h'ID;
-PREPARATORY_FUNCTION: 'g'ID;
+ADDITIONAL_FUNCTION: 'm';
+AUXILIARY_FUNCTION: 'h';
+PREPARATORY_FUNCTION: 'g';
 
 // single character
 X_AXIS: 'x';
@@ -221,17 +212,22 @@ COMMA: ',';
 // reserved words
 RESERVED: 'con' | 'prn' | 'aux' | 'nul' | 'com'[1-9] | 'lpt'[1-9];
 
+// system variables
+SYS_VAR: '$'[$acmnopstv]*[a-z_]*; // could be improved
 
+// axis variables
+AXIS: [abcxyz][0-9]*;
+
+// user variables
+R_PARAM: '$'?'r'[0-9]+;
 
 // general
-ID: [0]* INT_POSITIVE;
 WHITESPACE: [ \t]+ -> skip;
 NAME: [a-z0-9_]+;
 NEWLINE: ('\r' '\n'? | '\n') -> skip;
 COMMENT: ';' ~[\r\n]* -> skip;
 HIDE: [ \t]*'/'[0-7]?;
-BLOCK_NUMBER: 'n'ID;
-
+BLOCK_NUMBER: 'n';
 
 ////
 //// constant
@@ -241,16 +237,16 @@ INT_POSITIVE: [0-9]+;
 INT: SUB? INT_POSITIVE;
 REAL_POSITIVE: [0-9]* POINT [0-9]+;
 REAL: SUB? REAL_POSITIVE;
-BIN: 'B'[01]+;
-HEX: 'H'([0-9A-F][0-9A-F])+;
+BIN: '\'B'[01]+'\'';
+HEX: '\'H'[0-9A-F]+'\'';
 
 // language
 BOOL: 'true'|'false';
-PI options { caseInsensitive=false; }: '$PI';
+PI: '$PI';
 STRING: '"'~[\r\n]*'"';
 
 // names
-PROGRAM_NAME_SIMPLE: [_a-z][a-z]NAME;
+PROGRAM_NAME_SIMPLE: [_a-z][a-z]NAME; // program name as defined
 PROGRAM_NAME_EXTENDED: NAME;
 LABEL_NAME: [a-z_][a-z_][a-z0-9_]*;
 LABEL: LABEL_NAME':';
@@ -260,43 +256,69 @@ LABEL: LABEL_NAME':';
  * Parser Rules
  */
 
-file: (block* | procedure) EOF;
+file: (declarationBlock* block* | procedureDefinition) EOF;
 
-block
-    : statement;
+declarationBlock: blocknumber? declaration NEWLINE;
+block: blocknumber? (statement | command*) NEWLINE;
 
-// procedure
-procedure: PROC PROGRAM_NAME_SIMPLE OPEN_PAREN params? CLOSE_PAREN statement* PROC_END;
+blocknumber: BLOCK_NUMBER INT_POSITIVE;
 
-params: param | paramOut | param COMMA params | paramOut COMMA params;
+// command
+command
+    : preparatoryFunction 
+    | additionalFunction 
+    | auxiliaryFunction 
+    | codeWord;
 
-paramOut: VAR param;
+additionalFunction: ADDITIONAL_FUNCTION INT_POSITIVE;
+auxiliaryFunction: AUXILIARY_FUNCTION INT_POSITIVE;
+preparatoryFunction: PREPARATORY_FUNCTION INT_POSITIVE;
 
-param: type NAME;
+codeWord: axis constant | axis_identifier ASSIGNMENT expression;
 
 // declaration
+declaration: macroDeclaration | variableDeclaration | procedureDeclaration;
+
+macroDeclaration: MACRO_DEFINE NAME MACRO_AS statement*;
+variableDeclaration: DEFINE type variableDefinition (COMMA variableDefinition)*;
+procedureDeclaration: EXTERN PROGRAM_NAME_SIMPLE parameterDeclarations?;
+parameterDeclarations: OPEN_PAREN parameterDeclaration (COMMA parameterDeclaration)* CLOSE_PAREN;
+parameterDeclaration: VAR? type arrayDefinition?;
+arrayDeclaration: OPEN_BRACKET expression? (COMMA expression?)? (COMMA expression?)? CLOSE_BRACKET;
+
+// definition
+variableDefinition: NAME arrayDefinition? (ASSIGNMENT expression)?;
+arrayDefinition: OPEN_BRACKET expression (COMMA expression)? (COMMA expression)? CLOSE_BRACKET;
+
+procedureDefinition: PROC PROGRAM_NAME_SIMPLE parameterDefinitions? declarationBlock* block* PROC_END;
+parameterDefinitions: OPEN_PAREN parameterDefinition (COMMA parameterDefinition)* CLOSE_PAREN;
+parameterDefinition: VAR? type variableDefinition;
 
 // statement
 statement
     : ifStatement
     | iterativeStatement
-    | jumpStatement;
+    | jumpStatement
+    | declaration
+    | procedureDefinition
+    | expression;
 
-ifStatement: IF OPEN_PAREN expression CLOSE_PAREN statement (ELSE statement)?;
+ifStatement: IF OPEN_PAREN expression CLOSE_PAREN block* (ELSE block*)? IF_END;
 
-iterativeStatement: WHILE OPEN_PAREN expression CLOSE_PAREN statement;
+iterativeStatement: WHILE OPEN_PAREN expression CLOSE_PAREN block* WHILE_END;
 
 jumpStatement
-    : GOTO NAME
-    | GOTO_B NAME
-    | GOTO_C NAME
-    | GOTO_F NAME
-    | GOTO_S NAME
+    : GOTO LABEL_NAME
+    | GOTO_B LABEL_NAME
+    | GOTO_C LABEL_NAME
+    | GOTO_F LABEL_NAME
+    | GOTO_S LABEL_NAME
     | RETURN expression?;
 
 // expression
 primaryExpression
     : NAME
+    | function
     | constant
     | OPEN_PAREN expression CLOSE_PAREN;
 
@@ -324,7 +346,7 @@ type
     | CHAR_TYPE
     | INT_TYPE
     | REAL_TYPE
-    | STRING_TYPE
+    | STRING_TYPE OPEN_BRACKET expression CLOSE_BRACKET
     | AXIS_TYPE
     | FRAME_TYPE;
 
@@ -332,9 +354,10 @@ constant
     : INT
     | REAL
     | HEX
-    | BIN;
+    | BIN
+    | STRING;
 
-//// Functions
+//// predefined procedure
 // feedrate override
 feedrate_override_path: FEEDRATE_OVERRIDE_PATH '= 'INT;
 feedrate_override_rapid_traverse_velocity: FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY '= 'INT;
@@ -350,7 +373,7 @@ feedrate_override_axial_handwheel: FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL OPEN_BRACKE
 //// Types
 // axis identifier
 axis_spindle_identifier: axis_identifier | spindle_identifier;
-axis_identifier: axis INT_POSITIVE;
+axis_identifier: axis INT_POSITIVE | NAME;
 spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT_POSITIVE CLOSE_PAREN | SPINDLE INT_POSITIVE;
 axis: A_AXIS | B_AXIS | C_AXIS | X_AXIS | Y_AXIS | Z_AXIS;
 
