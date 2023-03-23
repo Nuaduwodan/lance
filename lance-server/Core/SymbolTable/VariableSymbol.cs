@@ -2,28 +2,38 @@
 
 namespace LanceServer.Core.SymbolTable
 {
-    public class VariableSymbol : Symbol
+    public class VariableSymbol : ISymbol
     {
-        protected readonly CompositeDataType CompositeDataType;
-        protected readonly int[] ArraySize;
+        public string Identifier { get; }
+        public Uri SourceDocument { get; }
+        public Position Position { get; }
+        public string Description { get; }
+        
+        private readonly CompositeDataType _compositeDataType;
+        private readonly string[] _arraySize;
+        
         private const string ArraySizeDelimiter = ", ";
 
-        public VariableSymbol(string identifier, SymbolType symbolType, Uri sourceDocument, Position position, CompositeDataType compositeDataType, int[] arraySize,
-            string description = "") : base(identifier, symbolType, sourceDocument, position, description)
+        public VariableSymbol(string identifier, Uri sourceDocument, Position position, CompositeDataType compositeDataType, string[] arraySize,
+            string description = "")
         {
-            CompositeDataType = compositeDataType;
-            ArraySize = arraySize;
+            Identifier = identifier;
+            SourceDocument = sourceDocument;
+            Position = position;
+            _compositeDataType = compositeDataType;
+            _arraySize = arraySize;
+            Description = description;
         }
 
-        public override string GetCode()
+        public string GetCode()
         {
             var arraySizeString = string.Empty;
-            if (ArraySize?.Length >= 1)
+            if (_arraySize?.Length >= 1)
             {
-                arraySizeString = $"[{string.Join(ArraySizeDelimiter, ArraySize)}]";
+                arraySizeString = $"[{string.Join(ArraySizeDelimiter, _arraySize)}]";
             }
             
-            return $"def {CompositeDataType} {Identifier}{arraySizeString}";
+            return $"def {_compositeDataType} {Identifier}{arraySizeString}";
         }
     }
 }

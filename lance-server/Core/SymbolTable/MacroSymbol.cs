@@ -2,17 +2,25 @@
 
 namespace LanceServer.Core.SymbolTable
 {
-    public class MacroSymbol : Symbol
+    public class MacroSymbol : ISymbol
     {
+        public string Identifier { get; }
+        public Uri SourceDocument { get; }
+        public Position Position { get; }
+        public string Description { get; }
         private readonly string _value;
         
-        public MacroSymbol(string identifier, SymbolType symbolType, Uri sourceDocument, Position position, string value, string description = "") 
-            : base(identifier, symbolType, sourceDocument, position, description)
+        public MacroSymbol(string identifier, Uri sourceDocument, Position position, string value, string description = "")
         {
+            Identifier = identifier;
+            SourceDocument = sourceDocument;
+            Position = position;
             _value = value;
+            Description = description;
         }
-        
-        public override string GetCode()
+
+
+        public string GetCode()
         {
             return $"define {Identifier} as {_value}";
         }

@@ -6,9 +6,9 @@
     public class CompositeDataType
     {
         private readonly DataType _dataType;
-        private readonly int _length;
+        private readonly string _length;
 
-        public CompositeDataType(DataType dataType, int length = 0)
+        public CompositeDataType(DataType dataType, string length = "")
         {
             _length = length;
             _dataType = dataType;

@@ -5,7 +5,7 @@
         Variable,
         Parameter,
         Macro,
-        Function,
+        Procedure,
         None
     }
 }
