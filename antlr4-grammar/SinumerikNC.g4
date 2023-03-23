@@ -8,6 +8,26 @@ options { caseInsensitive=true; }
  * Lexer Rules
  */
 
+// general
+WHITESPACE: [ \t]+ -> skip;
+NEWLINE: ('\r' '\n'? | '\n') -> skip;
+COMMENT: ';' ~[\r\n]* -> skip;
+HIDE: [ \t]*'/'[0-7]?;
+
+////
+//// constant
+////
+// numeric
+INT: [0-9]+;
+REAL: [0-9]* POINT [0-9]+;
+BIN: '\'B'[01]+'\'';
+HEX: '\'H'[0-9A-F]+'\'';
+
+// language
+BOOL: 'true'|'false';
+PI: '$PI';
+STRING: '"'~[\r\n]*'"';
+
 ////
 //// keywords
 ////
@@ -15,15 +35,19 @@ options { caseInsensitive=true; }
 WHILE: 'while';
 WHILE_END: 'endwhile';
 FOR: 'for';
-FOR_TO: 'to';
 FOR_END: 'endfor';
+TO: 'to';
 LOOP: 'loop';
 LOOP_END: 'endloop';
 REPEAT: 'repeat';
+REPEAT_BLOCK: 'repeatb';
 REPEAT_END: 'until';
 IF: 'if';
 ELSE: 'else';
 IF_END: 'endif';
+CASE: 'case';
+CASE_OF: 'of';
+CASE_DEFAULT: 'default';
 GOTO: 'goto';
 GOTO_B: 'gotob';
 GOTO_C: 'gotoc';
@@ -33,14 +57,18 @@ LABEL_END: 'endlabel';
 SYNC_WHEN: 'when';
 SYNC_WHENEVER: 'whenever';
 SYNC_DO: 'do';
+SYNC_EVERY: 'every';
 SYNC_CANCEL: 'cancel';
 RETURN: 'ret';
 CALL: 'call';
 CALL_P: 'pcall';
 CALL_EXT: 'extcall';
 CALL_PATH: 'callpath';
+CALL_BLOCK: 'block';
+CALL_MODAL: 'mcall';
+CALL_MODAL_OFF: 'mcallof';
 
-// operators
+// operators (operation type O)
 ASSIGNMENT: '=';
 
 ADD: '+';
@@ -83,7 +111,7 @@ PHYS_UNIT: 'phy';
 LIMIT_UPPER: 'uli';
 LIMIT_LOWER: 'lli';
 
-// other
+// symbol
 PROC: 'proc';
 PROC_END: 'endproc';
 EXTERN: 'extern';
@@ -93,6 +121,152 @@ MACRO_DEFINE: 'define';
 MACRO_AS: 'as';
 REDEFINE: 'redef';
 SET: 'set';
+
+// other keywords (operation type K)
+AC: 'ac';
+ACC: 'acc';
+ACCLIMA: 'acclima';
+ACN: 'acn';
+ACP: 'acp';
+APR: 'apr';
+APW: 'apw';
+APX: 'apx';
+AX: 'ax';
+BLSYNC: 'blsync';
+CAC: 'cac';
+CACN: 'cacn';
+CACP: 'cacp';
+CDC: 'cdc';
+CIC: 'cic';
+COARSEA: 'coarsea';
+CPBC: 'cpbc';
+CPDEF: 'cpdef';
+CPDEL: 'cpdel';
+CPFMOF: 'cpfmof';
+CPFMON: 'cpfmon';
+CPFMSON: 'cpfmson';
+CPFPOS: 'cpfpos';
+CPFRS: 'cpfrs';
+CPLA: 'cpla';
+CPLCTID: 'cplctid';
+CPLDEF: 'cpldef';
+CPLDEL: 'cpldel';
+CPLDEN: 'cplden';
+CPLINSC: 'cplinsc';
+CPLINTR: 'cplintr';
+CPLNUM: 'cplnum';
+CPLOF: 'cplof';
+CPLON: 'cplon';
+CPLOUTSC: 'cploutsc';
+CPLOUTTR: 'cplouttr';
+CPLPOS: 'cplpos';
+CPLSETVAL: 'cplsetval';
+CPMALARM: 'cpmalarm';
+CPMBRAKE: 'cpmbrake';
+CPMPRT: 'cpmprt';
+CPMRESET: 'cpmreset';
+CPMSTART: 'cpmstart';
+CPMVDI: 'cpmvdi';
+CPOF: 'cpof';
+CPON: 'cpon';
+CPRES: 'cpres';
+CPSETTYPE: 'cpsettype';
+CPSYNCOP: 'cpsyncop';
+CPSYNCOP2: 'cpsyncop2';
+CPSYNCOV: 'cpsyncov';
+CPSYNFIP: 'cpsynfip';
+CPSYNFIP2: 'cpsynfip2';
+CPSYNFIV: 'cpsynfiv';
+DAC: 'dac';
+DC: 'dc';
+DCI: 'dci';
+DCM: 'dcm';
+DCU: 'dcu';
+DIACYCOFA: 'diacycofa';
+DIAM90A: 'diam90a';
+DIAMCHAN: 'diamchan';
+DIAMCHANA: 'diamchana';
+DIAMOFA: 'diamofa';
+DIAMONA: 'diamona';
+DIC: 'dic';
+EX: 'ex';
+FA: 'fa';
+FDA: 'fda';
+FGREF: 'fgref';
+FI: 'fi';
+FINEA: 'finea';
+FL: 'fl';
+FMA: 'fma';
+FOC: 'foc';
+FOCOF: 'focof';
+FOCON: 'focon';
+FPO: 'fpo';
+FROM: 'from';
+FXS: 'fxs';
+FXST: 'fxst';
+FXSW: 'fxsw';
+FZ: 'fz';
+GP: 'gp';
+IC: 'ic';
+ID: 'id';
+IDS: 'ids';
+INICF: 'inicf';
+INIPO: 'inipo';
+INIRE: 'inire';
+IP: 'ip';
+IPOENDA: 'ipoenda';
+ISOCALL: 'isocall';
+JERKLIM: 'jerklim';
+JERKLIMA: 'jerklima';
+LIFTFAST: 'liftfast';
+LIMS: 'lims';
+MI: 'mi';
+MOV: 'mov';
+OS: 'os';
+OSB: 'osb';
+OSCILL: 'oscill';
+OSCTRL: 'osctrl';
+OSE: 'ose';
+OSNSC: 'osnsc';
+OSP1: 'osp1';
+OSP2: 'osp2';
+OST1: 'ost1';
+OST2: 'ost2';
+OVR: 'ovr';
+OVRA: 'ovra';
+OVRRAP: 'ovrrap';
+PHI: 'phi';
+PHU: 'phu';
+PM: 'pm';
+PO: 'po';
+POLF: 'polf';
+POS: 'pos';
+POSA: 'posa';
+POSP: 'posp';
+PR: 'pr';
+PRIO: 'prio';
+PRLOC: 'prloc';
+PSISYNRW: 'psisynrw';
+QU: 'qu';
+RAC: 'rac';
+REP: 'rep';
+RIC: 'ric';
+RT: 'rt';
+SC: 'sc';
+SCC: 'scc';
+SCPARA: 'scpara';
+SETINT: 'setint';
+SPOS: 'spos';
+SPOSA: 'sposa';
+SRA: 'sra';
+STA: 'sta';
+SVC: 'svc';
+SYNR: 'synr';
+SYNRW: 'synrw';
+SYNW: 'synw';
+TR: 'tr';
+VELOLIM: 'velolim';
+VELOLIMA: 'velolima';
 
 
 ////
@@ -107,10 +281,7 @@ STRING_TYPE: 'string';
 AXIS_TYPE: 'axis';
 FRAME_TYPE: 'frame';
 
-
-////
-//// functions
-////
+// functions (operation type F)
 // math
 SIN: 'sin';
 COS: 'cos';
@@ -119,84 +290,561 @@ ASIN: 'asin';
 ACOS: 'acos';
 ATAN2: 'atan2';
 SQRT: 'sqrt';
-ABS: 'abs';
 POT: 'pot';
-TRUNC: 'trunc';
-ROUND: 'round';
 LN: 'ln';
 EXP: 'exp';
+ABS: 'abs';
+TRUNC: 'trunc';
+ROUND: 'round';
+ROUNDUP: 'roundup';
+BOUND: 'bound';
+MAXVAL: 'maxval';
+MINVAL: 'minval';
 
-// math
-STR_LEN: 'strlen';
+CALCDAT: 'calcdat';
+CTRANS: 'ctrans';
+CMIRROR: 'cmirror';
+CSCALE: 'cscale';
+CROT: 'crot';
+CROTS: 'crots';
+CRPL: 'crpl';
 
-// tool offset
-TOOL_OFFSET_LENGTH_RADIUS: 'tofflr';
-TOOL_OFFSET_LENGTH: 'toffl';
-TOOL_OFFSET_RADIUS: 'toffr';
-TOOL_OFFSET: 'toff';
+// string
+STRLEN: 'strlen';
+SPRINT: 'sprint';
+STRINGIS: 'stringis';
+SUBSTR: 'substr';
+AXNAME: 'axname';
+AXSTRING: 'axstring';
+INDEX: 'index';
+MINDEX: 'mindex';
+ISNUMBER: 'isnumber';
+NUMBER: 'number';
+MATCH: 'match';
+TOLOWER: 'tolower';
+TOUPPER: 'toupper';
 
+// curve table
+CTAB: 'ctab';
+CTABEXISTS: 'ctabexists';
+CTABFNO: 'ctabfno';
+CTABFPOL: 'ctabfpol';
+CTABFSEG: 'ctabfseg';
+CTABID: 'ctabid';
+CTABINV: 'ctabinv';
+CTABISLOCK: 'ctabislock';
+CTABMEMTYP: 'ctabmemtyp';
+CTABMPOL: 'ctabmpol';
+CTABMSEG: 'ctabmseg';
+CTABNO: 'ctabno';
+CTABNOMEM: 'ctabnomem';
+CTABPERIOD: 'ctabperiod';
+CTABPOL: 'ctabpol';
+CTABPOLID: 'ctabpolid';
+CTABSEG: 'ctabseg';
+CTABSEGID: 'ctabsegid';
+CTABSEV: 'ctabsev';
+CTABSSV: 'ctabssv';
+CTABTEP: 'ctabtep';
+CTABTEV: 'ctabtev';
+CTABTMAX: 'ctabtmax';
+CTABTMIN: 'ctabtmin';
+CTABTSP: 'ctabtsp';
+CTABTSV: 'ctabtsv';
 
-SET_MASTER_SPINDLE: 'setms';
-GRINDING_WHEEL_PERIPHERAL_SPEED_ON: 'gwpson';
-GRINDING_WHEEL_PERIPHERAL_SPEED_OFF: 'gwpsof';
-FEED_GROUP: 'fgroup';
-FEED_GROUP_EFFECTIVE_RADIUS: 'fgref';
-WAIT_FOR_POSITION: 'waitp';
-WAIT_FOR_MARKER: 'waitmc';
-WAIT_FOR_SPINDLE: 'waits';
-SPINDLE_POSITION_CONTROL_MODE_ON: 'spcon';
-SPINDLE_POSITION_CONTROL_MODE_OFF: 'spcof';
-SPINDLE_POSITIONING_IMMEDIATE: 'sposa';
-MOTION_END_FINE: 'finea';
-MOTION_END_COARSE: 'coarsea';
-MOTION_END_INTERPOLATION: 'ipoenda';
-MOTION_END_INTERPOLATION_BREAK: 'ipobrka';
-FEEDRATE_PATH_ROTARY_AXIS_ON: 'fpraon';
-FEEDRATE_PATH_ROTARY_AXIS_OFF: 'fpraof';
-FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY: 'ovrrap';
+// other
+ADDFRAME: 'addframe';
+AXTOSPI: 'axtospi';
+CALCPOSI: 'calcposi';
+CALCTRAVAR: 'calctravar';
+CFINE: 'cfine';
+CHKDM: 'chkdm';
+CHKDNO: 'chkdno';
+COLLPAIR: 'collpair';
+CORRTC: 'corrtc';
+CORRTRAFO: 'corrtrafo';
+CSPLINE: 'cspline';
+DELDL: 'deldl';
+DELMLOWNER: 'delmlowner';
+DELMLRES: 'delmlres';
+DELOBJ: 'delobj';
+DELTOOLENV: 'deltoolenv';
+GETACTT: 'getactt';
+GETACTTD: 'getacttd';
+GETDNO: 'getdno';
+GETT: 'gett';
+GETTCOR: 'gettcor';
+GETTENV: 'gettenv';
+GETVARAP: 'getvarap';
+GETVARDFT: 'getvardft';
+GETVARLIM: 'getvarlim';
+GETVARPHU: 'getvarphu';
+GETVARTYP: 'getvartyp';
+INTERSEC: 'intersec';
+INVFRAME: 'invframe';
+ISAXIS: 'isaxis';
+ISFILE: 'isfile';
+ISVAR: 'isvar';
+LENTOAX: 'lentoax';
+MEAFRAME: 'meaframe';
+MEASURE: 'measure';
+MODAXVAL: 'modaxval';
+NAMETOINT: 'nametoint';
+NEWMT: 'newmt';
+NEWT: 'newt';
+ORISOLH: 'orisolh';
+POSRANGE: 'posrange';
+PROTD: 'protd';
+RINDEX: 'rindex';
+SETDNO: 'setdno';
+SETTCOR: 'settcor';
+SIRELAY: 'sirelay';
+TOOLENV: 'toolenv';
+TOOLGNT: 'toolgnt';
+TOOLGT: 'toolgt';
 
-// 4 characters
-TOOL_CORRECTION_SUPPRESSION: 'supd';
-MASTER_SPINDLE_SPEED_LIMIT: 'lims';
-POSITIONING_IN_SECTIONS: 'posp';
-POSITIONING_IMMEDIATE: 'posa';
-SPINDLE_POSITIONING_DELAYED: 'spos';
-FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE: 'ovra';
+// procedures (operation type P)
+ACTBLOCNO: 'actblocno';
+ADISPOSA: 'adisposa';
+AFISOF: 'afisof';
+AFISON: 'afison';
+AUXFUDEL: 'auxfudel';
+AUXFUDELG: 'auxfudelg';
+AUXFUMSEQ: 'auxfumseq';
+AUXFUSYNC: 'auxfusync';
+AXCTSWE: 'axctswe';
+AXCTSWEC: 'axctswec';
+AXCTSWED: 'axctswed';
+AXTOCHAN: 'axtochan';
+BRISKA: 'briska';
+CADAPTOF: 'cadaptof';
+CADAPTON: 'cadapton';
+CALCFIR: 'calcfir';
+CANCELSUB: 'cancelsub';
+CHANDATA: 'chandata';
+CLEARM: 'clearm';
+CLRINT: 'clrint';
+CONTDCON: 'contdcon';
+CONTPRON: 'contpron';
+CORROF: 'corrof';
+COUPDEF: 'coupdef';
+COUPDEL: 'coupdel';
+COUPOF: 'coupof';
+COUPOFS: 'coupofs';
+COUPON: 'coupon';
+COUPONC: 'couponc';
+COUPRES: 'coupres';
+CPROT: 'cprot';
+CPROTDEF: 'cprotdef';
+CTABDEF: 'ctabdef';
+CTABDEL: 'ctabdel';
+CTABEND: 'ctabend';
+CTABLOCK: 'ctablock';
+CTABUNLOCK: 'ctabunlock';
+DELAYFSTOF: 'delayfstof';
+DELAYFSTON: 'delayfston';
+DELDTG: 'deldtg';
+DELETE: 'delete';
+DELMT: 'delmt';
+DELT: 'delt';
+DELTC: 'deltc';
+DISABLE: 'disable';
+DRFOF: 'drfof';
+DRIVEA: 'drivea';
+DRVPRD: 'drvprd';
+DRVPWR: 'drvpwr';
+DZERO: 'dzero';
+EGDEF: 'egdef';
+EGDEL: 'egdel';
+EGOFC: 'egofc';
+EGOFS: 'egofs';
+EGON: 'egon';
+EGONSYN: 'egonsyn';
+EGONSYNE: 'egonsyne';
+ENABLE: 'enable';
+ESRR: 'esrr';
+ESRS: 'esrs';
+EXECSTRING: 'execstring';
+EXECTAB: 'exectab';
+EXECUTE: 'execute';
+EXTCLOSE: 'extclose';
+EXTOPEN: 'extopen';
+FCTDEF: 'fctdef';
+FGROUP: 'fgroup';
+FILEDATE: 'filedate';
+FILEINFO: 'fileinfo';
+FILESIZE: 'filesize';
+FILESTAT: 'filestat';
+FILETIME: 'filetime';
+FPR: 'fpr';
+FPRAOF: 'fpraof';
+FPRAON: 'fpraon';
+FTOC: 'ftoc';
+GEOAX: 'geoax';
+GET: 'get';
+GETD: 'getd';
+GETEXET: 'getexet';
+GETFREELOC: 'getfreeloc';
+GETSELT: 'getselt';
+GWPSOF: 'gwpsof';
+GWPSON: 'gwpson';
+ICYCOF: 'icycof';
+ICYCON: 'icycon';
+INIT: 'init';
+IPOBRKA: 'ipobrka';
+IPTRLOCK: 'iptrlock';
+IPTRUNLOCK: 'iptrunlock';
+JERKA: 'jerka';
+LEADOF: 'leadof';
+LEADON: 'leadon';
+LOCK: 'lock';
+MASLDEF: 'masldef';
+MASLDEL: 'masldel';
+MASLOF: 'maslof';
+MASLOFS: 'maslofs';
+MASLON: 'maslon';
+MMC: 'mmc';
+MSG: 'msg';
+MVTOOL: 'mvtool';
+NEWCONF: 'newconf';
+NPROT: 'nprot';
+NPROTDEF: 'nprotdef';
+ORIRESET: 'orireset';
+POLFA: 'polfa';
+POLFMASK: 'polfmask';
+POLFMLIN: 'polfmlin';
+POLYPATH: 'polypath';
+POSM: 'posm';
+POSMT: 'posmt';
+PRESETON: 'preseton';
+PRESETONS: 'presetons';
+PROTA: 'prota';
+PROTS: 'prots';
+PUNCHACC: 'punchacc';
+PUTFTOC: 'putftoc';
+PUTFTOCF: 'putftocf';
+RDISABLE: 'rdisable';
+READ: 'read';
+RELEASE: 'release';
+RESETMON: 'resetmon';
+RETB: 'retb';
+SBLOF: 'sblof';
+SBLON: 'sblon';
+SETAL: 'setal';
+SETM: 'setm';
+SETMS: 'setms';
+SETMTH: 'setmth';
+SETPIECE: 'setpiece';
+SETTA: 'setta';
+SETTIA: 'settia';
+SIRELIN: 'sirelin';
+SIRELOUT: 'sirelout';
+SIRELTIME: 'sireltime';
+SOFTA: 'softa';
+SPCOF: 'spcof';
+SPCON: 'spcon';
+SPLINEPATH: 'splinepath';
+START: 'start';
+STOPRE: 'stopre';
+STOPREOF: 'stopreof';
+SYNFCT: 'synfct';
+TANG: 'tang';
+TANGDEL: 'tangdel';
+TANGOF: 'tangof';
+TANGON: 'tangon';
+TCA: 'tca';
+TCI: 'tci';
+TLIFT: 'tlift';
+TML: 'tml';
+TMOF: 'tmof';
+TMON: 'tmon';
+TOFFOF: 'toffof';
+TOFFON: 'toffon';
+TRAANG: 'traang';
+TRACON: 'tracon';
+TRACYL: 'tracyl';
+TRAFOOF: 'trafoof';
+TRAFOON: 'trafoon';
+TRAILOF: 'trailof';
+TRAILON: 'trailon';
+TRANSMIT: 'transmit';
+TRAORI: 'traori';
+UNLOCK: 'unlock';
+WAITC: 'waitc';
+WAITE: 'waite';
+WAITENC: 'waitenc';
+WAITM: 'waitm';
+WAITMC: 'waitmc';
+WAITP: 'waitp';
+WAITS: 'waits';
+WRITE: 'write';
+WRTPR: 'wrtpr';
 
-// 3 characters
-TOOL_CUTTING_SPEED: 'svc';
-ABSOLUTE_COORDINATE_NEGATIVE: 'acn';
-ABSOLUTE_COORDINATE_POSITIVE: 'acp';
-POSITIONING_DELAYED: 'pos';
-CONSTANT_CUTTING_RATE_REFERENCE_AXIS: 'scc';
-FEEDRATE_PATH_ROTARY_AXIS: 'fpr';
-SPINDLE_IDENTIFIER: 'spi';
-FEEDRATE_OVERRIDE_PATH: 'ovr';
-ACCELERATION_COMPENSATION: 'acc';
-FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL: 'fda';
-
-// 2 characters
-FEEDRATE_LIMIT: 'fl';
-FEEDRATE_POSITION_AXIS: 'fa';
-ABSOLUTE_COORDINATE: 'ac';
-INCREMENTAL_COORDINATE: 'ic';
-DIRECT_APPROACH_COORDINATE: 'dc';
-FEEDRATE_OVERRIDE_PATH_HANDWHEEL: 'fd';
-ADDITIONAL_FUNCTION: 'm';
-AUXILIARY_FUNCTION: 'h';
-PREPARATORY_FUNCTION: 'g';
-
-// single character
-X_AXIS: 'x';
-Y_AXIS: 'y';
-Z_AXIS: 'z';
-A_AXIS: 'a';
-B_AXIS: 'b';
-C_AXIS: 'c';
-SPINDLE: 's';
-FEEDRATE: 'f';
-TOOL: 't';
-TOOL_CORRECTION: 'd';
+// commands (operation types A, G and M code)
+ADIS:'adis';
+ADISPOS:'adispos';
+ALF:'alf';
+AMIRROR:'amirror';
+ANG:'ang';
+AP:'ap';
+AR:'ar';
+AROT:'arot';
+AROTS:'arots';
+ASCALE:'ascale';
+ASPLINE:'aspline';
+ATOL:'atol';
+ATRANS:'atrans';
+BAUTO:'bauto';
+BNAT:'bnat';
+BRISK:'brisk';
+BSPLINE:'bspline';
+BTAN:'btan';
+CDOF:'cdof';
+CDOF2:'cdof2';
+CDON:'cdon';
+CFC:'cfc';
+CFIN:'cfin';
+CFTCP:'cftcp';
+CHF:'chf';
+CHR:'chr';
+CIP:'cip';
+COMPCAD:'compcad';
+COMPCURV:'compcurv';
+COMPOF:'compof';
+COMPON:'compon';
+COMPPATH:'comppath';
+COMPSURF:'compsurf';
+CP:'cp';
+CPRECOF:'cprecof';
+CPRECON:'cprecon';
+CR:'cr';
+CT:'ct';
+CTOL:'ctol';
+CTOLG0:'ctolg0';
+CUT2D:'cut2d';
+CUT2DD:'cut2dd';
+CUT2DF:'cut2df';
+CUT2DFD:'cut2dfd';
+CUT3DC:'cut3dc';
+CUT3DCC:'cut3dcc';
+CUT3DCCD:'cut3dccd';
+CUT3DCD:'cut3dcd';
+CUT3DF:'cut3df';
+CUT3DFD:'cut3dfd';
+CUT3DFF:'cut3dff';
+CUT3DFS:'cut3dfs';
+CUTCONOF:'cutconof';
+CUTCONON:'cutconon';
+CUTMOD:'cutmod';
+CUTMODK:'cutmodk';
+D:'d';
+D0:'d0';
+DIAM90:'diam90';
+DIAMCYCOF:'diamcycof';
+DIAMOF:'diamof';
+DIAMON:'diamon';
+DILF:'dilf';
+DISC:'disc';
+DISCL:'discl';
+DISPR:'dispr';
+DISR:'disr';
+DISRP:'disrp';
+DITE:'dite';
+DITS:'dits';
+DL:'dl';
+DRIVE:'drive';
+DYNFINISH:'dynfinish';
+DYNNORM:'dynnorm';
+DYNPOS:'dynpos';
+DYNPREC:'dynprec';
+DYNROUGH:'dynrough';
+DYNSEMIFIN:'dynsemifin';
+EAUTO:'eauto';
+ENAT:'enat';
+ETAN:'etan';
+F:'f';
+FAD:'fad';
+FB:'fb';
+FCUB:'fcub';
+FD:'fd';
+FENDNORM:'fendnorm';
+FFWOF:'ffwof';
+FFWON:'ffwon';
+FIFOCTRL:'fifoctrl';
+FLIM:'flim';
+FLIN:'flin';
+FNORM:'fnorm';
+FP:'fp';
+FRC:'frc';
+FRCM:'frcm';
+FTOCOF:'ftocof';
+FTOCON:'ftocon';
+GCODE:'g' [0-9]?[0-9]?[1-9];
+GFRAME:'gframe';
+HCODE:'h' [0-9]?[0-9]?[1-9];
+I:'i';
+I1:'i1';
+INVCCW:'invccw';
+INVCW:'invcw';
+IR:'ir';
+ISD:'isd';
+J:'j';
+J1:'j1';
+JR:'jr';
+K:'k';
+K1:'k1';
+KONT:'kont';
+KONTC:'kontc';
+KONTT:'kontt';
+KR:'kr';
+L:'l';
+LEAD:'lead';
+LFOF:'lfof';
+LFON:'lfon';
+LFPOS:'lfpos';
+LFTXT:'lftxt';
+LFWP:'lfwp';
+MCODE: 'm' [0-9]?[0-9]?[1-9];
+MEAC:'meac';
+MEAS:'meas';
+MEASA:'measa';
+MEASF:'measf';
+MEAW:'meaw';
+MEAWA:'meawa';
+MIRROR:'mirror';
+MOVT:'movt';
+NORM:'norm';
+OEMIPO1:'oemipo1';
+OEMIPO2:'oemipo2';
+OFFN:'offn';
+OMA:'oma' [1-9];
+ORIANGLE:'oriangle';
+ORIAXES:'oriaxes';
+ORIAXESFR:'oriaxesfr';
+ORIAXPOS:'oriaxpos';
+ORIC:'oric';
+ORICONCCW:'oriconccw';
+ORICONCW:'oriconcw';
+ORICONIO:'oriconio';
+ORICONTO:'oriconto';
+ORICURINV:'oricurinv';
+ORICURVE:'oricurve';
+ORID:'orid';
+ORIEULER:'orieuler';
+ORIMKS:'orimks';
+ORIPATH:'oripath';
+ORIPATHS:'oripaths';
+ORIPLANE:'oriplane';
+ORIROTA:'orirota';
+ORIROTC:'orirotc';
+ORIROTR:'orirotr';
+ORIROTT:'orirott';
+ORIRPY:'orirpy';
+ORIRPY2:'orirpy2';
+ORIS:'oris';
+ORISOF:'orisof';
+ORISON:'orison';
+ORIVECT:'orivect';
+ORIVIRT1:'orivirt1';
+ORIVIRT2:'orivirt2';
+ORIWKS:'oriwks';
+OSC:'osc';
+OSD:'osd';
+OSOF:'osof';
+OSS:'oss';
+OSSE:'osse';
+OST:'ost';
+OTOL:'otol';
+OTOLG0:'otolg0';
+P:'p';
+PACCLIM:'pacclim';
+PAROT:'parot';
+PAROTOF:'parotof';
+PDELAYOF:'pdelayof';
+PDELAYON:'pdelayon';
+PL:'pl';
+POLY:'poly';
+PON:'pon';
+PONS:'pons';
+PTP:'ptp';
+PTPG0:'ptpg0';
+PTPWOC:'ptpwoc';
+PW:'pw';
+REPOSA:'reposa';
+REPOSH:'reposh';
+REPOSHA:'reposha';
+REPOSL:'reposl';
+REPOSQ:'reposq';
+REPOSQA:'reposqa';
+RMB:'rmb';
+RMBBL:'rmbbl';
+RME:'rme';
+RMEBL:'rmebl';
+RMI:'rmi';
+RMIBL:'rmibl';
+RMN:'rmn';
+RMNBL:'rmnbl';
+RND:'rnd';
+RNDM:'rndm';
+ROT:'rot';
+ROTS:'rots';
+RP:'rp';
+RPL:'rpl';
+RTLIOF:'rtliof';
+RTLION:'rtlion';
+SCALE:'scale';
+SD:'sd';
+SF:'sf';
+SOFT:'soft';
+SON:'son';
+SONS:'sons';
+SPATH:'spath';
+SPIF1:'spif1';
+SPIF2:'spif2';
+SPN:'spn';
+SPOF:'spof';
+SPP:'spp';
+SR:'sr';
+ST:'st';
+STARTFIFO:'startfifo';
+STOLF:'stolf';
+STOPFIFO:'stopfifo';
+SUPA:'supa';
+SUPD:'supd';
+T:'t';
+TCARR:'tcarr';
+TCOABS:'tcoabs';
+TCOFR:'tcofr';
+TCOFRX:'tcofrx';
+TCOFRY:'tcofry';
+TCOFRZ:'tcofrz';
+THETA:'theta';
+TILT:'tilt';
+TOFF:'toff';
+TOFFL:'toffl';
+TOFFLR:'tofflr';
+TOFFR:'toffr';
+TOFRAME:'toframe';
+TOFRAMEX:'toframex';
+TOFRAMEY:'toframey';
+TOFRAMEZ:'toframez';
+TOROT:'torot';
+TOROTOF:'torotof';
+TOROTX:'torotx';
+TOROTY:'toroty';
+TOROTZ:'torotz';
+TOWBCS:'towbcs';
+TOWKCS:'towkcs';
+TOWMCS:'towmcs';
+TOWSTD:'towstd';
+TOWTCS:'towtcs';
+TOWWCS:'towwcs';
+TRANS:'trans';
+TURN:'turn';
+UPATH:'upath';
+WALCS:'walcs';
+WALIMOF:'walimof';
+WALIMON:'walimon';
 
 // symbols
 OPEN_PAREN: '(';
@@ -204,52 +852,47 @@ CLOSE_PAREN: ')';
 OPEN_BRACKET: '[';
 CLOSE_BRACKET: ']';
 
-
 DOLLAR: '$';
 POINT: '.';
+DOUBLE_COLON: ':';
 COMMA: ',';
+
+// other (operation types C, PA, empty)
+BLOCK_NUMBER: 'n' INT;
+CYCLE: 'cycle';
+GROUP_ADDEND:'group_addend';
+GROUP_BEGIN:'group_begin';
+GROUP_END:'group_end';
+HOLES1:'holes1';
+HOLES2:'holes2';
+LONGHOLE:'longhole';
+POCKET3:'pocket3';
+POCKET4:'pocket4';
+SLOT1:'slot1';
+SLOT2:'slot2';
+DISPLOF:'displof';
+DISPLON:'displon';
+PREPRO:'prepro';
+SAVE:'save';
+COMPLETE:'complete';
+INITIAL:'initial';
+STAT:'stat';
+TU:'tu';
+
 
 // reserved words
 RESERVED: 'con' | 'prn' | 'aux' | 'nul' | 'com'[1-9] | 'lpt'[1-9];
 
-// system variables
+// variables
 SYS_VAR: '$'[$acmnopstv]*[a-z_]*; // could be improved
-
-// axis variables
-AXIS: [abcxyz][0-9]*;
-
-// user variables
+AXIS: [abcxyz];
+AXIS_NUMBERED: AXIS [0-9]?[1-9];
+SPINDLE: 's' [0-9]?[1-9];
 R_PARAM: '$'?'r'[0-9]+;
-
-// general
-WHITESPACE: [ \t]+ -> skip;
-NAME: [a-z0-9_]+;
-NEWLINE: ('\r' '\n'? | '\n') -> skip;
-COMMENT: ';' ~[\r\n]* -> skip;
-HIDE: [ \t]*'/'[0-7]?;
-BLOCK_NUMBER: 'n';
-
-////
-//// constant
-////
-// numeric
-INT_POSITIVE: [0-9]+;
-INT: SUB? INT_POSITIVE;
-REAL_POSITIVE: [0-9]* POINT [0-9]+;
-REAL: SUB? REAL_POSITIVE;
-BIN: '\'B'[01]+'\'';
-HEX: '\'H'[0-9A-F]+'\'';
-
-// language
-BOOL: 'true'|'false';
-PI: '$PI';
-STRING: '"'~[\r\n]*'"';
+SPINDLE_IDENTIFIER: 'spi';
 
 // names
-PROGRAM_NAME_SIMPLE: [_a-z][a-z]NAME; // program name as defined
-PROGRAM_NAME_EXTENDED: NAME;
-LABEL_NAME: [a-z_][a-z_][a-z0-9_]*;
-LABEL: LABEL_NAME':';
+NAME: [a-z0-9_]+;
 
 
 /*
@@ -258,89 +901,37 @@ LABEL: LABEL_NAME':';
 
 file: (declarationBlock* block* | procedureDefinition) EOF;
 
-declarationBlock: blocknumber? declaration NEWLINE;
-block: blocknumber? (statement | command*) NEWLINE;
+declarationBlock: BLOCK_NUMBER? declaration;
+block: BLOCK_NUMBER? statement;
 
-blocknumber: BLOCK_NUMBER INT_POSITIVE;
+// procedure definition
+procedureDefinition: PROC NAME parameterDefinitions? declarationBlock* block* PROC_END;
 
-// command
-command
-    : preparatoryFunction 
-    | additionalFunction 
-    | auxiliaryFunction 
-    | codeWord;
-
-additionalFunction: ADDITIONAL_FUNCTION INT_POSITIVE;
-auxiliaryFunction: AUXILIARY_FUNCTION INT_POSITIVE;
-preparatoryFunction: PREPARATORY_FUNCTION INT_POSITIVE;
-
-codeWord: axis constant | axis_identifier ASSIGNMENT expression;
+parameterDefinitions: OPEN_PAREN parameterDefinition (COMMA parameterDefinition)* CLOSE_PAREN;
+parameterDefinition: parameterDefinitionByValue | parameterDefinitionByReference;
+parameterDefinitionByValue: type NAME (ASSIGNMENT expression)?;
+parameterDefinitionByReference: VAR type NAME arrayDeclaration?;
 
 // declaration
 declaration: macroDeclaration | variableDeclaration | procedureDeclaration;
 
-macroDeclaration: MACRO_DEFINE NAME MACRO_AS statement*;
-variableDeclaration: DEFINE type variableDefinition (COMMA variableDefinition)*;
-procedureDeclaration: EXTERN PROGRAM_NAME_SIMPLE parameterDeclarations?;
-parameterDeclarations: OPEN_PAREN parameterDeclaration (COMMA parameterDeclaration)* CLOSE_PAREN;
-parameterDeclaration: VAR? type arrayDefinition?;
-arrayDeclaration: OPEN_BRACKET expression? (COMMA expression?)? (COMMA expression?)? CLOSE_BRACKET;
+macroDeclaration: MACRO_DEFINE NAME MACRO_AS macroValue;
+macroValue: expression | command+ | procedure | gotoStatement;
+variableDeclaration: DEFINE type variableAssignment (COMMA variableAssignment)*;
+procedureDeclaration: EXTERN NAME parameterDeclarations?;
 
-// definition
-variableDefinition: NAME arrayDefinition? (ASSIGNMENT expression)?;
+parameterDeclarations: OPEN_PAREN parameterDeclaration? (COMMA parameterDeclaration)* CLOSE_PAREN;
+parameterDeclaration: parameterDeclarationByValue | parameterDeclarationByReference;
+parameterDeclarationByValue: type;
+parameterDeclarationByReference: VAR type arrayDeclaration?;
+
+arrayDeclaration: OPEN_BRACKET expression? arrayDeclarationDimension? arrayDeclarationDimension? CLOSE_BRACKET;
+arrayDeclarationDimension: COMMA expression?;
+
+// assignment
+variableAssignment: NAME arrayDefinition? (ASSIGNMENT expression)?;
 arrayDefinition: OPEN_BRACKET expression (COMMA expression)? (COMMA expression)? CLOSE_BRACKET;
 
-procedureDefinition: PROC PROGRAM_NAME_SIMPLE parameterDefinitions? declarationBlock* block* PROC_END;
-parameterDefinitions: OPEN_PAREN parameterDefinition (COMMA parameterDefinition)* CLOSE_PAREN;
-parameterDefinition: VAR? type variableDefinition;
-
-// statement
-statement
-    : ifStatement
-    | iterativeStatement
-    | jumpStatement
-    | declaration
-    | procedureDefinition
-    | expression;
-
-ifStatement: IF OPEN_PAREN expression CLOSE_PAREN block* (ELSE block*)? IF_END;
-
-iterativeStatement: WHILE OPEN_PAREN expression CLOSE_PAREN block* WHILE_END;
-
-jumpStatement
-    : GOTO LABEL_NAME
-    | GOTO_B LABEL_NAME
-    | GOTO_C LABEL_NAME
-    | GOTO_F LABEL_NAME
-    | GOTO_S LABEL_NAME
-    | RETURN expression?;
-
-// expression
-primaryExpression
-    : NAME
-    | function
-    | constant
-    | OPEN_PAREN expression CLOSE_PAREN;
-
-unaryExpression
-    : NOT primaryExpression
-    | NOT_B primaryExpression;
-
-multiplicativeExpression : unaryExpression ((MUL|DIV|MOD) unaryExpression)*;
-additiveExpression : multiplicativeExpression ((ADD|SUB) multiplicativeExpression)*;
-binaryAndExpression : additiveExpression (AND_B additiveExpression)*;
-binaryExclusiveOrExpression : binaryAndExpression (XOR_B binaryAndExpression)*;
-binaryInclusiveOrExpression : binaryExclusiveOrExpression (OR_B binaryExclusiveOrExpression)*;
-andExpression : binaryInclusiveOrExpression (AND binaryInclusiveOrExpression)*;
-exclusiveOrExpression : andExpression (XOR andExpression)*;
-inclusiveOrExpression : exclusiveOrExpression (OR exclusiveOrExpression)*;
-stringExpression : inclusiveOrExpression (CONCAT inclusiveOrExpression)*;
-relationalExpression : stringExpression ((EQUAL|NOT_EQUAL|LESS_EQUAL|GREATER_EQUAL|LESS|GREATER) stringExpression)*;
-
-expression
-    : relationalExpression;
-
-// basic
 type
     : BOOL_TYPE
     | CHAR_TYPE
@@ -350,30 +941,571 @@ type
     | AXIS_TYPE
     | FRAME_TYPE;
 
+// statement
+statement
+    : ifStatement
+    | caseStatement
+    | iterativeStatement
+    | jumpStatement
+    | expression
+    | command+
+    | procedure;
+
+ifStatement: IF expression block* (ELSE block*)? IF_END;
+
+caseStatement: CASE expression CASE_OF (constant gotoStatement)+ (CASE_DEFAULT gotoStatement)?;
+
+iterativeStatement: iterativeWhile | iterativeFor | iterativeRepeat | iterativeLoop;
+iterativeWhile: WHILE expression block* WHILE_END;
+iterativeFor: FOR variableAssignment TO expression block* FOR_END;
+iterativeRepeat: REPEAT block* REPEAT_END expression;
+iterativeLoop: LOOP block* LOOP_END;
+
+jumpStatement
+    : gotoStatement
+    | CALL NAME? CALL_BLOCK NAME TO NAME
+    | RETURN expression?;
+
+gotoStatement
+    : gotoCondition? GOTO gotoTarget
+    | gotoCondition? GOTO_B gotoTarget
+    | gotoCondition? GOTO_C gotoTarget
+    | gotoCondition? GOTO_F gotoTarget
+    | gotoCondition? GOTO_S;
+
+gotoCondition: IF expression;
+gotoTarget: NAME | BLOCK_NUMBER;
+
+// expression
+expression
+    : relationalExpression;
+
+relationalExpression : stringExpression ((EQUAL|NOT_EQUAL|LESS_EQUAL|GREATER_EQUAL|LESS|GREATER) stringExpression)?;
+stringExpression : inclusiveOrExpression (CONCAT inclusiveOrExpression)*;
+inclusiveOrExpression : exclusiveOrExpression (OR exclusiveOrExpression)*;
+exclusiveOrExpression : andExpression (XOR andExpression)*;
+andExpression : binaryInclusiveOrExpression (AND binaryInclusiveOrExpression)*;
+binaryInclusiveOrExpression : binaryExclusiveOrExpression (OR_B binaryExclusiveOrExpression)*;
+binaryExclusiveOrExpression : binaryAndExpression (XOR_B binaryAndExpression)*;
+binaryAndExpression : additiveExpression (AND_B additiveExpression)*;
+additiveExpression : multiplicativeExpression ((ADD|SUB) multiplicativeExpression)*;
+multiplicativeExpression : unaryExpression ((MUL|DIV|MOD) unaryExpression)*;
+unaryExpression : (NOT|NOT_B)? primaryExpression;
+
+primaryExpression
+    : NAME
+    | SYS_VAR
+    | R_PARAM
+    | constant
+    | function
+    | OPEN_PAREN expression CLOSE_PAREN;
+
 constant
-    : INT
-    | REAL
+    : numeric
     | HEX
     | BIN
-    | STRING;
+    | STRING
+    | BOOL;
+
+numeric: SUB? (INT | REAL);
+
+// command
+command
+    : NAME
+    | GCODE 
+    | MCODE 
+    | HCODE 
+    | axisCode
+    | ADIS
+    | ADISPOS
+    | ALF
+    | AMIRROR
+    | ANG
+    | AP
+    | AR
+    | AROT
+    | AROTS
+    | ASCALE
+    | ASPLINE
+    | ATOL
+    | ATRANS
+    | BAUTO
+    | BNAT
+    | BRISK
+    | BSPLINE
+    | BTAN
+    | CDOF
+    | CDOF2
+    | CDON
+    | CFC
+    | CFIN
+    | CFTCP
+    | CHF
+    | CHR
+    | CIP
+    | COMPCAD
+    | COMPCURV
+    | COMPOF
+    | COMPON
+    | COMPPATH
+    | COMPSURF
+    | CP
+    | CPRECOF
+    | CPRECON
+    | CR
+    | CT
+    | CTOL
+    | CTOLG0
+    | CUT2D
+    | CUT2DD
+    | CUT2DF
+    | CUT2DFD
+    | CUT3DC
+    | CUT3DCC
+    | CUT3DCCD
+    | CUT3DCD
+    | CUT3DF
+    | CUT3DFD
+    | CUT3DFF
+    | CUT3DFS
+    | CUTCONOF
+    | CUTCONON
+    | CUTMOD
+    | CUTMODK
+    | D
+    | D0
+    | DIAM90
+    | DIAMCYCOF
+    | DIAMOF
+    | DIAMON
+    | DILF
+    | DISC
+    | DISCL
+    | DISPR
+    | DISR
+    | DISRP
+    | DITE
+    | DITS
+    | DL
+    | DRIVE
+    | DYNFINISH
+    | DYNNORM
+    | DYNPOS
+    | DYNPREC
+    | DYNROUGH
+    | DYNSEMIFIN
+    | EAUTO
+    | ENAT
+    | ETAN
+    | F ASSIGNMENT expression
+    | FAD
+    | FB
+    | FCUB
+    | FD
+    | FENDNORM
+    | FFWOF
+    | FFWON
+    | FIFOCTRL
+    | FLIM
+    | FLIN
+    | FNORM
+    | FP
+    | FRC
+    | FRCM
+    | FTOCOF
+    | FTOCON
+    | GFRAME
+    | I
+    | I1
+    | INVCCW
+    | INVCW
+    | IR
+    | ISD
+    | J
+    | J1
+    | JR
+    | K
+    | K1
+    | KONT
+    | KONTC
+    | KONTT
+    | KR
+    | L
+    | LEAD
+    | LFOF
+    | LFON
+    | LFPOS
+    | LFTXT
+    | LFWP
+    | MEAC
+    | MEAS
+    | MEASA
+    | MEASF
+    | MEAW
+    | MEAWA
+    | MIRROR
+    | MOVT
+    | NORM
+    | OEMIPO1
+    | OEMIPO2
+    | OFFN
+    | OMA
+    | ORIANGLE
+    | ORIAXES
+    | ORIAXESFR
+    | ORIAXPOS
+    | ORIC
+    | ORICONCCW
+    | ORICONCW
+    | ORICONIO
+    | ORICONTO
+    | ORICURINV
+    | ORICURVE
+    | ORID
+    | ORIEULER
+    | ORIMKS
+    | ORIPATH
+    | ORIPATHS
+    | ORIPLANE
+    | ORIROTA
+    | ORIROTC
+    | ORIROTR
+    | ORIROTT
+    | ORIRPY
+    | ORIRPY2
+    | ORIS
+    | ORISOF
+    | ORISON
+    | ORIVECT
+    | ORIVIRT1
+    | ORIVIRT2
+    | ORIWKS
+    | OSC
+    | OSD
+    | OSOF
+    | OSS
+    | OSSE
+    | OST
+    | OTOL
+    | OTOLG0
+    | P
+    | PACCLIM
+    | PAROT
+    | PAROTOF
+    | PDELAYOF
+    | PDELAYON
+    | PL
+    | POLY
+    | PON
+    | PONS
+    | PTP
+    | PTPG0
+    | PTPWOC
+    | PW
+    | REPOSA
+    | REPOSH
+    | REPOSHA
+    | REPOSL
+    | REPOSQ
+    | REPOSQA
+    | RMB
+    | RMBBL
+    | RME
+    | RMEBL
+    | RMI
+    | RMIBL
+    | RMN
+    | RMNBL
+    | RND
+    | RNDM
+    | ROT
+    | ROTS
+    | RP
+    | RPL
+    | RTLIOF
+    | RTLION
+    | SCALE
+    | SD
+    | SF
+    | SOFT
+    | SON
+    | SONS
+    | SPATH
+    | SPIF1
+    | SPIF2
+    | SPN
+    | SPOF
+    | SPP
+    | SR
+    | ST
+    | STARTFIFO
+    | STOLF
+    | STOPFIFO
+    | SUPA
+    | SUPD
+    | T
+    | TCARR
+    | TCOABS
+    | TCOFR
+    | TCOFRX
+    | TCOFRY
+    | TCOFRZ
+    | THETA
+    | TILT
+    | TOFF
+    | TOFFL
+    | TOFFLR
+    | TOFFR
+    | TOFRAME
+    | TOFRAMEX
+    | TOFRAMEY
+    | TOFRAMEZ
+    | TOROT
+    | TOROTOF
+    | TOROTX
+    | TOROTY
+    | TOROTZ
+    | TOWBCS
+    | TOWKCS
+    | TOWMCS
+    | TOWSTD
+    | TOWTCS
+    | TOWWCS
+    | TRANS
+    | TURN
+    | UPATH
+    | WALCS
+    | WALIMOF
+    | WALIMON;
+
+axisCode: AXIS numeric | axis_identifier ASSIGNMENT axisAssignmentExpression;
+axisAssignmentExpression: expression | (AC | IC) OPEN_PAREN expression CLOSE_PAREN;
+
+// axis
+axis_spindle_identifier: axis_identifier | spindle_identifier;
+axis_identifier: AXIS_NUMBERED | NAME;
+spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT CLOSE_PAREN | SPINDLE | NAME;
+
+// procedure
+procedure: predefinedProcedure | ownProcedure | function;
+ownProcedure: NAME parameters?;
+parameters: OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN;
 
 //// predefined procedure
+predefinedProcedure
+    : modalSubprogramCall
+    | ACTBLOCNO
+    | ADISPOSA
+    | AFISOF
+    | AFISON
+    | AUXFUDEL
+    | AUXFUDELG
+    | AUXFUMSEQ
+    | AUXFUSYNC
+    | AXCTSWE
+    | AXCTSWEC
+    | AXCTSWED
+    | AXTOCHAN
+    | BRISKA
+    | CADAPTOF
+    | CADAPTON
+    | CALCFIR
+    | CANCELSUB
+    | CHANDATA
+    | CLEARM
+    | CLRINT
+    | CONTDCON
+    | CONTPRON
+    | CORROF
+    | COUPDEF
+    | COUPDEL
+    | COUPOF
+    | COUPOFS
+    | COUPON
+    | COUPONC
+    | COUPRES
+    | CPROT
+    | CPROTDEF
+    | CTABDEF
+    | CTABDEL
+    | CTABEND
+    | CTABLOCK
+    | CTABUNLOCK
+    | DELAYFSTOF
+    | DELAYFSTON
+    | DELDTG
+    | DELETE
+    | DELMT
+    | DELT
+    | DELTC
+    | DISABLE
+    | DRFOF
+    | DRIVEA
+    | DRVPRD
+    | DRVPWR
+    | DZERO
+    | EGDEF
+    | EGDEL
+    | EGOFC
+    | EGOFS
+    | EGON
+    | EGONSYN
+    | EGONSYNE
+    | ENABLE
+    | ESRR
+    | ESRS
+    | EXECSTRING
+    | EXECTAB
+    | EXECUTE
+    | EXTCLOSE
+    | EXTOPEN
+    | FCTDEF
+    | FGROUP OPEN_PAREN CLOSE_PAREN
+    | FILEDATE
+    | FILEINFO
+    | FILESIZE
+    | FILESTAT
+    | FILETIME
+    | FPR
+    | FPRAOF
+    | FPRAON
+    | FTOC
+    | GEOAX
+    | GET
+    | GETD
+    | GETEXET
+    | GETFREELOC
+    | GETSELT
+    | GWPSOF
+    | GWPSON
+    | ICYCOF
+    | ICYCON
+    | INIT
+    | IPOBRKA
+    | IPTRLOCK
+    | IPTRUNLOCK
+    | JERKA
+    | LEADOF
+    | LEADON
+    | LOCK
+    | MASLDEF
+    | MASLDEL
+    | MASLOF
+    | MASLOFS
+    | MASLON
+    | MMC
+    | MSG
+    | MVTOOL
+    | NEWCONF
+    | NPROT
+    | NPROTDEF
+    | ORIRESET
+    | POLFA
+    | POLFMASK
+    | POLFMLIN
+    | POLYPATH
+    | POSM
+    | POSMT
+    | PRESETON
+    | PRESETONS
+    | PROTA
+    | PROTS
+    | PUNCHACC
+    | PUTFTOC
+    | PUTFTOCF
+    | RDISABLE
+    | READ
+    | RELEASE
+    | RESETMON
+    | RETB
+    | SBLOF
+    | SBLON
+    | SETAL
+    | SETM
+    | SETMS
+    | SETMTH
+    | SETPIECE
+    | SETTA
+    | SETTIA
+    | SIRELIN
+    | SIRELOUT
+    | SIRELTIME
+    | SOFTA
+    | SPCOF
+    | SPCON
+    | SPLINEPATH
+    | START
+    | STOPRE
+    | STOPREOF
+    | SYNFCT
+    | TANG
+    | TANGDEL
+    | TANGOF
+    | TANGON
+    | TCA
+    | TCI
+    | TLIFT
+    | TML
+    | TMOF
+    | TMON
+    | TOFFOF
+    | TOFFON
+    | TRAANG
+    | TRACON
+    | TRACYL
+    | TRAFOOF
+    | TRAFOON
+    | TRAILOF
+    | TRAILON
+    | TRANSMIT
+    | TRAORI
+    | UNLOCK
+    | WAITC
+    | WAITE
+    | WAITENC
+    | WAITM
+    | WAITMC
+    | WAITP
+    | WAITS
+    | WRITE
+    | WRTPR;
+
+modalSubprogramCall: CALL_MODAL (NAME (OPEN_BRACKET expression (COMMA expression)* CLOSE_BRACKET)? )?;
+
 // feedrate override
-feedrate_override_path: FEEDRATE_OVERRIDE_PATH '= 'INT;
-feedrate_override_rapid_traverse_velocity: FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY '= 'INT;
-feedrate_override_position_or_spindle: FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE OPEN_BRACKET axis_spindle_identifier CLOSE_BRACKET '= 'INT;
+feedrate_override_path: OVR ASSIGNMENT expression;
+feedrate_override_rapid_traverse_velocity: OVRRAP ASSIGNMENT expression;
+feedrate_override_position_or_spindle: OVRA OPEN_BRACKET axis_spindle_identifier CLOSE_BRACKET ASSIGNMENT expression;
 
 // acceleration compensation
-acceleration_compensation: ACCELERATION_COMPENSATION OPEN_BRACKET axis_spindle_identifier CLOSE_BRACKET '= 'INT;
+acceleration_compensation: ACC OPEN_BRACKET axis_spindle_identifier CLOSE_BRACKET ASSIGNMENT expression;
 
 // feedrate override handwheel
-feedrate_override_path_handwheel: FEEDRATE_OVERRIDE_PATH_HANDWHEEL '= 'INT;
-feedrate_override_axial_handwheel: FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL OPEN_BRACKET axis_identifier CLOSE_BRACKET '= 'INT;
+feedrate_override_path_handwheel: FD ASSIGNMENT expression;
+feedrate_override_axial_handwheel: FDA OPEN_BRACKET axis_identifier CLOSE_BRACKET ASSIGNMENT expression;
 
-//// Types
-// axis identifier
-axis_spindle_identifier: axis_identifier | spindle_identifier;
-axis_identifier: axis INT_POSITIVE | NAME;
-spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT_POSITIVE CLOSE_PAREN | SPINDLE INT_POSITIVE;
-axis: A_AXIS | B_AXIS | C_AXIS | X_AXIS | Y_AXIS | Z_AXIS;
+// function
+function: predefinedFunction;
 
+predefinedFunction
+    : mathFunction;
+
+mathFunction 
+    : SIN OPEN_PAREN expression CLOSE_PAREN
+    | COS OPEN_PAREN expression CLOSE_PAREN
+    | TAN OPEN_PAREN expression CLOSE_PAREN
+    | ASIN OPEN_PAREN expression CLOSE_PAREN
+    | ACOS OPEN_PAREN expression CLOSE_PAREN
+    | ATAN2 OPEN_PAREN expression CLOSE_PAREN
+    | EXP OPEN_PAREN expression CLOSE_PAREN
+    | SQRT OPEN_PAREN expression CLOSE_PAREN
+    | POT OPEN_PAREN expression (COMMA expression)? CLOSE_PAREN
+    | LN OPEN_PAREN expression CLOSE_PAREN
+    | ABS OPEN_PAREN expression CLOSE_PAREN
+    | TRUNC OPEN_PAREN expression CLOSE_PAREN
+    | ROUND OPEN_PAREN expression CLOSE_PAREN
+    | ROUNDUP OPEN_PAREN expression CLOSE_PAREN
+    | MINVAL OPEN_PAREN expression COMMA expression CLOSE_PAREN
+    | MAXVAL OPEN_PAREN expression COMMA expression CLOSE_PAREN
+    | BOUND OPEN_PAREN expression COMMA expression COMMA expression CLOSE_PAREN
+    | CALCDAT OPEN_PAREN expression COMMA expression COMMA NAME CLOSE_PAREN;

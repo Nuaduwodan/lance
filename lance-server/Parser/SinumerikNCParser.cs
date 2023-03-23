@@ -36,130 +36,416 @@ public partial class SinumerikNCParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		T__0=1, WHILE=2, WHILE_END=3, FOR=4, FOR_TO=5, FOR_END=6, LOOP=7, LOOP_END=8, 
-		REPEAT=9, REPEAT_END=10, IF=11, ELSE=12, IF_END=13, GOTO=14, GOTO_B=15, 
-		GOTO_C=16, GOTO_F=17, GOTO_S=18, LABEL_END=19, SYNC_WHEN=20, SYNC_WHENEVER=21, 
-		SYNC_DO=22, SYNC_CANCEL=23, RETURN=24, CALL=25, CALL_P=26, CALL_EXT=27, 
-		CALL_PATH=28, ASSIGNMENT=29, ADD=30, SUB=31, MUL=32, DIV=33, MOD=34, EQUAL=35, 
-		NOT_EQUAL=36, LESS=37, GREATER=38, LESS_EQUAL=39, GREATER_EQUAL=40, NOT=41, 
-		AND=42, OR=43, XOR=44, NOT_B=45, AND_B=46, OR_B=47, XOR_B=48, CONCAT=49, 
-		RANGE_NCK=50, RANGE_NC=51, RANGE_CHAN=52, PRE_PROC_STOP_R=53, PRE_PROC_STOP_W=54, 
-		PRE_PROC_STOP_RW=55, ACCESS_READ_PROGRAM=56, ACCESS_WRITE_PROGRAM=57, 
-		ACCESS_READ_OPI=58, ACCESS_WRITE_OPI=59, PHYS_UNIT=60, LIMIT_UPPER=61, 
-		LIMIT_LOWER=62, PROC=63, PROC_END=64, EXTERN=65, DEFINE=66, VAR=67, MACRO_DEFINE=68, 
-		MACRO_AS=69, REDEFINE=70, SET=71, BOOL_TYPE=72, CHAR_TYPE=73, INT_TYPE=74, 
-		REAL_TYPE=75, STRING_TYPE=76, AXIS_TYPE=77, FRAME_TYPE=78, SYS_VAR=79, 
-		AXIS=80, R_PARAM=81, SIN=82, COS=83, TAN=84, ASIN=85, ACOS=86, ATAN2=87, 
-		SQRT=88, ABS=89, POT=90, TRUNC=91, ROUND=92, LN=93, EXP=94, STR_LEN=95, 
-		TOOL_OFFSET_LENGTH_RADIUS=96, TOOL_OFFSET_LENGTH=97, TOOL_OFFSET_RADIUS=98, 
-		TOOL_OFFSET=99, SET_MASTER_SPINDLE=100, GRINDING_WHEEL_PERIPHERAL_SPEED_ON=101, 
-		GRINDING_WHEEL_PERIPHERAL_SPEED_OFF=102, FEED_GROUP=103, FEED_GROUP_EFFECTIVE_RADIUS=104, 
-		WAIT_FOR_POSITION=105, WAIT_FOR_MARKER=106, WAIT_FOR_SPINDLE=107, SPINDLE_POSITION_CONTROL_MODE_ON=108, 
-		SPINDLE_POSITION_CONTROL_MODE_OFF=109, SPINDLE_POSITIONING_IMMEDIATE=110, 
-		MOTION_END_FINE=111, MOTION_END_COARSE=112, MOTION_END_INTERPOLATION=113, 
-		MOTION_END_INTERPOLATION_BREAK=114, FEEDRATE_PATH_ROTARY_AXIS_ON=115, 
-		FEEDRATE_PATH_ROTARY_AXIS_OFF=116, FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY=117, 
-		TOOL_CORRECTION_SUPPRESSION=118, MASTER_SPINDLE_SPEED_LIMIT=119, POSITIONING_IN_SECTIONS=120, 
-		POSITIONING_IMMEDIATE=121, SPINDLE_POSITIONING_DELAYED=122, FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE=123, 
-		TOOL_CUTTING_SPEED=124, ABSOLUTE_COORDINATE_NEGATIVE=125, ABSOLUTE_COORDINATE_POSITIVE=126, 
-		POSITIONING_DELAYED=127, CONSTANT_CUTTING_RATE_REFERENCE_AXIS=128, FEEDRATE_PATH_ROTARY_AXIS=129, 
-		SPINDLE_IDENTIFIER=130, FEEDRATE_OVERRIDE_PATH=131, ACCELERATION_COMPENSATION=132, 
-		FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL=133, FEEDRATE_LIMIT=134, FEEDRATE_POSITION_AXIS=135, 
-		ABSOLUTE_COORDINATE=136, INCREMENTAL_COORDINATE=137, DIRECT_APPROACH_COORDINATE=138, 
-		FEEDRATE_OVERRIDE_PATH_HANDWHEEL=139, ADDITIONAL_FUNCTION=140, AUXILIARY_FUNCTION=141, 
-		PREPARATORY_FUNCTION=142, X_AXIS=143, Y_AXIS=144, Z_AXIS=145, A_AXIS=146, 
-		B_AXIS=147, C_AXIS=148, SPINDLE=149, FEEDRATE=150, TOOL=151, TOOL_CORRECTION=152, 
-		OPEN_PAREN=153, CLOSE_PAREN=154, OPEN_BRACKET=155, CLOSE_BRACKET=156, 
-		DOLLAR=157, POINT=158, COMMA=159, RESERVED=160, ID=161, WHITESPACE=162, 
-		NAME=163, NEWLINE=164, COMMENT=165, HIDE=166, BLOCK_NUMBER=167, INT_POSITIVE=168, 
-		INT=169, REAL_POSITIVE=170, REAL=171, BIN=172, HEX=173, BOOL=174, PI=175, 
-		STRING=176, PROGRAM_NAME_SIMPLE=177, PROGRAM_NAME_EXTENDED=178, LABEL_NAME=179, 
-		LABEL=180;
+		WHITESPACE=1, NEWLINE=2, COMMENT=3, HIDE=4, INT=5, REAL=6, BIN=7, HEX=8, 
+		BOOL=9, PI=10, STRING=11, WHILE=12, WHILE_END=13, FOR=14, FOR_END=15, 
+		TO=16, LOOP=17, LOOP_END=18, REPEAT=19, REPEAT_BLOCK=20, REPEAT_END=21, 
+		IF=22, ELSE=23, IF_END=24, CASE=25, CASE_OF=26, CASE_DEFAULT=27, GOTO=28, 
+		GOTO_B=29, GOTO_C=30, GOTO_F=31, GOTO_S=32, LABEL_END=33, SYNC_WHEN=34, 
+		SYNC_WHENEVER=35, SYNC_DO=36, SYNC_EVERY=37, SYNC_CANCEL=38, RETURN=39, 
+		CALL=40, CALL_P=41, CALL_EXT=42, CALL_PATH=43, CALL_BLOCK=44, CALL_MODAL=45, 
+		CALL_MODAL_OFF=46, ASSIGNMENT=47, ADD=48, SUB=49, MUL=50, DIV=51, MOD=52, 
+		EQUAL=53, NOT_EQUAL=54, LESS=55, GREATER=56, LESS_EQUAL=57, GREATER_EQUAL=58, 
+		NOT=59, AND=60, OR=61, XOR=62, NOT_B=63, AND_B=64, OR_B=65, XOR_B=66, 
+		CONCAT=67, RANGE_NCK=68, RANGE_NC=69, RANGE_CHAN=70, PRE_PROC_STOP_R=71, 
+		PRE_PROC_STOP_W=72, PRE_PROC_STOP_RW=73, ACCESS_READ_PROGRAM=74, ACCESS_WRITE_PROGRAM=75, 
+		ACCESS_READ_OPI=76, ACCESS_WRITE_OPI=77, PHYS_UNIT=78, LIMIT_UPPER=79, 
+		LIMIT_LOWER=80, PROC=81, PROC_END=82, EXTERN=83, DEFINE=84, VAR=85, MACRO_DEFINE=86, 
+		MACRO_AS=87, REDEFINE=88, SET=89, AC=90, ACC=91, ACCLIMA=92, ACN=93, ACP=94, 
+		APR=95, APW=96, APX=97, AX=98, BLSYNC=99, CAC=100, CACN=101, CACP=102, 
+		CDC=103, CIC=104, COARSEA=105, CPBC=106, CPDEF=107, CPDEL=108, CPFMOF=109, 
+		CPFMON=110, CPFMSON=111, CPFPOS=112, CPFRS=113, CPLA=114, CPLCTID=115, 
+		CPLDEF=116, CPLDEL=117, CPLDEN=118, CPLINSC=119, CPLINTR=120, CPLNUM=121, 
+		CPLOF=122, CPLON=123, CPLOUTSC=124, CPLOUTTR=125, CPLPOS=126, CPLSETVAL=127, 
+		CPMALARM=128, CPMBRAKE=129, CPMPRT=130, CPMRESET=131, CPMSTART=132, CPMVDI=133, 
+		CPOF=134, CPON=135, CPRES=136, CPSETTYPE=137, CPSYNCOP=138, CPSYNCOP2=139, 
+		CPSYNCOV=140, CPSYNFIP=141, CPSYNFIP2=142, CPSYNFIV=143, DAC=144, DC=145, 
+		DCI=146, DCM=147, DCU=148, DIACYCOFA=149, DIAM90A=150, DIAMCHAN=151, DIAMCHANA=152, 
+		DIAMOFA=153, DIAMONA=154, DIC=155, EX=156, FA=157, FDA=158, FGREF=159, 
+		FI=160, FINEA=161, FL=162, FMA=163, FOC=164, FOCOF=165, FOCON=166, FPO=167, 
+		FROM=168, FXS=169, FXST=170, FXSW=171, FZ=172, GP=173, IC=174, ID=175, 
+		IDS=176, INICF=177, INIPO=178, INIRE=179, IP=180, IPOENDA=181, ISOCALL=182, 
+		JERKLIM=183, JERKLIMA=184, LIFTFAST=185, LIMS=186, MI=187, MOV=188, OS=189, 
+		OSB=190, OSCILL=191, OSCTRL=192, OSE=193, OSNSC=194, OSP1=195, OSP2=196, 
+		OST1=197, OST2=198, OVR=199, OVRA=200, OVRRAP=201, PHI=202, PHU=203, PM=204, 
+		PO=205, POLF=206, POS=207, POSA=208, POSP=209, PR=210, PRIO=211, PRLOC=212, 
+		PSISYNRW=213, QU=214, RAC=215, REP=216, RIC=217, RT=218, SC=219, SCC=220, 
+		SCPARA=221, SETINT=222, SPOS=223, SPOSA=224, SRA=225, STA=226, SVC=227, 
+		SYNR=228, SYNRW=229, SYNW=230, TR=231, VELOLIM=232, VELOLIMA=233, BOOL_TYPE=234, 
+		CHAR_TYPE=235, INT_TYPE=236, REAL_TYPE=237, STRING_TYPE=238, AXIS_TYPE=239, 
+		FRAME_TYPE=240, SIN=241, COS=242, TAN=243, ASIN=244, ACOS=245, ATAN2=246, 
+		SQRT=247, POT=248, LN=249, EXP=250, ABS=251, TRUNC=252, ROUND=253, ROUNDUP=254, 
+		BOUND=255, MAXVAL=256, MINVAL=257, CALCDAT=258, CTRANS=259, CMIRROR=260, 
+		CSCALE=261, CROT=262, CROTS=263, CRPL=264, STRLEN=265, SPRINT=266, STRINGIS=267, 
+		SUBSTR=268, AXNAME=269, AXSTRING=270, INDEX=271, MINDEX=272, ISNUMBER=273, 
+		NUMBER=274, MATCH=275, TOLOWER=276, TOUPPER=277, CTAB=278, CTABEXISTS=279, 
+		CTABFNO=280, CTABFPOL=281, CTABFSEG=282, CTABID=283, CTABINV=284, CTABISLOCK=285, 
+		CTABMEMTYP=286, CTABMPOL=287, CTABMSEG=288, CTABNO=289, CTABNOMEM=290, 
+		CTABPERIOD=291, CTABPOL=292, CTABPOLID=293, CTABSEG=294, CTABSEGID=295, 
+		CTABSEV=296, CTABSSV=297, CTABTEP=298, CTABTEV=299, CTABTMAX=300, CTABTMIN=301, 
+		CTABTSP=302, CTABTSV=303, ADDFRAME=304, AXTOSPI=305, CALCPOSI=306, CALCTRAVAR=307, 
+		CFINE=308, CHKDM=309, CHKDNO=310, COLLPAIR=311, CORRTC=312, CORRTRAFO=313, 
+		CSPLINE=314, DELDL=315, DELMLOWNER=316, DELMLRES=317, DELOBJ=318, DELTOOLENV=319, 
+		GETACTT=320, GETACTTD=321, GETDNO=322, GETT=323, GETTCOR=324, GETTENV=325, 
+		GETVARAP=326, GETVARDFT=327, GETVARLIM=328, GETVARPHU=329, GETVARTYP=330, 
+		INTERSEC=331, INVFRAME=332, ISAXIS=333, ISFILE=334, ISVAR=335, LENTOAX=336, 
+		MEAFRAME=337, MEASURE=338, MODAXVAL=339, NAMETOINT=340, NEWMT=341, NEWT=342, 
+		ORISOLH=343, POSRANGE=344, PROTD=345, RINDEX=346, SETDNO=347, SETTCOR=348, 
+		SIRELAY=349, TOOLENV=350, TOOLGNT=351, TOOLGT=352, ACTBLOCNO=353, ADISPOSA=354, 
+		AFISOF=355, AFISON=356, AUXFUDEL=357, AUXFUDELG=358, AUXFUMSEQ=359, AUXFUSYNC=360, 
+		AXCTSWE=361, AXCTSWEC=362, AXCTSWED=363, AXTOCHAN=364, BRISKA=365, CADAPTOF=366, 
+		CADAPTON=367, CALCFIR=368, CANCELSUB=369, CHANDATA=370, CLEARM=371, CLRINT=372, 
+		CONTDCON=373, CONTPRON=374, CORROF=375, COUPDEF=376, COUPDEL=377, COUPOF=378, 
+		COUPOFS=379, COUPON=380, COUPONC=381, COUPRES=382, CPROT=383, CPROTDEF=384, 
+		CTABDEF=385, CTABDEL=386, CTABEND=387, CTABLOCK=388, CTABUNLOCK=389, DELAYFSTOF=390, 
+		DELAYFSTON=391, DELDTG=392, DELETE=393, DELMT=394, DELT=395, DELTC=396, 
+		DISABLE=397, DRFOF=398, DRIVEA=399, DRVPRD=400, DRVPWR=401, DZERO=402, 
+		EGDEF=403, EGDEL=404, EGOFC=405, EGOFS=406, EGON=407, EGONSYN=408, EGONSYNE=409, 
+		ENABLE=410, ESRR=411, ESRS=412, EXECSTRING=413, EXECTAB=414, EXECUTE=415, 
+		EXTCLOSE=416, EXTOPEN=417, FCTDEF=418, FGROUP=419, FILEDATE=420, FILEINFO=421, 
+		FILESIZE=422, FILESTAT=423, FILETIME=424, FPR=425, FPRAOF=426, FPRAON=427, 
+		FTOC=428, GEOAX=429, GET=430, GETD=431, GETEXET=432, GETFREELOC=433, GETSELT=434, 
+		GWPSOF=435, GWPSON=436, ICYCOF=437, ICYCON=438, INIT=439, IPOBRKA=440, 
+		IPTRLOCK=441, IPTRUNLOCK=442, JERKA=443, LEADOF=444, LEADON=445, LOCK=446, 
+		MASLDEF=447, MASLDEL=448, MASLOF=449, MASLOFS=450, MASLON=451, MMC=452, 
+		MSG=453, MVTOOL=454, NEWCONF=455, NPROT=456, NPROTDEF=457, ORIRESET=458, 
+		POLFA=459, POLFMASK=460, POLFMLIN=461, POLYPATH=462, POSM=463, POSMT=464, 
+		PRESETON=465, PRESETONS=466, PROTA=467, PROTS=468, PUNCHACC=469, PUTFTOC=470, 
+		PUTFTOCF=471, RDISABLE=472, READ=473, RELEASE=474, RESETMON=475, RETB=476, 
+		SBLOF=477, SBLON=478, SETAL=479, SETM=480, SETMS=481, SETMTH=482, SETPIECE=483, 
+		SETTA=484, SETTIA=485, SIRELIN=486, SIRELOUT=487, SIRELTIME=488, SOFTA=489, 
+		SPCOF=490, SPCON=491, SPLINEPATH=492, START=493, STOPRE=494, STOPREOF=495, 
+		SYNFCT=496, TANG=497, TANGDEL=498, TANGOF=499, TANGON=500, TCA=501, TCI=502, 
+		TLIFT=503, TML=504, TMOF=505, TMON=506, TOFFOF=507, TOFFON=508, TRAANG=509, 
+		TRACON=510, TRACYL=511, TRAFOOF=512, TRAFOON=513, TRAILOF=514, TRAILON=515, 
+		TRANSMIT=516, TRAORI=517, UNLOCK=518, WAITC=519, WAITE=520, WAITENC=521, 
+		WAITM=522, WAITMC=523, WAITP=524, WAITS=525, WRITE=526, WRTPR=527, ADIS=528, 
+		ADISPOS=529, ALF=530, AMIRROR=531, ANG=532, AP=533, AR=534, AROT=535, 
+		AROTS=536, ASCALE=537, ASPLINE=538, ATOL=539, ATRANS=540, BAUTO=541, BNAT=542, 
+		BRISK=543, BSPLINE=544, BTAN=545, CDOF=546, CDOF2=547, CDON=548, CFC=549, 
+		CFIN=550, CFTCP=551, CHF=552, CHR=553, CIP=554, COMPCAD=555, COMPCURV=556, 
+		COMPOF=557, COMPON=558, COMPPATH=559, COMPSURF=560, CP=561, CPRECOF=562, 
+		CPRECON=563, CR=564, CT=565, CTOL=566, CTOLG0=567, CUT2D=568, CUT2DD=569, 
+		CUT2DF=570, CUT2DFD=571, CUT3DC=572, CUT3DCC=573, CUT3DCCD=574, CUT3DCD=575, 
+		CUT3DF=576, CUT3DFD=577, CUT3DFF=578, CUT3DFS=579, CUTCONOF=580, CUTCONON=581, 
+		CUTMOD=582, CUTMODK=583, D=584, D0=585, DIAM90=586, DIAMCYCOF=587, DIAMOF=588, 
+		DIAMON=589, DILF=590, DISC=591, DISCL=592, DISPR=593, DISR=594, DISRP=595, 
+		DITE=596, DITS=597, DL=598, DRIVE=599, DYNFINISH=600, DYNNORM=601, DYNPOS=602, 
+		DYNPREC=603, DYNROUGH=604, DYNSEMIFIN=605, EAUTO=606, ENAT=607, ETAN=608, 
+		F=609, FAD=610, FB=611, FCUB=612, FD=613, FENDNORM=614, FFWOF=615, FFWON=616, 
+		FIFOCTRL=617, FLIM=618, FLIN=619, FNORM=620, FP=621, FRC=622, FRCM=623, 
+		FTOCOF=624, FTOCON=625, GCODE=626, GFRAME=627, HCODE=628, I=629, I1=630, 
+		INVCCW=631, INVCW=632, IR=633, ISD=634, J=635, J1=636, JR=637, K=638, 
+		K1=639, KONT=640, KONTC=641, KONTT=642, KR=643, L=644, LEAD=645, LFOF=646, 
+		LFON=647, LFPOS=648, LFTXT=649, LFWP=650, MCODE=651, MEAC=652, MEAS=653, 
+		MEASA=654, MEASF=655, MEAW=656, MEAWA=657, MIRROR=658, MOVT=659, NORM=660, 
+		OEMIPO1=661, OEMIPO2=662, OFFN=663, OMA=664, ORIANGLE=665, ORIAXES=666, 
+		ORIAXESFR=667, ORIAXPOS=668, ORIC=669, ORICONCCW=670, ORICONCW=671, ORICONIO=672, 
+		ORICONTO=673, ORICURINV=674, ORICURVE=675, ORID=676, ORIEULER=677, ORIMKS=678, 
+		ORIPATH=679, ORIPATHS=680, ORIPLANE=681, ORIROTA=682, ORIROTC=683, ORIROTR=684, 
+		ORIROTT=685, ORIRPY=686, ORIRPY2=687, ORIS=688, ORISOF=689, ORISON=690, 
+		ORIVECT=691, ORIVIRT1=692, ORIVIRT2=693, ORIWKS=694, OSC=695, OSD=696, 
+		OSOF=697, OSS=698, OSSE=699, OST=700, OTOL=701, OTOLG0=702, P=703, PACCLIM=704, 
+		PAROT=705, PAROTOF=706, PDELAYOF=707, PDELAYON=708, PL=709, POLY=710, 
+		PON=711, PONS=712, PTP=713, PTPG0=714, PTPWOC=715, PW=716, REPOSA=717, 
+		REPOSH=718, REPOSHA=719, REPOSL=720, REPOSQ=721, REPOSQA=722, RMB=723, 
+		RMBBL=724, RME=725, RMEBL=726, RMI=727, RMIBL=728, RMN=729, RMNBL=730, 
+		RND=731, RNDM=732, ROT=733, ROTS=734, RP=735, RPL=736, RTLIOF=737, RTLION=738, 
+		SCALE=739, SD=740, SF=741, SOFT=742, SON=743, SONS=744, SPATH=745, SPIF1=746, 
+		SPIF2=747, SPN=748, SPOF=749, SPP=750, SR=751, ST=752, STARTFIFO=753, 
+		STOLF=754, STOPFIFO=755, SUPA=756, SUPD=757, T=758, TCARR=759, TCOABS=760, 
+		TCOFR=761, TCOFRX=762, TCOFRY=763, TCOFRZ=764, THETA=765, TILT=766, TOFF=767, 
+		TOFFL=768, TOFFLR=769, TOFFR=770, TOFRAME=771, TOFRAMEX=772, TOFRAMEY=773, 
+		TOFRAMEZ=774, TOROT=775, TOROTOF=776, TOROTX=777, TOROTY=778, TOROTZ=779, 
+		TOWBCS=780, TOWKCS=781, TOWMCS=782, TOWSTD=783, TOWTCS=784, TOWWCS=785, 
+		TRANS=786, TURN=787, UPATH=788, WALCS=789, WALIMOF=790, WALIMON=791, OPEN_PAREN=792, 
+		CLOSE_PAREN=793, OPEN_BRACKET=794, CLOSE_BRACKET=795, DOLLAR=796, POINT=797, 
+		DOUBLE_COLON=798, COMMA=799, BLOCK_NUMBER=800, CYCLE=801, GROUP_ADDEND=802, 
+		GROUP_BEGIN=803, GROUP_END=804, HOLES1=805, HOLES2=806, LONGHOLE=807, 
+		POCKET3=808, POCKET4=809, SLOT1=810, SLOT2=811, DISPLOF=812, DISPLON=813, 
+		PREPRO=814, SAVE=815, COMPLETE=816, INITIAL=817, STAT=818, TU=819, RESERVED=820, 
+		SYS_VAR=821, AXIS=822, AXIS_NUMBERED=823, SPINDLE=824, R_PARAM=825, SPINDLE_IDENTIFIER=826, 
+		NAME=827;
 	public const int
-		RULE_file = 0, RULE_block = 1, RULE_procedure = 2, RULE_params = 3, RULE_paramOut = 4, 
-		RULE_param = 5, RULE_statement = 6, RULE_ifStatement = 7, RULE_iterativeStatement = 8, 
-		RULE_jumpStatement = 9, RULE_primaryExpression = 10, RULE_unaryExpression = 11, 
-		RULE_multiplicativeExpression = 12, RULE_additiveExpression = 13, RULE_binaryAndExpression = 14, 
-		RULE_binaryExclusiveOrExpression = 15, RULE_binaryInclusiveOrExpression = 16, 
-		RULE_andExpression = 17, RULE_exclusiveOrExpression = 18, RULE_inclusiveOrExpression = 19, 
-		RULE_stringExpression = 20, RULE_relationalExpression = 21, RULE_expression = 22, 
-		RULE_type = 23, RULE_constant = 24, RULE_feedrate_override_path = 25, 
-		RULE_feedrate_override_rapid_traverse_velocity = 26, RULE_feedrate_override_position_or_spindle = 27, 
-		RULE_acceleration_compensation = 28, RULE_feedrate_override_path_handwheel = 29, 
-		RULE_feedrate_override_axial_handwheel = 30, RULE_axis_spindle_identifier = 31, 
-		RULE_axis_identifier = 32, RULE_spindle_identifier = 33, RULE_axis = 34;
+		RULE_file = 0, RULE_declarationBlock = 1, RULE_block = 2, RULE_procedureDefinition = 3, 
+		RULE_parameterDefinitions = 4, RULE_parameterDefinition = 5, RULE_parameterDefinitionByValue = 6, 
+		RULE_parameterDefinitionByReference = 7, RULE_declaration = 8, RULE_macroDeclaration = 9, 
+		RULE_macroValue = 10, RULE_variableDeclaration = 11, RULE_procedureDeclaration = 12, 
+		RULE_parameterDeclarations = 13, RULE_parameterDeclaration = 14, RULE_parameterDeclarationByValue = 15, 
+		RULE_parameterDeclarationByReference = 16, RULE_arrayDeclaration = 17, 
+		RULE_arrayDeclarationDimension = 18, RULE_variableAssignment = 19, RULE_arrayDefinition = 20, 
+		RULE_type = 21, RULE_statement = 22, RULE_ifStatement = 23, RULE_caseStatement = 24, 
+		RULE_iterativeStatement = 25, RULE_iterativeWhile = 26, RULE_iterativeFor = 27, 
+		RULE_iterativeRepeat = 28, RULE_iterativeLoop = 29, RULE_jumpStatement = 30, 
+		RULE_gotoStatement = 31, RULE_gotoCondition = 32, RULE_gotoTarget = 33, 
+		RULE_expression = 34, RULE_relationalExpression = 35, RULE_stringExpression = 36, 
+		RULE_inclusiveOrExpression = 37, RULE_exclusiveOrExpression = 38, RULE_andExpression = 39, 
+		RULE_binaryInclusiveOrExpression = 40, RULE_binaryExclusiveOrExpression = 41, 
+		RULE_binaryAndExpression = 42, RULE_additiveExpression = 43, RULE_multiplicativeExpression = 44, 
+		RULE_unaryExpression = 45, RULE_primaryExpression = 46, RULE_constant = 47, 
+		RULE_numeric = 48, RULE_command = 49, RULE_axisCode = 50, RULE_axisAssignmentExpression = 51, 
+		RULE_axis_spindle_identifier = 52, RULE_axis_identifier = 53, RULE_spindle_identifier = 54, 
+		RULE_procedure = 55, RULE_ownProcedure = 56, RULE_parameters = 57, RULE_predefinedProcedure = 58, 
+		RULE_modalSubprogramCall = 59, RULE_feedrate_override_path = 60, RULE_feedrate_override_rapid_traverse_velocity = 61, 
+		RULE_feedrate_override_position_or_spindle = 62, RULE_acceleration_compensation = 63, 
+		RULE_feedrate_override_path_handwheel = 64, RULE_feedrate_override_axial_handwheel = 65, 
+		RULE_function = 66, RULE_predefinedFunction = 67, RULE_mathFunction = 68;
 	public static readonly string[] ruleNames = {
-		"file", "block", "procedure", "params", "paramOut", "param", "statement", 
-		"ifStatement", "iterativeStatement", "jumpStatement", "primaryExpression", 
-		"unaryExpression", "multiplicativeExpression", "additiveExpression", "binaryAndExpression", 
-		"binaryExclusiveOrExpression", "binaryInclusiveOrExpression", "andExpression", 
-		"exclusiveOrExpression", "inclusiveOrExpression", "stringExpression", 
-		"relationalExpression", "expression", "type", "constant", "feedrate_override_path", 
-		"feedrate_override_rapid_traverse_velocity", "feedrate_override_position_or_spindle", 
-		"acceleration_compensation", "feedrate_override_path_handwheel", "feedrate_override_axial_handwheel", 
-		"axis_spindle_identifier", "axis_identifier", "spindle_identifier", "axis"
+		"file", "declarationBlock", "block", "procedureDefinition", "parameterDefinitions", 
+		"parameterDefinition", "parameterDefinitionByValue", "parameterDefinitionByReference", 
+		"declaration", "macroDeclaration", "macroValue", "variableDeclaration", 
+		"procedureDeclaration", "parameterDeclarations", "parameterDeclaration", 
+		"parameterDeclarationByValue", "parameterDeclarationByReference", "arrayDeclaration", 
+		"arrayDeclarationDimension", "variableAssignment", "arrayDefinition", 
+		"type", "statement", "ifStatement", "caseStatement", "iterativeStatement", 
+		"iterativeWhile", "iterativeFor", "iterativeRepeat", "iterativeLoop", 
+		"jumpStatement", "gotoStatement", "gotoCondition", "gotoTarget", "expression", 
+		"relationalExpression", "stringExpression", "inclusiveOrExpression", "exclusiveOrExpression", 
+		"andExpression", "binaryInclusiveOrExpression", "binaryExclusiveOrExpression", 
+		"binaryAndExpression", "additiveExpression", "multiplicativeExpression", 
+		"unaryExpression", "primaryExpression", "constant", "numeric", "command", 
+		"axisCode", "axisAssignmentExpression", "axis_spindle_identifier", "axis_identifier", 
+		"spindle_identifier", "procedure", "ownProcedure", "parameters", "predefinedProcedure", 
+		"modalSubprogramCall", "feedrate_override_path", "feedrate_override_rapid_traverse_velocity", 
+		"feedrate_override_position_or_spindle", "acceleration_compensation", 
+		"feedrate_override_path_handwheel", "feedrate_override_axial_handwheel", 
+		"function", "predefinedFunction", "mathFunction"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, "'= '", "'while'", "'endwhile'", "'for'", "'to'", "'endfor'", "'loop'", 
-		"'endloop'", "'repeat'", "'until'", "'if'", "'else'", "'endif'", "'goto'", 
-		"'gotob'", "'gotoc'", "'gotof'", "'gotos'", "'endlabel'", "'when'", "'whenever'", 
-		"'do'", "'cancel'", "'ret'", "'call'", "'pcall'", "'extcall'", "'callpath'", 
-		"'='", "'+'", "'-'", "'*'", null, "'mod'", "'=='", "'<>'", "'<'", "'>'", 
-		"'<='", "'>='", "'not'", "'and'", "'or'", "'xor'", "'b_not'", "'b_and'", 
-		"'b_or'", "'b_xor'", "'<<'", "'nck'", "'nc'", "'chan'", "'syncr'", "'syncw'", 
-		"'syncrw'", "'aprp'", "'apwp'", "'aprb'", "'apwb'", "'phy'", "'uli'", 
-		"'lli'", "'proc'", "'endproc'", "'extern'", "'def'", "'var'", "'define'", 
-		"'as'", "'redef'", "'set'", "'bool'", "'char'", "'int'", "'real'", "'string'", 
-		"'axis'", "'frame'", null, null, null, "'sin'", "'cos'", "'tan'", "'asin'", 
-		"'acos'", "'atan2'", "'sqrt'", "'abs'", "'pot'", "'trunc'", "'round'", 
-		"'ln'", "'exp'", "'strlen'", "'tofflr'", "'toffl'", "'toffr'", "'toff'", 
-		"'setms'", "'gwpson'", "'gwpsof'", "'fgroup'", "'fgref'", "'waitp'", "'waitmc'", 
-		"'waits'", "'spcon'", "'spcof'", "'sposa'", "'finea'", "'coarsea'", "'ipoenda'", 
-		"'ipobrka'", "'fpraon'", "'fpraof'", "'ovrrap'", "'supd'", "'lims'", "'posp'", 
-		"'posa'", "'spos'", "'ovra'", "'svc'", "'acn'", "'acp'", "'pos'", "'scc'", 
-		"'fpr'", "'spi'", "'ovr'", "'acc'", "'fda'", "'fl'", "'fa'", "'ac'", "'ic'", 
-		"'dc'", "'fd'", null, null, null, "'x'", "'y'", "'z'", "'a'", "'b'", "'c'", 
-		"'s'", "'f'", "'t'", "'d'", "'('", "')'", "'['", "']'", "'$'", "'.'", 
-		"','"
+		null, null, null, null, null, null, null, null, null, null, "'$PI'", null, 
+		"'while'", "'endwhile'", "'for'", "'endfor'", "'to'", "'loop'", "'endloop'", 
+		"'repeat'", "'repeatb'", "'until'", "'if'", "'else'", "'endif'", "'case'", 
+		"'of'", "'default'", "'goto'", "'gotob'", "'gotoc'", "'gotof'", "'gotos'", 
+		"'endlabel'", "'when'", "'whenever'", "'do'", "'every'", "'cancel'", "'ret'", 
+		"'call'", "'pcall'", "'extcall'", "'callpath'", "'block'", "'mcall'", 
+		"'mcallof'", "'='", "'+'", "'-'", "'*'", null, "'mod'", "'=='", "'<>'", 
+		"'<'", "'>'", "'<='", "'>='", "'not'", "'and'", "'or'", "'xor'", "'b_not'", 
+		"'b_and'", "'b_or'", "'b_xor'", "'<<'", "'nck'", "'nc'", "'chan'", "'syncr'", 
+		"'syncw'", "'syncrw'", "'aprp'", "'apwp'", "'aprb'", "'apwb'", "'phy'", 
+		"'uli'", "'lli'", "'proc'", "'endproc'", "'extern'", "'def'", "'var'", 
+		"'define'", "'as'", "'redef'", "'set'", "'ac'", "'acc'", "'acclima'", 
+		"'acn'", "'acp'", "'apr'", "'apw'", "'apx'", "'ax'", "'blsync'", "'cac'", 
+		"'cacn'", "'cacp'", "'cdc'", "'cic'", "'coarsea'", "'cpbc'", "'cpdef'", 
+		"'cpdel'", "'cpfmof'", "'cpfmon'", "'cpfmson'", "'cpfpos'", "'cpfrs'", 
+		"'cpla'", "'cplctid'", "'cpldef'", "'cpldel'", "'cplden'", "'cplinsc'", 
+		"'cplintr'", "'cplnum'", "'cplof'", "'cplon'", "'cploutsc'", "'cplouttr'", 
+		"'cplpos'", "'cplsetval'", "'cpmalarm'", "'cpmbrake'", "'cpmprt'", "'cpmreset'", 
+		"'cpmstart'", "'cpmvdi'", "'cpof'", "'cpon'", "'cpres'", "'cpsettype'", 
+		"'cpsyncop'", "'cpsyncop2'", "'cpsyncov'", "'cpsynfip'", "'cpsynfip2'", 
+		"'cpsynfiv'", "'dac'", "'dc'", "'dci'", "'dcm'", "'dcu'", "'diacycofa'", 
+		"'diam90a'", "'diamchan'", "'diamchana'", "'diamofa'", "'diamona'", "'dic'", 
+		"'ex'", "'fa'", "'fda'", "'fgref'", "'fi'", "'finea'", "'fl'", "'fma'", 
+		"'foc'", "'focof'", "'focon'", "'fpo'", "'from'", "'fxs'", "'fxst'", "'fxsw'", 
+		"'fz'", "'gp'", "'ic'", "'id'", "'ids'", "'inicf'", "'inipo'", "'inire'", 
+		"'ip'", "'ipoenda'", "'isocall'", "'jerklim'", "'jerklima'", "'liftfast'", 
+		"'lims'", "'mi'", "'mov'", "'os'", "'osb'", "'oscill'", "'osctrl'", "'ose'", 
+		"'osnsc'", "'osp1'", "'osp2'", "'ost1'", "'ost2'", "'ovr'", "'ovra'", 
+		"'ovrrap'", "'phi'", "'phu'", "'pm'", "'po'", "'polf'", "'pos'", "'posa'", 
+		"'posp'", "'pr'", "'prio'", "'prloc'", "'psisynrw'", "'qu'", "'rac'", 
+		"'rep'", "'ric'", "'rt'", "'sc'", "'scc'", "'scpara'", "'setint'", "'spos'", 
+		"'sposa'", "'sra'", "'sta'", "'svc'", "'synr'", "'synrw'", "'synw'", "'tr'", 
+		"'velolim'", "'velolima'", "'bool'", "'char'", "'int'", "'real'", "'string'", 
+		"'axis'", "'frame'", "'sin'", "'cos'", "'tan'", "'asin'", "'acos'", "'atan2'", 
+		"'sqrt'", "'pot'", "'ln'", "'exp'", "'abs'", "'trunc'", "'round'", "'roundup'", 
+		"'bound'", "'maxval'", "'minval'", "'calcdat'", "'ctrans'", "'cmirror'", 
+		"'cscale'", "'crot'", "'crots'", "'crpl'", "'strlen'", "'sprint'", "'stringis'", 
+		"'substr'", "'axname'", "'axstring'", "'index'", "'mindex'", "'isnumber'", 
+		"'number'", "'match'", "'tolower'", "'toupper'", "'ctab'", "'ctabexists'", 
+		"'ctabfno'", "'ctabfpol'", "'ctabfseg'", "'ctabid'", "'ctabinv'", "'ctabislock'", 
+		"'ctabmemtyp'", "'ctabmpol'", "'ctabmseg'", "'ctabno'", "'ctabnomem'", 
+		"'ctabperiod'", "'ctabpol'", "'ctabpolid'", "'ctabseg'", "'ctabsegid'", 
+		"'ctabsev'", "'ctabssv'", "'ctabtep'", "'ctabtev'", "'ctabtmax'", "'ctabtmin'", 
+		"'ctabtsp'", "'ctabtsv'", "'addframe'", "'axtospi'", "'calcposi'", "'calctravar'", 
+		"'cfine'", "'chkdm'", "'chkdno'", "'collpair'", "'corrtc'", "'corrtrafo'", 
+		"'cspline'", "'deldl'", "'delmlowner'", "'delmlres'", "'delobj'", "'deltoolenv'", 
+		"'getactt'", "'getacttd'", "'getdno'", "'gett'", "'gettcor'", "'gettenv'", 
+		"'getvarap'", "'getvardft'", "'getvarlim'", "'getvarphu'", "'getvartyp'", 
+		"'intersec'", "'invframe'", "'isaxis'", "'isfile'", "'isvar'", "'lentoax'", 
+		"'meaframe'", "'measure'", "'modaxval'", "'nametoint'", "'newmt'", "'newt'", 
+		"'orisolh'", "'posrange'", "'protd'", "'rindex'", "'setdno'", "'settcor'", 
+		"'sirelay'", "'toolenv'", "'toolgnt'", "'toolgt'", "'actblocno'", "'adisposa'", 
+		"'afisof'", "'afison'", "'auxfudel'", "'auxfudelg'", "'auxfumseq'", "'auxfusync'", 
+		"'axctswe'", "'axctswec'", "'axctswed'", "'axtochan'", "'briska'", "'cadaptof'", 
+		"'cadapton'", "'calcfir'", "'cancelsub'", "'chandata'", "'clearm'", "'clrint'", 
+		"'contdcon'", "'contpron'", "'corrof'", "'coupdef'", "'coupdel'", "'coupof'", 
+		"'coupofs'", "'coupon'", "'couponc'", "'coupres'", "'cprot'", "'cprotdef'", 
+		"'ctabdef'", "'ctabdel'", "'ctabend'", "'ctablock'", "'ctabunlock'", "'delayfstof'", 
+		"'delayfston'", "'deldtg'", "'delete'", "'delmt'", "'delt'", "'deltc'", 
+		"'disable'", "'drfof'", "'drivea'", "'drvprd'", "'drvpwr'", "'dzero'", 
+		"'egdef'", "'egdel'", "'egofc'", "'egofs'", "'egon'", "'egonsyn'", "'egonsyne'", 
+		"'enable'", "'esrr'", "'esrs'", "'execstring'", "'exectab'", "'execute'", 
+		"'extclose'", "'extopen'", "'fctdef'", "'fgroup'", "'filedate'", "'fileinfo'", 
+		"'filesize'", "'filestat'", "'filetime'", "'fpr'", "'fpraof'", "'fpraon'", 
+		"'ftoc'", "'geoax'", "'get'", "'getd'", "'getexet'", "'getfreeloc'", "'getselt'", 
+		"'gwpsof'", "'gwpson'", "'icycof'", "'icycon'", "'init'", "'ipobrka'", 
+		"'iptrlock'", "'iptrunlock'", "'jerka'", "'leadof'", "'leadon'", "'lock'", 
+		"'masldef'", "'masldel'", "'maslof'", "'maslofs'", "'maslon'", "'mmc'", 
+		"'msg'", "'mvtool'", "'newconf'", "'nprot'", "'nprotdef'", "'orireset'", 
+		"'polfa'", "'polfmask'", "'polfmlin'", "'polypath'", "'posm'", "'posmt'", 
+		"'preseton'", "'presetons'", "'prota'", "'prots'", "'punchacc'", "'putftoc'", 
+		"'putftocf'", "'rdisable'", "'read'", "'release'", "'resetmon'", "'retb'", 
+		"'sblof'", "'sblon'", "'setal'", "'setm'", "'setms'", "'setmth'", "'setpiece'", 
+		"'setta'", "'settia'", "'sirelin'", "'sirelout'", "'sireltime'", "'softa'", 
+		"'spcof'", "'spcon'", "'splinepath'", "'start'", "'stopre'", "'stopreof'", 
+		"'synfct'", "'tang'", "'tangdel'", "'tangof'", "'tangon'", "'tca'", "'tci'", 
+		"'tlift'", "'tml'", "'tmof'", "'tmon'", "'toffof'", "'toffon'", "'traang'", 
+		"'tracon'", "'tracyl'", "'trafoof'", "'trafoon'", "'trailof'", "'trailon'", 
+		"'transmit'", "'traori'", "'unlock'", "'waitc'", "'waite'", "'waitenc'", 
+		"'waitm'", "'waitmc'", "'waitp'", "'waits'", "'write'", "'wrtpr'", "'adis'", 
+		"'adispos'", "'alf'", "'amirror'", "'ang'", "'ap'", "'ar'", "'arot'", 
+		"'arots'", "'ascale'", "'aspline'", "'atol'", "'atrans'", "'bauto'", "'bnat'", 
+		"'brisk'", "'bspline'", "'btan'", "'cdof'", "'cdof2'", "'cdon'", "'cfc'", 
+		"'cfin'", "'cftcp'", "'chf'", "'chr'", "'cip'", "'compcad'", "'compcurv'", 
+		"'compof'", "'compon'", "'comppath'", "'compsurf'", "'cp'", "'cprecof'", 
+		"'cprecon'", "'cr'", "'ct'", "'ctol'", "'ctolg0'", "'cut2d'", "'cut2dd'", 
+		"'cut2df'", "'cut2dfd'", "'cut3dc'", "'cut3dcc'", "'cut3dccd'", "'cut3dcd'", 
+		"'cut3df'", "'cut3dfd'", "'cut3dff'", "'cut3dfs'", "'cutconof'", "'cutconon'", 
+		"'cutmod'", "'cutmodk'", "'d'", "'d0'", "'diam90'", "'diamcycof'", "'diamof'", 
+		"'diamon'", "'dilf'", "'disc'", "'discl'", "'dispr'", "'disr'", "'disrp'", 
+		"'dite'", "'dits'", "'dl'", "'drive'", "'dynfinish'", "'dynnorm'", "'dynpos'", 
+		"'dynprec'", "'dynrough'", "'dynsemifin'", "'eauto'", "'enat'", "'etan'", 
+		"'f'", "'fad'", "'fb'", "'fcub'", "'fd'", "'fendnorm'", "'ffwof'", "'ffwon'", 
+		"'fifoctrl'", "'flim'", "'flin'", "'fnorm'", "'fp'", "'frc'", "'frcm'", 
+		"'ftocof'", "'ftocon'", null, "'gframe'", null, "'i'", "'i1'", "'invccw'", 
+		"'invcw'", "'ir'", "'isd'", "'j'", "'j1'", "'jr'", "'k'", "'k1'", "'kont'", 
+		"'kontc'", "'kontt'", "'kr'", "'l'", "'lead'", "'lfof'", "'lfon'", "'lfpos'", 
+		"'lftxt'", "'lfwp'", null, "'meac'", "'meas'", "'measa'", "'measf'", "'meaw'", 
+		"'meawa'", "'mirror'", "'movt'", "'norm'", "'oemipo1'", "'oemipo2'", "'offn'", 
+		null, "'oriangle'", "'oriaxes'", "'oriaxesfr'", "'oriaxpos'", "'oric'", 
+		"'oriconccw'", "'oriconcw'", "'oriconio'", "'oriconto'", "'oricurinv'", 
+		"'oricurve'", "'orid'", "'orieuler'", "'orimks'", "'oripath'", "'oripaths'", 
+		"'oriplane'", "'orirota'", "'orirotc'", "'orirotr'", "'orirott'", "'orirpy'", 
+		"'orirpy2'", "'oris'", "'orisof'", "'orison'", "'orivect'", "'orivirt1'", 
+		"'orivirt2'", "'oriwks'", "'osc'", "'osd'", "'osof'", "'oss'", "'osse'", 
+		"'ost'", "'otol'", "'otolg0'", "'p'", "'pacclim'", "'parot'", "'parotof'", 
+		"'pdelayof'", "'pdelayon'", "'pl'", "'poly'", "'pon'", "'pons'", "'ptp'", 
+		"'ptpg0'", "'ptpwoc'", "'pw'", "'reposa'", "'reposh'", "'reposha'", "'reposl'", 
+		"'reposq'", "'reposqa'", "'rmb'", "'rmbbl'", "'rme'", "'rmebl'", "'rmi'", 
+		"'rmibl'", "'rmn'", "'rmnbl'", "'rnd'", "'rndm'", "'rot'", "'rots'", "'rp'", 
+		"'rpl'", "'rtliof'", "'rtlion'", "'scale'", "'sd'", "'sf'", "'soft'", 
+		"'son'", "'sons'", "'spath'", "'spif1'", "'spif2'", "'spn'", "'spof'", 
+		"'spp'", "'sr'", "'st'", "'startfifo'", "'stolf'", "'stopfifo'", "'supa'", 
+		"'supd'", "'t'", "'tcarr'", "'tcoabs'", "'tcofr'", "'tcofrx'", "'tcofry'", 
+		"'tcofrz'", "'theta'", "'tilt'", "'toff'", "'toffl'", "'tofflr'", "'toffr'", 
+		"'toframe'", "'toframex'", "'toframey'", "'toframez'", "'torot'", "'torotof'", 
+		"'torotx'", "'toroty'", "'torotz'", "'towbcs'", "'towkcs'", "'towmcs'", 
+		"'towstd'", "'towtcs'", "'towwcs'", "'trans'", "'turn'", "'upath'", "'walcs'", 
+		"'walimof'", "'walimon'", "'('", "')'", "'['", "']'", "'$'", "'.'", "':'", 
+		"','", null, "'cycle'", "'group_addend'", "'group_begin'", "'group_end'", 
+		"'holes1'", "'holes2'", "'longhole'", "'pocket3'", "'pocket4'", "'slot1'", 
+		"'slot2'", "'displof'", "'displon'", "'prepro'", "'save'", "'complete'", 
+		"'initial'", "'stat'", "'tu'", null, null, null, null, null, null, "'spi'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, null, "WHILE", "WHILE_END", "FOR", "FOR_TO", "FOR_END", "LOOP", 
-		"LOOP_END", "REPEAT", "REPEAT_END", "IF", "ELSE", "IF_END", "GOTO", "GOTO_B", 
+		null, "WHITESPACE", "NEWLINE", "COMMENT", "HIDE", "INT", "REAL", "BIN", 
+		"HEX", "BOOL", "PI", "STRING", "WHILE", "WHILE_END", "FOR", "FOR_END", 
+		"TO", "LOOP", "LOOP_END", "REPEAT", "REPEAT_BLOCK", "REPEAT_END", "IF", 
+		"ELSE", "IF_END", "CASE", "CASE_OF", "CASE_DEFAULT", "GOTO", "GOTO_B", 
 		"GOTO_C", "GOTO_F", "GOTO_S", "LABEL_END", "SYNC_WHEN", "SYNC_WHENEVER", 
-		"SYNC_DO", "SYNC_CANCEL", "RETURN", "CALL", "CALL_P", "CALL_EXT", "CALL_PATH", 
-		"ASSIGNMENT", "ADD", "SUB", "MUL", "DIV", "MOD", "EQUAL", "NOT_EQUAL", 
-		"LESS", "GREATER", "LESS_EQUAL", "GREATER_EQUAL", "NOT", "AND", "OR", 
-		"XOR", "NOT_B", "AND_B", "OR_B", "XOR_B", "CONCAT", "RANGE_NCK", "RANGE_NC", 
-		"RANGE_CHAN", "PRE_PROC_STOP_R", "PRE_PROC_STOP_W", "PRE_PROC_STOP_RW", 
-		"ACCESS_READ_PROGRAM", "ACCESS_WRITE_PROGRAM", "ACCESS_READ_OPI", "ACCESS_WRITE_OPI", 
-		"PHYS_UNIT", "LIMIT_UPPER", "LIMIT_LOWER", "PROC", "PROC_END", "EXTERN", 
-		"DEFINE", "VAR", "MACRO_DEFINE", "MACRO_AS", "REDEFINE", "SET", "BOOL_TYPE", 
-		"CHAR_TYPE", "INT_TYPE", "REAL_TYPE", "STRING_TYPE", "AXIS_TYPE", "FRAME_TYPE", 
-		"SYS_VAR", "AXIS", "R_PARAM", "SIN", "COS", "TAN", "ASIN", "ACOS", "ATAN2", 
-		"SQRT", "ABS", "POT", "TRUNC", "ROUND", "LN", "EXP", "STR_LEN", "TOOL_OFFSET_LENGTH_RADIUS", 
-		"TOOL_OFFSET_LENGTH", "TOOL_OFFSET_RADIUS", "TOOL_OFFSET", "SET_MASTER_SPINDLE", 
-		"GRINDING_WHEEL_PERIPHERAL_SPEED_ON", "GRINDING_WHEEL_PERIPHERAL_SPEED_OFF", 
-		"FEED_GROUP", "FEED_GROUP_EFFECTIVE_RADIUS", "WAIT_FOR_POSITION", "WAIT_FOR_MARKER", 
-		"WAIT_FOR_SPINDLE", "SPINDLE_POSITION_CONTROL_MODE_ON", "SPINDLE_POSITION_CONTROL_MODE_OFF", 
-		"SPINDLE_POSITIONING_IMMEDIATE", "MOTION_END_FINE", "MOTION_END_COARSE", 
-		"MOTION_END_INTERPOLATION", "MOTION_END_INTERPOLATION_BREAK", "FEEDRATE_PATH_ROTARY_AXIS_ON", 
-		"FEEDRATE_PATH_ROTARY_AXIS_OFF", "FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY", 
-		"TOOL_CORRECTION_SUPPRESSION", "MASTER_SPINDLE_SPEED_LIMIT", "POSITIONING_IN_SECTIONS", 
-		"POSITIONING_IMMEDIATE", "SPINDLE_POSITIONING_DELAYED", "FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE", 
-		"TOOL_CUTTING_SPEED", "ABSOLUTE_COORDINATE_NEGATIVE", "ABSOLUTE_COORDINATE_POSITIVE", 
-		"POSITIONING_DELAYED", "CONSTANT_CUTTING_RATE_REFERENCE_AXIS", "FEEDRATE_PATH_ROTARY_AXIS", 
-		"SPINDLE_IDENTIFIER", "FEEDRATE_OVERRIDE_PATH", "ACCELERATION_COMPENSATION", 
-		"FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL", "FEEDRATE_LIMIT", "FEEDRATE_POSITION_AXIS", 
-		"ABSOLUTE_COORDINATE", "INCREMENTAL_COORDINATE", "DIRECT_APPROACH_COORDINATE", 
-		"FEEDRATE_OVERRIDE_PATH_HANDWHEEL", "ADDITIONAL_FUNCTION", "AUXILIARY_FUNCTION", 
-		"PREPARATORY_FUNCTION", "X_AXIS", "Y_AXIS", "Z_AXIS", "A_AXIS", "B_AXIS", 
-		"C_AXIS", "SPINDLE", "FEEDRATE", "TOOL", "TOOL_CORRECTION", "OPEN_PAREN", 
-		"CLOSE_PAREN", "OPEN_BRACKET", "CLOSE_BRACKET", "DOLLAR", "POINT", "COMMA", 
-		"RESERVED", "ID", "WHITESPACE", "NAME", "NEWLINE", "COMMENT", "HIDE", 
-		"BLOCK_NUMBER", "INT_POSITIVE", "INT", "REAL_POSITIVE", "REAL", "BIN", 
-		"HEX", "BOOL", "PI", "STRING", "PROGRAM_NAME_SIMPLE", "PROGRAM_NAME_EXTENDED", 
-		"LABEL_NAME", "LABEL"
+		"SYNC_DO", "SYNC_EVERY", "SYNC_CANCEL", "RETURN", "CALL", "CALL_P", "CALL_EXT", 
+		"CALL_PATH", "CALL_BLOCK", "CALL_MODAL", "CALL_MODAL_OFF", "ASSIGNMENT", 
+		"ADD", "SUB", "MUL", "DIV", "MOD", "EQUAL", "NOT_EQUAL", "LESS", "GREATER", 
+		"LESS_EQUAL", "GREATER_EQUAL", "NOT", "AND", "OR", "XOR", "NOT_B", "AND_B", 
+		"OR_B", "XOR_B", "CONCAT", "RANGE_NCK", "RANGE_NC", "RANGE_CHAN", "PRE_PROC_STOP_R", 
+		"PRE_PROC_STOP_W", "PRE_PROC_STOP_RW", "ACCESS_READ_PROGRAM", "ACCESS_WRITE_PROGRAM", 
+		"ACCESS_READ_OPI", "ACCESS_WRITE_OPI", "PHYS_UNIT", "LIMIT_UPPER", "LIMIT_LOWER", 
+		"PROC", "PROC_END", "EXTERN", "DEFINE", "VAR", "MACRO_DEFINE", "MACRO_AS", 
+		"REDEFINE", "SET", "AC", "ACC", "ACCLIMA", "ACN", "ACP", "APR", "APW", 
+		"APX", "AX", "BLSYNC", "CAC", "CACN", "CACP", "CDC", "CIC", "COARSEA", 
+		"CPBC", "CPDEF", "CPDEL", "CPFMOF", "CPFMON", "CPFMSON", "CPFPOS", "CPFRS", 
+		"CPLA", "CPLCTID", "CPLDEF", "CPLDEL", "CPLDEN", "CPLINSC", "CPLINTR", 
+		"CPLNUM", "CPLOF", "CPLON", "CPLOUTSC", "CPLOUTTR", "CPLPOS", "CPLSETVAL", 
+		"CPMALARM", "CPMBRAKE", "CPMPRT", "CPMRESET", "CPMSTART", "CPMVDI", "CPOF", 
+		"CPON", "CPRES", "CPSETTYPE", "CPSYNCOP", "CPSYNCOP2", "CPSYNCOV", "CPSYNFIP", 
+		"CPSYNFIP2", "CPSYNFIV", "DAC", "DC", "DCI", "DCM", "DCU", "DIACYCOFA", 
+		"DIAM90A", "DIAMCHAN", "DIAMCHANA", "DIAMOFA", "DIAMONA", "DIC", "EX", 
+		"FA", "FDA", "FGREF", "FI", "FINEA", "FL", "FMA", "FOC", "FOCOF", "FOCON", 
+		"FPO", "FROM", "FXS", "FXST", "FXSW", "FZ", "GP", "IC", "ID", "IDS", "INICF", 
+		"INIPO", "INIRE", "IP", "IPOENDA", "ISOCALL", "JERKLIM", "JERKLIMA", "LIFTFAST", 
+		"LIMS", "MI", "MOV", "OS", "OSB", "OSCILL", "OSCTRL", "OSE", "OSNSC", 
+		"OSP1", "OSP2", "OST1", "OST2", "OVR", "OVRA", "OVRRAP", "PHI", "PHU", 
+		"PM", "PO", "POLF", "POS", "POSA", "POSP", "PR", "PRIO", "PRLOC", "PSISYNRW", 
+		"QU", "RAC", "REP", "RIC", "RT", "SC", "SCC", "SCPARA", "SETINT", "SPOS", 
+		"SPOSA", "SRA", "STA", "SVC", "SYNR", "SYNRW", "SYNW", "TR", "VELOLIM", 
+		"VELOLIMA", "BOOL_TYPE", "CHAR_TYPE", "INT_TYPE", "REAL_TYPE", "STRING_TYPE", 
+		"AXIS_TYPE", "FRAME_TYPE", "SIN", "COS", "TAN", "ASIN", "ACOS", "ATAN2", 
+		"SQRT", "POT", "LN", "EXP", "ABS", "TRUNC", "ROUND", "ROUNDUP", "BOUND", 
+		"MAXVAL", "MINVAL", "CALCDAT", "CTRANS", "CMIRROR", "CSCALE", "CROT", 
+		"CROTS", "CRPL", "STRLEN", "SPRINT", "STRINGIS", "SUBSTR", "AXNAME", "AXSTRING", 
+		"INDEX", "MINDEX", "ISNUMBER", "NUMBER", "MATCH", "TOLOWER", "TOUPPER", 
+		"CTAB", "CTABEXISTS", "CTABFNO", "CTABFPOL", "CTABFSEG", "CTABID", "CTABINV", 
+		"CTABISLOCK", "CTABMEMTYP", "CTABMPOL", "CTABMSEG", "CTABNO", "CTABNOMEM", 
+		"CTABPERIOD", "CTABPOL", "CTABPOLID", "CTABSEG", "CTABSEGID", "CTABSEV", 
+		"CTABSSV", "CTABTEP", "CTABTEV", "CTABTMAX", "CTABTMIN", "CTABTSP", "CTABTSV", 
+		"ADDFRAME", "AXTOSPI", "CALCPOSI", "CALCTRAVAR", "CFINE", "CHKDM", "CHKDNO", 
+		"COLLPAIR", "CORRTC", "CORRTRAFO", "CSPLINE", "DELDL", "DELMLOWNER", "DELMLRES", 
+		"DELOBJ", "DELTOOLENV", "GETACTT", "GETACTTD", "GETDNO", "GETT", "GETTCOR", 
+		"GETTENV", "GETVARAP", "GETVARDFT", "GETVARLIM", "GETVARPHU", "GETVARTYP", 
+		"INTERSEC", "INVFRAME", "ISAXIS", "ISFILE", "ISVAR", "LENTOAX", "MEAFRAME", 
+		"MEASURE", "MODAXVAL", "NAMETOINT", "NEWMT", "NEWT", "ORISOLH", "POSRANGE", 
+		"PROTD", "RINDEX", "SETDNO", "SETTCOR", "SIRELAY", "TOOLENV", "TOOLGNT", 
+		"TOOLGT", "ACTBLOCNO", "ADISPOSA", "AFISOF", "AFISON", "AUXFUDEL", "AUXFUDELG", 
+		"AUXFUMSEQ", "AUXFUSYNC", "AXCTSWE", "AXCTSWEC", "AXCTSWED", "AXTOCHAN", 
+		"BRISKA", "CADAPTOF", "CADAPTON", "CALCFIR", "CANCELSUB", "CHANDATA", 
+		"CLEARM", "CLRINT", "CONTDCON", "CONTPRON", "CORROF", "COUPDEF", "COUPDEL", 
+		"COUPOF", "COUPOFS", "COUPON", "COUPONC", "COUPRES", "CPROT", "CPROTDEF", 
+		"CTABDEF", "CTABDEL", "CTABEND", "CTABLOCK", "CTABUNLOCK", "DELAYFSTOF", 
+		"DELAYFSTON", "DELDTG", "DELETE", "DELMT", "DELT", "DELTC", "DISABLE", 
+		"DRFOF", "DRIVEA", "DRVPRD", "DRVPWR", "DZERO", "EGDEF", "EGDEL", "EGOFC", 
+		"EGOFS", "EGON", "EGONSYN", "EGONSYNE", "ENABLE", "ESRR", "ESRS", "EXECSTRING", 
+		"EXECTAB", "EXECUTE", "EXTCLOSE", "EXTOPEN", "FCTDEF", "FGROUP", "FILEDATE", 
+		"FILEINFO", "FILESIZE", "FILESTAT", "FILETIME", "FPR", "FPRAOF", "FPRAON", 
+		"FTOC", "GEOAX", "GET", "GETD", "GETEXET", "GETFREELOC", "GETSELT", "GWPSOF", 
+		"GWPSON", "ICYCOF", "ICYCON", "INIT", "IPOBRKA", "IPTRLOCK", "IPTRUNLOCK", 
+		"JERKA", "LEADOF", "LEADON", "LOCK", "MASLDEF", "MASLDEL", "MASLOF", "MASLOFS", 
+		"MASLON", "MMC", "MSG", "MVTOOL", "NEWCONF", "NPROT", "NPROTDEF", "ORIRESET", 
+		"POLFA", "POLFMASK", "POLFMLIN", "POLYPATH", "POSM", "POSMT", "PRESETON", 
+		"PRESETONS", "PROTA", "PROTS", "PUNCHACC", "PUTFTOC", "PUTFTOCF", "RDISABLE", 
+		"READ", "RELEASE", "RESETMON", "RETB", "SBLOF", "SBLON", "SETAL", "SETM", 
+		"SETMS", "SETMTH", "SETPIECE", "SETTA", "SETTIA", "SIRELIN", "SIRELOUT", 
+		"SIRELTIME", "SOFTA", "SPCOF", "SPCON", "SPLINEPATH", "START", "STOPRE", 
+		"STOPREOF", "SYNFCT", "TANG", "TANGDEL", "TANGOF", "TANGON", "TCA", "TCI", 
+		"TLIFT", "TML", "TMOF", "TMON", "TOFFOF", "TOFFON", "TRAANG", "TRACON", 
+		"TRACYL", "TRAFOOF", "TRAFOON", "TRAILOF", "TRAILON", "TRANSMIT", "TRAORI", 
+		"UNLOCK", "WAITC", "WAITE", "WAITENC", "WAITM", "WAITMC", "WAITP", "WAITS", 
+		"WRITE", "WRTPR", "ADIS", "ADISPOS", "ALF", "AMIRROR", "ANG", "AP", "AR", 
+		"AROT", "AROTS", "ASCALE", "ASPLINE", "ATOL", "ATRANS", "BAUTO", "BNAT", 
+		"BRISK", "BSPLINE", "BTAN", "CDOF", "CDOF2", "CDON", "CFC", "CFIN", "CFTCP", 
+		"CHF", "CHR", "CIP", "COMPCAD", "COMPCURV", "COMPOF", "COMPON", "COMPPATH", 
+		"COMPSURF", "CP", "CPRECOF", "CPRECON", "CR", "CT", "CTOL", "CTOLG0", 
+		"CUT2D", "CUT2DD", "CUT2DF", "CUT2DFD", "CUT3DC", "CUT3DCC", "CUT3DCCD", 
+		"CUT3DCD", "CUT3DF", "CUT3DFD", "CUT3DFF", "CUT3DFS", "CUTCONOF", "CUTCONON", 
+		"CUTMOD", "CUTMODK", "D", "D0", "DIAM90", "DIAMCYCOF", "DIAMOF", "DIAMON", 
+		"DILF", "DISC", "DISCL", "DISPR", "DISR", "DISRP", "DITE", "DITS", "DL", 
+		"DRIVE", "DYNFINISH", "DYNNORM", "DYNPOS", "DYNPREC", "DYNROUGH", "DYNSEMIFIN", 
+		"EAUTO", "ENAT", "ETAN", "F", "FAD", "FB", "FCUB", "FD", "FENDNORM", "FFWOF", 
+		"FFWON", "FIFOCTRL", "FLIM", "FLIN", "FNORM", "FP", "FRC", "FRCM", "FTOCOF", 
+		"FTOCON", "GCODE", "GFRAME", "HCODE", "I", "I1", "INVCCW", "INVCW", "IR", 
+		"ISD", "J", "J1", "JR", "K", "K1", "KONT", "KONTC", "KONTT", "KR", "L", 
+		"LEAD", "LFOF", "LFON", "LFPOS", "LFTXT", "LFWP", "MCODE", "MEAC", "MEAS", 
+		"MEASA", "MEASF", "MEAW", "MEAWA", "MIRROR", "MOVT", "NORM", "OEMIPO1", 
+		"OEMIPO2", "OFFN", "OMA", "ORIANGLE", "ORIAXES", "ORIAXESFR", "ORIAXPOS", 
+		"ORIC", "ORICONCCW", "ORICONCW", "ORICONIO", "ORICONTO", "ORICURINV", 
+		"ORICURVE", "ORID", "ORIEULER", "ORIMKS", "ORIPATH", "ORIPATHS", "ORIPLANE", 
+		"ORIROTA", "ORIROTC", "ORIROTR", "ORIROTT", "ORIRPY", "ORIRPY2", "ORIS", 
+		"ORISOF", "ORISON", "ORIVECT", "ORIVIRT1", "ORIVIRT2", "ORIWKS", "OSC", 
+		"OSD", "OSOF", "OSS", "OSSE", "OST", "OTOL", "OTOLG0", "P", "PACCLIM", 
+		"PAROT", "PAROTOF", "PDELAYOF", "PDELAYON", "PL", "POLY", "PON", "PONS", 
+		"PTP", "PTPG0", "PTPWOC", "PW", "REPOSA", "REPOSH", "REPOSHA", "REPOSL", 
+		"REPOSQ", "REPOSQA", "RMB", "RMBBL", "RME", "RMEBL", "RMI", "RMIBL", "RMN", 
+		"RMNBL", "RND", "RNDM", "ROT", "ROTS", "RP", "RPL", "RTLIOF", "RTLION", 
+		"SCALE", "SD", "SF", "SOFT", "SON", "SONS", "SPATH", "SPIF1", "SPIF2", 
+		"SPN", "SPOF", "SPP", "SR", "ST", "STARTFIFO", "STOLF", "STOPFIFO", "SUPA", 
+		"SUPD", "T", "TCARR", "TCOABS", "TCOFR", "TCOFRX", "TCOFRY", "TCOFRZ", 
+		"THETA", "TILT", "TOFF", "TOFFL", "TOFFLR", "TOFFR", "TOFRAME", "TOFRAMEX", 
+		"TOFRAMEY", "TOFRAMEZ", "TOROT", "TOROTOF", "TOROTX", "TOROTY", "TOROTZ", 
+		"TOWBCS", "TOWKCS", "TOWMCS", "TOWSTD", "TOWTCS", "TOWWCS", "TRANS", "TURN", 
+		"UPATH", "WALCS", "WALIMOF", "WALIMON", "OPEN_PAREN", "CLOSE_PAREN", "OPEN_BRACKET", 
+		"CLOSE_BRACKET", "DOLLAR", "POINT", "DOUBLE_COLON", "COMMA", "BLOCK_NUMBER", 
+		"CYCLE", "GROUP_ADDEND", "GROUP_BEGIN", "GROUP_END", "HOLES1", "HOLES2", 
+		"LONGHOLE", "POCKET3", "POCKET4", "SLOT1", "SLOT2", "DISPLOF", "DISPLON", 
+		"PREPRO", "SAVE", "COMPLETE", "INITIAL", "STAT", "TU", "RESERVED", "SYS_VAR", 
+		"AXIS", "AXIS_NUMBERED", "SPINDLE", "R_PARAM", "SPINDLE_IDENTIFIER", "NAME"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -195,8 +481,14 @@ public partial class SinumerikNCParser : Parser {
 
 	public partial class FileContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Eof() { return GetToken(SinumerikNCParser.Eof, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ProcedureContext procedure() {
-			return GetRuleContext<ProcedureContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ProcedureDefinitionContext procedureDefinition() {
+			return GetRuleContext<ProcedureDefinitionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public DeclarationBlockContext[] declarationBlock() {
+			return GetRuleContexts<DeclarationBlockContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public DeclarationBlockContext declarationBlock(int i) {
+			return GetRuleContext<DeclarationBlockContext>(i);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext[] block() {
 			return GetRuleContexts<BlockContext>();
@@ -233,32 +525,531 @@ public partial class SinumerikNCParser : Parser {
 		EnterRule(_localctx, 0, RULE_file);
 		int _la;
 		try {
+			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 77;
+			State = 151;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case Eof:
+			case INT:
+			case REAL:
+			case BIN:
+			case HEX:
+			case BOOL:
+			case STRING:
 			case WHILE:
+			case FOR:
+			case LOOP:
+			case REPEAT:
 			case IF:
+			case CASE:
 			case GOTO:
 			case GOTO_B:
 			case GOTO_C:
 			case GOTO_F:
 			case GOTO_S:
 			case RETURN:
+			case CALL:
+			case CALL_MODAL:
+			case SUB:
+			case NOT:
+			case NOT_B:
+			case EXTERN:
+			case DEFINE:
+			case MACRO_DEFINE:
+			case SIN:
+			case COS:
+			case TAN:
+			case ASIN:
+			case ACOS:
+			case ATAN2:
+			case SQRT:
+			case POT:
+			case LN:
+			case EXP:
+			case ABS:
+			case TRUNC:
+			case ROUND:
+			case ROUNDUP:
+			case BOUND:
+			case MAXVAL:
+			case MINVAL:
+			case CALCDAT:
+			case ACTBLOCNO:
+			case ADISPOSA:
+			case AFISOF:
+			case AFISON:
+			case AUXFUDEL:
+			case AUXFUDELG:
+			case AUXFUMSEQ:
+			case AUXFUSYNC:
+			case AXCTSWE:
+			case AXCTSWEC:
+			case AXCTSWED:
+			case AXTOCHAN:
+			case BRISKA:
+			case CADAPTOF:
+			case CADAPTON:
+			case CALCFIR:
+			case CANCELSUB:
+			case CHANDATA:
+			case CLEARM:
+			case CLRINT:
+			case CONTDCON:
+			case CONTPRON:
+			case CORROF:
+			case COUPDEF:
+			case COUPDEL:
+			case COUPOF:
+			case COUPOFS:
+			case COUPON:
+			case COUPONC:
+			case COUPRES:
+			case CPROT:
+			case CPROTDEF:
+			case CTABDEF:
+			case CTABDEL:
+			case CTABEND:
+			case CTABLOCK:
+			case CTABUNLOCK:
+			case DELAYFSTOF:
+			case DELAYFSTON:
+			case DELDTG:
+			case DELETE:
+			case DELMT:
+			case DELT:
+			case DELTC:
+			case DISABLE:
+			case DRFOF:
+			case DRIVEA:
+			case DRVPRD:
+			case DRVPWR:
+			case DZERO:
+			case EGDEF:
+			case EGDEL:
+			case EGOFC:
+			case EGOFS:
+			case EGON:
+			case EGONSYN:
+			case EGONSYNE:
+			case ENABLE:
+			case ESRR:
+			case ESRS:
+			case EXECSTRING:
+			case EXECTAB:
+			case EXECUTE:
+			case EXTCLOSE:
+			case EXTOPEN:
+			case FCTDEF:
+			case FGROUP:
+			case FILEDATE:
+			case FILEINFO:
+			case FILESIZE:
+			case FILESTAT:
+			case FILETIME:
+			case FPR:
+			case FPRAOF:
+			case FPRAON:
+			case FTOC:
+			case GEOAX:
+			case GET:
+			case GETD:
+			case GETEXET:
+			case GETFREELOC:
+			case GETSELT:
+			case GWPSOF:
+			case GWPSON:
+			case ICYCOF:
+			case ICYCON:
+			case INIT:
+			case IPOBRKA:
+			case IPTRLOCK:
+			case IPTRUNLOCK:
+			case JERKA:
+			case LEADOF:
+			case LEADON:
+			case LOCK:
+			case MASLDEF:
+			case MASLDEL:
+			case MASLOF:
+			case MASLOFS:
+			case MASLON:
+			case MMC:
+			case MSG:
+			case MVTOOL:
+			case NEWCONF:
+			case NPROT:
+			case NPROTDEF:
+			case ORIRESET:
+			case POLFA:
+			case POLFMASK:
+			case POLFMLIN:
+			case POLYPATH:
+			case POSM:
+			case POSMT:
+			case PRESETON:
+			case PRESETONS:
+			case PROTA:
+			case PROTS:
+			case PUNCHACC:
+			case PUTFTOC:
+			case PUTFTOCF:
+			case RDISABLE:
+			case READ:
+			case RELEASE:
+			case RESETMON:
+			case RETB:
+			case SBLOF:
+			case SBLON:
+			case SETAL:
+			case SETM:
+			case SETMS:
+			case SETMTH:
+			case SETPIECE:
+			case SETTA:
+			case SETTIA:
+			case SIRELIN:
+			case SIRELOUT:
+			case SIRELTIME:
+			case SOFTA:
+			case SPCOF:
+			case SPCON:
+			case SPLINEPATH:
+			case START:
+			case STOPRE:
+			case STOPREOF:
+			case SYNFCT:
+			case TANG:
+			case TANGDEL:
+			case TANGOF:
+			case TANGON:
+			case TCA:
+			case TCI:
+			case TLIFT:
+			case TML:
+			case TMOF:
+			case TMON:
+			case TOFFOF:
+			case TOFFON:
+			case TRAANG:
+			case TRACON:
+			case TRACYL:
+			case TRAFOOF:
+			case TRAFOON:
+			case TRAILOF:
+			case TRAILON:
+			case TRANSMIT:
+			case TRAORI:
+			case UNLOCK:
+			case WAITC:
+			case WAITE:
+			case WAITENC:
+			case WAITM:
+			case WAITMC:
+			case WAITP:
+			case WAITS:
+			case WRITE:
+			case WRTPR:
+			case ADIS:
+			case ADISPOS:
+			case ALF:
+			case AMIRROR:
+			case ANG:
+			case AP:
+			case AR:
+			case AROT:
+			case AROTS:
+			case ASCALE:
+			case ASPLINE:
+			case ATOL:
+			case ATRANS:
+			case BAUTO:
+			case BNAT:
+			case BRISK:
+			case BSPLINE:
+			case BTAN:
+			case CDOF:
+			case CDOF2:
+			case CDON:
+			case CFC:
+			case CFIN:
+			case CFTCP:
+			case CHF:
+			case CHR:
+			case CIP:
+			case COMPCAD:
+			case COMPCURV:
+			case COMPOF:
+			case COMPON:
+			case COMPPATH:
+			case COMPSURF:
+			case CP:
+			case CPRECOF:
+			case CPRECON:
+			case CR:
+			case CT:
+			case CTOL:
+			case CTOLG0:
+			case CUT2D:
+			case CUT2DD:
+			case CUT2DF:
+			case CUT2DFD:
+			case CUT3DC:
+			case CUT3DCC:
+			case CUT3DCCD:
+			case CUT3DCD:
+			case CUT3DF:
+			case CUT3DFD:
+			case CUT3DFF:
+			case CUT3DFS:
+			case CUTCONOF:
+			case CUTCONON:
+			case CUTMOD:
+			case CUTMODK:
+			case D:
+			case D0:
+			case DIAM90:
+			case DIAMCYCOF:
+			case DIAMOF:
+			case DIAMON:
+			case DILF:
+			case DISC:
+			case DISCL:
+			case DISPR:
+			case DISR:
+			case DISRP:
+			case DITE:
+			case DITS:
+			case DL:
+			case DRIVE:
+			case DYNFINISH:
+			case DYNNORM:
+			case DYNPOS:
+			case DYNPREC:
+			case DYNROUGH:
+			case DYNSEMIFIN:
+			case EAUTO:
+			case ENAT:
+			case ETAN:
+			case F:
+			case FAD:
+			case FB:
+			case FCUB:
+			case FD:
+			case FENDNORM:
+			case FFWOF:
+			case FFWON:
+			case FIFOCTRL:
+			case FLIM:
+			case FLIN:
+			case FNORM:
+			case FP:
+			case FRC:
+			case FRCM:
+			case FTOCOF:
+			case FTOCON:
+			case GCODE:
+			case GFRAME:
+			case HCODE:
+			case I:
+			case I1:
+			case INVCCW:
+			case INVCW:
+			case IR:
+			case ISD:
+			case J:
+			case J1:
+			case JR:
+			case K:
+			case K1:
+			case KONT:
+			case KONTC:
+			case KONTT:
+			case KR:
+			case L:
+			case LEAD:
+			case LFOF:
+			case LFON:
+			case LFPOS:
+			case LFTXT:
+			case LFWP:
+			case MCODE:
+			case MEAC:
+			case MEAS:
+			case MEASA:
+			case MEASF:
+			case MEAW:
+			case MEAWA:
+			case MIRROR:
+			case MOVT:
+			case NORM:
+			case OEMIPO1:
+			case OEMIPO2:
+			case OFFN:
+			case OMA:
+			case ORIANGLE:
+			case ORIAXES:
+			case ORIAXESFR:
+			case ORIAXPOS:
+			case ORIC:
+			case ORICONCCW:
+			case ORICONCW:
+			case ORICONIO:
+			case ORICONTO:
+			case ORICURINV:
+			case ORICURVE:
+			case ORID:
+			case ORIEULER:
+			case ORIMKS:
+			case ORIPATH:
+			case ORIPATHS:
+			case ORIPLANE:
+			case ORIROTA:
+			case ORIROTC:
+			case ORIROTR:
+			case ORIROTT:
+			case ORIRPY:
+			case ORIRPY2:
+			case ORIS:
+			case ORISOF:
+			case ORISON:
+			case ORIVECT:
+			case ORIVIRT1:
+			case ORIVIRT2:
+			case ORIWKS:
+			case OSC:
+			case OSD:
+			case OSOF:
+			case OSS:
+			case OSSE:
+			case OST:
+			case OTOL:
+			case OTOLG0:
+			case P:
+			case PACCLIM:
+			case PAROT:
+			case PAROTOF:
+			case PDELAYOF:
+			case PDELAYON:
+			case PL:
+			case POLY:
+			case PON:
+			case PONS:
+			case PTP:
+			case PTPG0:
+			case PTPWOC:
+			case PW:
+			case REPOSA:
+			case REPOSH:
+			case REPOSHA:
+			case REPOSL:
+			case REPOSQ:
+			case REPOSQA:
+			case RMB:
+			case RMBBL:
+			case RME:
+			case RMEBL:
+			case RMI:
+			case RMIBL:
+			case RMN:
+			case RMNBL:
+			case RND:
+			case RNDM:
+			case ROT:
+			case ROTS:
+			case RP:
+			case RPL:
+			case RTLIOF:
+			case RTLION:
+			case SCALE:
+			case SD:
+			case SF:
+			case SOFT:
+			case SON:
+			case SONS:
+			case SPATH:
+			case SPIF1:
+			case SPIF2:
+			case SPN:
+			case SPOF:
+			case SPP:
+			case SR:
+			case ST:
+			case STARTFIFO:
+			case STOLF:
+			case STOPFIFO:
+			case SUPA:
+			case SUPD:
+			case T:
+			case TCARR:
+			case TCOABS:
+			case TCOFR:
+			case TCOFRX:
+			case TCOFRY:
+			case TCOFRZ:
+			case THETA:
+			case TILT:
+			case TOFF:
+			case TOFFL:
+			case TOFFLR:
+			case TOFFR:
+			case TOFRAME:
+			case TOFRAMEX:
+			case TOFRAMEY:
+			case TOFRAMEZ:
+			case TOROT:
+			case TOROTOF:
+			case TOROTX:
+			case TOROTY:
+			case TOROTZ:
+			case TOWBCS:
+			case TOWKCS:
+			case TOWMCS:
+			case TOWSTD:
+			case TOWTCS:
+			case TOWWCS:
+			case TRANS:
+			case TURN:
+			case UPATH:
+			case WALCS:
+			case WALIMOF:
+			case WALIMON:
+			case OPEN_PAREN:
+			case BLOCK_NUMBER:
+			case SYS_VAR:
+			case AXIS:
+			case AXIS_NUMBERED:
+			case R_PARAM:
+			case NAME:
 				{
-				State = 73;
+				State = 141;
+				ErrorHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(TokenStream,0,Context);
+				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
+					if ( _alt==1 ) {
+						{
+						{
+						State = 138;
+						declarationBlock();
+						}
+						} 
+					}
+					State = 143;
+					ErrorHandler.Sync(this);
+					_alt = Interpreter.AdaptivePredict(TokenStream,0,Context);
+				}
+				State = 147;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				while (((_la) & ~0x3f) == 0 && ((1L << _la) & 17287172L) != 0) {
+				while (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646311492598473760L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 353)) & ~0x3f) == 0 && ((1L << (_la - 353)) & -1L) != 0 || (((_la - 417)) & ~0x3f) == 0 && ((1L << (_la - 417)) & -1L) != 0 || (((_la - 481)) & ~0x3f) == 0 && ((1L << (_la - 481)) & -1L) != 0 || (((_la - 545)) & ~0x3f) == 0 && ((1L << (_la - 545)) & -1L) != 0 || (((_la - 609)) & ~0x3f) == 0 && ((1L << (_la - 609)) & -1L) != 0 || (((_la - 673)) & ~0x3f) == 0 && ((1L << (_la - 673)) & -1L) != 0 || (((_la - 737)) & ~0x3f) == 0 && ((1L << (_la - 737)) & -9151314442816847873L) != 0 || (((_la - 821)) & ~0x3f) == 0 && ((1L << (_la - 821)) & 87L) != 0) {
 					{
 					{
-					State = 70;
+					State = 144;
 					block();
 					}
 					}
-					State = 75;
+					State = 149;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
 				}
@@ -266,15 +1057,76 @@ public partial class SinumerikNCParser : Parser {
 				break;
 			case PROC:
 				{
-				State = 76;
-				procedure();
+				State = 150;
+				procedureDefinition();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
-			State = 79;
+			State = 153;
 			Match(Eof);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class DeclarationBlockContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public DeclarationContext declaration() {
+			return GetRuleContext<DeclarationContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BLOCK_NUMBER() { return GetToken(SinumerikNCParser.BLOCK_NUMBER, 0); }
+		public DeclarationBlockContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_declarationBlock; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterDeclarationBlock(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitDeclarationBlock(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDeclarationBlock(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public DeclarationBlockContext declarationBlock() {
+		DeclarationBlockContext _localctx = new DeclarationBlockContext(Context, State);
+		EnterRule(_localctx, 2, RULE_declarationBlock);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 156;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==BLOCK_NUMBER) {
+				{
+				State = 155;
+				Match(BLOCK_NUMBER);
+				}
+			}
+
+			State = 158;
+			declaration();
 			}
 		}
 		catch (RecognitionException re) {
@@ -292,6 +1144,7 @@ public partial class SinumerikNCParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public StatementContext statement() {
 			return GetRuleContext<StatementContext>(0);
 		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BLOCK_NUMBER() { return GetToken(SinumerikNCParser.BLOCK_NUMBER, 0); }
 		public BlockContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -318,11 +1171,22 @@ public partial class SinumerikNCParser : Parser {
 	[RuleVersion(0)]
 	public BlockContext block() {
 		BlockContext _localctx = new BlockContext(Context, State);
-		EnterRule(_localctx, 2, RULE_block);
+		EnterRule(_localctx, 4, RULE_block);
+		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 81;
+			State = 161;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==BLOCK_NUMBER) {
+				{
+				State = 160;
+				Match(BLOCK_NUMBER);
+				}
+			}
+
+			State = 163;
 			statement();
 			}
 		}
@@ -337,85 +1201,102 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class ProcedureContext : ParserRuleContext {
+	public partial class ProcedureDefinitionContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PROC() { return GetToken(SinumerikNCParser.PROC, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PROGRAM_NAME_SIMPLE() { return GetToken(SinumerikNCParser.PROGRAM_NAME_SIMPLE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PROC_END() { return GetToken(SinumerikNCParser.PROC_END, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ParamsContext @params() {
-			return GetRuleContext<ParamsContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterDefinitionsContext parameterDefinitions() {
+			return GetRuleContext<ParameterDefinitionsContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public StatementContext[] statement() {
-			return GetRuleContexts<StatementContext>();
+		[System.Diagnostics.DebuggerNonUserCode] public DeclarationBlockContext[] declarationBlock() {
+			return GetRuleContexts<DeclarationBlockContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public StatementContext statement(int i) {
-			return GetRuleContext<StatementContext>(i);
+		[System.Diagnostics.DebuggerNonUserCode] public DeclarationBlockContext declarationBlock(int i) {
+			return GetRuleContext<DeclarationBlockContext>(i);
 		}
-		public ProcedureContext(ParserRuleContext parent, int invokingState)
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext[] block() {
+			return GetRuleContexts<BlockContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block(int i) {
+			return GetRuleContext<BlockContext>(i);
+		}
+		public ProcedureDefinitionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_procedure; } }
+		public override int RuleIndex { get { return RULE_procedureDefinition; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterProcedure(this);
+			if (typedListener != null) typedListener.EnterProcedureDefinition(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitProcedure(this);
+			if (typedListener != null) typedListener.ExitProcedureDefinition(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitProcedure(this);
+			if (typedVisitor != null) return typedVisitor.VisitProcedureDefinition(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ProcedureContext procedure() {
-		ProcedureContext _localctx = new ProcedureContext(Context, State);
-		EnterRule(_localctx, 4, RULE_procedure);
+	public ProcedureDefinitionContext procedureDefinition() {
+		ProcedureDefinitionContext _localctx = new ProcedureDefinitionContext(Context, State);
+		EnterRule(_localctx, 6, RULE_procedureDefinition);
 		int _la;
 		try {
+			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 83;
+			State = 165;
 			Match(PROC);
-			State = 84;
-			Match(PROGRAM_NAME_SIMPLE);
-			State = 85;
-			Match(OPEN_PAREN);
-			State = 87;
+			State = 166;
+			Match(NAME);
+			State = 168;
 			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			if ((((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4065L) != 0) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,5,Context) ) {
+			case 1:
 				{
-				State = 86;
-				@params();
+				State = 167;
+				parameterDefinitions();
 				}
+				break;
 			}
-
-			State = 89;
-			Match(CLOSE_PAREN);
-			State = 93;
+			State = 173;
+			ErrorHandler.Sync(this);
+			_alt = Interpreter.AdaptivePredict(TokenStream,6,Context);
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1 ) {
+					{
+					{
+					State = 170;
+					declarationBlock();
+					}
+					} 
+				}
+				State = 175;
+				ErrorHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(TokenStream,6,Context);
+			}
+			State = 179;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 17287172L) != 0) {
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646311492598473760L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 353)) & ~0x3f) == 0 && ((1L << (_la - 353)) & -1L) != 0 || (((_la - 417)) & ~0x3f) == 0 && ((1L << (_la - 417)) & -1L) != 0 || (((_la - 481)) & ~0x3f) == 0 && ((1L << (_la - 481)) & -1L) != 0 || (((_la - 545)) & ~0x3f) == 0 && ((1L << (_la - 545)) & -1L) != 0 || (((_la - 609)) & ~0x3f) == 0 && ((1L << (_la - 609)) & -1L) != 0 || (((_la - 673)) & ~0x3f) == 0 && ((1L << (_la - 673)) & -1L) != 0 || (((_la - 737)) & ~0x3f) == 0 && ((1L << (_la - 737)) & -9151314442816847873L) != 0 || (((_la - 821)) & ~0x3f) == 0 && ((1L << (_la - 821)) & 87L) != 0) {
 				{
 				{
-				State = 90;
-				statement();
+				State = 176;
+				block();
 				}
 				}
-				State = 95;
+				State = 181;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 96;
+			State = 182;
 			Match(PROC_END);
 			}
 		}
@@ -430,82 +1311,523 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class ParamsContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ParamContext param() {
-			return GetRuleContext<ParamContext>(0);
+	public partial class ParameterDefinitionsContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterDefinitionContext[] parameterDefinition() {
+			return GetRuleContexts<ParameterDefinitionContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ParamOutContext paramOut() {
-			return GetRuleContext<ParamOutContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterDefinitionContext parameterDefinition(int i) {
+			return GetRuleContext<ParameterDefinitionContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA() { return GetToken(SinumerikNCParser.COMMA, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ParamsContext @params() {
-			return GetRuleContext<ParamsContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(SinumerikNCParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(SinumerikNCParser.COMMA, i);
 		}
-		public ParamsContext(ParserRuleContext parent, int invokingState)
+		public ParameterDefinitionsContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_params; } }
+		public override int RuleIndex { get { return RULE_parameterDefinitions; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterParams(this);
+			if (typedListener != null) typedListener.EnterParameterDefinitions(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitParams(this);
+			if (typedListener != null) typedListener.ExitParameterDefinitions(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitParams(this);
+			if (typedVisitor != null) return typedVisitor.VisitParameterDefinitions(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ParamsContext @params() {
-		ParamsContext _localctx = new ParamsContext(Context, State);
-		EnterRule(_localctx, 6, RULE_params);
+	public ParameterDefinitionsContext parameterDefinitions() {
+		ParameterDefinitionsContext _localctx = new ParameterDefinitionsContext(Context, State);
+		EnterRule(_localctx, 8, RULE_parameterDefinitions);
+		int _la;
 		try {
-			State = 108;
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 184;
+			Match(OPEN_PAREN);
+			State = 185;
+			parameterDefinition();
+			State = 190;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,4,Context) ) {
+			_la = TokenStream.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				State = 186;
+				Match(COMMA);
+				State = 187;
+				parameterDefinition();
+				}
+				}
+				State = 192;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 193;
+			Match(CLOSE_PAREN);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ParameterDefinitionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterDefinitionByValueContext parameterDefinitionByValue() {
+			return GetRuleContext<ParameterDefinitionByValueContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterDefinitionByReferenceContext parameterDefinitionByReference() {
+			return GetRuleContext<ParameterDefinitionByReferenceContext>(0);
+		}
+		public ParameterDefinitionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameterDefinition; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterParameterDefinition(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitParameterDefinition(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameterDefinition(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParameterDefinitionContext parameterDefinition() {
+		ParameterDefinitionContext _localctx = new ParameterDefinitionContext(Context, State);
+		EnterRule(_localctx, 10, RULE_parameterDefinition);
+		try {
+			State = 197;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case BOOL_TYPE:
+			case CHAR_TYPE:
+			case INT_TYPE:
+			case REAL_TYPE:
+			case STRING_TYPE:
+			case AXIS_TYPE:
+			case FRAME_TYPE:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 195;
+				parameterDefinitionByValue();
+				}
+				break;
+			case VAR:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 196;
+				parameterDefinitionByReference();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ParameterDefinitionByValueContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public TypeContext type() {
+			return GetRuleContext<TypeContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public ParameterDefinitionByValueContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameterDefinitionByValue; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterParameterDefinitionByValue(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitParameterDefinitionByValue(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameterDefinitionByValue(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParameterDefinitionByValueContext parameterDefinitionByValue() {
+		ParameterDefinitionByValueContext _localctx = new ParameterDefinitionByValueContext(Context, State);
+		EnterRule(_localctx, 12, RULE_parameterDefinitionByValue);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 199;
+			type();
+			State = 200;
+			Match(NAME);
+			State = 203;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==ASSIGNMENT) {
+				{
+				State = 201;
+				Match(ASSIGNMENT);
+				State = 202;
+				expression();
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ParameterDefinitionByReferenceContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode VAR() { return GetToken(SinumerikNCParser.VAR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public TypeContext type() {
+			return GetRuleContext<TypeContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ArrayDeclarationContext arrayDeclaration() {
+			return GetRuleContext<ArrayDeclarationContext>(0);
+		}
+		public ParameterDefinitionByReferenceContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameterDefinitionByReference; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterParameterDefinitionByReference(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitParameterDefinitionByReference(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameterDefinitionByReference(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParameterDefinitionByReferenceContext parameterDefinitionByReference() {
+		ParameterDefinitionByReferenceContext _localctx = new ParameterDefinitionByReferenceContext(Context, State);
+		EnterRule(_localctx, 14, RULE_parameterDefinitionByReference);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 205;
+			Match(VAR);
+			State = 206;
+			type();
+			State = 207;
+			Match(NAME);
+			State = 209;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==OPEN_BRACKET) {
+				{
+				State = 208;
+				arrayDeclaration();
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class DeclarationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public MacroDeclarationContext macroDeclaration() {
+			return GetRuleContext<MacroDeclarationContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public VariableDeclarationContext variableDeclaration() {
+			return GetRuleContext<VariableDeclarationContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ProcedureDeclarationContext procedureDeclaration() {
+			return GetRuleContext<ProcedureDeclarationContext>(0);
+		}
+		public DeclarationContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_declaration; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterDeclaration(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitDeclaration(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDeclaration(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public DeclarationContext declaration() {
+		DeclarationContext _localctx = new DeclarationContext(Context, State);
+		EnterRule(_localctx, 16, RULE_declaration);
+		try {
+			State = 214;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case MACRO_DEFINE:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 211;
+				macroDeclaration();
+				}
+				break;
+			case DEFINE:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 212;
+				variableDeclaration();
+				}
+				break;
+			case EXTERN:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 213;
+				procedureDeclaration();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class MacroDeclarationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MACRO_DEFINE() { return GetToken(SinumerikNCParser.MACRO_DEFINE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MACRO_AS() { return GetToken(SinumerikNCParser.MACRO_AS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public MacroValueContext macroValue() {
+			return GetRuleContext<MacroValueContext>(0);
+		}
+		public MacroDeclarationContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_macroDeclaration; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterMacroDeclaration(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitMacroDeclaration(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitMacroDeclaration(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public MacroDeclarationContext macroDeclaration() {
+		MacroDeclarationContext _localctx = new MacroDeclarationContext(Context, State);
+		EnterRule(_localctx, 18, RULE_macroDeclaration);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 216;
+			Match(MACRO_DEFINE);
+			State = 217;
+			Match(NAME);
+			State = 218;
+			Match(MACRO_AS);
+			State = 219;
+			macroValue();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class MacroValueContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public CommandContext[] command() {
+			return GetRuleContexts<CommandContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public CommandContext command(int i) {
+			return GetRuleContext<CommandContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ProcedureContext procedure() {
+			return GetRuleContext<ProcedureContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public GotoStatementContext gotoStatement() {
+			return GetRuleContext<GotoStatementContext>(0);
+		}
+		public MacroValueContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_macroValue; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterMacroValue(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitMacroValue(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitMacroValue(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public MacroValueContext macroValue() {
+		MacroValueContext _localctx = new MacroValueContext(Context, State);
+		EnterRule(_localctx, 20, RULE_macroValue);
+		try {
+			int _alt;
+			State = 229;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,14,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 98;
-				param();
+				State = 221;
+				expression();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 99;
-				paramOut();
+				State = 223;
+				ErrorHandler.Sync(this);
+				_alt = 1;
+				do {
+					switch (_alt) {
+					case 1:
+						{
+						{
+						State = 222;
+						command();
+						}
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					State = 225;
+					ErrorHandler.Sync(this);
+					_alt = Interpreter.AdaptivePredict(TokenStream,13,Context);
+				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER );
 				}
 				break;
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 100;
-				param();
-				State = 101;
-				Match(COMMA);
-				State = 102;
-				@params();
+				State = 227;
+				procedure();
 				}
 				break;
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 104;
-				paramOut();
-				State = 105;
-				Match(COMMA);
-				State = 106;
-				@params();
+				State = 228;
+				gotoStatement();
 				}
 				break;
 			}
@@ -521,45 +1843,74 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class ParamOutContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode VAR() { return GetToken(SinumerikNCParser.VAR, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ParamContext param() {
-			return GetRuleContext<ParamContext>(0);
+	public partial class VariableDeclarationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DEFINE() { return GetToken(SinumerikNCParser.DEFINE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public TypeContext type() {
+			return GetRuleContext<TypeContext>(0);
 		}
-		public ParamOutContext(ParserRuleContext parent, int invokingState)
+		[System.Diagnostics.DebuggerNonUserCode] public VariableAssignmentContext[] variableAssignment() {
+			return GetRuleContexts<VariableAssignmentContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public VariableAssignmentContext variableAssignment(int i) {
+			return GetRuleContext<VariableAssignmentContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(SinumerikNCParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(SinumerikNCParser.COMMA, i);
+		}
+		public VariableDeclarationContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_paramOut; } }
+		public override int RuleIndex { get { return RULE_variableDeclaration; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterParamOut(this);
+			if (typedListener != null) typedListener.EnterVariableDeclaration(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitParamOut(this);
+			if (typedListener != null) typedListener.ExitVariableDeclaration(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitParamOut(this);
+			if (typedVisitor != null) return typedVisitor.VisitVariableDeclaration(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ParamOutContext paramOut() {
-		ParamOutContext _localctx = new ParamOutContext(Context, State);
-		EnterRule(_localctx, 8, RULE_paramOut);
+	public VariableDeclarationContext variableDeclaration() {
+		VariableDeclarationContext _localctx = new VariableDeclarationContext(Context, State);
+		EnterRule(_localctx, 22, RULE_variableDeclaration);
+		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 110;
-			Match(VAR);
-			State = 111;
-			param();
+			State = 231;
+			Match(DEFINE);
+			State = 232;
+			type();
+			State = 233;
+			variableAssignment();
+			State = 238;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				State = 234;
+				Match(COMMA);
+				State = 235;
+				variableAssignment();
+				}
+				}
+				State = 240;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -573,45 +1924,760 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class ParamContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public TypeContext type() {
-			return GetRuleContext<TypeContext>(0);
-		}
+	public partial class ProcedureDeclarationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EXTERN() { return GetToken(SinumerikNCParser.EXTERN, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
-		public ParamContext(ParserRuleContext parent, int invokingState)
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterDeclarationsContext parameterDeclarations() {
+			return GetRuleContext<ParameterDeclarationsContext>(0);
+		}
+		public ProcedureDeclarationContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_param; } }
+		public override int RuleIndex { get { return RULE_procedureDeclaration; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterParam(this);
+			if (typedListener != null) typedListener.EnterProcedureDeclaration(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitParam(this);
+			if (typedListener != null) typedListener.ExitProcedureDeclaration(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitParam(this);
+			if (typedVisitor != null) return typedVisitor.VisitProcedureDeclaration(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ParamContext param() {
-		ParamContext _localctx = new ParamContext(Context, State);
-		EnterRule(_localctx, 10, RULE_param);
+	public ProcedureDeclarationContext procedureDeclaration() {
+		ProcedureDeclarationContext _localctx = new ProcedureDeclarationContext(Context, State);
+		EnterRule(_localctx, 24, RULE_procedureDeclaration);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 113;
-			type();
-			State = 114;
+			State = 241;
+			Match(EXTERN);
+			State = 242;
 			Match(NAME);
+			State = 244;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,16,Context) ) {
+			case 1:
+				{
+				State = 243;
+				parameterDeclarations();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ParameterDeclarationsContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterDeclarationContext[] parameterDeclaration() {
+			return GetRuleContexts<ParameterDeclarationContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterDeclarationContext parameterDeclaration(int i) {
+			return GetRuleContext<ParameterDeclarationContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(SinumerikNCParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(SinumerikNCParser.COMMA, i);
+		}
+		public ParameterDeclarationsContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameterDeclarations; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterParameterDeclarations(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitParameterDeclarations(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameterDeclarations(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParameterDeclarationsContext parameterDeclarations() {
+		ParameterDeclarationsContext _localctx = new ParameterDeclarationsContext(Context, State);
+		EnterRule(_localctx, 26, RULE_parameterDeclarations);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 246;
+			Match(OPEN_PAREN);
+			State = 248;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==VAR || (((_la - 234)) & ~0x3f) == 0 && ((1L << (_la - 234)) & 127L) != 0) {
+				{
+				State = 247;
+				parameterDeclaration();
+				}
+			}
+
+			State = 254;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				State = 250;
+				Match(COMMA);
+				State = 251;
+				parameterDeclaration();
+				}
+				}
+				State = 256;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 257;
+			Match(CLOSE_PAREN);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ParameterDeclarationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterDeclarationByValueContext parameterDeclarationByValue() {
+			return GetRuleContext<ParameterDeclarationByValueContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterDeclarationByReferenceContext parameterDeclarationByReference() {
+			return GetRuleContext<ParameterDeclarationByReferenceContext>(0);
+		}
+		public ParameterDeclarationContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameterDeclaration; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterParameterDeclaration(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitParameterDeclaration(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameterDeclaration(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParameterDeclarationContext parameterDeclaration() {
+		ParameterDeclarationContext _localctx = new ParameterDeclarationContext(Context, State);
+		EnterRule(_localctx, 28, RULE_parameterDeclaration);
+		try {
+			State = 261;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case BOOL_TYPE:
+			case CHAR_TYPE:
+			case INT_TYPE:
+			case REAL_TYPE:
+			case STRING_TYPE:
+			case AXIS_TYPE:
+			case FRAME_TYPE:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 259;
+				parameterDeclarationByValue();
+				}
+				break;
+			case VAR:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 260;
+				parameterDeclarationByReference();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ParameterDeclarationByValueContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public TypeContext type() {
+			return GetRuleContext<TypeContext>(0);
+		}
+		public ParameterDeclarationByValueContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameterDeclarationByValue; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterParameterDeclarationByValue(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitParameterDeclarationByValue(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameterDeclarationByValue(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParameterDeclarationByValueContext parameterDeclarationByValue() {
+		ParameterDeclarationByValueContext _localctx = new ParameterDeclarationByValueContext(Context, State);
+		EnterRule(_localctx, 30, RULE_parameterDeclarationByValue);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 263;
+			type();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ParameterDeclarationByReferenceContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode VAR() { return GetToken(SinumerikNCParser.VAR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public TypeContext type() {
+			return GetRuleContext<TypeContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ArrayDeclarationContext arrayDeclaration() {
+			return GetRuleContext<ArrayDeclarationContext>(0);
+		}
+		public ParameterDeclarationByReferenceContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameterDeclarationByReference; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterParameterDeclarationByReference(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitParameterDeclarationByReference(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameterDeclarationByReference(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParameterDeclarationByReferenceContext parameterDeclarationByReference() {
+		ParameterDeclarationByReferenceContext _localctx = new ParameterDeclarationByReferenceContext(Context, State);
+		EnterRule(_localctx, 32, RULE_parameterDeclarationByReference);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 265;
+			Match(VAR);
+			State = 266;
+			type();
+			State = 268;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==OPEN_BRACKET) {
+				{
+				State = 267;
+				arrayDeclaration();
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ArrayDeclarationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACKET() { return GetToken(SinumerikNCParser.OPEN_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACKET() { return GetToken(SinumerikNCParser.CLOSE_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ArrayDeclarationDimensionContext[] arrayDeclarationDimension() {
+			return GetRuleContexts<ArrayDeclarationDimensionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ArrayDeclarationDimensionContext arrayDeclarationDimension(int i) {
+			return GetRuleContext<ArrayDeclarationDimensionContext>(i);
+		}
+		public ArrayDeclarationContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_arrayDeclaration; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterArrayDeclaration(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitArrayDeclaration(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArrayDeclaration(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ArrayDeclarationContext arrayDeclaration() {
+		ArrayDeclarationContext _localctx = new ArrayDeclarationContext(Context, State);
+		EnterRule(_localctx, 34, RULE_arrayDeclaration);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 270;
+			Match(OPEN_BRACKET);
+			State = 272;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646348334597927968L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 792)) & ~0x3f) == 0 && ((1L << (_la - 792)) & 43486543873L) != 0) {
+				{
+				State = 271;
+				expression();
+				}
+			}
+
+			State = 275;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,22,Context) ) {
+			case 1:
+				{
+				State = 274;
+				arrayDeclarationDimension();
+				}
+				break;
+			}
+			State = 278;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==COMMA) {
+				{
+				State = 277;
+				arrayDeclarationDimension();
+				}
+			}
+
+			State = 280;
+			Match(CLOSE_BRACKET);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ArrayDeclarationDimensionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA() { return GetToken(SinumerikNCParser.COMMA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public ArrayDeclarationDimensionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_arrayDeclarationDimension; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterArrayDeclarationDimension(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitArrayDeclarationDimension(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArrayDeclarationDimension(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ArrayDeclarationDimensionContext arrayDeclarationDimension() {
+		ArrayDeclarationDimensionContext _localctx = new ArrayDeclarationDimensionContext(Context, State);
+		EnterRule(_localctx, 36, RULE_arrayDeclarationDimension);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 282;
+			Match(COMMA);
+			State = 284;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646348334597927968L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 792)) & ~0x3f) == 0 && ((1L << (_la - 792)) & 43486543873L) != 0) {
+				{
+				State = 283;
+				expression();
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class VariableAssignmentContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ArrayDefinitionContext arrayDefinition() {
+			return GetRuleContext<ArrayDefinitionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public VariableAssignmentContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_variableAssignment; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterVariableAssignment(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitVariableAssignment(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVariableAssignment(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public VariableAssignmentContext variableAssignment() {
+		VariableAssignmentContext _localctx = new VariableAssignmentContext(Context, State);
+		EnterRule(_localctx, 38, RULE_variableAssignment);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 286;
+			Match(NAME);
+			State = 288;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==OPEN_BRACKET) {
+				{
+				State = 287;
+				arrayDefinition();
+				}
+			}
+
+			State = 292;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==ASSIGNMENT) {
+				{
+				State = 290;
+				Match(ASSIGNMENT);
+				State = 291;
+				expression();
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ArrayDefinitionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACKET() { return GetToken(SinumerikNCParser.OPEN_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACKET() { return GetToken(SinumerikNCParser.CLOSE_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(SinumerikNCParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(SinumerikNCParser.COMMA, i);
+		}
+		public ArrayDefinitionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_arrayDefinition; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterArrayDefinition(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitArrayDefinition(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArrayDefinition(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ArrayDefinitionContext arrayDefinition() {
+		ArrayDefinitionContext _localctx = new ArrayDefinitionContext(Context, State);
+		EnterRule(_localctx, 40, RULE_arrayDefinition);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 294;
+			Match(OPEN_BRACKET);
+			State = 295;
+			expression();
+			State = 298;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,27,Context) ) {
+			case 1:
+				{
+				State = 296;
+				Match(COMMA);
+				State = 297;
+				expression();
+				}
+				break;
+			}
+			State = 302;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==COMMA) {
+				{
+				State = 300;
+				Match(COMMA);
+				State = 301;
+				expression();
+				}
+			}
+
+			State = 304;
+			Match(CLOSE_BRACKET);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class TypeContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BOOL_TYPE() { return GetToken(SinumerikNCParser.BOOL_TYPE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CHAR_TYPE() { return GetToken(SinumerikNCParser.CHAR_TYPE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT_TYPE() { return GetToken(SinumerikNCParser.INT_TYPE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REAL_TYPE() { return GetToken(SinumerikNCParser.REAL_TYPE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING_TYPE() { return GetToken(SinumerikNCParser.STRING_TYPE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACKET() { return GetToken(SinumerikNCParser.OPEN_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACKET() { return GetToken(SinumerikNCParser.CLOSE_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AXIS_TYPE() { return GetToken(SinumerikNCParser.AXIS_TYPE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FRAME_TYPE() { return GetToken(SinumerikNCParser.FRAME_TYPE, 0); }
+		public TypeContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_type; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterType(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitType(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitType(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public TypeContext type() {
+		TypeContext _localctx = new TypeContext(Context, State);
+		EnterRule(_localctx, 42, RULE_type);
+		try {
+			State = 317;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case BOOL_TYPE:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 306;
+				Match(BOOL_TYPE);
+				}
+				break;
+			case CHAR_TYPE:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 307;
+				Match(CHAR_TYPE);
+				}
+				break;
+			case INT_TYPE:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 308;
+				Match(INT_TYPE);
+				}
+				break;
+			case REAL_TYPE:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 309;
+				Match(REAL_TYPE);
+				}
+				break;
+			case STRING_TYPE:
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 310;
+				Match(STRING_TYPE);
+				State = 311;
+				Match(OPEN_BRACKET);
+				State = 312;
+				expression();
+				State = 313;
+				Match(CLOSE_BRACKET);
+				}
+				break;
+			case AXIS_TYPE:
+				EnterOuterAlt(_localctx, 6);
+				{
+				State = 315;
+				Match(AXIS_TYPE);
+				}
+				break;
+			case FRAME_TYPE:
+				EnterOuterAlt(_localctx, 7);
+				{
+				State = 316;
+				Match(FRAME_TYPE);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -629,11 +2695,26 @@ public partial class SinumerikNCParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public IfStatementContext ifStatement() {
 			return GetRuleContext<IfStatementContext>(0);
 		}
+		[System.Diagnostics.DebuggerNonUserCode] public CaseStatementContext caseStatement() {
+			return GetRuleContext<CaseStatementContext>(0);
+		}
 		[System.Diagnostics.DebuggerNonUserCode] public IterativeStatementContext iterativeStatement() {
 			return GetRuleContext<IterativeStatementContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public JumpStatementContext jumpStatement() {
 			return GetRuleContext<JumpStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public CommandContext[] command() {
+			return GetRuleContexts<CommandContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public CommandContext command(int i) {
+			return GetRuleContext<CommandContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ProcedureContext procedure() {
+			return GetRuleContext<ProcedureContext>(0);
 		}
 		public StatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -661,39 +2742,79 @@ public partial class SinumerikNCParser : Parser {
 	[RuleVersion(0)]
 	public StatementContext statement() {
 		StatementContext _localctx = new StatementContext(Context, State);
-		EnterRule(_localctx, 12, RULE_statement);
+		EnterRule(_localctx, 44, RULE_statement);
 		try {
-			State = 119;
+			int _alt;
+			State = 330;
 			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case IF:
+			switch ( Interpreter.AdaptivePredict(TokenStream,31,Context) ) {
+			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 116;
+				State = 319;
 				ifStatement();
 				}
 				break;
-			case WHILE:
+			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 117;
+				State = 320;
+				caseStatement();
+				}
+				break;
+			case 3:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 321;
 				iterativeStatement();
 				}
 				break;
-			case GOTO:
-			case GOTO_B:
-			case GOTO_C:
-			case GOTO_F:
-			case GOTO_S:
-			case RETURN:
-				EnterOuterAlt(_localctx, 3);
+			case 4:
+				EnterOuterAlt(_localctx, 4);
 				{
-				State = 118;
+				State = 322;
 				jumpStatement();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
+			case 5:
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 323;
+				expression();
+				}
+				break;
+			case 6:
+				EnterOuterAlt(_localctx, 6);
+				{
+				State = 325;
+				ErrorHandler.Sync(this);
+				_alt = 1;
+				do {
+					switch (_alt) {
+					case 1:
+						{
+						{
+						State = 324;
+						command();
+						}
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					State = 327;
+					ErrorHandler.Sync(this);
+					_alt = Interpreter.AdaptivePredict(TokenStream,30,Context);
+				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER );
+				}
+				break;
+			case 7:
+				EnterOuterAlt(_localctx, 7);
+				{
+				State = 329;
+				procedure();
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -709,16 +2830,15 @@ public partial class SinumerikNCParser : Parser {
 
 	public partial class IfStatementContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IF() { return GetToken(SinumerikNCParser.IF, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public StatementContext[] statement() {
-			return GetRuleContexts<StatementContext>();
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IF_END() { return GetToken(SinumerikNCParser.IF_END, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext[] block() {
+			return GetRuleContexts<BlockContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public StatementContext statement(int i) {
-			return GetRuleContext<StatementContext>(i);
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block(int i) {
+			return GetRuleContext<BlockContext>(i);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ELSE() { return GetToken(SinumerikNCParser.ELSE, 0); }
 		public IfStatementContext(ParserRuleContext parent, int invokingState)
@@ -747,32 +2867,159 @@ public partial class SinumerikNCParser : Parser {
 	[RuleVersion(0)]
 	public IfStatementContext ifStatement() {
 		IfStatementContext _localctx = new IfStatementContext(Context, State);
-		EnterRule(_localctx, 14, RULE_ifStatement);
+		EnterRule(_localctx, 46, RULE_ifStatement);
+		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 121;
+			State = 332;
 			Match(IF);
-			State = 122;
-			Match(OPEN_PAREN);
-			State = 123;
+			State = 333;
 			expression();
-			State = 124;
-			Match(CLOSE_PAREN);
-			State = 125;
-			statement();
-			State = 128;
+			State = 337;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,6,Context) ) {
-			case 1:
+			_la = TokenStream.LA(1);
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646311492598473760L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 353)) & ~0x3f) == 0 && ((1L << (_la - 353)) & -1L) != 0 || (((_la - 417)) & ~0x3f) == 0 && ((1L << (_la - 417)) & -1L) != 0 || (((_la - 481)) & ~0x3f) == 0 && ((1L << (_la - 481)) & -1L) != 0 || (((_la - 545)) & ~0x3f) == 0 && ((1L << (_la - 545)) & -1L) != 0 || (((_la - 609)) & ~0x3f) == 0 && ((1L << (_la - 609)) & -1L) != 0 || (((_la - 673)) & ~0x3f) == 0 && ((1L << (_la - 673)) & -1L) != 0 || (((_la - 737)) & ~0x3f) == 0 && ((1L << (_la - 737)) & -9151314442816847873L) != 0 || (((_la - 821)) & ~0x3f) == 0 && ((1L << (_la - 821)) & 87L) != 0) {
 				{
-				State = 126;
-				Match(ELSE);
-				State = 127;
-				statement();
+				{
+				State = 334;
+				block();
 				}
-				break;
+				}
+				State = 339;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
 			}
+			State = 347;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==ELSE) {
+				{
+				State = 340;
+				Match(ELSE);
+				State = 344;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				while (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646311492598473760L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 353)) & ~0x3f) == 0 && ((1L << (_la - 353)) & -1L) != 0 || (((_la - 417)) & ~0x3f) == 0 && ((1L << (_la - 417)) & -1L) != 0 || (((_la - 481)) & ~0x3f) == 0 && ((1L << (_la - 481)) & -1L) != 0 || (((_la - 545)) & ~0x3f) == 0 && ((1L << (_la - 545)) & -1L) != 0 || (((_la - 609)) & ~0x3f) == 0 && ((1L << (_la - 609)) & -1L) != 0 || (((_la - 673)) & ~0x3f) == 0 && ((1L << (_la - 673)) & -1L) != 0 || (((_la - 737)) & ~0x3f) == 0 && ((1L << (_la - 737)) & -9151314442816847873L) != 0 || (((_la - 821)) & ~0x3f) == 0 && ((1L << (_la - 821)) & 87L) != 0) {
+					{
+					{
+					State = 341;
+					block();
+					}
+					}
+					State = 346;
+					ErrorHandler.Sync(this);
+					_la = TokenStream.LA(1);
+				}
+				}
+			}
+
+			State = 349;
+			Match(IF_END);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class CaseStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CASE() { return GetToken(SinumerikNCParser.CASE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CASE_OF() { return GetToken(SinumerikNCParser.CASE_OF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ConstantContext[] constant() {
+			return GetRuleContexts<ConstantContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ConstantContext constant(int i) {
+			return GetRuleContext<ConstantContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public GotoStatementContext[] gotoStatement() {
+			return GetRuleContexts<GotoStatementContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public GotoStatementContext gotoStatement(int i) {
+			return GetRuleContext<GotoStatementContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CASE_DEFAULT() { return GetToken(SinumerikNCParser.CASE_DEFAULT, 0); }
+		public CaseStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_caseStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterCaseStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitCaseStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCaseStatement(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public CaseStatementContext caseStatement() {
+		CaseStatementContext _localctx = new CaseStatementContext(Context, State);
+		EnterRule(_localctx, 48, RULE_caseStatement);
+		int _la;
+		try {
+			int _alt;
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 351;
+			Match(CASE);
+			State = 352;
+			expression();
+			State = 353;
+			Match(CASE_OF);
+			State = 357;
+			ErrorHandler.Sync(this);
+			_alt = 1;
+			do {
+				switch (_alt) {
+				case 1:
+					{
+					{
+					State = 354;
+					constant();
+					State = 355;
+					gotoStatement();
+					}
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				State = 359;
+				ErrorHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(TokenStream,35,Context);
+			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER );
+			State = 363;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==CASE_DEFAULT) {
+				{
+				State = 361;
+				Match(CASE_DEFAULT);
+				State = 362;
+				gotoStatement();
+				}
+			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -787,14 +3034,17 @@ public partial class SinumerikNCParser : Parser {
 	}
 
 	public partial class IterativeStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WHILE() { return GetToken(SinumerikNCParser.WHILE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public IterativeWhileContext iterativeWhile() {
+			return GetRuleContext<IterativeWhileContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public StatementContext statement() {
-			return GetRuleContext<StatementContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public IterativeForContext iterativeFor() {
+			return GetRuleContext<IterativeForContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public IterativeRepeatContext iterativeRepeat() {
+			return GetRuleContext<IterativeRepeatContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public IterativeLoopContext iterativeLoop() {
+			return GetRuleContext<IterativeLoopContext>(0);
 		}
 		public IterativeStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -822,20 +3072,354 @@ public partial class SinumerikNCParser : Parser {
 	[RuleVersion(0)]
 	public IterativeStatementContext iterativeStatement() {
 		IterativeStatementContext _localctx = new IterativeStatementContext(Context, State);
-		EnterRule(_localctx, 16, RULE_iterativeStatement);
+		EnterRule(_localctx, 50, RULE_iterativeStatement);
+		try {
+			State = 369;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case WHILE:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 365;
+				iterativeWhile();
+				}
+				break;
+			case FOR:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 366;
+				iterativeFor();
+				}
+				break;
+			case REPEAT:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 367;
+				iterativeRepeat();
+				}
+				break;
+			case LOOP:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 368;
+				iterativeLoop();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class IterativeWhileContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WHILE() { return GetToken(SinumerikNCParser.WHILE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WHILE_END() { return GetToken(SinumerikNCParser.WHILE_END, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext[] block() {
+			return GetRuleContexts<BlockContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block(int i) {
+			return GetRuleContext<BlockContext>(i);
+		}
+		public IterativeWhileContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_iterativeWhile; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterIterativeWhile(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitIterativeWhile(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIterativeWhile(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public IterativeWhileContext iterativeWhile() {
+		IterativeWhileContext _localctx = new IterativeWhileContext(Context, State);
+		EnterRule(_localctx, 52, RULE_iterativeWhile);
+		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 130;
+			State = 371;
 			Match(WHILE);
-			State = 131;
-			Match(OPEN_PAREN);
-			State = 132;
+			State = 372;
 			expression();
-			State = 133;
-			Match(CLOSE_PAREN);
-			State = 134;
-			statement();
+			State = 376;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646311492598473760L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 353)) & ~0x3f) == 0 && ((1L << (_la - 353)) & -1L) != 0 || (((_la - 417)) & ~0x3f) == 0 && ((1L << (_la - 417)) & -1L) != 0 || (((_la - 481)) & ~0x3f) == 0 && ((1L << (_la - 481)) & -1L) != 0 || (((_la - 545)) & ~0x3f) == 0 && ((1L << (_la - 545)) & -1L) != 0 || (((_la - 609)) & ~0x3f) == 0 && ((1L << (_la - 609)) & -1L) != 0 || (((_la - 673)) & ~0x3f) == 0 && ((1L << (_la - 673)) & -1L) != 0 || (((_la - 737)) & ~0x3f) == 0 && ((1L << (_la - 737)) & -9151314442816847873L) != 0 || (((_la - 821)) & ~0x3f) == 0 && ((1L << (_la - 821)) & 87L) != 0) {
+				{
+				{
+				State = 373;
+				block();
+				}
+				}
+				State = 378;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 379;
+			Match(WHILE_END);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class IterativeForContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FOR() { return GetToken(SinumerikNCParser.FOR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(SinumerikNCParser.TO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FOR_END() { return GetToken(SinumerikNCParser.FOR_END, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext[] block() {
+			return GetRuleContexts<BlockContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block(int i) {
+			return GetRuleContext<BlockContext>(i);
+		}
+		public IterativeForContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_iterativeFor; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterIterativeFor(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitIterativeFor(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIterativeFor(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public IterativeForContext iterativeFor() {
+		IterativeForContext _localctx = new IterativeForContext(Context, State);
+		EnterRule(_localctx, 54, RULE_iterativeFor);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 381;
+			Match(FOR);
+			State = 382;
+			Match(NAME);
+			State = 383;
+			Match(ASSIGNMENT);
+			State = 384;
+			expression();
+			State = 385;
+			Match(TO);
+			State = 386;
+			expression();
+			State = 390;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646311492598473760L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 353)) & ~0x3f) == 0 && ((1L << (_la - 353)) & -1L) != 0 || (((_la - 417)) & ~0x3f) == 0 && ((1L << (_la - 417)) & -1L) != 0 || (((_la - 481)) & ~0x3f) == 0 && ((1L << (_la - 481)) & -1L) != 0 || (((_la - 545)) & ~0x3f) == 0 && ((1L << (_la - 545)) & -1L) != 0 || (((_la - 609)) & ~0x3f) == 0 && ((1L << (_la - 609)) & -1L) != 0 || (((_la - 673)) & ~0x3f) == 0 && ((1L << (_la - 673)) & -1L) != 0 || (((_la - 737)) & ~0x3f) == 0 && ((1L << (_la - 737)) & -9151314442816847873L) != 0 || (((_la - 821)) & ~0x3f) == 0 && ((1L << (_la - 821)) & 87L) != 0) {
+				{
+				{
+				State = 387;
+				block();
+				}
+				}
+				State = 392;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 393;
+			Match(FOR_END);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class IterativeRepeatContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REPEAT() { return GetToken(SinumerikNCParser.REPEAT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REPEAT_END() { return GetToken(SinumerikNCParser.REPEAT_END, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext[] block() {
+			return GetRuleContexts<BlockContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block(int i) {
+			return GetRuleContext<BlockContext>(i);
+		}
+		public IterativeRepeatContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_iterativeRepeat; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterIterativeRepeat(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitIterativeRepeat(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIterativeRepeat(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public IterativeRepeatContext iterativeRepeat() {
+		IterativeRepeatContext _localctx = new IterativeRepeatContext(Context, State);
+		EnterRule(_localctx, 56, RULE_iterativeRepeat);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 395;
+			Match(REPEAT);
+			State = 399;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646311492598473760L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 353)) & ~0x3f) == 0 && ((1L << (_la - 353)) & -1L) != 0 || (((_la - 417)) & ~0x3f) == 0 && ((1L << (_la - 417)) & -1L) != 0 || (((_la - 481)) & ~0x3f) == 0 && ((1L << (_la - 481)) & -1L) != 0 || (((_la - 545)) & ~0x3f) == 0 && ((1L << (_la - 545)) & -1L) != 0 || (((_la - 609)) & ~0x3f) == 0 && ((1L << (_la - 609)) & -1L) != 0 || (((_la - 673)) & ~0x3f) == 0 && ((1L << (_la - 673)) & -1L) != 0 || (((_la - 737)) & ~0x3f) == 0 && ((1L << (_la - 737)) & -9151314442816847873L) != 0 || (((_la - 821)) & ~0x3f) == 0 && ((1L << (_la - 821)) & 87L) != 0) {
+				{
+				{
+				State = 396;
+				block();
+				}
+				}
+				State = 401;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 402;
+			Match(REPEAT_END);
+			State = 403;
+			expression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class IterativeLoopContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LOOP() { return GetToken(SinumerikNCParser.LOOP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LOOP_END() { return GetToken(SinumerikNCParser.LOOP_END, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext[] block() {
+			return GetRuleContexts<BlockContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block(int i) {
+			return GetRuleContext<BlockContext>(i);
+		}
+		public IterativeLoopContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_iterativeLoop; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterIterativeLoop(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitIterativeLoop(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIterativeLoop(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public IterativeLoopContext iterativeLoop() {
+		IterativeLoopContext _localctx = new IterativeLoopContext(Context, State);
+		EnterRule(_localctx, 58, RULE_iterativeLoop);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 405;
+			Match(LOOP);
+			State = 409;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646311492598473760L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 353)) & ~0x3f) == 0 && ((1L << (_la - 353)) & -1L) != 0 || (((_la - 417)) & ~0x3f) == 0 && ((1L << (_la - 417)) & -1L) != 0 || (((_la - 481)) & ~0x3f) == 0 && ((1L << (_la - 481)) & -1L) != 0 || (((_la - 545)) & ~0x3f) == 0 && ((1L << (_la - 545)) & -1L) != 0 || (((_la - 609)) & ~0x3f) == 0 && ((1L << (_la - 609)) & -1L) != 0 || (((_la - 673)) & ~0x3f) == 0 && ((1L << (_la - 673)) & -1L) != 0 || (((_la - 737)) & ~0x3f) == 0 && ((1L << (_la - 737)) & -9151314442816847873L) != 0 || (((_la - 821)) & ~0x3f) == 0 && ((1L << (_la - 821)) & 87L) != 0) {
+				{
+				{
+				State = 406;
+				block();
+				}
+				}
+				State = 411;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 412;
+			Match(LOOP_END);
 			}
 		}
 		catch (RecognitionException re) {
@@ -850,12 +3434,16 @@ public partial class SinumerikNCParser : Parser {
 	}
 
 	public partial class JumpStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GOTO() { return GetToken(SinumerikNCParser.GOTO, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GOTO_B() { return GetToken(SinumerikNCParser.GOTO_B, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GOTO_C() { return GetToken(SinumerikNCParser.GOTO_C, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GOTO_F() { return GetToken(SinumerikNCParser.GOTO_F, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GOTO_S() { return GetToken(SinumerikNCParser.GOTO_S, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public GotoStatementContext gotoStatement() {
+			return GetRuleContext<GotoStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CALL() { return GetToken(SinumerikNCParser.CALL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CALL_BLOCK() { return GetToken(SinumerikNCParser.CALL_BLOCK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] NAME() { return GetTokens(SinumerikNCParser.NAME); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME(int i) {
+			return GetToken(SinumerikNCParser.NAME, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(SinumerikNCParser.TO, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RETURN() { return GetToken(SinumerikNCParser.RETURN, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
@@ -886,76 +3474,218 @@ public partial class SinumerikNCParser : Parser {
 	[RuleVersion(0)]
 	public JumpStatementContext jumpStatement() {
 		JumpStatementContext _localctx = new JumpStatementContext(Context, State);
-		EnterRule(_localctx, 18, RULE_jumpStatement);
+		EnterRule(_localctx, 60, RULE_jumpStatement);
 		int _la;
 		try {
-			State = 150;
+			State = 427;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
+			case IF:
 			case GOTO:
+			case GOTO_B:
+			case GOTO_C:
+			case GOTO_F:
+			case GOTO_S:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 136;
-				Match(GOTO);
-				State = 137;
-				Match(NAME);
+				State = 414;
+				gotoStatement();
 				}
 				break;
-			case GOTO_B:
+			case CALL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 138;
-				Match(GOTO_B);
-				State = 139;
-				Match(NAME);
+				State = 415;
+				Match(CALL);
+				State = 417;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==NAME) {
+					{
+					State = 416;
+					Match(NAME);
+					}
 				}
-				break;
-			case GOTO_C:
-				EnterOuterAlt(_localctx, 3);
-				{
-				State = 140;
-				Match(GOTO_C);
-				State = 141;
+
+				State = 419;
+				Match(CALL_BLOCK);
+				State = 420;
 				Match(NAME);
-				}
-				break;
-			case GOTO_F:
-				EnterOuterAlt(_localctx, 4);
-				{
-				State = 142;
-				Match(GOTO_F);
-				State = 143;
-				Match(NAME);
-				}
-				break;
-			case GOTO_S:
-				EnterOuterAlt(_localctx, 5);
-				{
-				State = 144;
-				Match(GOTO_S);
-				State = 145;
+				State = 421;
+				Match(TO);
+				State = 422;
 				Match(NAME);
 				}
 				break;
 			case RETURN:
-				EnterOuterAlt(_localctx, 6);
+				EnterOuterAlt(_localctx, 3);
 				{
-				State = 146;
+				State = 423;
 				Match(RETURN);
-				State = 148;
+				State = 425;
+				ErrorHandler.Sync(this);
+				switch ( Interpreter.AdaptivePredict(TokenStream,43,Context) ) {
+				case 1:
+					{
+					State = 424;
+					expression();
+					}
+					break;
+				}
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class GotoStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GOTO() { return GetToken(SinumerikNCParser.GOTO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public GotoTargetContext gotoTarget() {
+			return GetRuleContext<GotoTargetContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public GotoConditionContext gotoCondition() {
+			return GetRuleContext<GotoConditionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GOTO_B() { return GetToken(SinumerikNCParser.GOTO_B, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GOTO_C() { return GetToken(SinumerikNCParser.GOTO_C, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GOTO_F() { return GetToken(SinumerikNCParser.GOTO_F, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GOTO_S() { return GetToken(SinumerikNCParser.GOTO_S, 0); }
+		public GotoStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_gotoStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterGotoStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitGotoStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitGotoStatement(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public GotoStatementContext gotoStatement() {
+		GotoStatementContext _localctx = new GotoStatementContext(Context, State);
+		EnterRule(_localctx, 62, RULE_gotoStatement);
+		int _la;
+		try {
+			State = 453;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,50,Context) ) {
+			case 1:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 430;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				if (_la==NOT || _la==NOT_B) {
+				if (_la==IF) {
 					{
-					State = 147;
-					expression();
+					State = 429;
+					gotoCondition();
 					}
 				}
 
+				State = 432;
+				Match(GOTO);
+				State = 433;
+				gotoTarget();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
+			case 2:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 435;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==IF) {
+					{
+					State = 434;
+					gotoCondition();
+					}
+				}
+
+				State = 437;
+				Match(GOTO_B);
+				State = 438;
+				gotoTarget();
+				}
+				break;
+			case 3:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 440;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==IF) {
+					{
+					State = 439;
+					gotoCondition();
+					}
+				}
+
+				State = 442;
+				Match(GOTO_C);
+				State = 443;
+				gotoTarget();
+				}
+				break;
+			case 4:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 445;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==IF) {
+					{
+					State = 444;
+					gotoCondition();
+					}
+				}
+
+				State = 447;
+				Match(GOTO_F);
+				State = 448;
+				gotoTarget();
+				}
+				break;
+			case 5:
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 450;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==IF) {
+					{
+					State = 449;
+					gotoCondition();
+					}
+				}
+
+				State = 452;
+				Match(GOTO_S);
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -969,77 +3699,45 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class PrimaryExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ConstantContext constant() {
-			return GetRuleContext<ConstantContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
+	public partial class GotoConditionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IF() { return GetToken(SinumerikNCParser.IF, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
-		public PrimaryExpressionContext(ParserRuleContext parent, int invokingState)
+		public GotoConditionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_primaryExpression; } }
+		public override int RuleIndex { get { return RULE_gotoCondition; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterPrimaryExpression(this);
+			if (typedListener != null) typedListener.EnterGotoCondition(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitPrimaryExpression(this);
+			if (typedListener != null) typedListener.ExitGotoCondition(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitPrimaryExpression(this);
+			if (typedVisitor != null) return typedVisitor.VisitGotoCondition(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public PrimaryExpressionContext primaryExpression() {
-		PrimaryExpressionContext _localctx = new PrimaryExpressionContext(Context, State);
-		EnterRule(_localctx, 20, RULE_primaryExpression);
+	public GotoConditionContext gotoCondition() {
+		GotoConditionContext _localctx = new GotoConditionContext(Context, State);
+		EnterRule(_localctx, 64, RULE_gotoCondition);
 		try {
-			State = 158;
-			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case NAME:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 152;
-				Match(NAME);
-				}
-				break;
-			case INT:
-			case REAL:
-			case BIN:
-			case HEX:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 153;
-				constant();
-				}
-				break;
-			case OPEN_PAREN:
-				EnterOuterAlt(_localctx, 3);
-				{
-				State = 154;
-				Match(OPEN_PAREN);
-				State = 155;
-				expression();
-				State = 156;
-				Match(CLOSE_PAREN);
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 455;
+			Match(IF);
+			State = 456;
+			expression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1053,63 +3751,774 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class UnaryExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NOT() { return GetToken(SinumerikNCParser.NOT, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public PrimaryExpressionContext primaryExpression() {
-			return GetRuleContext<PrimaryExpressionContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NOT_B() { return GetToken(SinumerikNCParser.NOT_B, 0); }
-		public UnaryExpressionContext(ParserRuleContext parent, int invokingState)
+	public partial class GotoTargetContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BLOCK_NUMBER() { return GetToken(SinumerikNCParser.BLOCK_NUMBER, 0); }
+		public GotoTargetContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_unaryExpression; } }
+		public override int RuleIndex { get { return RULE_gotoTarget; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterUnaryExpression(this);
+			if (typedListener != null) typedListener.EnterGotoTarget(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitUnaryExpression(this);
+			if (typedListener != null) typedListener.ExitGotoTarget(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitUnaryExpression(this);
+			if (typedVisitor != null) return typedVisitor.VisitGotoTarget(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public UnaryExpressionContext unaryExpression() {
-		UnaryExpressionContext _localctx = new UnaryExpressionContext(Context, State);
-		EnterRule(_localctx, 22, RULE_unaryExpression);
+	public GotoTargetContext gotoTarget() {
+		GotoTargetContext _localctx = new GotoTargetContext(Context, State);
+		EnterRule(_localctx, 66, RULE_gotoTarget);
+		int _la;
 		try {
-			State = 164;
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 458;
+			_la = TokenStream.LA(1);
+			if ( !(_la==BLOCK_NUMBER || _la==NAME) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public RelationalExpressionContext relationalExpression() {
+			return GetRuleContext<RelationalExpressionContext>(0);
+		}
+		public ExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_expression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ExpressionContext expression() {
+		ExpressionContext _localctx = new ExpressionContext(Context, State);
+		EnterRule(_localctx, 68, RULE_expression);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 460;
+			relationalExpression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class RelationalExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public StringExpressionContext[] stringExpression() {
+			return GetRuleContexts<StringExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public StringExpressionContext stringExpression(int i) {
+			return GetRuleContext<StringExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EQUAL() { return GetToken(SinumerikNCParser.EQUAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NOT_EQUAL() { return GetToken(SinumerikNCParser.NOT_EQUAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LESS_EQUAL() { return GetToken(SinumerikNCParser.LESS_EQUAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GREATER_EQUAL() { return GetToken(SinumerikNCParser.GREATER_EQUAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LESS() { return GetToken(SinumerikNCParser.LESS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GREATER() { return GetToken(SinumerikNCParser.GREATER, 0); }
+		public RelationalExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_relationalExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterRelationalExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitRelationalExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitRelationalExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public RelationalExpressionContext relationalExpression() {
+		RelationalExpressionContext _localctx = new RelationalExpressionContext(Context, State);
+		EnterRule(_localctx, 70, RULE_relationalExpression);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 462;
+			stringExpression();
+			State = 465;
 			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case NOT:
-				EnterOuterAlt(_localctx, 1);
+			_la = TokenStream.LA(1);
+			if (((_la) & ~0x3f) == 0 && ((1L << _la) & 567453553048682496L) != 0) {
 				{
-				State = 160;
-				Match(NOT);
-				State = 161;
-				primaryExpression();
+				State = 463;
+				_la = TokenStream.LA(1);
+				if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 567453553048682496L) != 0) ) {
+				ErrorHandler.RecoverInline(this);
 				}
-				break;
-			case NOT_B:
-				EnterOuterAlt(_localctx, 2);
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 464;
+				stringExpression();
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class StringExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public InclusiveOrExpressionContext[] inclusiveOrExpression() {
+			return GetRuleContexts<InclusiveOrExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public InclusiveOrExpressionContext inclusiveOrExpression(int i) {
+			return GetRuleContext<InclusiveOrExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] CONCAT() { return GetTokens(SinumerikNCParser.CONCAT); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CONCAT(int i) {
+			return GetToken(SinumerikNCParser.CONCAT, i);
+		}
+		public StringExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_stringExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterStringExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitStringExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitStringExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public StringExpressionContext stringExpression() {
+		StringExpressionContext _localctx = new StringExpressionContext(Context, State);
+		EnterRule(_localctx, 72, RULE_stringExpression);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 467;
+			inclusiveOrExpression();
+			State = 472;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==CONCAT) {
 				{
-				State = 162;
-				Match(NOT_B);
-				State = 163;
-				primaryExpression();
+				{
+				State = 468;
+				Match(CONCAT);
+				State = 469;
+				inclusiveOrExpression();
 				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+				}
+				State = 474;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class InclusiveOrExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ExclusiveOrExpressionContext[] exclusiveOrExpression() {
+			return GetRuleContexts<ExclusiveOrExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExclusiveOrExpressionContext exclusiveOrExpression(int i) {
+			return GetRuleContext<ExclusiveOrExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] OR() { return GetTokens(SinumerikNCParser.OR); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OR(int i) {
+			return GetToken(SinumerikNCParser.OR, i);
+		}
+		public InclusiveOrExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_inclusiveOrExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterInclusiveOrExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitInclusiveOrExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitInclusiveOrExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public InclusiveOrExpressionContext inclusiveOrExpression() {
+		InclusiveOrExpressionContext _localctx = new InclusiveOrExpressionContext(Context, State);
+		EnterRule(_localctx, 74, RULE_inclusiveOrExpression);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 475;
+			exclusiveOrExpression();
+			State = 480;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==OR) {
+				{
+				{
+				State = 476;
+				Match(OR);
+				State = 477;
+				exclusiveOrExpression();
+				}
+				}
+				State = 482;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ExclusiveOrExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public AndExpressionContext[] andExpression() {
+			return GetRuleContexts<AndExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public AndExpressionContext andExpression(int i) {
+			return GetRuleContext<AndExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] XOR() { return GetTokens(SinumerikNCParser.XOR); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode XOR(int i) {
+			return GetToken(SinumerikNCParser.XOR, i);
+		}
+		public ExclusiveOrExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_exclusiveOrExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterExclusiveOrExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitExclusiveOrExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExclusiveOrExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ExclusiveOrExpressionContext exclusiveOrExpression() {
+		ExclusiveOrExpressionContext _localctx = new ExclusiveOrExpressionContext(Context, State);
+		EnterRule(_localctx, 76, RULE_exclusiveOrExpression);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 483;
+			andExpression();
+			State = 488;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==XOR) {
+				{
+				{
+				State = 484;
+				Match(XOR);
+				State = 485;
+				andExpression();
+				}
+				}
+				State = 490;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class AndExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public BinaryInclusiveOrExpressionContext[] binaryInclusiveOrExpression() {
+			return GetRuleContexts<BinaryInclusiveOrExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BinaryInclusiveOrExpressionContext binaryInclusiveOrExpression(int i) {
+			return GetRuleContext<BinaryInclusiveOrExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] AND() { return GetTokens(SinumerikNCParser.AND); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AND(int i) {
+			return GetToken(SinumerikNCParser.AND, i);
+		}
+		public AndExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_andExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterAndExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitAndExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAndExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public AndExpressionContext andExpression() {
+		AndExpressionContext _localctx = new AndExpressionContext(Context, State);
+		EnterRule(_localctx, 78, RULE_andExpression);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 491;
+			binaryInclusiveOrExpression();
+			State = 496;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==AND) {
+				{
+				{
+				State = 492;
+				Match(AND);
+				State = 493;
+				binaryInclusiveOrExpression();
+				}
+				}
+				State = 498;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class BinaryInclusiveOrExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public BinaryExclusiveOrExpressionContext[] binaryExclusiveOrExpression() {
+			return GetRuleContexts<BinaryExclusiveOrExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BinaryExclusiveOrExpressionContext binaryExclusiveOrExpression(int i) {
+			return GetRuleContext<BinaryExclusiveOrExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] OR_B() { return GetTokens(SinumerikNCParser.OR_B); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OR_B(int i) {
+			return GetToken(SinumerikNCParser.OR_B, i);
+		}
+		public BinaryInclusiveOrExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_binaryInclusiveOrExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterBinaryInclusiveOrExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitBinaryInclusiveOrExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBinaryInclusiveOrExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public BinaryInclusiveOrExpressionContext binaryInclusiveOrExpression() {
+		BinaryInclusiveOrExpressionContext _localctx = new BinaryInclusiveOrExpressionContext(Context, State);
+		EnterRule(_localctx, 80, RULE_binaryInclusiveOrExpression);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 499;
+			binaryExclusiveOrExpression();
+			State = 504;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==OR_B) {
+				{
+				{
+				State = 500;
+				Match(OR_B);
+				State = 501;
+				binaryExclusiveOrExpression();
+				}
+				}
+				State = 506;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class BinaryExclusiveOrExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public BinaryAndExpressionContext[] binaryAndExpression() {
+			return GetRuleContexts<BinaryAndExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BinaryAndExpressionContext binaryAndExpression(int i) {
+			return GetRuleContext<BinaryAndExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] XOR_B() { return GetTokens(SinumerikNCParser.XOR_B); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode XOR_B(int i) {
+			return GetToken(SinumerikNCParser.XOR_B, i);
+		}
+		public BinaryExclusiveOrExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_binaryExclusiveOrExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterBinaryExclusiveOrExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitBinaryExclusiveOrExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBinaryExclusiveOrExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public BinaryExclusiveOrExpressionContext binaryExclusiveOrExpression() {
+		BinaryExclusiveOrExpressionContext _localctx = new BinaryExclusiveOrExpressionContext(Context, State);
+		EnterRule(_localctx, 82, RULE_binaryExclusiveOrExpression);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 507;
+			binaryAndExpression();
+			State = 512;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==XOR_B) {
+				{
+				{
+				State = 508;
+				Match(XOR_B);
+				State = 509;
+				binaryAndExpression();
+				}
+				}
+				State = 514;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class BinaryAndExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public AdditiveExpressionContext[] additiveExpression() {
+			return GetRuleContexts<AdditiveExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public AdditiveExpressionContext additiveExpression(int i) {
+			return GetRuleContext<AdditiveExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] AND_B() { return GetTokens(SinumerikNCParser.AND_B); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AND_B(int i) {
+			return GetToken(SinumerikNCParser.AND_B, i);
+		}
+		public BinaryAndExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_binaryAndExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterBinaryAndExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitBinaryAndExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBinaryAndExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public BinaryAndExpressionContext binaryAndExpression() {
+		BinaryAndExpressionContext _localctx = new BinaryAndExpressionContext(Context, State);
+		EnterRule(_localctx, 84, RULE_binaryAndExpression);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 515;
+			additiveExpression();
+			State = 520;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==AND_B) {
+				{
+				{
+				State = 516;
+				Match(AND_B);
+				State = 517;
+				additiveExpression();
+				}
+				}
+				State = 522;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class AdditiveExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public MultiplicativeExpressionContext[] multiplicativeExpression() {
+			return GetRuleContexts<MultiplicativeExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public MultiplicativeExpressionContext multiplicativeExpression(int i) {
+			return GetRuleContext<MultiplicativeExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] ADD() { return GetTokens(SinumerikNCParser.ADD); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ADD(int i) {
+			return GetToken(SinumerikNCParser.ADD, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] SUB() { return GetTokens(SinumerikNCParser.SUB); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SUB(int i) {
+			return GetToken(SinumerikNCParser.SUB, i);
+		}
+		public AdditiveExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_additiveExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterAdditiveExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitAdditiveExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAdditiveExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public AdditiveExpressionContext additiveExpression() {
+		AdditiveExpressionContext _localctx = new AdditiveExpressionContext(Context, State);
+		EnterRule(_localctx, 86, RULE_additiveExpression);
+		int _la;
+		try {
+			int _alt;
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 523;
+			multiplicativeExpression();
+			State = 528;
+			ErrorHandler.Sync(this);
+			_alt = Interpreter.AdaptivePredict(TokenStream,59,Context);
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1 ) {
+					{
+					{
+					State = 524;
+					_la = TokenStream.LA(1);
+					if ( !(_la==ADD || _la==SUB) ) {
+					ErrorHandler.RecoverInline(this);
+					}
+					else {
+						ErrorHandler.ReportMatch(this);
+					    Consume();
+					}
+					State = 525;
+					multiplicativeExpression();
+					}
+					} 
+				}
+				State = 530;
+				ErrorHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(TokenStream,59,Context);
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -1168,33 +4577,33 @@ public partial class SinumerikNCParser : Parser {
 	[RuleVersion(0)]
 	public MultiplicativeExpressionContext multiplicativeExpression() {
 		MultiplicativeExpressionContext _localctx = new MultiplicativeExpressionContext(Context, State);
-		EnterRule(_localctx, 24, RULE_multiplicativeExpression);
+		EnterRule(_localctx, 88, RULE_multiplicativeExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 166;
+			State = 531;
 			unaryExpression();
-			State = 171;
+			State = 536;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 30064771072L) != 0) {
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 7881299347898368L) != 0) {
 				{
 				{
-				State = 167;
+				State = 532;
 				_la = TokenStream.LA(1);
-				if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 30064771072L) != 0) ) {
+				if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 7881299347898368L) != 0) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 168;
+				State = 533;
 				unaryExpression();
 				}
 				}
-				State = 173;
+				State = 538;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -1211,77 +4620,62 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class AdditiveExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public MultiplicativeExpressionContext[] multiplicativeExpression() {
-			return GetRuleContexts<MultiplicativeExpressionContext>();
+	public partial class UnaryExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public PrimaryExpressionContext primaryExpression() {
+			return GetRuleContext<PrimaryExpressionContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public MultiplicativeExpressionContext multiplicativeExpression(int i) {
-			return GetRuleContext<MultiplicativeExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] ADD() { return GetTokens(SinumerikNCParser.ADD); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ADD(int i) {
-			return GetToken(SinumerikNCParser.ADD, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] SUB() { return GetTokens(SinumerikNCParser.SUB); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SUB(int i) {
-			return GetToken(SinumerikNCParser.SUB, i);
-		}
-		public AdditiveExpressionContext(ParserRuleContext parent, int invokingState)
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NOT() { return GetToken(SinumerikNCParser.NOT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NOT_B() { return GetToken(SinumerikNCParser.NOT_B, 0); }
+		public UnaryExpressionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_additiveExpression; } }
+		public override int RuleIndex { get { return RULE_unaryExpression; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterAdditiveExpression(this);
+			if (typedListener != null) typedListener.EnterUnaryExpression(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitAdditiveExpression(this);
+			if (typedListener != null) typedListener.ExitUnaryExpression(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAdditiveExpression(this);
+			if (typedVisitor != null) return typedVisitor.VisitUnaryExpression(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public AdditiveExpressionContext additiveExpression() {
-		AdditiveExpressionContext _localctx = new AdditiveExpressionContext(Context, State);
-		EnterRule(_localctx, 26, RULE_additiveExpression);
+	public UnaryExpressionContext unaryExpression() {
+		UnaryExpressionContext _localctx = new UnaryExpressionContext(Context, State);
+		EnterRule(_localctx, 90, RULE_unaryExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 174;
-			multiplicativeExpression();
-			State = 179;
+			State = 540;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while (_la==ADD || _la==SUB) {
+			if (_la==NOT || _la==NOT_B) {
 				{
-				{
-				State = 175;
+				State = 539;
 				_la = TokenStream.LA(1);
-				if ( !(_la==ADD || _la==SUB) ) {
+				if ( !(_la==NOT || _la==NOT_B) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 176;
-				multiplicativeExpression();
 				}
-				}
-				State = 181;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
 			}
+
+			State = 542;
+			primaryExpression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1295,714 +4689,123 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class BinaryAndExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public AdditiveExpressionContext[] additiveExpression() {
-			return GetRuleContexts<AdditiveExpressionContext>();
+	public partial class PrimaryExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SYS_VAR() { return GetToken(SinumerikNCParser.SYS_VAR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode R_PARAM() { return GetToken(SinumerikNCParser.R_PARAM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ConstantContext constant() {
+			return GetRuleContext<ConstantContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public AdditiveExpressionContext additiveExpression(int i) {
-			return GetRuleContext<AdditiveExpressionContext>(i);
+		[System.Diagnostics.DebuggerNonUserCode] public FunctionContext function() {
+			return GetRuleContext<FunctionContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] AND_B() { return GetTokens(SinumerikNCParser.AND_B); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AND_B(int i) {
-			return GetToken(SinumerikNCParser.AND_B, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
 		}
-		public BinaryAndExpressionContext(ParserRuleContext parent, int invokingState)
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
+		public PrimaryExpressionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_binaryAndExpression; } }
+		public override int RuleIndex { get { return RULE_primaryExpression; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterBinaryAndExpression(this);
+			if (typedListener != null) typedListener.EnterPrimaryExpression(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitBinaryAndExpression(this);
+			if (typedListener != null) typedListener.ExitPrimaryExpression(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBinaryAndExpression(this);
+			if (typedVisitor != null) return typedVisitor.VisitPrimaryExpression(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public BinaryAndExpressionContext binaryAndExpression() {
-		BinaryAndExpressionContext _localctx = new BinaryAndExpressionContext(Context, State);
-		EnterRule(_localctx, 28, RULE_binaryAndExpression);
-		int _la;
+	public PrimaryExpressionContext primaryExpression() {
+		PrimaryExpressionContext _localctx = new PrimaryExpressionContext(Context, State);
+		EnterRule(_localctx, 92, RULE_primaryExpression);
 		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 182;
-			additiveExpression();
-			State = 187;
+			State = 553;
 			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (_la==AND_B) {
+			switch (TokenStream.LA(1)) {
+			case NAME:
+				EnterOuterAlt(_localctx, 1);
 				{
+				State = 544;
+				Match(NAME);
+				}
+				break;
+			case SYS_VAR:
+				EnterOuterAlt(_localctx, 2);
 				{
-				State = 183;
-				Match(AND_B);
-				State = 184;
-				additiveExpression();
+				State = 545;
+				Match(SYS_VAR);
 				}
-				}
-				State = 189;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class BinaryExclusiveOrExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public BinaryAndExpressionContext[] binaryAndExpression() {
-			return GetRuleContexts<BinaryAndExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public BinaryAndExpressionContext binaryAndExpression(int i) {
-			return GetRuleContext<BinaryAndExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] XOR_B() { return GetTokens(SinumerikNCParser.XOR_B); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode XOR_B(int i) {
-			return GetToken(SinumerikNCParser.XOR_B, i);
-		}
-		public BinaryExclusiveOrExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_binaryExclusiveOrExpression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterBinaryExclusiveOrExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitBinaryExclusiveOrExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBinaryExclusiveOrExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public BinaryExclusiveOrExpressionContext binaryExclusiveOrExpression() {
-		BinaryExclusiveOrExpressionContext _localctx = new BinaryExclusiveOrExpressionContext(Context, State);
-		EnterRule(_localctx, 30, RULE_binaryExclusiveOrExpression);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 190;
-			binaryAndExpression();
-			State = 195;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (_la==XOR_B) {
+				break;
+			case R_PARAM:
+				EnterOuterAlt(_localctx, 3);
 				{
+				State = 546;
+				Match(R_PARAM);
+				}
+				break;
+			case INT:
+			case REAL:
+			case BIN:
+			case HEX:
+			case BOOL:
+			case STRING:
+			case SUB:
+				EnterOuterAlt(_localctx, 4);
 				{
-				State = 191;
-				Match(XOR_B);
-				State = 192;
-				binaryAndExpression();
+				State = 547;
+				constant();
 				}
-				}
-				State = 197;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class BinaryInclusiveOrExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public BinaryExclusiveOrExpressionContext[] binaryExclusiveOrExpression() {
-			return GetRuleContexts<BinaryExclusiveOrExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public BinaryExclusiveOrExpressionContext binaryExclusiveOrExpression(int i) {
-			return GetRuleContext<BinaryExclusiveOrExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] OR_B() { return GetTokens(SinumerikNCParser.OR_B); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OR_B(int i) {
-			return GetToken(SinumerikNCParser.OR_B, i);
-		}
-		public BinaryInclusiveOrExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_binaryInclusiveOrExpression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterBinaryInclusiveOrExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitBinaryInclusiveOrExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBinaryInclusiveOrExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public BinaryInclusiveOrExpressionContext binaryInclusiveOrExpression() {
-		BinaryInclusiveOrExpressionContext _localctx = new BinaryInclusiveOrExpressionContext(Context, State);
-		EnterRule(_localctx, 32, RULE_binaryInclusiveOrExpression);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 198;
-			binaryExclusiveOrExpression();
-			State = 203;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (_la==OR_B) {
+				break;
+			case SIN:
+			case COS:
+			case TAN:
+			case ASIN:
+			case ACOS:
+			case ATAN2:
+			case SQRT:
+			case POT:
+			case LN:
+			case EXP:
+			case ABS:
+			case TRUNC:
+			case ROUND:
+			case ROUNDUP:
+			case BOUND:
+			case MAXVAL:
+			case MINVAL:
+			case CALCDAT:
+				EnterOuterAlt(_localctx, 5);
 				{
+				State = 548;
+				function();
+				}
+				break;
+			case OPEN_PAREN:
+				EnterOuterAlt(_localctx, 6);
 				{
-				State = 199;
-				Match(OR_B);
-				State = 200;
-				binaryExclusiveOrExpression();
+				State = 549;
+				Match(OPEN_PAREN);
+				State = 550;
+				expression();
+				State = 551;
+				Match(CLOSE_PAREN);
 				}
-				}
-				State = 205;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class AndExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public BinaryInclusiveOrExpressionContext[] binaryInclusiveOrExpression() {
-			return GetRuleContexts<BinaryInclusiveOrExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public BinaryInclusiveOrExpressionContext binaryInclusiveOrExpression(int i) {
-			return GetRuleContext<BinaryInclusiveOrExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] AND() { return GetTokens(SinumerikNCParser.AND); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AND(int i) {
-			return GetToken(SinumerikNCParser.AND, i);
-		}
-		public AndExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_andExpression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterAndExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitAndExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAndExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public AndExpressionContext andExpression() {
-		AndExpressionContext _localctx = new AndExpressionContext(Context, State);
-		EnterRule(_localctx, 34, RULE_andExpression);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 206;
-			binaryInclusiveOrExpression();
-			State = 211;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (_la==AND) {
-				{
-				{
-				State = 207;
-				Match(AND);
-				State = 208;
-				binaryInclusiveOrExpression();
-				}
-				}
-				State = 213;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class ExclusiveOrExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public AndExpressionContext[] andExpression() {
-			return GetRuleContexts<AndExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public AndExpressionContext andExpression(int i) {
-			return GetRuleContext<AndExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] XOR() { return GetTokens(SinumerikNCParser.XOR); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode XOR(int i) {
-			return GetToken(SinumerikNCParser.XOR, i);
-		}
-		public ExclusiveOrExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_exclusiveOrExpression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterExclusiveOrExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitExclusiveOrExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitExclusiveOrExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public ExclusiveOrExpressionContext exclusiveOrExpression() {
-		ExclusiveOrExpressionContext _localctx = new ExclusiveOrExpressionContext(Context, State);
-		EnterRule(_localctx, 36, RULE_exclusiveOrExpression);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 214;
-			andExpression();
-			State = 219;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (_la==XOR) {
-				{
-				{
-				State = 215;
-				Match(XOR);
-				State = 216;
-				andExpression();
-				}
-				}
-				State = 221;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class InclusiveOrExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ExclusiveOrExpressionContext[] exclusiveOrExpression() {
-			return GetRuleContexts<ExclusiveOrExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ExclusiveOrExpressionContext exclusiveOrExpression(int i) {
-			return GetRuleContext<ExclusiveOrExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] OR() { return GetTokens(SinumerikNCParser.OR); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OR(int i) {
-			return GetToken(SinumerikNCParser.OR, i);
-		}
-		public InclusiveOrExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_inclusiveOrExpression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterInclusiveOrExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitInclusiveOrExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitInclusiveOrExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public InclusiveOrExpressionContext inclusiveOrExpression() {
-		InclusiveOrExpressionContext _localctx = new InclusiveOrExpressionContext(Context, State);
-		EnterRule(_localctx, 38, RULE_inclusiveOrExpression);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 222;
-			exclusiveOrExpression();
-			State = 227;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (_la==OR) {
-				{
-				{
-				State = 223;
-				Match(OR);
-				State = 224;
-				exclusiveOrExpression();
-				}
-				}
-				State = 229;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class StringExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public InclusiveOrExpressionContext[] inclusiveOrExpression() {
-			return GetRuleContexts<InclusiveOrExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public InclusiveOrExpressionContext inclusiveOrExpression(int i) {
-			return GetRuleContext<InclusiveOrExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] CONCAT() { return GetTokens(SinumerikNCParser.CONCAT); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CONCAT(int i) {
-			return GetToken(SinumerikNCParser.CONCAT, i);
-		}
-		public StringExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_stringExpression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterStringExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitStringExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitStringExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public StringExpressionContext stringExpression() {
-		StringExpressionContext _localctx = new StringExpressionContext(Context, State);
-		EnterRule(_localctx, 40, RULE_stringExpression);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 230;
-			inclusiveOrExpression();
-			State = 235;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (_la==CONCAT) {
-				{
-				{
-				State = 231;
-				Match(CONCAT);
-				State = 232;
-				inclusiveOrExpression();
-				}
-				}
-				State = 237;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class RelationalExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public StringExpressionContext[] stringExpression() {
-			return GetRuleContexts<StringExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public StringExpressionContext stringExpression(int i) {
-			return GetRuleContext<StringExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] EQUAL() { return GetTokens(SinumerikNCParser.EQUAL); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EQUAL(int i) {
-			return GetToken(SinumerikNCParser.EQUAL, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] NOT_EQUAL() { return GetTokens(SinumerikNCParser.NOT_EQUAL); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NOT_EQUAL(int i) {
-			return GetToken(SinumerikNCParser.NOT_EQUAL, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] LESS_EQUAL() { return GetTokens(SinumerikNCParser.LESS_EQUAL); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LESS_EQUAL(int i) {
-			return GetToken(SinumerikNCParser.LESS_EQUAL, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] GREATER_EQUAL() { return GetTokens(SinumerikNCParser.GREATER_EQUAL); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GREATER_EQUAL(int i) {
-			return GetToken(SinumerikNCParser.GREATER_EQUAL, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] LESS() { return GetTokens(SinumerikNCParser.LESS); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LESS(int i) {
-			return GetToken(SinumerikNCParser.LESS, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] GREATER() { return GetTokens(SinumerikNCParser.GREATER); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GREATER(int i) {
-			return GetToken(SinumerikNCParser.GREATER, i);
-		}
-		public RelationalExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_relationalExpression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterRelationalExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitRelationalExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitRelationalExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public RelationalExpressionContext relationalExpression() {
-		RelationalExpressionContext _localctx = new RelationalExpressionContext(Context, State);
-		EnterRule(_localctx, 42, RULE_relationalExpression);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 238;
-			stringExpression();
-			State = 243;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 2164663517184L) != 0) {
-				{
-				{
-				State = 239;
-				_la = TokenStream.LA(1);
-				if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 2164663517184L) != 0) ) {
-				ErrorHandler.RecoverInline(this);
-				}
-				else {
-					ErrorHandler.ReportMatch(this);
-				    Consume();
-				}
-				State = 240;
-				stringExpression();
-				}
-				}
-				State = 245;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class ExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public RelationalExpressionContext relationalExpression() {
-			return GetRuleContext<RelationalExpressionContext>(0);
-		}
-		public ExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_expression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitExpression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public ExpressionContext expression() {
-		ExpressionContext _localctx = new ExpressionContext(Context, State);
-		EnterRule(_localctx, 44, RULE_expression);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 246;
-			relationalExpression();
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class TypeContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BOOL_TYPE() { return GetToken(SinumerikNCParser.BOOL_TYPE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CHAR_TYPE() { return GetToken(SinumerikNCParser.CHAR_TYPE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT_TYPE() { return GetToken(SinumerikNCParser.INT_TYPE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REAL_TYPE() { return GetToken(SinumerikNCParser.REAL_TYPE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING_TYPE() { return GetToken(SinumerikNCParser.STRING_TYPE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AXIS_TYPE() { return GetToken(SinumerikNCParser.AXIS_TYPE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FRAME_TYPE() { return GetToken(SinumerikNCParser.FRAME_TYPE, 0); }
-		public TypeContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_type; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterType(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitType(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitType(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public TypeContext type() {
-		TypeContext _localctx = new TypeContext(Context, State);
-		EnterRule(_localctx, 46, RULE_type);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 248;
-			_la = TokenStream.LA(1);
-			if ( !((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & 127L) != 0) ) {
-			ErrorHandler.RecoverInline(this);
-			}
-			else {
-				ErrorHandler.ReportMatch(this);
-			    Consume();
-			}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2017,10 +4820,13 @@ public partial class SinumerikNCParser : Parser {
 	}
 
 	public partial class ConstantContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(SinumerikNCParser.INT, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REAL() { return GetToken(SinumerikNCParser.REAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public NumericContext numeric() {
+			return GetRuleContext<NumericContext>(0);
+		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode HEX() { return GetToken(SinumerikNCParser.HEX, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BIN() { return GetToken(SinumerikNCParser.BIN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(SinumerikNCParser.STRING, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BOOL() { return GetToken(SinumerikNCParser.BOOL, 0); }
 		public ConstantContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2047,14 +4853,111 @@ public partial class SinumerikNCParser : Parser {
 	[RuleVersion(0)]
 	public ConstantContext constant() {
 		ConstantContext _localctx = new ConstantContext(Context, State);
-		EnterRule(_localctx, 48, RULE_constant);
+		EnterRule(_localctx, 94, RULE_constant);
+		try {
+			State = 560;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case INT:
+			case REAL:
+			case SUB:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 555;
+				numeric();
+				}
+				break;
+			case HEX:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 556;
+				Match(HEX);
+				}
+				break;
+			case BIN:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 557;
+				Match(BIN);
+				}
+				break;
+			case STRING:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 558;
+				Match(STRING);
+				}
+				break;
+			case BOOL:
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 559;
+				Match(BOOL);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class NumericContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(SinumerikNCParser.INT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REAL() { return GetToken(SinumerikNCParser.REAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SUB() { return GetToken(SinumerikNCParser.SUB, 0); }
+		public NumericContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_numeric; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterNumeric(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitNumeric(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNumeric(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public NumericContext numeric() {
+		NumericContext _localctx = new NumericContext(Context, State);
+		EnterRule(_localctx, 96, RULE_numeric);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 250;
+			State = 563;
+			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ( !((((_la - 169)) & ~0x3f) == 0 && ((1L << (_la - 169)) & 29L) != 0) ) {
+			if (_la==SUB) {
+				{
+				State = 562;
+				Match(SUB);
+				}
+			}
+
+			State = 565;
+			_la = TokenStream.LA(1);
+			if ( !(_la==INT || _la==REAL) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -2074,45 +4977,2176 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class Feedrate_override_pathContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FEEDRATE_OVERRIDE_PATH() { return GetToken(SinumerikNCParser.FEEDRATE_OVERRIDE_PATH, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(SinumerikNCParser.INT, 0); }
-		public Feedrate_override_pathContext(ParserRuleContext parent, int invokingState)
+	public partial class CommandContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GCODE() { return GetToken(SinumerikNCParser.GCODE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MCODE() { return GetToken(SinumerikNCParser.MCODE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode HCODE() { return GetToken(SinumerikNCParser.HCODE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public AxisCodeContext axisCode() {
+			return GetRuleContext<AxisCodeContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ADIS() { return GetToken(SinumerikNCParser.ADIS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ADISPOS() { return GetToken(SinumerikNCParser.ADISPOS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ALF() { return GetToken(SinumerikNCParser.ALF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AMIRROR() { return GetToken(SinumerikNCParser.AMIRROR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ANG() { return GetToken(SinumerikNCParser.ANG, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AP() { return GetToken(SinumerikNCParser.AP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AR() { return GetToken(SinumerikNCParser.AR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AROT() { return GetToken(SinumerikNCParser.AROT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AROTS() { return GetToken(SinumerikNCParser.AROTS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASCALE() { return GetToken(SinumerikNCParser.ASCALE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASPLINE() { return GetToken(SinumerikNCParser.ASPLINE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ATOL() { return GetToken(SinumerikNCParser.ATOL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ATRANS() { return GetToken(SinumerikNCParser.ATRANS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BAUTO() { return GetToken(SinumerikNCParser.BAUTO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BNAT() { return GetToken(SinumerikNCParser.BNAT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BRISK() { return GetToken(SinumerikNCParser.BRISK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BSPLINE() { return GetToken(SinumerikNCParser.BSPLINE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BTAN() { return GetToken(SinumerikNCParser.BTAN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CDOF() { return GetToken(SinumerikNCParser.CDOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CDOF2() { return GetToken(SinumerikNCParser.CDOF2, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CDON() { return GetToken(SinumerikNCParser.CDON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CFC() { return GetToken(SinumerikNCParser.CFC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CFIN() { return GetToken(SinumerikNCParser.CFIN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CFTCP() { return GetToken(SinumerikNCParser.CFTCP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CHF() { return GetToken(SinumerikNCParser.CHF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CHR() { return GetToken(SinumerikNCParser.CHR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CIP() { return GetToken(SinumerikNCParser.CIP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMPCAD() { return GetToken(SinumerikNCParser.COMPCAD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMPCURV() { return GetToken(SinumerikNCParser.COMPCURV, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMPOF() { return GetToken(SinumerikNCParser.COMPOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMPON() { return GetToken(SinumerikNCParser.COMPON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMPPATH() { return GetToken(SinumerikNCParser.COMPPATH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMPSURF() { return GetToken(SinumerikNCParser.COMPSURF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CP() { return GetToken(SinumerikNCParser.CP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CPRECOF() { return GetToken(SinumerikNCParser.CPRECOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CPRECON() { return GetToken(SinumerikNCParser.CPRECON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CR() { return GetToken(SinumerikNCParser.CR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CT() { return GetToken(SinumerikNCParser.CT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CTOL() { return GetToken(SinumerikNCParser.CTOL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CTOLG0() { return GetToken(SinumerikNCParser.CTOLG0, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT2D() { return GetToken(SinumerikNCParser.CUT2D, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT2DD() { return GetToken(SinumerikNCParser.CUT2DD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT2DF() { return GetToken(SinumerikNCParser.CUT2DF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT2DFD() { return GetToken(SinumerikNCParser.CUT2DFD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT3DC() { return GetToken(SinumerikNCParser.CUT3DC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT3DCC() { return GetToken(SinumerikNCParser.CUT3DCC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT3DCCD() { return GetToken(SinumerikNCParser.CUT3DCCD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT3DCD() { return GetToken(SinumerikNCParser.CUT3DCD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT3DF() { return GetToken(SinumerikNCParser.CUT3DF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT3DFD() { return GetToken(SinumerikNCParser.CUT3DFD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT3DFF() { return GetToken(SinumerikNCParser.CUT3DFF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUT3DFS() { return GetToken(SinumerikNCParser.CUT3DFS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUTCONOF() { return GetToken(SinumerikNCParser.CUTCONOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUTCONON() { return GetToken(SinumerikNCParser.CUTCONON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUTMOD() { return GetToken(SinumerikNCParser.CUTMOD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CUTMODK() { return GetToken(SinumerikNCParser.CUTMODK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode D() { return GetToken(SinumerikNCParser.D, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode D0() { return GetToken(SinumerikNCParser.D0, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DIAM90() { return GetToken(SinumerikNCParser.DIAM90, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DIAMCYCOF() { return GetToken(SinumerikNCParser.DIAMCYCOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DIAMOF() { return GetToken(SinumerikNCParser.DIAMOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DIAMON() { return GetToken(SinumerikNCParser.DIAMON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DILF() { return GetToken(SinumerikNCParser.DILF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DISC() { return GetToken(SinumerikNCParser.DISC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DISCL() { return GetToken(SinumerikNCParser.DISCL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DISPR() { return GetToken(SinumerikNCParser.DISPR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DISR() { return GetToken(SinumerikNCParser.DISR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DISRP() { return GetToken(SinumerikNCParser.DISRP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DITE() { return GetToken(SinumerikNCParser.DITE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DITS() { return GetToken(SinumerikNCParser.DITS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DL() { return GetToken(SinumerikNCParser.DL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DRIVE() { return GetToken(SinumerikNCParser.DRIVE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DYNFINISH() { return GetToken(SinumerikNCParser.DYNFINISH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DYNNORM() { return GetToken(SinumerikNCParser.DYNNORM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DYNPOS() { return GetToken(SinumerikNCParser.DYNPOS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DYNPREC() { return GetToken(SinumerikNCParser.DYNPREC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DYNROUGH() { return GetToken(SinumerikNCParser.DYNROUGH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DYNSEMIFIN() { return GetToken(SinumerikNCParser.DYNSEMIFIN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EAUTO() { return GetToken(SinumerikNCParser.EAUTO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENAT() { return GetToken(SinumerikNCParser.ENAT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ETAN() { return GetToken(SinumerikNCParser.ETAN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode F() { return GetToken(SinumerikNCParser.F, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FAD() { return GetToken(SinumerikNCParser.FAD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FB() { return GetToken(SinumerikNCParser.FB, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FCUB() { return GetToken(SinumerikNCParser.FCUB, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FD() { return GetToken(SinumerikNCParser.FD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FENDNORM() { return GetToken(SinumerikNCParser.FENDNORM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FFWOF() { return GetToken(SinumerikNCParser.FFWOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FFWON() { return GetToken(SinumerikNCParser.FFWON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FIFOCTRL() { return GetToken(SinumerikNCParser.FIFOCTRL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FLIM() { return GetToken(SinumerikNCParser.FLIM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FLIN() { return GetToken(SinumerikNCParser.FLIN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FNORM() { return GetToken(SinumerikNCParser.FNORM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FP() { return GetToken(SinumerikNCParser.FP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FRC() { return GetToken(SinumerikNCParser.FRC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FRCM() { return GetToken(SinumerikNCParser.FRCM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FTOCOF() { return GetToken(SinumerikNCParser.FTOCOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FTOCON() { return GetToken(SinumerikNCParser.FTOCON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GFRAME() { return GetToken(SinumerikNCParser.GFRAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode I() { return GetToken(SinumerikNCParser.I, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode I1() { return GetToken(SinumerikNCParser.I1, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INVCCW() { return GetToken(SinumerikNCParser.INVCCW, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INVCW() { return GetToken(SinumerikNCParser.INVCW, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IR() { return GetToken(SinumerikNCParser.IR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ISD() { return GetToken(SinumerikNCParser.ISD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode J() { return GetToken(SinumerikNCParser.J, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode J1() { return GetToken(SinumerikNCParser.J1, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode JR() { return GetToken(SinumerikNCParser.JR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode K() { return GetToken(SinumerikNCParser.K, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode K1() { return GetToken(SinumerikNCParser.K1, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode KONT() { return GetToken(SinumerikNCParser.KONT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode KONTC() { return GetToken(SinumerikNCParser.KONTC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode KONTT() { return GetToken(SinumerikNCParser.KONTT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode KR() { return GetToken(SinumerikNCParser.KR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode L() { return GetToken(SinumerikNCParser.L, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LEAD() { return GetToken(SinumerikNCParser.LEAD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LFOF() { return GetToken(SinumerikNCParser.LFOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LFON() { return GetToken(SinumerikNCParser.LFON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LFPOS() { return GetToken(SinumerikNCParser.LFPOS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LFTXT() { return GetToken(SinumerikNCParser.LFTXT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LFWP() { return GetToken(SinumerikNCParser.LFWP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MEAC() { return GetToken(SinumerikNCParser.MEAC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MEAS() { return GetToken(SinumerikNCParser.MEAS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MEASA() { return GetToken(SinumerikNCParser.MEASA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MEASF() { return GetToken(SinumerikNCParser.MEASF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MEAW() { return GetToken(SinumerikNCParser.MEAW, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MEAWA() { return GetToken(SinumerikNCParser.MEAWA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MIRROR() { return GetToken(SinumerikNCParser.MIRROR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MOVT() { return GetToken(SinumerikNCParser.MOVT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NORM() { return GetToken(SinumerikNCParser.NORM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OEMIPO1() { return GetToken(SinumerikNCParser.OEMIPO1, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OEMIPO2() { return GetToken(SinumerikNCParser.OEMIPO2, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OFFN() { return GetToken(SinumerikNCParser.OFFN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OMA() { return GetToken(SinumerikNCParser.OMA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIANGLE() { return GetToken(SinumerikNCParser.ORIANGLE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIAXES() { return GetToken(SinumerikNCParser.ORIAXES, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIAXESFR() { return GetToken(SinumerikNCParser.ORIAXESFR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIAXPOS() { return GetToken(SinumerikNCParser.ORIAXPOS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIC() { return GetToken(SinumerikNCParser.ORIC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORICONCCW() { return GetToken(SinumerikNCParser.ORICONCCW, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORICONCW() { return GetToken(SinumerikNCParser.ORICONCW, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORICONIO() { return GetToken(SinumerikNCParser.ORICONIO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORICONTO() { return GetToken(SinumerikNCParser.ORICONTO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORICURINV() { return GetToken(SinumerikNCParser.ORICURINV, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORICURVE() { return GetToken(SinumerikNCParser.ORICURVE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORID() { return GetToken(SinumerikNCParser.ORID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIEULER() { return GetToken(SinumerikNCParser.ORIEULER, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIMKS() { return GetToken(SinumerikNCParser.ORIMKS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIPATH() { return GetToken(SinumerikNCParser.ORIPATH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIPATHS() { return GetToken(SinumerikNCParser.ORIPATHS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIPLANE() { return GetToken(SinumerikNCParser.ORIPLANE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIROTA() { return GetToken(SinumerikNCParser.ORIROTA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIROTC() { return GetToken(SinumerikNCParser.ORIROTC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIROTR() { return GetToken(SinumerikNCParser.ORIROTR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIROTT() { return GetToken(SinumerikNCParser.ORIROTT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIRPY() { return GetToken(SinumerikNCParser.ORIRPY, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIRPY2() { return GetToken(SinumerikNCParser.ORIRPY2, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIS() { return GetToken(SinumerikNCParser.ORIS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORISOF() { return GetToken(SinumerikNCParser.ORISOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORISON() { return GetToken(SinumerikNCParser.ORISON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIVECT() { return GetToken(SinumerikNCParser.ORIVECT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIVIRT1() { return GetToken(SinumerikNCParser.ORIVIRT1, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIVIRT2() { return GetToken(SinumerikNCParser.ORIVIRT2, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIWKS() { return GetToken(SinumerikNCParser.ORIWKS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OSC() { return GetToken(SinumerikNCParser.OSC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OSD() { return GetToken(SinumerikNCParser.OSD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OSOF() { return GetToken(SinumerikNCParser.OSOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OSS() { return GetToken(SinumerikNCParser.OSS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OSSE() { return GetToken(SinumerikNCParser.OSSE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OST() { return GetToken(SinumerikNCParser.OST, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OTOL() { return GetToken(SinumerikNCParser.OTOL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OTOLG0() { return GetToken(SinumerikNCParser.OTOLG0, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode P() { return GetToken(SinumerikNCParser.P, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PACCLIM() { return GetToken(SinumerikNCParser.PACCLIM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PAROT() { return GetToken(SinumerikNCParser.PAROT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PAROTOF() { return GetToken(SinumerikNCParser.PAROTOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PDELAYOF() { return GetToken(SinumerikNCParser.PDELAYOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PDELAYON() { return GetToken(SinumerikNCParser.PDELAYON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PL() { return GetToken(SinumerikNCParser.PL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POLY() { return GetToken(SinumerikNCParser.POLY, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PON() { return GetToken(SinumerikNCParser.PON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PONS() { return GetToken(SinumerikNCParser.PONS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PTP() { return GetToken(SinumerikNCParser.PTP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PTPG0() { return GetToken(SinumerikNCParser.PTPG0, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PTPWOC() { return GetToken(SinumerikNCParser.PTPWOC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PW() { return GetToken(SinumerikNCParser.PW, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REPOSA() { return GetToken(SinumerikNCParser.REPOSA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REPOSH() { return GetToken(SinumerikNCParser.REPOSH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REPOSHA() { return GetToken(SinumerikNCParser.REPOSHA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REPOSL() { return GetToken(SinumerikNCParser.REPOSL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REPOSQ() { return GetToken(SinumerikNCParser.REPOSQ, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REPOSQA() { return GetToken(SinumerikNCParser.REPOSQA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RMB() { return GetToken(SinumerikNCParser.RMB, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RMBBL() { return GetToken(SinumerikNCParser.RMBBL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RME() { return GetToken(SinumerikNCParser.RME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RMEBL() { return GetToken(SinumerikNCParser.RMEBL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RMI() { return GetToken(SinumerikNCParser.RMI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RMIBL() { return GetToken(SinumerikNCParser.RMIBL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RMN() { return GetToken(SinumerikNCParser.RMN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RMNBL() { return GetToken(SinumerikNCParser.RMNBL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RND() { return GetToken(SinumerikNCParser.RND, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RNDM() { return GetToken(SinumerikNCParser.RNDM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ROT() { return GetToken(SinumerikNCParser.ROT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ROTS() { return GetToken(SinumerikNCParser.ROTS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RP() { return GetToken(SinumerikNCParser.RP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPL() { return GetToken(SinumerikNCParser.RPL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RTLIOF() { return GetToken(SinumerikNCParser.RTLIOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RTLION() { return GetToken(SinumerikNCParser.RTLION, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SCALE() { return GetToken(SinumerikNCParser.SCALE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SD() { return GetToken(SinumerikNCParser.SD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SF() { return GetToken(SinumerikNCParser.SF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SOFT() { return GetToken(SinumerikNCParser.SOFT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SON() { return GetToken(SinumerikNCParser.SON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SONS() { return GetToken(SinumerikNCParser.SONS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPATH() { return GetToken(SinumerikNCParser.SPATH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPIF1() { return GetToken(SinumerikNCParser.SPIF1, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPIF2() { return GetToken(SinumerikNCParser.SPIF2, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPN() { return GetToken(SinumerikNCParser.SPN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPOF() { return GetToken(SinumerikNCParser.SPOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPP() { return GetToken(SinumerikNCParser.SPP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SR() { return GetToken(SinumerikNCParser.SR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ST() { return GetToken(SinumerikNCParser.ST, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STARTFIFO() { return GetToken(SinumerikNCParser.STARTFIFO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STOLF() { return GetToken(SinumerikNCParser.STOLF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STOPFIFO() { return GetToken(SinumerikNCParser.STOPFIFO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SUPA() { return GetToken(SinumerikNCParser.SUPA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SUPD() { return GetToken(SinumerikNCParser.SUPD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode T() { return GetToken(SinumerikNCParser.T, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TCARR() { return GetToken(SinumerikNCParser.TCARR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TCOABS() { return GetToken(SinumerikNCParser.TCOABS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TCOFR() { return GetToken(SinumerikNCParser.TCOFR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TCOFRX() { return GetToken(SinumerikNCParser.TCOFRX, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TCOFRY() { return GetToken(SinumerikNCParser.TCOFRY, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TCOFRZ() { return GetToken(SinumerikNCParser.TCOFRZ, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode THETA() { return GetToken(SinumerikNCParser.THETA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TILT() { return GetToken(SinumerikNCParser.TILT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOFF() { return GetToken(SinumerikNCParser.TOFF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOFFL() { return GetToken(SinumerikNCParser.TOFFL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOFFLR() { return GetToken(SinumerikNCParser.TOFFLR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOFFR() { return GetToken(SinumerikNCParser.TOFFR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOFRAME() { return GetToken(SinumerikNCParser.TOFRAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOFRAMEX() { return GetToken(SinumerikNCParser.TOFRAMEX, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOFRAMEY() { return GetToken(SinumerikNCParser.TOFRAMEY, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOFRAMEZ() { return GetToken(SinumerikNCParser.TOFRAMEZ, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOROT() { return GetToken(SinumerikNCParser.TOROT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOROTOF() { return GetToken(SinumerikNCParser.TOROTOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOROTX() { return GetToken(SinumerikNCParser.TOROTX, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOROTY() { return GetToken(SinumerikNCParser.TOROTY, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOROTZ() { return GetToken(SinumerikNCParser.TOROTZ, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOWBCS() { return GetToken(SinumerikNCParser.TOWBCS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOWKCS() { return GetToken(SinumerikNCParser.TOWKCS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOWMCS() { return GetToken(SinumerikNCParser.TOWMCS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOWSTD() { return GetToken(SinumerikNCParser.TOWSTD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOWTCS() { return GetToken(SinumerikNCParser.TOWTCS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOWWCS() { return GetToken(SinumerikNCParser.TOWWCS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRANS() { return GetToken(SinumerikNCParser.TRANS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TURN() { return GetToken(SinumerikNCParser.TURN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode UPATH() { return GetToken(SinumerikNCParser.UPATH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WALCS() { return GetToken(SinumerikNCParser.WALCS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WALIMOF() { return GetToken(SinumerikNCParser.WALIMOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WALIMON() { return GetToken(SinumerikNCParser.WALIMON, 0); }
+		public CommandContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_feedrate_override_path; } }
+		public override int RuleIndex { get { return RULE_command; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterFeedrate_override_path(this);
+			if (typedListener != null) typedListener.EnterCommand(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitFeedrate_override_path(this);
+			if (typedListener != null) typedListener.ExitCommand(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_path(this);
+			if (typedVisitor != null) return typedVisitor.VisitCommand(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public Feedrate_override_pathContext feedrate_override_path() {
-		Feedrate_override_pathContext _localctx = new Feedrate_override_pathContext(Context, State);
-		EnterRule(_localctx, 50, RULE_feedrate_override_path);
+	public CommandContext command() {
+		CommandContext _localctx = new CommandContext(Context, State);
+		EnterRule(_localctx, 98, RULE_command);
 		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 252;
-			Match(FEEDRATE_OVERRIDE_PATH);
-			State = 253;
-			Match(T__0);
-			State = 254;
-			Match(INT);
+			State = 835;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,65,Context) ) {
+			case 1:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 567;
+				Match(NAME);
+				}
+				break;
+			case 2:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 568;
+				Match(GCODE);
+				}
+				break;
+			case 3:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 569;
+				Match(MCODE);
+				}
+				break;
+			case 4:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 570;
+				Match(HCODE);
+				}
+				break;
+			case 5:
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 571;
+				axisCode();
+				}
+				break;
+			case 6:
+				EnterOuterAlt(_localctx, 6);
+				{
+				State = 572;
+				Match(ADIS);
+				}
+				break;
+			case 7:
+				EnterOuterAlt(_localctx, 7);
+				{
+				State = 573;
+				Match(ADISPOS);
+				}
+				break;
+			case 8:
+				EnterOuterAlt(_localctx, 8);
+				{
+				State = 574;
+				Match(ALF);
+				}
+				break;
+			case 9:
+				EnterOuterAlt(_localctx, 9);
+				{
+				State = 575;
+				Match(AMIRROR);
+				}
+				break;
+			case 10:
+				EnterOuterAlt(_localctx, 10);
+				{
+				State = 576;
+				Match(ANG);
+				}
+				break;
+			case 11:
+				EnterOuterAlt(_localctx, 11);
+				{
+				State = 577;
+				Match(AP);
+				}
+				break;
+			case 12:
+				EnterOuterAlt(_localctx, 12);
+				{
+				State = 578;
+				Match(AR);
+				}
+				break;
+			case 13:
+				EnterOuterAlt(_localctx, 13);
+				{
+				State = 579;
+				Match(AROT);
+				}
+				break;
+			case 14:
+				EnterOuterAlt(_localctx, 14);
+				{
+				State = 580;
+				Match(AROTS);
+				}
+				break;
+			case 15:
+				EnterOuterAlt(_localctx, 15);
+				{
+				State = 581;
+				Match(ASCALE);
+				}
+				break;
+			case 16:
+				EnterOuterAlt(_localctx, 16);
+				{
+				State = 582;
+				Match(ASPLINE);
+				}
+				break;
+			case 17:
+				EnterOuterAlt(_localctx, 17);
+				{
+				State = 583;
+				Match(ATOL);
+				}
+				break;
+			case 18:
+				EnterOuterAlt(_localctx, 18);
+				{
+				State = 584;
+				Match(ATRANS);
+				}
+				break;
+			case 19:
+				EnterOuterAlt(_localctx, 19);
+				{
+				State = 585;
+				Match(BAUTO);
+				}
+				break;
+			case 20:
+				EnterOuterAlt(_localctx, 20);
+				{
+				State = 586;
+				Match(BNAT);
+				}
+				break;
+			case 21:
+				EnterOuterAlt(_localctx, 21);
+				{
+				State = 587;
+				Match(BRISK);
+				}
+				break;
+			case 22:
+				EnterOuterAlt(_localctx, 22);
+				{
+				State = 588;
+				Match(BSPLINE);
+				}
+				break;
+			case 23:
+				EnterOuterAlt(_localctx, 23);
+				{
+				State = 589;
+				Match(BTAN);
+				}
+				break;
+			case 24:
+				EnterOuterAlt(_localctx, 24);
+				{
+				State = 590;
+				Match(CDOF);
+				}
+				break;
+			case 25:
+				EnterOuterAlt(_localctx, 25);
+				{
+				State = 591;
+				Match(CDOF2);
+				}
+				break;
+			case 26:
+				EnterOuterAlt(_localctx, 26);
+				{
+				State = 592;
+				Match(CDON);
+				}
+				break;
+			case 27:
+				EnterOuterAlt(_localctx, 27);
+				{
+				State = 593;
+				Match(CFC);
+				}
+				break;
+			case 28:
+				EnterOuterAlt(_localctx, 28);
+				{
+				State = 594;
+				Match(CFIN);
+				}
+				break;
+			case 29:
+				EnterOuterAlt(_localctx, 29);
+				{
+				State = 595;
+				Match(CFTCP);
+				}
+				break;
+			case 30:
+				EnterOuterAlt(_localctx, 30);
+				{
+				State = 596;
+				Match(CHF);
+				}
+				break;
+			case 31:
+				EnterOuterAlt(_localctx, 31);
+				{
+				State = 597;
+				Match(CHR);
+				}
+				break;
+			case 32:
+				EnterOuterAlt(_localctx, 32);
+				{
+				State = 598;
+				Match(CIP);
+				}
+				break;
+			case 33:
+				EnterOuterAlt(_localctx, 33);
+				{
+				State = 599;
+				Match(COMPCAD);
+				}
+				break;
+			case 34:
+				EnterOuterAlt(_localctx, 34);
+				{
+				State = 600;
+				Match(COMPCURV);
+				}
+				break;
+			case 35:
+				EnterOuterAlt(_localctx, 35);
+				{
+				State = 601;
+				Match(COMPOF);
+				}
+				break;
+			case 36:
+				EnterOuterAlt(_localctx, 36);
+				{
+				State = 602;
+				Match(COMPON);
+				}
+				break;
+			case 37:
+				EnterOuterAlt(_localctx, 37);
+				{
+				State = 603;
+				Match(COMPPATH);
+				}
+				break;
+			case 38:
+				EnterOuterAlt(_localctx, 38);
+				{
+				State = 604;
+				Match(COMPSURF);
+				}
+				break;
+			case 39:
+				EnterOuterAlt(_localctx, 39);
+				{
+				State = 605;
+				Match(CP);
+				}
+				break;
+			case 40:
+				EnterOuterAlt(_localctx, 40);
+				{
+				State = 606;
+				Match(CPRECOF);
+				}
+				break;
+			case 41:
+				EnterOuterAlt(_localctx, 41);
+				{
+				State = 607;
+				Match(CPRECON);
+				}
+				break;
+			case 42:
+				EnterOuterAlt(_localctx, 42);
+				{
+				State = 608;
+				Match(CR);
+				}
+				break;
+			case 43:
+				EnterOuterAlt(_localctx, 43);
+				{
+				State = 609;
+				Match(CT);
+				}
+				break;
+			case 44:
+				EnterOuterAlt(_localctx, 44);
+				{
+				State = 610;
+				Match(CTOL);
+				}
+				break;
+			case 45:
+				EnterOuterAlt(_localctx, 45);
+				{
+				State = 611;
+				Match(CTOLG0);
+				}
+				break;
+			case 46:
+				EnterOuterAlt(_localctx, 46);
+				{
+				State = 612;
+				Match(CUT2D);
+				}
+				break;
+			case 47:
+				EnterOuterAlt(_localctx, 47);
+				{
+				State = 613;
+				Match(CUT2DD);
+				}
+				break;
+			case 48:
+				EnterOuterAlt(_localctx, 48);
+				{
+				State = 614;
+				Match(CUT2DF);
+				}
+				break;
+			case 49:
+				EnterOuterAlt(_localctx, 49);
+				{
+				State = 615;
+				Match(CUT2DFD);
+				}
+				break;
+			case 50:
+				EnterOuterAlt(_localctx, 50);
+				{
+				State = 616;
+				Match(CUT3DC);
+				}
+				break;
+			case 51:
+				EnterOuterAlt(_localctx, 51);
+				{
+				State = 617;
+				Match(CUT3DCC);
+				}
+				break;
+			case 52:
+				EnterOuterAlt(_localctx, 52);
+				{
+				State = 618;
+				Match(CUT3DCCD);
+				}
+				break;
+			case 53:
+				EnterOuterAlt(_localctx, 53);
+				{
+				State = 619;
+				Match(CUT3DCD);
+				}
+				break;
+			case 54:
+				EnterOuterAlt(_localctx, 54);
+				{
+				State = 620;
+				Match(CUT3DF);
+				}
+				break;
+			case 55:
+				EnterOuterAlt(_localctx, 55);
+				{
+				State = 621;
+				Match(CUT3DFD);
+				}
+				break;
+			case 56:
+				EnterOuterAlt(_localctx, 56);
+				{
+				State = 622;
+				Match(CUT3DFF);
+				}
+				break;
+			case 57:
+				EnterOuterAlt(_localctx, 57);
+				{
+				State = 623;
+				Match(CUT3DFS);
+				}
+				break;
+			case 58:
+				EnterOuterAlt(_localctx, 58);
+				{
+				State = 624;
+				Match(CUTCONOF);
+				}
+				break;
+			case 59:
+				EnterOuterAlt(_localctx, 59);
+				{
+				State = 625;
+				Match(CUTCONON);
+				}
+				break;
+			case 60:
+				EnterOuterAlt(_localctx, 60);
+				{
+				State = 626;
+				Match(CUTMOD);
+				}
+				break;
+			case 61:
+				EnterOuterAlt(_localctx, 61);
+				{
+				State = 627;
+				Match(CUTMODK);
+				}
+				break;
+			case 62:
+				EnterOuterAlt(_localctx, 62);
+				{
+				State = 628;
+				Match(D);
+				}
+				break;
+			case 63:
+				EnterOuterAlt(_localctx, 63);
+				{
+				State = 629;
+				Match(D0);
+				}
+				break;
+			case 64:
+				EnterOuterAlt(_localctx, 64);
+				{
+				State = 630;
+				Match(DIAM90);
+				}
+				break;
+			case 65:
+				EnterOuterAlt(_localctx, 65);
+				{
+				State = 631;
+				Match(DIAMCYCOF);
+				}
+				break;
+			case 66:
+				EnterOuterAlt(_localctx, 66);
+				{
+				State = 632;
+				Match(DIAMOF);
+				}
+				break;
+			case 67:
+				EnterOuterAlt(_localctx, 67);
+				{
+				State = 633;
+				Match(DIAMON);
+				}
+				break;
+			case 68:
+				EnterOuterAlt(_localctx, 68);
+				{
+				State = 634;
+				Match(DILF);
+				}
+				break;
+			case 69:
+				EnterOuterAlt(_localctx, 69);
+				{
+				State = 635;
+				Match(DISC);
+				}
+				break;
+			case 70:
+				EnterOuterAlt(_localctx, 70);
+				{
+				State = 636;
+				Match(DISCL);
+				}
+				break;
+			case 71:
+				EnterOuterAlt(_localctx, 71);
+				{
+				State = 637;
+				Match(DISPR);
+				}
+				break;
+			case 72:
+				EnterOuterAlt(_localctx, 72);
+				{
+				State = 638;
+				Match(DISR);
+				}
+				break;
+			case 73:
+				EnterOuterAlt(_localctx, 73);
+				{
+				State = 639;
+				Match(DISRP);
+				}
+				break;
+			case 74:
+				EnterOuterAlt(_localctx, 74);
+				{
+				State = 640;
+				Match(DITE);
+				}
+				break;
+			case 75:
+				EnterOuterAlt(_localctx, 75);
+				{
+				State = 641;
+				Match(DITS);
+				}
+				break;
+			case 76:
+				EnterOuterAlt(_localctx, 76);
+				{
+				State = 642;
+				Match(DL);
+				}
+				break;
+			case 77:
+				EnterOuterAlt(_localctx, 77);
+				{
+				State = 643;
+				Match(DRIVE);
+				}
+				break;
+			case 78:
+				EnterOuterAlt(_localctx, 78);
+				{
+				State = 644;
+				Match(DYNFINISH);
+				}
+				break;
+			case 79:
+				EnterOuterAlt(_localctx, 79);
+				{
+				State = 645;
+				Match(DYNNORM);
+				}
+				break;
+			case 80:
+				EnterOuterAlt(_localctx, 80);
+				{
+				State = 646;
+				Match(DYNPOS);
+				}
+				break;
+			case 81:
+				EnterOuterAlt(_localctx, 81);
+				{
+				State = 647;
+				Match(DYNPREC);
+				}
+				break;
+			case 82:
+				EnterOuterAlt(_localctx, 82);
+				{
+				State = 648;
+				Match(DYNROUGH);
+				}
+				break;
+			case 83:
+				EnterOuterAlt(_localctx, 83);
+				{
+				State = 649;
+				Match(DYNSEMIFIN);
+				}
+				break;
+			case 84:
+				EnterOuterAlt(_localctx, 84);
+				{
+				State = 650;
+				Match(EAUTO);
+				}
+				break;
+			case 85:
+				EnterOuterAlt(_localctx, 85);
+				{
+				State = 651;
+				Match(ENAT);
+				}
+				break;
+			case 86:
+				EnterOuterAlt(_localctx, 86);
+				{
+				State = 652;
+				Match(ETAN);
+				}
+				break;
+			case 87:
+				EnterOuterAlt(_localctx, 87);
+				{
+				State = 653;
+				Match(F);
+				State = 654;
+				Match(ASSIGNMENT);
+				State = 655;
+				expression();
+				}
+				break;
+			case 88:
+				EnterOuterAlt(_localctx, 88);
+				{
+				State = 656;
+				Match(FAD);
+				}
+				break;
+			case 89:
+				EnterOuterAlt(_localctx, 89);
+				{
+				State = 657;
+				Match(FB);
+				}
+				break;
+			case 90:
+				EnterOuterAlt(_localctx, 90);
+				{
+				State = 658;
+				Match(FCUB);
+				}
+				break;
+			case 91:
+				EnterOuterAlt(_localctx, 91);
+				{
+				State = 659;
+				Match(FD);
+				}
+				break;
+			case 92:
+				EnterOuterAlt(_localctx, 92);
+				{
+				State = 660;
+				Match(FENDNORM);
+				}
+				break;
+			case 93:
+				EnterOuterAlt(_localctx, 93);
+				{
+				State = 661;
+				Match(FFWOF);
+				}
+				break;
+			case 94:
+				EnterOuterAlt(_localctx, 94);
+				{
+				State = 662;
+				Match(FFWON);
+				}
+				break;
+			case 95:
+				EnterOuterAlt(_localctx, 95);
+				{
+				State = 663;
+				Match(FIFOCTRL);
+				}
+				break;
+			case 96:
+				EnterOuterAlt(_localctx, 96);
+				{
+				State = 664;
+				Match(FLIM);
+				}
+				break;
+			case 97:
+				EnterOuterAlt(_localctx, 97);
+				{
+				State = 665;
+				Match(FLIN);
+				}
+				break;
+			case 98:
+				EnterOuterAlt(_localctx, 98);
+				{
+				State = 666;
+				Match(FNORM);
+				}
+				break;
+			case 99:
+				EnterOuterAlt(_localctx, 99);
+				{
+				State = 667;
+				Match(FP);
+				}
+				break;
+			case 100:
+				EnterOuterAlt(_localctx, 100);
+				{
+				State = 668;
+				Match(FRC);
+				}
+				break;
+			case 101:
+				EnterOuterAlt(_localctx, 101);
+				{
+				State = 669;
+				Match(FRCM);
+				}
+				break;
+			case 102:
+				EnterOuterAlt(_localctx, 102);
+				{
+				State = 670;
+				Match(FTOCOF);
+				}
+				break;
+			case 103:
+				EnterOuterAlt(_localctx, 103);
+				{
+				State = 671;
+				Match(FTOCON);
+				}
+				break;
+			case 104:
+				EnterOuterAlt(_localctx, 104);
+				{
+				State = 672;
+				Match(GFRAME);
+				}
+				break;
+			case 105:
+				EnterOuterAlt(_localctx, 105);
+				{
+				State = 673;
+				Match(I);
+				}
+				break;
+			case 106:
+				EnterOuterAlt(_localctx, 106);
+				{
+				State = 674;
+				Match(I1);
+				}
+				break;
+			case 107:
+				EnterOuterAlt(_localctx, 107);
+				{
+				State = 675;
+				Match(INVCCW);
+				}
+				break;
+			case 108:
+				EnterOuterAlt(_localctx, 108);
+				{
+				State = 676;
+				Match(INVCW);
+				}
+				break;
+			case 109:
+				EnterOuterAlt(_localctx, 109);
+				{
+				State = 677;
+				Match(IR);
+				}
+				break;
+			case 110:
+				EnterOuterAlt(_localctx, 110);
+				{
+				State = 678;
+				Match(ISD);
+				}
+				break;
+			case 111:
+				EnterOuterAlt(_localctx, 111);
+				{
+				State = 679;
+				Match(J);
+				}
+				break;
+			case 112:
+				EnterOuterAlt(_localctx, 112);
+				{
+				State = 680;
+				Match(J1);
+				}
+				break;
+			case 113:
+				EnterOuterAlt(_localctx, 113);
+				{
+				State = 681;
+				Match(JR);
+				}
+				break;
+			case 114:
+				EnterOuterAlt(_localctx, 114);
+				{
+				State = 682;
+				Match(K);
+				}
+				break;
+			case 115:
+				EnterOuterAlt(_localctx, 115);
+				{
+				State = 683;
+				Match(K1);
+				}
+				break;
+			case 116:
+				EnterOuterAlt(_localctx, 116);
+				{
+				State = 684;
+				Match(KONT);
+				}
+				break;
+			case 117:
+				EnterOuterAlt(_localctx, 117);
+				{
+				State = 685;
+				Match(KONTC);
+				}
+				break;
+			case 118:
+				EnterOuterAlt(_localctx, 118);
+				{
+				State = 686;
+				Match(KONTT);
+				}
+				break;
+			case 119:
+				EnterOuterAlt(_localctx, 119);
+				{
+				State = 687;
+				Match(KR);
+				}
+				break;
+			case 120:
+				EnterOuterAlt(_localctx, 120);
+				{
+				State = 688;
+				Match(L);
+				}
+				break;
+			case 121:
+				EnterOuterAlt(_localctx, 121);
+				{
+				State = 689;
+				Match(LEAD);
+				}
+				break;
+			case 122:
+				EnterOuterAlt(_localctx, 122);
+				{
+				State = 690;
+				Match(LFOF);
+				}
+				break;
+			case 123:
+				EnterOuterAlt(_localctx, 123);
+				{
+				State = 691;
+				Match(LFON);
+				}
+				break;
+			case 124:
+				EnterOuterAlt(_localctx, 124);
+				{
+				State = 692;
+				Match(LFPOS);
+				}
+				break;
+			case 125:
+				EnterOuterAlt(_localctx, 125);
+				{
+				State = 693;
+				Match(LFTXT);
+				}
+				break;
+			case 126:
+				EnterOuterAlt(_localctx, 126);
+				{
+				State = 694;
+				Match(LFWP);
+				}
+				break;
+			case 127:
+				EnterOuterAlt(_localctx, 127);
+				{
+				State = 695;
+				Match(MEAC);
+				}
+				break;
+			case 128:
+				EnterOuterAlt(_localctx, 128);
+				{
+				State = 696;
+				Match(MEAS);
+				}
+				break;
+			case 129:
+				EnterOuterAlt(_localctx, 129);
+				{
+				State = 697;
+				Match(MEASA);
+				}
+				break;
+			case 130:
+				EnterOuterAlt(_localctx, 130);
+				{
+				State = 698;
+				Match(MEASF);
+				}
+				break;
+			case 131:
+				EnterOuterAlt(_localctx, 131);
+				{
+				State = 699;
+				Match(MEAW);
+				}
+				break;
+			case 132:
+				EnterOuterAlt(_localctx, 132);
+				{
+				State = 700;
+				Match(MEAWA);
+				}
+				break;
+			case 133:
+				EnterOuterAlt(_localctx, 133);
+				{
+				State = 701;
+				Match(MIRROR);
+				}
+				break;
+			case 134:
+				EnterOuterAlt(_localctx, 134);
+				{
+				State = 702;
+				Match(MOVT);
+				}
+				break;
+			case 135:
+				EnterOuterAlt(_localctx, 135);
+				{
+				State = 703;
+				Match(NORM);
+				}
+				break;
+			case 136:
+				EnterOuterAlt(_localctx, 136);
+				{
+				State = 704;
+				Match(OEMIPO1);
+				}
+				break;
+			case 137:
+				EnterOuterAlt(_localctx, 137);
+				{
+				State = 705;
+				Match(OEMIPO2);
+				}
+				break;
+			case 138:
+				EnterOuterAlt(_localctx, 138);
+				{
+				State = 706;
+				Match(OFFN);
+				}
+				break;
+			case 139:
+				EnterOuterAlt(_localctx, 139);
+				{
+				State = 707;
+				Match(OMA);
+				}
+				break;
+			case 140:
+				EnterOuterAlt(_localctx, 140);
+				{
+				State = 708;
+				Match(ORIANGLE);
+				}
+				break;
+			case 141:
+				EnterOuterAlt(_localctx, 141);
+				{
+				State = 709;
+				Match(ORIAXES);
+				}
+				break;
+			case 142:
+				EnterOuterAlt(_localctx, 142);
+				{
+				State = 710;
+				Match(ORIAXESFR);
+				}
+				break;
+			case 143:
+				EnterOuterAlt(_localctx, 143);
+				{
+				State = 711;
+				Match(ORIAXPOS);
+				}
+				break;
+			case 144:
+				EnterOuterAlt(_localctx, 144);
+				{
+				State = 712;
+				Match(ORIC);
+				}
+				break;
+			case 145:
+				EnterOuterAlt(_localctx, 145);
+				{
+				State = 713;
+				Match(ORICONCCW);
+				}
+				break;
+			case 146:
+				EnterOuterAlt(_localctx, 146);
+				{
+				State = 714;
+				Match(ORICONCW);
+				}
+				break;
+			case 147:
+				EnterOuterAlt(_localctx, 147);
+				{
+				State = 715;
+				Match(ORICONIO);
+				}
+				break;
+			case 148:
+				EnterOuterAlt(_localctx, 148);
+				{
+				State = 716;
+				Match(ORICONTO);
+				}
+				break;
+			case 149:
+				EnterOuterAlt(_localctx, 149);
+				{
+				State = 717;
+				Match(ORICURINV);
+				}
+				break;
+			case 150:
+				EnterOuterAlt(_localctx, 150);
+				{
+				State = 718;
+				Match(ORICURVE);
+				}
+				break;
+			case 151:
+				EnterOuterAlt(_localctx, 151);
+				{
+				State = 719;
+				Match(ORID);
+				}
+				break;
+			case 152:
+				EnterOuterAlt(_localctx, 152);
+				{
+				State = 720;
+				Match(ORIEULER);
+				}
+				break;
+			case 153:
+				EnterOuterAlt(_localctx, 153);
+				{
+				State = 721;
+				Match(ORIMKS);
+				}
+				break;
+			case 154:
+				EnterOuterAlt(_localctx, 154);
+				{
+				State = 722;
+				Match(ORIPATH);
+				}
+				break;
+			case 155:
+				EnterOuterAlt(_localctx, 155);
+				{
+				State = 723;
+				Match(ORIPATHS);
+				}
+				break;
+			case 156:
+				EnterOuterAlt(_localctx, 156);
+				{
+				State = 724;
+				Match(ORIPLANE);
+				}
+				break;
+			case 157:
+				EnterOuterAlt(_localctx, 157);
+				{
+				State = 725;
+				Match(ORIROTA);
+				}
+				break;
+			case 158:
+				EnterOuterAlt(_localctx, 158);
+				{
+				State = 726;
+				Match(ORIROTC);
+				}
+				break;
+			case 159:
+				EnterOuterAlt(_localctx, 159);
+				{
+				State = 727;
+				Match(ORIROTR);
+				}
+				break;
+			case 160:
+				EnterOuterAlt(_localctx, 160);
+				{
+				State = 728;
+				Match(ORIROTT);
+				}
+				break;
+			case 161:
+				EnterOuterAlt(_localctx, 161);
+				{
+				State = 729;
+				Match(ORIRPY);
+				}
+				break;
+			case 162:
+				EnterOuterAlt(_localctx, 162);
+				{
+				State = 730;
+				Match(ORIRPY2);
+				}
+				break;
+			case 163:
+				EnterOuterAlt(_localctx, 163);
+				{
+				State = 731;
+				Match(ORIS);
+				}
+				break;
+			case 164:
+				EnterOuterAlt(_localctx, 164);
+				{
+				State = 732;
+				Match(ORISOF);
+				}
+				break;
+			case 165:
+				EnterOuterAlt(_localctx, 165);
+				{
+				State = 733;
+				Match(ORISON);
+				}
+				break;
+			case 166:
+				EnterOuterAlt(_localctx, 166);
+				{
+				State = 734;
+				Match(ORIVECT);
+				}
+				break;
+			case 167:
+				EnterOuterAlt(_localctx, 167);
+				{
+				State = 735;
+				Match(ORIVIRT1);
+				}
+				break;
+			case 168:
+				EnterOuterAlt(_localctx, 168);
+				{
+				State = 736;
+				Match(ORIVIRT2);
+				}
+				break;
+			case 169:
+				EnterOuterAlt(_localctx, 169);
+				{
+				State = 737;
+				Match(ORIWKS);
+				}
+				break;
+			case 170:
+				EnterOuterAlt(_localctx, 170);
+				{
+				State = 738;
+				Match(OSC);
+				}
+				break;
+			case 171:
+				EnterOuterAlt(_localctx, 171);
+				{
+				State = 739;
+				Match(OSD);
+				}
+				break;
+			case 172:
+				EnterOuterAlt(_localctx, 172);
+				{
+				State = 740;
+				Match(OSOF);
+				}
+				break;
+			case 173:
+				EnterOuterAlt(_localctx, 173);
+				{
+				State = 741;
+				Match(OSS);
+				}
+				break;
+			case 174:
+				EnterOuterAlt(_localctx, 174);
+				{
+				State = 742;
+				Match(OSSE);
+				}
+				break;
+			case 175:
+				EnterOuterAlt(_localctx, 175);
+				{
+				State = 743;
+				Match(OST);
+				}
+				break;
+			case 176:
+				EnterOuterAlt(_localctx, 176);
+				{
+				State = 744;
+				Match(OTOL);
+				}
+				break;
+			case 177:
+				EnterOuterAlt(_localctx, 177);
+				{
+				State = 745;
+				Match(OTOLG0);
+				}
+				break;
+			case 178:
+				EnterOuterAlt(_localctx, 178);
+				{
+				State = 746;
+				Match(P);
+				}
+				break;
+			case 179:
+				EnterOuterAlt(_localctx, 179);
+				{
+				State = 747;
+				Match(PACCLIM);
+				}
+				break;
+			case 180:
+				EnterOuterAlt(_localctx, 180);
+				{
+				State = 748;
+				Match(PAROT);
+				}
+				break;
+			case 181:
+				EnterOuterAlt(_localctx, 181);
+				{
+				State = 749;
+				Match(PAROTOF);
+				}
+				break;
+			case 182:
+				EnterOuterAlt(_localctx, 182);
+				{
+				State = 750;
+				Match(PDELAYOF);
+				}
+				break;
+			case 183:
+				EnterOuterAlt(_localctx, 183);
+				{
+				State = 751;
+				Match(PDELAYON);
+				}
+				break;
+			case 184:
+				EnterOuterAlt(_localctx, 184);
+				{
+				State = 752;
+				Match(PL);
+				}
+				break;
+			case 185:
+				EnterOuterAlt(_localctx, 185);
+				{
+				State = 753;
+				Match(POLY);
+				}
+				break;
+			case 186:
+				EnterOuterAlt(_localctx, 186);
+				{
+				State = 754;
+				Match(PON);
+				}
+				break;
+			case 187:
+				EnterOuterAlt(_localctx, 187);
+				{
+				State = 755;
+				Match(PONS);
+				}
+				break;
+			case 188:
+				EnterOuterAlt(_localctx, 188);
+				{
+				State = 756;
+				Match(PTP);
+				}
+				break;
+			case 189:
+				EnterOuterAlt(_localctx, 189);
+				{
+				State = 757;
+				Match(PTPG0);
+				}
+				break;
+			case 190:
+				EnterOuterAlt(_localctx, 190);
+				{
+				State = 758;
+				Match(PTPWOC);
+				}
+				break;
+			case 191:
+				EnterOuterAlt(_localctx, 191);
+				{
+				State = 759;
+				Match(PW);
+				}
+				break;
+			case 192:
+				EnterOuterAlt(_localctx, 192);
+				{
+				State = 760;
+				Match(REPOSA);
+				}
+				break;
+			case 193:
+				EnterOuterAlt(_localctx, 193);
+				{
+				State = 761;
+				Match(REPOSH);
+				}
+				break;
+			case 194:
+				EnterOuterAlt(_localctx, 194);
+				{
+				State = 762;
+				Match(REPOSHA);
+				}
+				break;
+			case 195:
+				EnterOuterAlt(_localctx, 195);
+				{
+				State = 763;
+				Match(REPOSL);
+				}
+				break;
+			case 196:
+				EnterOuterAlt(_localctx, 196);
+				{
+				State = 764;
+				Match(REPOSQ);
+				}
+				break;
+			case 197:
+				EnterOuterAlt(_localctx, 197);
+				{
+				State = 765;
+				Match(REPOSQA);
+				}
+				break;
+			case 198:
+				EnterOuterAlt(_localctx, 198);
+				{
+				State = 766;
+				Match(RMB);
+				}
+				break;
+			case 199:
+				EnterOuterAlt(_localctx, 199);
+				{
+				State = 767;
+				Match(RMBBL);
+				}
+				break;
+			case 200:
+				EnterOuterAlt(_localctx, 200);
+				{
+				State = 768;
+				Match(RME);
+				}
+				break;
+			case 201:
+				EnterOuterAlt(_localctx, 201);
+				{
+				State = 769;
+				Match(RMEBL);
+				}
+				break;
+			case 202:
+				EnterOuterAlt(_localctx, 202);
+				{
+				State = 770;
+				Match(RMI);
+				}
+				break;
+			case 203:
+				EnterOuterAlt(_localctx, 203);
+				{
+				State = 771;
+				Match(RMIBL);
+				}
+				break;
+			case 204:
+				EnterOuterAlt(_localctx, 204);
+				{
+				State = 772;
+				Match(RMN);
+				}
+				break;
+			case 205:
+				EnterOuterAlt(_localctx, 205);
+				{
+				State = 773;
+				Match(RMNBL);
+				}
+				break;
+			case 206:
+				EnterOuterAlt(_localctx, 206);
+				{
+				State = 774;
+				Match(RND);
+				}
+				break;
+			case 207:
+				EnterOuterAlt(_localctx, 207);
+				{
+				State = 775;
+				Match(RNDM);
+				}
+				break;
+			case 208:
+				EnterOuterAlt(_localctx, 208);
+				{
+				State = 776;
+				Match(ROT);
+				}
+				break;
+			case 209:
+				EnterOuterAlt(_localctx, 209);
+				{
+				State = 777;
+				Match(ROTS);
+				}
+				break;
+			case 210:
+				EnterOuterAlt(_localctx, 210);
+				{
+				State = 778;
+				Match(RP);
+				}
+				break;
+			case 211:
+				EnterOuterAlt(_localctx, 211);
+				{
+				State = 779;
+				Match(RPL);
+				}
+				break;
+			case 212:
+				EnterOuterAlt(_localctx, 212);
+				{
+				State = 780;
+				Match(RTLIOF);
+				}
+				break;
+			case 213:
+				EnterOuterAlt(_localctx, 213);
+				{
+				State = 781;
+				Match(RTLION);
+				}
+				break;
+			case 214:
+				EnterOuterAlt(_localctx, 214);
+				{
+				State = 782;
+				Match(SCALE);
+				}
+				break;
+			case 215:
+				EnterOuterAlt(_localctx, 215);
+				{
+				State = 783;
+				Match(SD);
+				}
+				break;
+			case 216:
+				EnterOuterAlt(_localctx, 216);
+				{
+				State = 784;
+				Match(SF);
+				}
+				break;
+			case 217:
+				EnterOuterAlt(_localctx, 217);
+				{
+				State = 785;
+				Match(SOFT);
+				}
+				break;
+			case 218:
+				EnterOuterAlt(_localctx, 218);
+				{
+				State = 786;
+				Match(SON);
+				}
+				break;
+			case 219:
+				EnterOuterAlt(_localctx, 219);
+				{
+				State = 787;
+				Match(SONS);
+				}
+				break;
+			case 220:
+				EnterOuterAlt(_localctx, 220);
+				{
+				State = 788;
+				Match(SPATH);
+				}
+				break;
+			case 221:
+				EnterOuterAlt(_localctx, 221);
+				{
+				State = 789;
+				Match(SPIF1);
+				}
+				break;
+			case 222:
+				EnterOuterAlt(_localctx, 222);
+				{
+				State = 790;
+				Match(SPIF2);
+				}
+				break;
+			case 223:
+				EnterOuterAlt(_localctx, 223);
+				{
+				State = 791;
+				Match(SPN);
+				}
+				break;
+			case 224:
+				EnterOuterAlt(_localctx, 224);
+				{
+				State = 792;
+				Match(SPOF);
+				}
+				break;
+			case 225:
+				EnterOuterAlt(_localctx, 225);
+				{
+				State = 793;
+				Match(SPP);
+				}
+				break;
+			case 226:
+				EnterOuterAlt(_localctx, 226);
+				{
+				State = 794;
+				Match(SR);
+				}
+				break;
+			case 227:
+				EnterOuterAlt(_localctx, 227);
+				{
+				State = 795;
+				Match(ST);
+				}
+				break;
+			case 228:
+				EnterOuterAlt(_localctx, 228);
+				{
+				State = 796;
+				Match(STARTFIFO);
+				}
+				break;
+			case 229:
+				EnterOuterAlt(_localctx, 229);
+				{
+				State = 797;
+				Match(STOLF);
+				}
+				break;
+			case 230:
+				EnterOuterAlt(_localctx, 230);
+				{
+				State = 798;
+				Match(STOPFIFO);
+				}
+				break;
+			case 231:
+				EnterOuterAlt(_localctx, 231);
+				{
+				State = 799;
+				Match(SUPA);
+				}
+				break;
+			case 232:
+				EnterOuterAlt(_localctx, 232);
+				{
+				State = 800;
+				Match(SUPD);
+				}
+				break;
+			case 233:
+				EnterOuterAlt(_localctx, 233);
+				{
+				State = 801;
+				Match(T);
+				}
+				break;
+			case 234:
+				EnterOuterAlt(_localctx, 234);
+				{
+				State = 802;
+				Match(TCARR);
+				}
+				break;
+			case 235:
+				EnterOuterAlt(_localctx, 235);
+				{
+				State = 803;
+				Match(TCOABS);
+				}
+				break;
+			case 236:
+				EnterOuterAlt(_localctx, 236);
+				{
+				State = 804;
+				Match(TCOFR);
+				}
+				break;
+			case 237:
+				EnterOuterAlt(_localctx, 237);
+				{
+				State = 805;
+				Match(TCOFRX);
+				}
+				break;
+			case 238:
+				EnterOuterAlt(_localctx, 238);
+				{
+				State = 806;
+				Match(TCOFRY);
+				}
+				break;
+			case 239:
+				EnterOuterAlt(_localctx, 239);
+				{
+				State = 807;
+				Match(TCOFRZ);
+				}
+				break;
+			case 240:
+				EnterOuterAlt(_localctx, 240);
+				{
+				State = 808;
+				Match(THETA);
+				}
+				break;
+			case 241:
+				EnterOuterAlt(_localctx, 241);
+				{
+				State = 809;
+				Match(TILT);
+				}
+				break;
+			case 242:
+				EnterOuterAlt(_localctx, 242);
+				{
+				State = 810;
+				Match(TOFF);
+				}
+				break;
+			case 243:
+				EnterOuterAlt(_localctx, 243);
+				{
+				State = 811;
+				Match(TOFFL);
+				}
+				break;
+			case 244:
+				EnterOuterAlt(_localctx, 244);
+				{
+				State = 812;
+				Match(TOFFLR);
+				}
+				break;
+			case 245:
+				EnterOuterAlt(_localctx, 245);
+				{
+				State = 813;
+				Match(TOFFR);
+				}
+				break;
+			case 246:
+				EnterOuterAlt(_localctx, 246);
+				{
+				State = 814;
+				Match(TOFRAME);
+				}
+				break;
+			case 247:
+				EnterOuterAlt(_localctx, 247);
+				{
+				State = 815;
+				Match(TOFRAMEX);
+				}
+				break;
+			case 248:
+				EnterOuterAlt(_localctx, 248);
+				{
+				State = 816;
+				Match(TOFRAMEY);
+				}
+				break;
+			case 249:
+				EnterOuterAlt(_localctx, 249);
+				{
+				State = 817;
+				Match(TOFRAMEZ);
+				}
+				break;
+			case 250:
+				EnterOuterAlt(_localctx, 250);
+				{
+				State = 818;
+				Match(TOROT);
+				}
+				break;
+			case 251:
+				EnterOuterAlt(_localctx, 251);
+				{
+				State = 819;
+				Match(TOROTOF);
+				}
+				break;
+			case 252:
+				EnterOuterAlt(_localctx, 252);
+				{
+				State = 820;
+				Match(TOROTX);
+				}
+				break;
+			case 253:
+				EnterOuterAlt(_localctx, 253);
+				{
+				State = 821;
+				Match(TOROTY);
+				}
+				break;
+			case 254:
+				EnterOuterAlt(_localctx, 254);
+				{
+				State = 822;
+				Match(TOROTZ);
+				}
+				break;
+			case 255:
+				EnterOuterAlt(_localctx, 255);
+				{
+				State = 823;
+				Match(TOWBCS);
+				}
+				break;
+			case 256:
+				EnterOuterAlt(_localctx, 256);
+				{
+				State = 824;
+				Match(TOWKCS);
+				}
+				break;
+			case 257:
+				EnterOuterAlt(_localctx, 257);
+				{
+				State = 825;
+				Match(TOWMCS);
+				}
+				break;
+			case 258:
+				EnterOuterAlt(_localctx, 258);
+				{
+				State = 826;
+				Match(TOWSTD);
+				}
+				break;
+			case 259:
+				EnterOuterAlt(_localctx, 259);
+				{
+				State = 827;
+				Match(TOWTCS);
+				}
+				break;
+			case 260:
+				EnterOuterAlt(_localctx, 260);
+				{
+				State = 828;
+				Match(TOWWCS);
+				}
+				break;
+			case 261:
+				EnterOuterAlt(_localctx, 261);
+				{
+				State = 829;
+				Match(TRANS);
+				}
+				break;
+			case 262:
+				EnterOuterAlt(_localctx, 262);
+				{
+				State = 830;
+				Match(TURN);
+				}
+				break;
+			case 263:
+				EnterOuterAlt(_localctx, 263);
+				{
+				State = 831;
+				Match(UPATH);
+				}
+				break;
+			case 264:
+				EnterOuterAlt(_localctx, 264);
+				{
+				State = 832;
+				Match(WALCS);
+				}
+				break;
+			case 265:
+				EnterOuterAlt(_localctx, 265);
+				{
+				State = 833;
+				Match(WALIMOF);
+				}
+				break;
+			case 266:
+				EnterOuterAlt(_localctx, 266);
+				{
+				State = 834;
+				Match(WALIMON);
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -2126,286 +7160,185 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class Feedrate_override_rapid_traverse_velocityContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY() { return GetToken(SinumerikNCParser.FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(SinumerikNCParser.INT, 0); }
-		public Feedrate_override_rapid_traverse_velocityContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
+	public partial class AxisCodeContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AXIS() { return GetToken(SinumerikNCParser.AXIS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public NumericContext numeric() {
+			return GetRuleContext<NumericContext>(0);
 		}
-		public override int RuleIndex { get { return RULE_feedrate_override_rapid_traverse_velocity; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterFeedrate_override_rapid_traverse_velocity(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitFeedrate_override_rapid_traverse_velocity(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_rapid_traverse_velocity(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public Feedrate_override_rapid_traverse_velocityContext feedrate_override_rapid_traverse_velocity() {
-		Feedrate_override_rapid_traverse_velocityContext _localctx = new Feedrate_override_rapid_traverse_velocityContext(Context, State);
-		EnterRule(_localctx, 52, RULE_feedrate_override_rapid_traverse_velocity);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 256;
-			Match(FEEDRATE_OVERRIDE_RAPID_TRAVERSE_VELOCITY);
-			State = 257;
-			Match(T__0);
-			State = 258;
-			Match(INT);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class Feedrate_override_position_or_spindleContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE() { return GetToken(SinumerikNCParser.FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACKET() { return GetToken(SinumerikNCParser.OPEN_BRACKET, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public Axis_spindle_identifierContext axis_spindle_identifier() {
-			return GetRuleContext<Axis_spindle_identifierContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACKET() { return GetToken(SinumerikNCParser.CLOSE_BRACKET, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(SinumerikNCParser.INT, 0); }
-		public Feedrate_override_position_or_spindleContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_feedrate_override_position_or_spindle; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterFeedrate_override_position_or_spindle(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitFeedrate_override_position_or_spindle(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_position_or_spindle(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public Feedrate_override_position_or_spindleContext feedrate_override_position_or_spindle() {
-		Feedrate_override_position_or_spindleContext _localctx = new Feedrate_override_position_or_spindleContext(Context, State);
-		EnterRule(_localctx, 54, RULE_feedrate_override_position_or_spindle);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 260;
-			Match(FEEDRATE_OVERRIDE_POSITION_OR_SPINDLE);
-			State = 261;
-			Match(OPEN_BRACKET);
-			State = 262;
-			axis_spindle_identifier();
-			State = 263;
-			Match(CLOSE_BRACKET);
-			State = 264;
-			Match(T__0);
-			State = 265;
-			Match(INT);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class Acceleration_compensationContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ACCELERATION_COMPENSATION() { return GetToken(SinumerikNCParser.ACCELERATION_COMPENSATION, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACKET() { return GetToken(SinumerikNCParser.OPEN_BRACKET, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public Axis_spindle_identifierContext axis_spindle_identifier() {
-			return GetRuleContext<Axis_spindle_identifierContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACKET() { return GetToken(SinumerikNCParser.CLOSE_BRACKET, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(SinumerikNCParser.INT, 0); }
-		public Acceleration_compensationContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_acceleration_compensation; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterAcceleration_compensation(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitAcceleration_compensation(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAcceleration_compensation(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public Acceleration_compensationContext acceleration_compensation() {
-		Acceleration_compensationContext _localctx = new Acceleration_compensationContext(Context, State);
-		EnterRule(_localctx, 56, RULE_acceleration_compensation);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 267;
-			Match(ACCELERATION_COMPENSATION);
-			State = 268;
-			Match(OPEN_BRACKET);
-			State = 269;
-			axis_spindle_identifier();
-			State = 270;
-			Match(CLOSE_BRACKET);
-			State = 271;
-			Match(T__0);
-			State = 272;
-			Match(INT);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class Feedrate_override_path_handwheelContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FEEDRATE_OVERRIDE_PATH_HANDWHEEL() { return GetToken(SinumerikNCParser.FEEDRATE_OVERRIDE_PATH_HANDWHEEL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(SinumerikNCParser.INT, 0); }
-		public Feedrate_override_path_handwheelContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_feedrate_override_path_handwheel; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterFeedrate_override_path_handwheel(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitFeedrate_override_path_handwheel(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_path_handwheel(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public Feedrate_override_path_handwheelContext feedrate_override_path_handwheel() {
-		Feedrate_override_path_handwheelContext _localctx = new Feedrate_override_path_handwheelContext(Context, State);
-		EnterRule(_localctx, 58, RULE_feedrate_override_path_handwheel);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 274;
-			Match(FEEDRATE_OVERRIDE_PATH_HANDWHEEL);
-			State = 275;
-			Match(T__0);
-			State = 276;
-			Match(INT);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class Feedrate_override_axial_handwheelContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL() { return GetToken(SinumerikNCParser.FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACKET() { return GetToken(SinumerikNCParser.OPEN_BRACKET, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public Axis_identifierContext axis_identifier() {
 			return GetRuleContext<Axis_identifierContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACKET() { return GetToken(SinumerikNCParser.CLOSE_BRACKET, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(SinumerikNCParser.INT, 0); }
-		public Feedrate_override_axial_handwheelContext(ParserRuleContext parent, int invokingState)
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public AxisAssignmentExpressionContext axisAssignmentExpression() {
+			return GetRuleContext<AxisAssignmentExpressionContext>(0);
+		}
+		public AxisCodeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_feedrate_override_axial_handwheel; } }
+		public override int RuleIndex { get { return RULE_axisCode; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterFeedrate_override_axial_handwheel(this);
+			if (typedListener != null) typedListener.EnterAxisCode(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitFeedrate_override_axial_handwheel(this);
+			if (typedListener != null) typedListener.ExitAxisCode(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_axial_handwheel(this);
+			if (typedVisitor != null) return typedVisitor.VisitAxisCode(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public Feedrate_override_axial_handwheelContext feedrate_override_axial_handwheel() {
-		Feedrate_override_axial_handwheelContext _localctx = new Feedrate_override_axial_handwheelContext(Context, State);
-		EnterRule(_localctx, 60, RULE_feedrate_override_axial_handwheel);
+	public AxisCodeContext axisCode() {
+		AxisCodeContext _localctx = new AxisCodeContext(Context, State);
+		EnterRule(_localctx, 100, RULE_axisCode);
 		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 278;
-			Match(FEEDRATE_OVERRIDE_AXIAL_HANDWHEEL);
-			State = 279;
-			Match(OPEN_BRACKET);
-			State = 280;
-			axis_identifier();
-			State = 281;
-			Match(CLOSE_BRACKET);
-			State = 282;
-			Match(T__0);
-			State = 283;
-			Match(INT);
+			State = 843;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case AXIS:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 837;
+				Match(AXIS);
+				State = 838;
+				numeric();
+				}
+				break;
+			case AXIS_NUMBERED:
+			case NAME:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 839;
+				axis_identifier();
+				State = 840;
+				Match(ASSIGNMENT);
+				State = 841;
+				axisAssignmentExpression();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class AxisAssignmentExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AC() { return GetToken(SinumerikNCParser.AC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IC() { return GetToken(SinumerikNCParser.IC, 0); }
+		public AxisAssignmentExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_axisAssignmentExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterAxisAssignmentExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitAxisAssignmentExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAxisAssignmentExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public AxisAssignmentExpressionContext axisAssignmentExpression() {
+		AxisAssignmentExpressionContext _localctx = new AxisAssignmentExpressionContext(Context, State);
+		EnterRule(_localctx, 102, RULE_axisAssignmentExpression);
+		int _la;
+		try {
+			State = 851;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case INT:
+			case REAL:
+			case BIN:
+			case HEX:
+			case BOOL:
+			case STRING:
+			case SUB:
+			case NOT:
+			case NOT_B:
+			case SIN:
+			case COS:
+			case TAN:
+			case ASIN:
+			case ACOS:
+			case ATAN2:
+			case SQRT:
+			case POT:
+			case LN:
+			case EXP:
+			case ABS:
+			case TRUNC:
+			case ROUND:
+			case ROUNDUP:
+			case BOUND:
+			case MAXVAL:
+			case MINVAL:
+			case CALCDAT:
+			case OPEN_PAREN:
+			case SYS_VAR:
+			case R_PARAM:
+			case NAME:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 845;
+				expression();
+				}
+				break;
+			case AC:
+			case IC:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 846;
+				_la = TokenStream.LA(1);
+				if ( !(_la==AC || _la==IC) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 847;
+				Match(OPEN_PAREN);
+				State = 848;
+				expression();
+				State = 849;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2452,33 +7385,25 @@ public partial class SinumerikNCParser : Parser {
 	[RuleVersion(0)]
 	public Axis_spindle_identifierContext axis_spindle_identifier() {
 		Axis_spindle_identifierContext _localctx = new Axis_spindle_identifierContext(Context, State);
-		EnterRule(_localctx, 62, RULE_axis_spindle_identifier);
+		EnterRule(_localctx, 104, RULE_axis_spindle_identifier);
 		try {
-			State = 287;
+			State = 855;
 			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case X_AXIS:
-			case Y_AXIS:
-			case Z_AXIS:
-			case A_AXIS:
-			case B_AXIS:
-			case C_AXIS:
+			switch ( Interpreter.AdaptivePredict(TokenStream,68,Context) ) {
+			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 285;
+				State = 853;
 				axis_identifier();
 				}
 				break;
-			case SPINDLE_IDENTIFIER:
-			case SPINDLE:
+			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 286;
+				State = 854;
 				spindle_identifier();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2493,10 +7418,8 @@ public partial class SinumerikNCParser : Parser {
 	}
 
 	public partial class Axis_identifierContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public AxisContext axis() {
-			return GetRuleContext<AxisContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT_POSITIVE() { return GetToken(SinumerikNCParser.INT_POSITIVE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AXIS_NUMBERED() { return GetToken(SinumerikNCParser.AXIS_NUMBERED, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
 		public Axis_identifierContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2523,14 +7446,20 @@ public partial class SinumerikNCParser : Parser {
 	[RuleVersion(0)]
 	public Axis_identifierContext axis_identifier() {
 		Axis_identifierContext _localctx = new Axis_identifierContext(Context, State);
-		EnterRule(_localctx, 64, RULE_axis_identifier);
+		EnterRule(_localctx, 106, RULE_axis_identifier);
+		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 289;
-			axis();
-			State = 290;
-			Match(INT_POSITIVE);
+			State = 857;
+			_la = TokenStream.LA(1);
+			if ( !(_la==AXIS_NUMBERED || _la==NAME) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -2547,9 +7476,10 @@ public partial class SinumerikNCParser : Parser {
 	public partial class Spindle_identifierContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPINDLE_IDENTIFIER() { return GetToken(SinumerikNCParser.SPINDLE_IDENTIFIER, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT_POSITIVE() { return GetToken(SinumerikNCParser.INT_POSITIVE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(SinumerikNCParser.INT, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPINDLE() { return GetToken(SinumerikNCParser.SPINDLE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
 		public Spindle_identifierContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2576,31 +7506,36 @@ public partial class SinumerikNCParser : Parser {
 	[RuleVersion(0)]
 	public Spindle_identifierContext spindle_identifier() {
 		Spindle_identifierContext _localctx = new Spindle_identifierContext(Context, State);
-		EnterRule(_localctx, 66, RULE_spindle_identifier);
+		EnterRule(_localctx, 108, RULE_spindle_identifier);
 		try {
-			State = 298;
+			State = 865;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case SPINDLE_IDENTIFIER:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 292;
+				State = 859;
 				Match(SPINDLE_IDENTIFIER);
-				State = 293;
+				State = 860;
 				Match(OPEN_PAREN);
-				State = 294;
-				Match(INT_POSITIVE);
-				State = 295;
+				State = 861;
+				Match(INT);
+				State = 862;
 				Match(CLOSE_PAREN);
 				}
 				break;
 			case SPINDLE:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 296;
+				State = 863;
 				Match(SPINDLE);
-				State = 297;
-				Match(INT_POSITIVE);
+				}
+				break;
+			case NAME:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 864;
+				Match(NAME);
 				}
 				break;
 			default:
@@ -2618,52 +7553,321 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
-	public partial class AxisContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode A_AXIS() { return GetToken(SinumerikNCParser.A_AXIS, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode B_AXIS() { return GetToken(SinumerikNCParser.B_AXIS, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode C_AXIS() { return GetToken(SinumerikNCParser.C_AXIS, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode X_AXIS() { return GetToken(SinumerikNCParser.X_AXIS, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Y_AXIS() { return GetToken(SinumerikNCParser.Y_AXIS, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Z_AXIS() { return GetToken(SinumerikNCParser.Z_AXIS, 0); }
-		public AxisContext(ParserRuleContext parent, int invokingState)
+	public partial class ProcedureContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public PredefinedProcedureContext predefinedProcedure() {
+			return GetRuleContext<PredefinedProcedureContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public OwnProcedureContext ownProcedure() {
+			return GetRuleContext<OwnProcedureContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public FunctionContext function() {
+			return GetRuleContext<FunctionContext>(0);
+		}
+		public ProcedureContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_axis; } }
+		public override int RuleIndex { get { return RULE_procedure; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.EnterAxis(this);
+			if (typedListener != null) typedListener.EnterProcedure(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
-			if (typedListener != null) typedListener.ExitAxis(this);
+			if (typedListener != null) typedListener.ExitProcedure(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAxis(this);
+			if (typedVisitor != null) return typedVisitor.VisitProcedure(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public AxisContext axis() {
-		AxisContext _localctx = new AxisContext(Context, State);
-		EnterRule(_localctx, 68, RULE_axis);
-		int _la;
+	public ProcedureContext procedure() {
+		ProcedureContext _localctx = new ProcedureContext(Context, State);
+		EnterRule(_localctx, 110, RULE_procedure);
+		try {
+			State = 870;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case CALL_MODAL:
+			case ACTBLOCNO:
+			case ADISPOSA:
+			case AFISOF:
+			case AFISON:
+			case AUXFUDEL:
+			case AUXFUDELG:
+			case AUXFUMSEQ:
+			case AUXFUSYNC:
+			case AXCTSWE:
+			case AXCTSWEC:
+			case AXCTSWED:
+			case AXTOCHAN:
+			case BRISKA:
+			case CADAPTOF:
+			case CADAPTON:
+			case CALCFIR:
+			case CANCELSUB:
+			case CHANDATA:
+			case CLEARM:
+			case CLRINT:
+			case CONTDCON:
+			case CONTPRON:
+			case CORROF:
+			case COUPDEF:
+			case COUPDEL:
+			case COUPOF:
+			case COUPOFS:
+			case COUPON:
+			case COUPONC:
+			case COUPRES:
+			case CPROT:
+			case CPROTDEF:
+			case CTABDEF:
+			case CTABDEL:
+			case CTABEND:
+			case CTABLOCK:
+			case CTABUNLOCK:
+			case DELAYFSTOF:
+			case DELAYFSTON:
+			case DELDTG:
+			case DELETE:
+			case DELMT:
+			case DELT:
+			case DELTC:
+			case DISABLE:
+			case DRFOF:
+			case DRIVEA:
+			case DRVPRD:
+			case DRVPWR:
+			case DZERO:
+			case EGDEF:
+			case EGDEL:
+			case EGOFC:
+			case EGOFS:
+			case EGON:
+			case EGONSYN:
+			case EGONSYNE:
+			case ENABLE:
+			case ESRR:
+			case ESRS:
+			case EXECSTRING:
+			case EXECTAB:
+			case EXECUTE:
+			case EXTCLOSE:
+			case EXTOPEN:
+			case FCTDEF:
+			case FGROUP:
+			case FILEDATE:
+			case FILEINFO:
+			case FILESIZE:
+			case FILESTAT:
+			case FILETIME:
+			case FPR:
+			case FPRAOF:
+			case FPRAON:
+			case FTOC:
+			case GEOAX:
+			case GET:
+			case GETD:
+			case GETEXET:
+			case GETFREELOC:
+			case GETSELT:
+			case GWPSOF:
+			case GWPSON:
+			case ICYCOF:
+			case ICYCON:
+			case INIT:
+			case IPOBRKA:
+			case IPTRLOCK:
+			case IPTRUNLOCK:
+			case JERKA:
+			case LEADOF:
+			case LEADON:
+			case LOCK:
+			case MASLDEF:
+			case MASLDEL:
+			case MASLOF:
+			case MASLOFS:
+			case MASLON:
+			case MMC:
+			case MSG:
+			case MVTOOL:
+			case NEWCONF:
+			case NPROT:
+			case NPROTDEF:
+			case ORIRESET:
+			case POLFA:
+			case POLFMASK:
+			case POLFMLIN:
+			case POLYPATH:
+			case POSM:
+			case POSMT:
+			case PRESETON:
+			case PRESETONS:
+			case PROTA:
+			case PROTS:
+			case PUNCHACC:
+			case PUTFTOC:
+			case PUTFTOCF:
+			case RDISABLE:
+			case READ:
+			case RELEASE:
+			case RESETMON:
+			case RETB:
+			case SBLOF:
+			case SBLON:
+			case SETAL:
+			case SETM:
+			case SETMS:
+			case SETMTH:
+			case SETPIECE:
+			case SETTA:
+			case SETTIA:
+			case SIRELIN:
+			case SIRELOUT:
+			case SIRELTIME:
+			case SOFTA:
+			case SPCOF:
+			case SPCON:
+			case SPLINEPATH:
+			case START:
+			case STOPRE:
+			case STOPREOF:
+			case SYNFCT:
+			case TANG:
+			case TANGDEL:
+			case TANGOF:
+			case TANGON:
+			case TCA:
+			case TCI:
+			case TLIFT:
+			case TML:
+			case TMOF:
+			case TMON:
+			case TOFFOF:
+			case TOFFON:
+			case TRAANG:
+			case TRACON:
+			case TRACYL:
+			case TRAFOOF:
+			case TRAFOON:
+			case TRAILOF:
+			case TRAILON:
+			case TRANSMIT:
+			case TRAORI:
+			case UNLOCK:
+			case WAITC:
+			case WAITE:
+			case WAITENC:
+			case WAITM:
+			case WAITMC:
+			case WAITP:
+			case WAITS:
+			case WRITE:
+			case WRTPR:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 867;
+				predefinedProcedure();
+				}
+				break;
+			case NAME:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 868;
+				ownProcedure();
+				}
+				break;
+			case SIN:
+			case COS:
+			case TAN:
+			case ASIN:
+			case ACOS:
+			case ATAN2:
+			case SQRT:
+			case POT:
+			case LN:
+			case EXP:
+			case ABS:
+			case TRUNC:
+			case ROUND:
+			case ROUNDUP:
+			case BOUND:
+			case MAXVAL:
+			case MINVAL:
+			case CALCDAT:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 869;
+				function();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class OwnProcedureContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ParametersContext parameters() {
+			return GetRuleContext<ParametersContext>(0);
+		}
+		public OwnProcedureContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_ownProcedure; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterOwnProcedure(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitOwnProcedure(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitOwnProcedure(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public OwnProcedureContext ownProcedure() {
+		OwnProcedureContext _localctx = new OwnProcedureContext(Context, State);
+		EnterRule(_localctx, 112, RULE_ownProcedure);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 300;
-			_la = TokenStream.LA(1);
-			if ( !((((_la - 143)) & ~0x3f) == 0 && ((1L << (_la - 143)) & 63L) != 0) ) {
-			ErrorHandler.RecoverInline(this);
-			}
-			else {
-				ErrorHandler.ReportMatch(this);
-			    Consume();
+			State = 872;
+			Match(NAME);
+			State = 874;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,71,Context) ) {
+			case 1:
+				{
+				State = 873;
+				parameters();
+				}
+				break;
 			}
 			}
 		}
@@ -2678,101 +7882,2991 @@ public partial class SinumerikNCParser : Parser {
 		return _localctx;
 	}
 
+	public partial class ParametersContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(SinumerikNCParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(SinumerikNCParser.COMMA, i);
+		}
+		public ParametersContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameters; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterParameters(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitParameters(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameters(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParametersContext parameters() {
+		ParametersContext _localctx = new ParametersContext(Context, State);
+		EnterRule(_localctx, 114, RULE_parameters);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 876;
+			Match(OPEN_PAREN);
+			State = 878;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (((_la) & ~0x3f) == 0 && ((1L << _la) & -8646348334597927968L) != 0 || (((_la - 241)) & ~0x3f) == 0 && ((1L << (_la - 241)) & 262143L) != 0 || (((_la - 792)) & ~0x3f) == 0 && ((1L << (_la - 792)) & 43486543873L) != 0) {
+				{
+				State = 877;
+				expression();
+				}
+			}
+
+			State = 884;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				State = 880;
+				Match(COMMA);
+				State = 881;
+				expression();
+				}
+				}
+				State = 886;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 887;
+			Match(CLOSE_PAREN);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class PredefinedProcedureContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ModalSubprogramCallContext modalSubprogramCall() {
+			return GetRuleContext<ModalSubprogramCallContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ACTBLOCNO() { return GetToken(SinumerikNCParser.ACTBLOCNO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ADISPOSA() { return GetToken(SinumerikNCParser.ADISPOSA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AFISOF() { return GetToken(SinumerikNCParser.AFISOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AFISON() { return GetToken(SinumerikNCParser.AFISON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AUXFUDEL() { return GetToken(SinumerikNCParser.AUXFUDEL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AUXFUDELG() { return GetToken(SinumerikNCParser.AUXFUDELG, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AUXFUMSEQ() { return GetToken(SinumerikNCParser.AUXFUMSEQ, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AUXFUSYNC() { return GetToken(SinumerikNCParser.AUXFUSYNC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AXCTSWE() { return GetToken(SinumerikNCParser.AXCTSWE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AXCTSWEC() { return GetToken(SinumerikNCParser.AXCTSWEC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AXCTSWED() { return GetToken(SinumerikNCParser.AXCTSWED, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AXTOCHAN() { return GetToken(SinumerikNCParser.AXTOCHAN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BRISKA() { return GetToken(SinumerikNCParser.BRISKA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CADAPTOF() { return GetToken(SinumerikNCParser.CADAPTOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CADAPTON() { return GetToken(SinumerikNCParser.CADAPTON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CALCFIR() { return GetToken(SinumerikNCParser.CALCFIR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CANCELSUB() { return GetToken(SinumerikNCParser.CANCELSUB, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CHANDATA() { return GetToken(SinumerikNCParser.CHANDATA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLEARM() { return GetToken(SinumerikNCParser.CLEARM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLRINT() { return GetToken(SinumerikNCParser.CLRINT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CONTDCON() { return GetToken(SinumerikNCParser.CONTDCON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CONTPRON() { return GetToken(SinumerikNCParser.CONTPRON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CORROF() { return GetToken(SinumerikNCParser.CORROF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COUPDEF() { return GetToken(SinumerikNCParser.COUPDEF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COUPDEL() { return GetToken(SinumerikNCParser.COUPDEL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COUPOF() { return GetToken(SinumerikNCParser.COUPOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COUPOFS() { return GetToken(SinumerikNCParser.COUPOFS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COUPON() { return GetToken(SinumerikNCParser.COUPON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COUPONC() { return GetToken(SinumerikNCParser.COUPONC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COUPRES() { return GetToken(SinumerikNCParser.COUPRES, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CPROT() { return GetToken(SinumerikNCParser.CPROT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CPROTDEF() { return GetToken(SinumerikNCParser.CPROTDEF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CTABDEF() { return GetToken(SinumerikNCParser.CTABDEF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CTABDEL() { return GetToken(SinumerikNCParser.CTABDEL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CTABEND() { return GetToken(SinumerikNCParser.CTABEND, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CTABLOCK() { return GetToken(SinumerikNCParser.CTABLOCK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CTABUNLOCK() { return GetToken(SinumerikNCParser.CTABUNLOCK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DELAYFSTOF() { return GetToken(SinumerikNCParser.DELAYFSTOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DELAYFSTON() { return GetToken(SinumerikNCParser.DELAYFSTON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DELDTG() { return GetToken(SinumerikNCParser.DELDTG, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DELETE() { return GetToken(SinumerikNCParser.DELETE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DELMT() { return GetToken(SinumerikNCParser.DELMT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DELT() { return GetToken(SinumerikNCParser.DELT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DELTC() { return GetToken(SinumerikNCParser.DELTC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DISABLE() { return GetToken(SinumerikNCParser.DISABLE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DRFOF() { return GetToken(SinumerikNCParser.DRFOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DRIVEA() { return GetToken(SinumerikNCParser.DRIVEA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DRVPRD() { return GetToken(SinumerikNCParser.DRVPRD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DRVPWR() { return GetToken(SinumerikNCParser.DRVPWR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DZERO() { return GetToken(SinumerikNCParser.DZERO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EGDEF() { return GetToken(SinumerikNCParser.EGDEF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EGDEL() { return GetToken(SinumerikNCParser.EGDEL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EGOFC() { return GetToken(SinumerikNCParser.EGOFC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EGOFS() { return GetToken(SinumerikNCParser.EGOFS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EGON() { return GetToken(SinumerikNCParser.EGON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EGONSYN() { return GetToken(SinumerikNCParser.EGONSYN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EGONSYNE() { return GetToken(SinumerikNCParser.EGONSYNE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENABLE() { return GetToken(SinumerikNCParser.ENABLE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ESRR() { return GetToken(SinumerikNCParser.ESRR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ESRS() { return GetToken(SinumerikNCParser.ESRS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EXECSTRING() { return GetToken(SinumerikNCParser.EXECSTRING, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EXECTAB() { return GetToken(SinumerikNCParser.EXECTAB, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EXECUTE() { return GetToken(SinumerikNCParser.EXECUTE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EXTCLOSE() { return GetToken(SinumerikNCParser.EXTCLOSE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EXTOPEN() { return GetToken(SinumerikNCParser.EXTOPEN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FCTDEF() { return GetToken(SinumerikNCParser.FCTDEF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FGROUP() { return GetToken(SinumerikNCParser.FGROUP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FILEDATE() { return GetToken(SinumerikNCParser.FILEDATE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FILEINFO() { return GetToken(SinumerikNCParser.FILEINFO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FILESIZE() { return GetToken(SinumerikNCParser.FILESIZE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FILESTAT() { return GetToken(SinumerikNCParser.FILESTAT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FILETIME() { return GetToken(SinumerikNCParser.FILETIME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FPR() { return GetToken(SinumerikNCParser.FPR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FPRAOF() { return GetToken(SinumerikNCParser.FPRAOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FPRAON() { return GetToken(SinumerikNCParser.FPRAON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FTOC() { return GetToken(SinumerikNCParser.FTOC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GEOAX() { return GetToken(SinumerikNCParser.GEOAX, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GET() { return GetToken(SinumerikNCParser.GET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GETD() { return GetToken(SinumerikNCParser.GETD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GETEXET() { return GetToken(SinumerikNCParser.GETEXET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GETFREELOC() { return GetToken(SinumerikNCParser.GETFREELOC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GETSELT() { return GetToken(SinumerikNCParser.GETSELT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GWPSOF() { return GetToken(SinumerikNCParser.GWPSOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GWPSON() { return GetToken(SinumerikNCParser.GWPSON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ICYCOF() { return GetToken(SinumerikNCParser.ICYCOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ICYCON() { return GetToken(SinumerikNCParser.ICYCON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INIT() { return GetToken(SinumerikNCParser.INIT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IPOBRKA() { return GetToken(SinumerikNCParser.IPOBRKA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IPTRLOCK() { return GetToken(SinumerikNCParser.IPTRLOCK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IPTRUNLOCK() { return GetToken(SinumerikNCParser.IPTRUNLOCK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode JERKA() { return GetToken(SinumerikNCParser.JERKA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LEADOF() { return GetToken(SinumerikNCParser.LEADOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LEADON() { return GetToken(SinumerikNCParser.LEADON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LOCK() { return GetToken(SinumerikNCParser.LOCK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MASLDEF() { return GetToken(SinumerikNCParser.MASLDEF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MASLDEL() { return GetToken(SinumerikNCParser.MASLDEL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MASLOF() { return GetToken(SinumerikNCParser.MASLOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MASLOFS() { return GetToken(SinumerikNCParser.MASLOFS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MASLON() { return GetToken(SinumerikNCParser.MASLON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MMC() { return GetToken(SinumerikNCParser.MMC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MSG() { return GetToken(SinumerikNCParser.MSG, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MVTOOL() { return GetToken(SinumerikNCParser.MVTOOL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NEWCONF() { return GetToken(SinumerikNCParser.NEWCONF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NPROT() { return GetToken(SinumerikNCParser.NPROT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NPROTDEF() { return GetToken(SinumerikNCParser.NPROTDEF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ORIRESET() { return GetToken(SinumerikNCParser.ORIRESET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POLFA() { return GetToken(SinumerikNCParser.POLFA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POLFMASK() { return GetToken(SinumerikNCParser.POLFMASK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POLFMLIN() { return GetToken(SinumerikNCParser.POLFMLIN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POLYPATH() { return GetToken(SinumerikNCParser.POLYPATH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POSM() { return GetToken(SinumerikNCParser.POSM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POSMT() { return GetToken(SinumerikNCParser.POSMT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PRESETON() { return GetToken(SinumerikNCParser.PRESETON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PRESETONS() { return GetToken(SinumerikNCParser.PRESETONS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PROTA() { return GetToken(SinumerikNCParser.PROTA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PROTS() { return GetToken(SinumerikNCParser.PROTS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PUNCHACC() { return GetToken(SinumerikNCParser.PUNCHACC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PUTFTOC() { return GetToken(SinumerikNCParser.PUTFTOC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PUTFTOCF() { return GetToken(SinumerikNCParser.PUTFTOCF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RDISABLE() { return GetToken(SinumerikNCParser.RDISABLE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode READ() { return GetToken(SinumerikNCParser.READ, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RELEASE() { return GetToken(SinumerikNCParser.RELEASE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RESETMON() { return GetToken(SinumerikNCParser.RESETMON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RETB() { return GetToken(SinumerikNCParser.RETB, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SBLOF() { return GetToken(SinumerikNCParser.SBLOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SBLON() { return GetToken(SinumerikNCParser.SBLON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SETAL() { return GetToken(SinumerikNCParser.SETAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SETM() { return GetToken(SinumerikNCParser.SETM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SETMS() { return GetToken(SinumerikNCParser.SETMS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SETMTH() { return GetToken(SinumerikNCParser.SETMTH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SETPIECE() { return GetToken(SinumerikNCParser.SETPIECE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SETTA() { return GetToken(SinumerikNCParser.SETTA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SETTIA() { return GetToken(SinumerikNCParser.SETTIA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SIRELIN() { return GetToken(SinumerikNCParser.SIRELIN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SIRELOUT() { return GetToken(SinumerikNCParser.SIRELOUT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SIRELTIME() { return GetToken(SinumerikNCParser.SIRELTIME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SOFTA() { return GetToken(SinumerikNCParser.SOFTA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPCOF() { return GetToken(SinumerikNCParser.SPCOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPCON() { return GetToken(SinumerikNCParser.SPCON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SPLINEPATH() { return GetToken(SinumerikNCParser.SPLINEPATH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode START() { return GetToken(SinumerikNCParser.START, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STOPRE() { return GetToken(SinumerikNCParser.STOPRE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STOPREOF() { return GetToken(SinumerikNCParser.STOPREOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SYNFCT() { return GetToken(SinumerikNCParser.SYNFCT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TANG() { return GetToken(SinumerikNCParser.TANG, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TANGDEL() { return GetToken(SinumerikNCParser.TANGDEL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TANGOF() { return GetToken(SinumerikNCParser.TANGOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TANGON() { return GetToken(SinumerikNCParser.TANGON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TCA() { return GetToken(SinumerikNCParser.TCA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TCI() { return GetToken(SinumerikNCParser.TCI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TLIFT() { return GetToken(SinumerikNCParser.TLIFT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TML() { return GetToken(SinumerikNCParser.TML, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TMOF() { return GetToken(SinumerikNCParser.TMOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TMON() { return GetToken(SinumerikNCParser.TMON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOFFOF() { return GetToken(SinumerikNCParser.TOFFOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TOFFON() { return GetToken(SinumerikNCParser.TOFFON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRAANG() { return GetToken(SinumerikNCParser.TRAANG, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRACON() { return GetToken(SinumerikNCParser.TRACON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRACYL() { return GetToken(SinumerikNCParser.TRACYL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRAFOOF() { return GetToken(SinumerikNCParser.TRAFOOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRAFOON() { return GetToken(SinumerikNCParser.TRAFOON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRAILOF() { return GetToken(SinumerikNCParser.TRAILOF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRAILON() { return GetToken(SinumerikNCParser.TRAILON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRANSMIT() { return GetToken(SinumerikNCParser.TRANSMIT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRAORI() { return GetToken(SinumerikNCParser.TRAORI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode UNLOCK() { return GetToken(SinumerikNCParser.UNLOCK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WAITC() { return GetToken(SinumerikNCParser.WAITC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WAITE() { return GetToken(SinumerikNCParser.WAITE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WAITENC() { return GetToken(SinumerikNCParser.WAITENC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WAITM() { return GetToken(SinumerikNCParser.WAITM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WAITMC() { return GetToken(SinumerikNCParser.WAITMC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WAITP() { return GetToken(SinumerikNCParser.WAITP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WAITS() { return GetToken(SinumerikNCParser.WAITS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WRITE() { return GetToken(SinumerikNCParser.WRITE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WRTPR() { return GetToken(SinumerikNCParser.WRTPR, 0); }
+		public PredefinedProcedureContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_predefinedProcedure; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterPredefinedProcedure(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitPredefinedProcedure(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitPredefinedProcedure(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public PredefinedProcedureContext predefinedProcedure() {
+		PredefinedProcedureContext _localctx = new PredefinedProcedureContext(Context, State);
+		EnterRule(_localctx, 116, RULE_predefinedProcedure);
+		try {
+			State = 1067;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case CALL_MODAL:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 889;
+				modalSubprogramCall();
+				}
+				break;
+			case ACTBLOCNO:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 890;
+				Match(ACTBLOCNO);
+				}
+				break;
+			case ADISPOSA:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 891;
+				Match(ADISPOSA);
+				}
+				break;
+			case AFISOF:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 892;
+				Match(AFISOF);
+				}
+				break;
+			case AFISON:
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 893;
+				Match(AFISON);
+				}
+				break;
+			case AUXFUDEL:
+				EnterOuterAlt(_localctx, 6);
+				{
+				State = 894;
+				Match(AUXFUDEL);
+				}
+				break;
+			case AUXFUDELG:
+				EnterOuterAlt(_localctx, 7);
+				{
+				State = 895;
+				Match(AUXFUDELG);
+				}
+				break;
+			case AUXFUMSEQ:
+				EnterOuterAlt(_localctx, 8);
+				{
+				State = 896;
+				Match(AUXFUMSEQ);
+				}
+				break;
+			case AUXFUSYNC:
+				EnterOuterAlt(_localctx, 9);
+				{
+				State = 897;
+				Match(AUXFUSYNC);
+				}
+				break;
+			case AXCTSWE:
+				EnterOuterAlt(_localctx, 10);
+				{
+				State = 898;
+				Match(AXCTSWE);
+				}
+				break;
+			case AXCTSWEC:
+				EnterOuterAlt(_localctx, 11);
+				{
+				State = 899;
+				Match(AXCTSWEC);
+				}
+				break;
+			case AXCTSWED:
+				EnterOuterAlt(_localctx, 12);
+				{
+				State = 900;
+				Match(AXCTSWED);
+				}
+				break;
+			case AXTOCHAN:
+				EnterOuterAlt(_localctx, 13);
+				{
+				State = 901;
+				Match(AXTOCHAN);
+				}
+				break;
+			case BRISKA:
+				EnterOuterAlt(_localctx, 14);
+				{
+				State = 902;
+				Match(BRISKA);
+				}
+				break;
+			case CADAPTOF:
+				EnterOuterAlt(_localctx, 15);
+				{
+				State = 903;
+				Match(CADAPTOF);
+				}
+				break;
+			case CADAPTON:
+				EnterOuterAlt(_localctx, 16);
+				{
+				State = 904;
+				Match(CADAPTON);
+				}
+				break;
+			case CALCFIR:
+				EnterOuterAlt(_localctx, 17);
+				{
+				State = 905;
+				Match(CALCFIR);
+				}
+				break;
+			case CANCELSUB:
+				EnterOuterAlt(_localctx, 18);
+				{
+				State = 906;
+				Match(CANCELSUB);
+				}
+				break;
+			case CHANDATA:
+				EnterOuterAlt(_localctx, 19);
+				{
+				State = 907;
+				Match(CHANDATA);
+				}
+				break;
+			case CLEARM:
+				EnterOuterAlt(_localctx, 20);
+				{
+				State = 908;
+				Match(CLEARM);
+				}
+				break;
+			case CLRINT:
+				EnterOuterAlt(_localctx, 21);
+				{
+				State = 909;
+				Match(CLRINT);
+				}
+				break;
+			case CONTDCON:
+				EnterOuterAlt(_localctx, 22);
+				{
+				State = 910;
+				Match(CONTDCON);
+				}
+				break;
+			case CONTPRON:
+				EnterOuterAlt(_localctx, 23);
+				{
+				State = 911;
+				Match(CONTPRON);
+				}
+				break;
+			case CORROF:
+				EnterOuterAlt(_localctx, 24);
+				{
+				State = 912;
+				Match(CORROF);
+				}
+				break;
+			case COUPDEF:
+				EnterOuterAlt(_localctx, 25);
+				{
+				State = 913;
+				Match(COUPDEF);
+				}
+				break;
+			case COUPDEL:
+				EnterOuterAlt(_localctx, 26);
+				{
+				State = 914;
+				Match(COUPDEL);
+				}
+				break;
+			case COUPOF:
+				EnterOuterAlt(_localctx, 27);
+				{
+				State = 915;
+				Match(COUPOF);
+				}
+				break;
+			case COUPOFS:
+				EnterOuterAlt(_localctx, 28);
+				{
+				State = 916;
+				Match(COUPOFS);
+				}
+				break;
+			case COUPON:
+				EnterOuterAlt(_localctx, 29);
+				{
+				State = 917;
+				Match(COUPON);
+				}
+				break;
+			case COUPONC:
+				EnterOuterAlt(_localctx, 30);
+				{
+				State = 918;
+				Match(COUPONC);
+				}
+				break;
+			case COUPRES:
+				EnterOuterAlt(_localctx, 31);
+				{
+				State = 919;
+				Match(COUPRES);
+				}
+				break;
+			case CPROT:
+				EnterOuterAlt(_localctx, 32);
+				{
+				State = 920;
+				Match(CPROT);
+				}
+				break;
+			case CPROTDEF:
+				EnterOuterAlt(_localctx, 33);
+				{
+				State = 921;
+				Match(CPROTDEF);
+				}
+				break;
+			case CTABDEF:
+				EnterOuterAlt(_localctx, 34);
+				{
+				State = 922;
+				Match(CTABDEF);
+				}
+				break;
+			case CTABDEL:
+				EnterOuterAlt(_localctx, 35);
+				{
+				State = 923;
+				Match(CTABDEL);
+				}
+				break;
+			case CTABEND:
+				EnterOuterAlt(_localctx, 36);
+				{
+				State = 924;
+				Match(CTABEND);
+				}
+				break;
+			case CTABLOCK:
+				EnterOuterAlt(_localctx, 37);
+				{
+				State = 925;
+				Match(CTABLOCK);
+				}
+				break;
+			case CTABUNLOCK:
+				EnterOuterAlt(_localctx, 38);
+				{
+				State = 926;
+				Match(CTABUNLOCK);
+				}
+				break;
+			case DELAYFSTOF:
+				EnterOuterAlt(_localctx, 39);
+				{
+				State = 927;
+				Match(DELAYFSTOF);
+				}
+				break;
+			case DELAYFSTON:
+				EnterOuterAlt(_localctx, 40);
+				{
+				State = 928;
+				Match(DELAYFSTON);
+				}
+				break;
+			case DELDTG:
+				EnterOuterAlt(_localctx, 41);
+				{
+				State = 929;
+				Match(DELDTG);
+				}
+				break;
+			case DELETE:
+				EnterOuterAlt(_localctx, 42);
+				{
+				State = 930;
+				Match(DELETE);
+				}
+				break;
+			case DELMT:
+				EnterOuterAlt(_localctx, 43);
+				{
+				State = 931;
+				Match(DELMT);
+				}
+				break;
+			case DELT:
+				EnterOuterAlt(_localctx, 44);
+				{
+				State = 932;
+				Match(DELT);
+				}
+				break;
+			case DELTC:
+				EnterOuterAlt(_localctx, 45);
+				{
+				State = 933;
+				Match(DELTC);
+				}
+				break;
+			case DISABLE:
+				EnterOuterAlt(_localctx, 46);
+				{
+				State = 934;
+				Match(DISABLE);
+				}
+				break;
+			case DRFOF:
+				EnterOuterAlt(_localctx, 47);
+				{
+				State = 935;
+				Match(DRFOF);
+				}
+				break;
+			case DRIVEA:
+				EnterOuterAlt(_localctx, 48);
+				{
+				State = 936;
+				Match(DRIVEA);
+				}
+				break;
+			case DRVPRD:
+				EnterOuterAlt(_localctx, 49);
+				{
+				State = 937;
+				Match(DRVPRD);
+				}
+				break;
+			case DRVPWR:
+				EnterOuterAlt(_localctx, 50);
+				{
+				State = 938;
+				Match(DRVPWR);
+				}
+				break;
+			case DZERO:
+				EnterOuterAlt(_localctx, 51);
+				{
+				State = 939;
+				Match(DZERO);
+				}
+				break;
+			case EGDEF:
+				EnterOuterAlt(_localctx, 52);
+				{
+				State = 940;
+				Match(EGDEF);
+				}
+				break;
+			case EGDEL:
+				EnterOuterAlt(_localctx, 53);
+				{
+				State = 941;
+				Match(EGDEL);
+				}
+				break;
+			case EGOFC:
+				EnterOuterAlt(_localctx, 54);
+				{
+				State = 942;
+				Match(EGOFC);
+				}
+				break;
+			case EGOFS:
+				EnterOuterAlt(_localctx, 55);
+				{
+				State = 943;
+				Match(EGOFS);
+				}
+				break;
+			case EGON:
+				EnterOuterAlt(_localctx, 56);
+				{
+				State = 944;
+				Match(EGON);
+				}
+				break;
+			case EGONSYN:
+				EnterOuterAlt(_localctx, 57);
+				{
+				State = 945;
+				Match(EGONSYN);
+				}
+				break;
+			case EGONSYNE:
+				EnterOuterAlt(_localctx, 58);
+				{
+				State = 946;
+				Match(EGONSYNE);
+				}
+				break;
+			case ENABLE:
+				EnterOuterAlt(_localctx, 59);
+				{
+				State = 947;
+				Match(ENABLE);
+				}
+				break;
+			case ESRR:
+				EnterOuterAlt(_localctx, 60);
+				{
+				State = 948;
+				Match(ESRR);
+				}
+				break;
+			case ESRS:
+				EnterOuterAlt(_localctx, 61);
+				{
+				State = 949;
+				Match(ESRS);
+				}
+				break;
+			case EXECSTRING:
+				EnterOuterAlt(_localctx, 62);
+				{
+				State = 950;
+				Match(EXECSTRING);
+				}
+				break;
+			case EXECTAB:
+				EnterOuterAlt(_localctx, 63);
+				{
+				State = 951;
+				Match(EXECTAB);
+				}
+				break;
+			case EXECUTE:
+				EnterOuterAlt(_localctx, 64);
+				{
+				State = 952;
+				Match(EXECUTE);
+				}
+				break;
+			case EXTCLOSE:
+				EnterOuterAlt(_localctx, 65);
+				{
+				State = 953;
+				Match(EXTCLOSE);
+				}
+				break;
+			case EXTOPEN:
+				EnterOuterAlt(_localctx, 66);
+				{
+				State = 954;
+				Match(EXTOPEN);
+				}
+				break;
+			case FCTDEF:
+				EnterOuterAlt(_localctx, 67);
+				{
+				State = 955;
+				Match(FCTDEF);
+				}
+				break;
+			case FGROUP:
+				EnterOuterAlt(_localctx, 68);
+				{
+				State = 956;
+				Match(FGROUP);
+				State = 957;
+				Match(OPEN_PAREN);
+				State = 958;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case FILEDATE:
+				EnterOuterAlt(_localctx, 69);
+				{
+				State = 959;
+				Match(FILEDATE);
+				}
+				break;
+			case FILEINFO:
+				EnterOuterAlt(_localctx, 70);
+				{
+				State = 960;
+				Match(FILEINFO);
+				}
+				break;
+			case FILESIZE:
+				EnterOuterAlt(_localctx, 71);
+				{
+				State = 961;
+				Match(FILESIZE);
+				}
+				break;
+			case FILESTAT:
+				EnterOuterAlt(_localctx, 72);
+				{
+				State = 962;
+				Match(FILESTAT);
+				}
+				break;
+			case FILETIME:
+				EnterOuterAlt(_localctx, 73);
+				{
+				State = 963;
+				Match(FILETIME);
+				}
+				break;
+			case FPR:
+				EnterOuterAlt(_localctx, 74);
+				{
+				State = 964;
+				Match(FPR);
+				}
+				break;
+			case FPRAOF:
+				EnterOuterAlt(_localctx, 75);
+				{
+				State = 965;
+				Match(FPRAOF);
+				}
+				break;
+			case FPRAON:
+				EnterOuterAlt(_localctx, 76);
+				{
+				State = 966;
+				Match(FPRAON);
+				}
+				break;
+			case FTOC:
+				EnterOuterAlt(_localctx, 77);
+				{
+				State = 967;
+				Match(FTOC);
+				}
+				break;
+			case GEOAX:
+				EnterOuterAlt(_localctx, 78);
+				{
+				State = 968;
+				Match(GEOAX);
+				}
+				break;
+			case GET:
+				EnterOuterAlt(_localctx, 79);
+				{
+				State = 969;
+				Match(GET);
+				}
+				break;
+			case GETD:
+				EnterOuterAlt(_localctx, 80);
+				{
+				State = 970;
+				Match(GETD);
+				}
+				break;
+			case GETEXET:
+				EnterOuterAlt(_localctx, 81);
+				{
+				State = 971;
+				Match(GETEXET);
+				}
+				break;
+			case GETFREELOC:
+				EnterOuterAlt(_localctx, 82);
+				{
+				State = 972;
+				Match(GETFREELOC);
+				}
+				break;
+			case GETSELT:
+				EnterOuterAlt(_localctx, 83);
+				{
+				State = 973;
+				Match(GETSELT);
+				}
+				break;
+			case GWPSOF:
+				EnterOuterAlt(_localctx, 84);
+				{
+				State = 974;
+				Match(GWPSOF);
+				}
+				break;
+			case GWPSON:
+				EnterOuterAlt(_localctx, 85);
+				{
+				State = 975;
+				Match(GWPSON);
+				}
+				break;
+			case ICYCOF:
+				EnterOuterAlt(_localctx, 86);
+				{
+				State = 976;
+				Match(ICYCOF);
+				}
+				break;
+			case ICYCON:
+				EnterOuterAlt(_localctx, 87);
+				{
+				State = 977;
+				Match(ICYCON);
+				}
+				break;
+			case INIT:
+				EnterOuterAlt(_localctx, 88);
+				{
+				State = 978;
+				Match(INIT);
+				}
+				break;
+			case IPOBRKA:
+				EnterOuterAlt(_localctx, 89);
+				{
+				State = 979;
+				Match(IPOBRKA);
+				}
+				break;
+			case IPTRLOCK:
+				EnterOuterAlt(_localctx, 90);
+				{
+				State = 980;
+				Match(IPTRLOCK);
+				}
+				break;
+			case IPTRUNLOCK:
+				EnterOuterAlt(_localctx, 91);
+				{
+				State = 981;
+				Match(IPTRUNLOCK);
+				}
+				break;
+			case JERKA:
+				EnterOuterAlt(_localctx, 92);
+				{
+				State = 982;
+				Match(JERKA);
+				}
+				break;
+			case LEADOF:
+				EnterOuterAlt(_localctx, 93);
+				{
+				State = 983;
+				Match(LEADOF);
+				}
+				break;
+			case LEADON:
+				EnterOuterAlt(_localctx, 94);
+				{
+				State = 984;
+				Match(LEADON);
+				}
+				break;
+			case LOCK:
+				EnterOuterAlt(_localctx, 95);
+				{
+				State = 985;
+				Match(LOCK);
+				}
+				break;
+			case MASLDEF:
+				EnterOuterAlt(_localctx, 96);
+				{
+				State = 986;
+				Match(MASLDEF);
+				}
+				break;
+			case MASLDEL:
+				EnterOuterAlt(_localctx, 97);
+				{
+				State = 987;
+				Match(MASLDEL);
+				}
+				break;
+			case MASLOF:
+				EnterOuterAlt(_localctx, 98);
+				{
+				State = 988;
+				Match(MASLOF);
+				}
+				break;
+			case MASLOFS:
+				EnterOuterAlt(_localctx, 99);
+				{
+				State = 989;
+				Match(MASLOFS);
+				}
+				break;
+			case MASLON:
+				EnterOuterAlt(_localctx, 100);
+				{
+				State = 990;
+				Match(MASLON);
+				}
+				break;
+			case MMC:
+				EnterOuterAlt(_localctx, 101);
+				{
+				State = 991;
+				Match(MMC);
+				}
+				break;
+			case MSG:
+				EnterOuterAlt(_localctx, 102);
+				{
+				State = 992;
+				Match(MSG);
+				}
+				break;
+			case MVTOOL:
+				EnterOuterAlt(_localctx, 103);
+				{
+				State = 993;
+				Match(MVTOOL);
+				}
+				break;
+			case NEWCONF:
+				EnterOuterAlt(_localctx, 104);
+				{
+				State = 994;
+				Match(NEWCONF);
+				}
+				break;
+			case NPROT:
+				EnterOuterAlt(_localctx, 105);
+				{
+				State = 995;
+				Match(NPROT);
+				}
+				break;
+			case NPROTDEF:
+				EnterOuterAlt(_localctx, 106);
+				{
+				State = 996;
+				Match(NPROTDEF);
+				}
+				break;
+			case ORIRESET:
+				EnterOuterAlt(_localctx, 107);
+				{
+				State = 997;
+				Match(ORIRESET);
+				}
+				break;
+			case POLFA:
+				EnterOuterAlt(_localctx, 108);
+				{
+				State = 998;
+				Match(POLFA);
+				}
+				break;
+			case POLFMASK:
+				EnterOuterAlt(_localctx, 109);
+				{
+				State = 999;
+				Match(POLFMASK);
+				}
+				break;
+			case POLFMLIN:
+				EnterOuterAlt(_localctx, 110);
+				{
+				State = 1000;
+				Match(POLFMLIN);
+				}
+				break;
+			case POLYPATH:
+				EnterOuterAlt(_localctx, 111);
+				{
+				State = 1001;
+				Match(POLYPATH);
+				}
+				break;
+			case POSM:
+				EnterOuterAlt(_localctx, 112);
+				{
+				State = 1002;
+				Match(POSM);
+				}
+				break;
+			case POSMT:
+				EnterOuterAlt(_localctx, 113);
+				{
+				State = 1003;
+				Match(POSMT);
+				}
+				break;
+			case PRESETON:
+				EnterOuterAlt(_localctx, 114);
+				{
+				State = 1004;
+				Match(PRESETON);
+				}
+				break;
+			case PRESETONS:
+				EnterOuterAlt(_localctx, 115);
+				{
+				State = 1005;
+				Match(PRESETONS);
+				}
+				break;
+			case PROTA:
+				EnterOuterAlt(_localctx, 116);
+				{
+				State = 1006;
+				Match(PROTA);
+				}
+				break;
+			case PROTS:
+				EnterOuterAlt(_localctx, 117);
+				{
+				State = 1007;
+				Match(PROTS);
+				}
+				break;
+			case PUNCHACC:
+				EnterOuterAlt(_localctx, 118);
+				{
+				State = 1008;
+				Match(PUNCHACC);
+				}
+				break;
+			case PUTFTOC:
+				EnterOuterAlt(_localctx, 119);
+				{
+				State = 1009;
+				Match(PUTFTOC);
+				}
+				break;
+			case PUTFTOCF:
+				EnterOuterAlt(_localctx, 120);
+				{
+				State = 1010;
+				Match(PUTFTOCF);
+				}
+				break;
+			case RDISABLE:
+				EnterOuterAlt(_localctx, 121);
+				{
+				State = 1011;
+				Match(RDISABLE);
+				}
+				break;
+			case READ:
+				EnterOuterAlt(_localctx, 122);
+				{
+				State = 1012;
+				Match(READ);
+				}
+				break;
+			case RELEASE:
+				EnterOuterAlt(_localctx, 123);
+				{
+				State = 1013;
+				Match(RELEASE);
+				}
+				break;
+			case RESETMON:
+				EnterOuterAlt(_localctx, 124);
+				{
+				State = 1014;
+				Match(RESETMON);
+				}
+				break;
+			case RETB:
+				EnterOuterAlt(_localctx, 125);
+				{
+				State = 1015;
+				Match(RETB);
+				}
+				break;
+			case SBLOF:
+				EnterOuterAlt(_localctx, 126);
+				{
+				State = 1016;
+				Match(SBLOF);
+				}
+				break;
+			case SBLON:
+				EnterOuterAlt(_localctx, 127);
+				{
+				State = 1017;
+				Match(SBLON);
+				}
+				break;
+			case SETAL:
+				EnterOuterAlt(_localctx, 128);
+				{
+				State = 1018;
+				Match(SETAL);
+				}
+				break;
+			case SETM:
+				EnterOuterAlt(_localctx, 129);
+				{
+				State = 1019;
+				Match(SETM);
+				}
+				break;
+			case SETMS:
+				EnterOuterAlt(_localctx, 130);
+				{
+				State = 1020;
+				Match(SETMS);
+				}
+				break;
+			case SETMTH:
+				EnterOuterAlt(_localctx, 131);
+				{
+				State = 1021;
+				Match(SETMTH);
+				}
+				break;
+			case SETPIECE:
+				EnterOuterAlt(_localctx, 132);
+				{
+				State = 1022;
+				Match(SETPIECE);
+				}
+				break;
+			case SETTA:
+				EnterOuterAlt(_localctx, 133);
+				{
+				State = 1023;
+				Match(SETTA);
+				}
+				break;
+			case SETTIA:
+				EnterOuterAlt(_localctx, 134);
+				{
+				State = 1024;
+				Match(SETTIA);
+				}
+				break;
+			case SIRELIN:
+				EnterOuterAlt(_localctx, 135);
+				{
+				State = 1025;
+				Match(SIRELIN);
+				}
+				break;
+			case SIRELOUT:
+				EnterOuterAlt(_localctx, 136);
+				{
+				State = 1026;
+				Match(SIRELOUT);
+				}
+				break;
+			case SIRELTIME:
+				EnterOuterAlt(_localctx, 137);
+				{
+				State = 1027;
+				Match(SIRELTIME);
+				}
+				break;
+			case SOFTA:
+				EnterOuterAlt(_localctx, 138);
+				{
+				State = 1028;
+				Match(SOFTA);
+				}
+				break;
+			case SPCOF:
+				EnterOuterAlt(_localctx, 139);
+				{
+				State = 1029;
+				Match(SPCOF);
+				}
+				break;
+			case SPCON:
+				EnterOuterAlt(_localctx, 140);
+				{
+				State = 1030;
+				Match(SPCON);
+				}
+				break;
+			case SPLINEPATH:
+				EnterOuterAlt(_localctx, 141);
+				{
+				State = 1031;
+				Match(SPLINEPATH);
+				}
+				break;
+			case START:
+				EnterOuterAlt(_localctx, 142);
+				{
+				State = 1032;
+				Match(START);
+				}
+				break;
+			case STOPRE:
+				EnterOuterAlt(_localctx, 143);
+				{
+				State = 1033;
+				Match(STOPRE);
+				}
+				break;
+			case STOPREOF:
+				EnterOuterAlt(_localctx, 144);
+				{
+				State = 1034;
+				Match(STOPREOF);
+				}
+				break;
+			case SYNFCT:
+				EnterOuterAlt(_localctx, 145);
+				{
+				State = 1035;
+				Match(SYNFCT);
+				}
+				break;
+			case TANG:
+				EnterOuterAlt(_localctx, 146);
+				{
+				State = 1036;
+				Match(TANG);
+				}
+				break;
+			case TANGDEL:
+				EnterOuterAlt(_localctx, 147);
+				{
+				State = 1037;
+				Match(TANGDEL);
+				}
+				break;
+			case TANGOF:
+				EnterOuterAlt(_localctx, 148);
+				{
+				State = 1038;
+				Match(TANGOF);
+				}
+				break;
+			case TANGON:
+				EnterOuterAlt(_localctx, 149);
+				{
+				State = 1039;
+				Match(TANGON);
+				}
+				break;
+			case TCA:
+				EnterOuterAlt(_localctx, 150);
+				{
+				State = 1040;
+				Match(TCA);
+				}
+				break;
+			case TCI:
+				EnterOuterAlt(_localctx, 151);
+				{
+				State = 1041;
+				Match(TCI);
+				}
+				break;
+			case TLIFT:
+				EnterOuterAlt(_localctx, 152);
+				{
+				State = 1042;
+				Match(TLIFT);
+				}
+				break;
+			case TML:
+				EnterOuterAlt(_localctx, 153);
+				{
+				State = 1043;
+				Match(TML);
+				}
+				break;
+			case TMOF:
+				EnterOuterAlt(_localctx, 154);
+				{
+				State = 1044;
+				Match(TMOF);
+				}
+				break;
+			case TMON:
+				EnterOuterAlt(_localctx, 155);
+				{
+				State = 1045;
+				Match(TMON);
+				}
+				break;
+			case TOFFOF:
+				EnterOuterAlt(_localctx, 156);
+				{
+				State = 1046;
+				Match(TOFFOF);
+				}
+				break;
+			case TOFFON:
+				EnterOuterAlt(_localctx, 157);
+				{
+				State = 1047;
+				Match(TOFFON);
+				}
+				break;
+			case TRAANG:
+				EnterOuterAlt(_localctx, 158);
+				{
+				State = 1048;
+				Match(TRAANG);
+				}
+				break;
+			case TRACON:
+				EnterOuterAlt(_localctx, 159);
+				{
+				State = 1049;
+				Match(TRACON);
+				}
+				break;
+			case TRACYL:
+				EnterOuterAlt(_localctx, 160);
+				{
+				State = 1050;
+				Match(TRACYL);
+				}
+				break;
+			case TRAFOOF:
+				EnterOuterAlt(_localctx, 161);
+				{
+				State = 1051;
+				Match(TRAFOOF);
+				}
+				break;
+			case TRAFOON:
+				EnterOuterAlt(_localctx, 162);
+				{
+				State = 1052;
+				Match(TRAFOON);
+				}
+				break;
+			case TRAILOF:
+				EnterOuterAlt(_localctx, 163);
+				{
+				State = 1053;
+				Match(TRAILOF);
+				}
+				break;
+			case TRAILON:
+				EnterOuterAlt(_localctx, 164);
+				{
+				State = 1054;
+				Match(TRAILON);
+				}
+				break;
+			case TRANSMIT:
+				EnterOuterAlt(_localctx, 165);
+				{
+				State = 1055;
+				Match(TRANSMIT);
+				}
+				break;
+			case TRAORI:
+				EnterOuterAlt(_localctx, 166);
+				{
+				State = 1056;
+				Match(TRAORI);
+				}
+				break;
+			case UNLOCK:
+				EnterOuterAlt(_localctx, 167);
+				{
+				State = 1057;
+				Match(UNLOCK);
+				}
+				break;
+			case WAITC:
+				EnterOuterAlt(_localctx, 168);
+				{
+				State = 1058;
+				Match(WAITC);
+				}
+				break;
+			case WAITE:
+				EnterOuterAlt(_localctx, 169);
+				{
+				State = 1059;
+				Match(WAITE);
+				}
+				break;
+			case WAITENC:
+				EnterOuterAlt(_localctx, 170);
+				{
+				State = 1060;
+				Match(WAITENC);
+				}
+				break;
+			case WAITM:
+				EnterOuterAlt(_localctx, 171);
+				{
+				State = 1061;
+				Match(WAITM);
+				}
+				break;
+			case WAITMC:
+				EnterOuterAlt(_localctx, 172);
+				{
+				State = 1062;
+				Match(WAITMC);
+				}
+				break;
+			case WAITP:
+				EnterOuterAlt(_localctx, 173);
+				{
+				State = 1063;
+				Match(WAITP);
+				}
+				break;
+			case WAITS:
+				EnterOuterAlt(_localctx, 174);
+				{
+				State = 1064;
+				Match(WAITS);
+				}
+				break;
+			case WRITE:
+				EnterOuterAlt(_localctx, 175);
+				{
+				State = 1065;
+				Match(WRITE);
+				}
+				break;
+			case WRTPR:
+				EnterOuterAlt(_localctx, 176);
+				{
+				State = 1066;
+				Match(WRTPR);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ModalSubprogramCallContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CALL_MODAL() { return GetToken(SinumerikNCParser.CALL_MODAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACKET() { return GetToken(SinumerikNCParser.OPEN_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACKET() { return GetToken(SinumerikNCParser.CLOSE_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(SinumerikNCParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(SinumerikNCParser.COMMA, i);
+		}
+		public ModalSubprogramCallContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_modalSubprogramCall; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterModalSubprogramCall(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitModalSubprogramCall(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitModalSubprogramCall(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ModalSubprogramCallContext modalSubprogramCall() {
+		ModalSubprogramCallContext _localctx = new ModalSubprogramCallContext(Context, State);
+		EnterRule(_localctx, 118, RULE_modalSubprogramCall);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 1069;
+			Match(CALL_MODAL);
+			State = 1084;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,77,Context) ) {
+			case 1:
+				{
+				State = 1070;
+				Match(NAME);
+				State = 1082;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==OPEN_BRACKET) {
+					{
+					State = 1071;
+					Match(OPEN_BRACKET);
+					State = 1072;
+					expression();
+					State = 1077;
+					ErrorHandler.Sync(this);
+					_la = TokenStream.LA(1);
+					while (_la==COMMA) {
+						{
+						{
+						State = 1073;
+						Match(COMMA);
+						State = 1074;
+						expression();
+						}
+						}
+						State = 1079;
+						ErrorHandler.Sync(this);
+						_la = TokenStream.LA(1);
+					}
+					State = 1080;
+					Match(CLOSE_BRACKET);
+					}
+				}
+
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class Feedrate_override_pathContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OVR() { return GetToken(SinumerikNCParser.OVR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public Feedrate_override_pathContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_feedrate_override_path; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterFeedrate_override_path(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitFeedrate_override_path(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_path(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public Feedrate_override_pathContext feedrate_override_path() {
+		Feedrate_override_pathContext _localctx = new Feedrate_override_pathContext(Context, State);
+		EnterRule(_localctx, 120, RULE_feedrate_override_path);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 1086;
+			Match(OVR);
+			State = 1087;
+			Match(ASSIGNMENT);
+			State = 1088;
+			expression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class Feedrate_override_rapid_traverse_velocityContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OVRRAP() { return GetToken(SinumerikNCParser.OVRRAP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public Feedrate_override_rapid_traverse_velocityContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_feedrate_override_rapid_traverse_velocity; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterFeedrate_override_rapid_traverse_velocity(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitFeedrate_override_rapid_traverse_velocity(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_rapid_traverse_velocity(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public Feedrate_override_rapid_traverse_velocityContext feedrate_override_rapid_traverse_velocity() {
+		Feedrate_override_rapid_traverse_velocityContext _localctx = new Feedrate_override_rapid_traverse_velocityContext(Context, State);
+		EnterRule(_localctx, 122, RULE_feedrate_override_rapid_traverse_velocity);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 1090;
+			Match(OVRRAP);
+			State = 1091;
+			Match(ASSIGNMENT);
+			State = 1092;
+			expression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class Feedrate_override_position_or_spindleContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OVRA() { return GetToken(SinumerikNCParser.OVRA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACKET() { return GetToken(SinumerikNCParser.OPEN_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public Axis_spindle_identifierContext axis_spindle_identifier() {
+			return GetRuleContext<Axis_spindle_identifierContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACKET() { return GetToken(SinumerikNCParser.CLOSE_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public Feedrate_override_position_or_spindleContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_feedrate_override_position_or_spindle; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterFeedrate_override_position_or_spindle(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitFeedrate_override_position_or_spindle(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_position_or_spindle(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public Feedrate_override_position_or_spindleContext feedrate_override_position_or_spindle() {
+		Feedrate_override_position_or_spindleContext _localctx = new Feedrate_override_position_or_spindleContext(Context, State);
+		EnterRule(_localctx, 124, RULE_feedrate_override_position_or_spindle);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 1094;
+			Match(OVRA);
+			State = 1095;
+			Match(OPEN_BRACKET);
+			State = 1096;
+			axis_spindle_identifier();
+			State = 1097;
+			Match(CLOSE_BRACKET);
+			State = 1098;
+			Match(ASSIGNMENT);
+			State = 1099;
+			expression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class Acceleration_compensationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ACC() { return GetToken(SinumerikNCParser.ACC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACKET() { return GetToken(SinumerikNCParser.OPEN_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public Axis_spindle_identifierContext axis_spindle_identifier() {
+			return GetRuleContext<Axis_spindle_identifierContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACKET() { return GetToken(SinumerikNCParser.CLOSE_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public Acceleration_compensationContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_acceleration_compensation; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterAcceleration_compensation(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitAcceleration_compensation(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAcceleration_compensation(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public Acceleration_compensationContext acceleration_compensation() {
+		Acceleration_compensationContext _localctx = new Acceleration_compensationContext(Context, State);
+		EnterRule(_localctx, 126, RULE_acceleration_compensation);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 1101;
+			Match(ACC);
+			State = 1102;
+			Match(OPEN_BRACKET);
+			State = 1103;
+			axis_spindle_identifier();
+			State = 1104;
+			Match(CLOSE_BRACKET);
+			State = 1105;
+			Match(ASSIGNMENT);
+			State = 1106;
+			expression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class Feedrate_override_path_handwheelContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FD() { return GetToken(SinumerikNCParser.FD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public Feedrate_override_path_handwheelContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_feedrate_override_path_handwheel; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterFeedrate_override_path_handwheel(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitFeedrate_override_path_handwheel(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_path_handwheel(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public Feedrate_override_path_handwheelContext feedrate_override_path_handwheel() {
+		Feedrate_override_path_handwheelContext _localctx = new Feedrate_override_path_handwheelContext(Context, State);
+		EnterRule(_localctx, 128, RULE_feedrate_override_path_handwheel);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 1108;
+			Match(FD);
+			State = 1109;
+			Match(ASSIGNMENT);
+			State = 1110;
+			expression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class Feedrate_override_axial_handwheelContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FDA() { return GetToken(SinumerikNCParser.FDA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACKET() { return GetToken(SinumerikNCParser.OPEN_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public Axis_identifierContext axis_identifier() {
+			return GetRuleContext<Axis_identifierContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACKET() { return GetToken(SinumerikNCParser.CLOSE_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT() { return GetToken(SinumerikNCParser.ASSIGNMENT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public Feedrate_override_axial_handwheelContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_feedrate_override_axial_handwheel; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterFeedrate_override_axial_handwheel(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitFeedrate_override_axial_handwheel(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFeedrate_override_axial_handwheel(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public Feedrate_override_axial_handwheelContext feedrate_override_axial_handwheel() {
+		Feedrate_override_axial_handwheelContext _localctx = new Feedrate_override_axial_handwheelContext(Context, State);
+		EnterRule(_localctx, 130, RULE_feedrate_override_axial_handwheel);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 1112;
+			Match(FDA);
+			State = 1113;
+			Match(OPEN_BRACKET);
+			State = 1114;
+			axis_identifier();
+			State = 1115;
+			Match(CLOSE_BRACKET);
+			State = 1116;
+			Match(ASSIGNMENT);
+			State = 1117;
+			expression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class FunctionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public PredefinedFunctionContext predefinedFunction() {
+			return GetRuleContext<PredefinedFunctionContext>(0);
+		}
+		public FunctionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_function; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterFunction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitFunction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFunction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public FunctionContext function() {
+		FunctionContext _localctx = new FunctionContext(Context, State);
+		EnterRule(_localctx, 132, RULE_function);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 1119;
+			predefinedFunction();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class PredefinedFunctionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public MathFunctionContext mathFunction() {
+			return GetRuleContext<MathFunctionContext>(0);
+		}
+		public PredefinedFunctionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_predefinedFunction; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterPredefinedFunction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitPredefinedFunction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitPredefinedFunction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public PredefinedFunctionContext predefinedFunction() {
+		PredefinedFunctionContext _localctx = new PredefinedFunctionContext(Context, State);
+		EnterRule(_localctx, 134, RULE_predefinedFunction);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 1121;
+			mathFunction();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class MathFunctionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SIN() { return GetToken(SinumerikNCParser.SIN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(SinumerikNCParser.OPEN_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(SinumerikNCParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COS() { return GetToken(SinumerikNCParser.COS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TAN() { return GetToken(SinumerikNCParser.TAN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASIN() { return GetToken(SinumerikNCParser.ASIN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ACOS() { return GetToken(SinumerikNCParser.ACOS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ATAN2() { return GetToken(SinumerikNCParser.ATAN2, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EXP() { return GetToken(SinumerikNCParser.EXP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SQRT() { return GetToken(SinumerikNCParser.SQRT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POT() { return GetToken(SinumerikNCParser.POT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(SinumerikNCParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(SinumerikNCParser.COMMA, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LN() { return GetToken(SinumerikNCParser.LN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ABS() { return GetToken(SinumerikNCParser.ABS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TRUNC() { return GetToken(SinumerikNCParser.TRUNC, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ROUND() { return GetToken(SinumerikNCParser.ROUND, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ROUNDUP() { return GetToken(SinumerikNCParser.ROUNDUP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MINVAL() { return GetToken(SinumerikNCParser.MINVAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MAXVAL() { return GetToken(SinumerikNCParser.MAXVAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BOUND() { return GetToken(SinumerikNCParser.BOUND, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CALCDAT() { return GetToken(SinumerikNCParser.CALCDAT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(SinumerikNCParser.NAME, 0); }
+		public MathFunctionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_mathFunction; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.EnterMathFunction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ISinumerikNCListener typedListener = listener as ISinumerikNCListener;
+			if (typedListener != null) typedListener.ExitMathFunction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ISinumerikNCVisitor<TResult> typedVisitor = visitor as ISinumerikNCVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitMathFunction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public MathFunctionContext mathFunction() {
+		MathFunctionContext _localctx = new MathFunctionContext(Context, State);
+		EnterRule(_localctx, 136, RULE_mathFunction);
+		int _la;
+		try {
+			State = 1229;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case SIN:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 1123;
+				Match(SIN);
+				State = 1124;
+				Match(OPEN_PAREN);
+				State = 1125;
+				expression();
+				State = 1126;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case COS:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 1128;
+				Match(COS);
+				State = 1129;
+				Match(OPEN_PAREN);
+				State = 1130;
+				expression();
+				State = 1131;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case TAN:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 1133;
+				Match(TAN);
+				State = 1134;
+				Match(OPEN_PAREN);
+				State = 1135;
+				expression();
+				State = 1136;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case ASIN:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 1138;
+				Match(ASIN);
+				State = 1139;
+				Match(OPEN_PAREN);
+				State = 1140;
+				expression();
+				State = 1141;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case ACOS:
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 1143;
+				Match(ACOS);
+				State = 1144;
+				Match(OPEN_PAREN);
+				State = 1145;
+				expression();
+				State = 1146;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case ATAN2:
+				EnterOuterAlt(_localctx, 6);
+				{
+				State = 1148;
+				Match(ATAN2);
+				State = 1149;
+				Match(OPEN_PAREN);
+				State = 1150;
+				expression();
+				State = 1151;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case EXP:
+				EnterOuterAlt(_localctx, 7);
+				{
+				State = 1153;
+				Match(EXP);
+				State = 1154;
+				Match(OPEN_PAREN);
+				State = 1155;
+				expression();
+				State = 1156;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case SQRT:
+				EnterOuterAlt(_localctx, 8);
+				{
+				State = 1158;
+				Match(SQRT);
+				State = 1159;
+				Match(OPEN_PAREN);
+				State = 1160;
+				expression();
+				State = 1161;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case POT:
+				EnterOuterAlt(_localctx, 9);
+				{
+				State = 1163;
+				Match(POT);
+				State = 1164;
+				Match(OPEN_PAREN);
+				State = 1165;
+				expression();
+				State = 1168;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==COMMA) {
+					{
+					State = 1166;
+					Match(COMMA);
+					State = 1167;
+					expression();
+					}
+				}
+
+				State = 1170;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case LN:
+				EnterOuterAlt(_localctx, 10);
+				{
+				State = 1172;
+				Match(LN);
+				State = 1173;
+				Match(OPEN_PAREN);
+				State = 1174;
+				expression();
+				State = 1175;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case ABS:
+				EnterOuterAlt(_localctx, 11);
+				{
+				State = 1177;
+				Match(ABS);
+				State = 1178;
+				Match(OPEN_PAREN);
+				State = 1179;
+				expression();
+				State = 1180;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case TRUNC:
+				EnterOuterAlt(_localctx, 12);
+				{
+				State = 1182;
+				Match(TRUNC);
+				State = 1183;
+				Match(OPEN_PAREN);
+				State = 1184;
+				expression();
+				State = 1185;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case ROUND:
+				EnterOuterAlt(_localctx, 13);
+				{
+				State = 1187;
+				Match(ROUND);
+				State = 1188;
+				Match(OPEN_PAREN);
+				State = 1189;
+				expression();
+				State = 1190;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case ROUNDUP:
+				EnterOuterAlt(_localctx, 14);
+				{
+				State = 1192;
+				Match(ROUNDUP);
+				State = 1193;
+				Match(OPEN_PAREN);
+				State = 1194;
+				expression();
+				State = 1195;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case MINVAL:
+				EnterOuterAlt(_localctx, 15);
+				{
+				State = 1197;
+				Match(MINVAL);
+				State = 1198;
+				Match(OPEN_PAREN);
+				State = 1199;
+				expression();
+				State = 1200;
+				Match(COMMA);
+				State = 1201;
+				expression();
+				State = 1202;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case MAXVAL:
+				EnterOuterAlt(_localctx, 16);
+				{
+				State = 1204;
+				Match(MAXVAL);
+				State = 1205;
+				Match(OPEN_PAREN);
+				State = 1206;
+				expression();
+				State = 1207;
+				Match(COMMA);
+				State = 1208;
+				expression();
+				State = 1209;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case BOUND:
+				EnterOuterAlt(_localctx, 17);
+				{
+				State = 1211;
+				Match(BOUND);
+				State = 1212;
+				Match(OPEN_PAREN);
+				State = 1213;
+				expression();
+				State = 1214;
+				Match(COMMA);
+				State = 1215;
+				expression();
+				State = 1216;
+				Match(COMMA);
+				State = 1217;
+				expression();
+				State = 1218;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			case CALCDAT:
+				EnterOuterAlt(_localctx, 18);
+				{
+				State = 1220;
+				Match(CALCDAT);
+				State = 1221;
+				Match(OPEN_PAREN);
+				State = 1222;
+				expression();
+				State = 1223;
+				Match(COMMA);
+				State = 1224;
+				expression();
+				State = 1225;
+				Match(COMMA);
+				State = 1226;
+				Match(NAME);
+				State = 1227;
+				Match(CLOSE_PAREN);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
 	private static int[] _serializedATN = {
-		4,1,180,303,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+		4,1,827,1232,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
 		7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
-		2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,2,33,7,33,2,34,7,34,1,0,5,0,72,
-		8,0,10,0,12,0,75,9,0,1,0,3,0,78,8,0,1,0,1,0,1,1,1,1,1,2,1,2,1,2,1,2,3,
-		2,88,8,2,1,2,1,2,5,2,92,8,2,10,2,12,2,95,9,2,1,2,1,2,1,3,1,3,1,3,1,3,1,
-		3,1,3,1,3,1,3,1,3,1,3,3,3,109,8,3,1,4,1,4,1,4,1,5,1,5,1,5,1,6,1,6,1,6,
-		3,6,120,8,6,1,7,1,7,1,7,1,7,1,7,1,7,1,7,3,7,129,8,7,1,8,1,8,1,8,1,8,1,
-		8,1,8,1,9,1,9,1,9,1,9,1,9,1,9,1,9,1,9,1,9,1,9,1,9,1,9,3,9,149,8,9,3,9,
-		151,8,9,1,10,1,10,1,10,1,10,1,10,1,10,3,10,159,8,10,1,11,1,11,1,11,1,11,
-		3,11,165,8,11,1,12,1,12,1,12,5,12,170,8,12,10,12,12,12,173,9,12,1,13,1,
-		13,1,13,5,13,178,8,13,10,13,12,13,181,9,13,1,14,1,14,1,14,5,14,186,8,14,
-		10,14,12,14,189,9,14,1,15,1,15,1,15,5,15,194,8,15,10,15,12,15,197,9,15,
-		1,16,1,16,1,16,5,16,202,8,16,10,16,12,16,205,9,16,1,17,1,17,1,17,5,17,
-		210,8,17,10,17,12,17,213,9,17,1,18,1,18,1,18,5,18,218,8,18,10,18,12,18,
-		221,9,18,1,19,1,19,1,19,5,19,226,8,19,10,19,12,19,229,9,19,1,20,1,20,1,
-		20,5,20,234,8,20,10,20,12,20,237,9,20,1,21,1,21,1,21,5,21,242,8,21,10,
-		21,12,21,245,9,21,1,22,1,22,1,23,1,23,1,24,1,24,1,25,1,25,1,25,1,25,1,
-		26,1,26,1,26,1,26,1,27,1,27,1,27,1,27,1,27,1,27,1,27,1,28,1,28,1,28,1,
-		28,1,28,1,28,1,28,1,29,1,29,1,29,1,29,1,30,1,30,1,30,1,30,1,30,1,30,1,
-		30,1,31,1,31,3,31,288,8,31,1,32,1,32,1,32,1,33,1,33,1,33,1,33,1,33,1,33,
-		3,33,299,8,33,1,34,1,34,1,34,0,0,35,0,2,4,6,8,10,12,14,16,18,20,22,24,
-		26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,0,6,
-		1,0,32,34,1,0,30,31,1,0,35,40,1,0,72,78,2,0,169,169,171,173,1,0,143,148,
-		298,0,77,1,0,0,0,2,81,1,0,0,0,4,83,1,0,0,0,6,108,1,0,0,0,8,110,1,0,0,0,
-		10,113,1,0,0,0,12,119,1,0,0,0,14,121,1,0,0,0,16,130,1,0,0,0,18,150,1,0,
-		0,0,20,158,1,0,0,0,22,164,1,0,0,0,24,166,1,0,0,0,26,174,1,0,0,0,28,182,
-		1,0,0,0,30,190,1,0,0,0,32,198,1,0,0,0,34,206,1,0,0,0,36,214,1,0,0,0,38,
-		222,1,0,0,0,40,230,1,0,0,0,42,238,1,0,0,0,44,246,1,0,0,0,46,248,1,0,0,
-		0,48,250,1,0,0,0,50,252,1,0,0,0,52,256,1,0,0,0,54,260,1,0,0,0,56,267,1,
-		0,0,0,58,274,1,0,0,0,60,278,1,0,0,0,62,287,1,0,0,0,64,289,1,0,0,0,66,298,
-		1,0,0,0,68,300,1,0,0,0,70,72,3,2,1,0,71,70,1,0,0,0,72,75,1,0,0,0,73,71,
-		1,0,0,0,73,74,1,0,0,0,74,78,1,0,0,0,75,73,1,0,0,0,76,78,3,4,2,0,77,73,
-		1,0,0,0,77,76,1,0,0,0,78,79,1,0,0,0,79,80,5,0,0,1,80,1,1,0,0,0,81,82,3,
-		12,6,0,82,3,1,0,0,0,83,84,5,63,0,0,84,85,5,177,0,0,85,87,5,153,0,0,86,
-		88,3,6,3,0,87,86,1,0,0,0,87,88,1,0,0,0,88,89,1,0,0,0,89,93,5,154,0,0,90,
-		92,3,12,6,0,91,90,1,0,0,0,92,95,1,0,0,0,93,91,1,0,0,0,93,94,1,0,0,0,94,
-		96,1,0,0,0,95,93,1,0,0,0,96,97,5,64,0,0,97,5,1,0,0,0,98,109,3,10,5,0,99,
-		109,3,8,4,0,100,101,3,10,5,0,101,102,5,159,0,0,102,103,3,6,3,0,103,109,
-		1,0,0,0,104,105,3,8,4,0,105,106,5,159,0,0,106,107,3,6,3,0,107,109,1,0,
-		0,0,108,98,1,0,0,0,108,99,1,0,0,0,108,100,1,0,0,0,108,104,1,0,0,0,109,
-		7,1,0,0,0,110,111,5,67,0,0,111,112,3,10,5,0,112,9,1,0,0,0,113,114,3,46,
-		23,0,114,115,5,163,0,0,115,11,1,0,0,0,116,120,3,14,7,0,117,120,3,16,8,
-		0,118,120,3,18,9,0,119,116,1,0,0,0,119,117,1,0,0,0,119,118,1,0,0,0,120,
-		13,1,0,0,0,121,122,5,11,0,0,122,123,5,153,0,0,123,124,3,44,22,0,124,125,
-		5,154,0,0,125,128,3,12,6,0,126,127,5,12,0,0,127,129,3,12,6,0,128,126,1,
-		0,0,0,128,129,1,0,0,0,129,15,1,0,0,0,130,131,5,2,0,0,131,132,5,153,0,0,
-		132,133,3,44,22,0,133,134,5,154,0,0,134,135,3,12,6,0,135,17,1,0,0,0,136,
-		137,5,14,0,0,137,151,5,163,0,0,138,139,5,15,0,0,139,151,5,163,0,0,140,
-		141,5,16,0,0,141,151,5,163,0,0,142,143,5,17,0,0,143,151,5,163,0,0,144,
-		145,5,18,0,0,145,151,5,163,0,0,146,148,5,24,0,0,147,149,3,44,22,0,148,
-		147,1,0,0,0,148,149,1,0,0,0,149,151,1,0,0,0,150,136,1,0,0,0,150,138,1,
-		0,0,0,150,140,1,0,0,0,150,142,1,0,0,0,150,144,1,0,0,0,150,146,1,0,0,0,
-		151,19,1,0,0,0,152,159,5,163,0,0,153,159,3,48,24,0,154,155,5,153,0,0,155,
-		156,3,44,22,0,156,157,5,154,0,0,157,159,1,0,0,0,158,152,1,0,0,0,158,153,
-		1,0,0,0,158,154,1,0,0,0,159,21,1,0,0,0,160,161,5,41,0,0,161,165,3,20,10,
-		0,162,163,5,45,0,0,163,165,3,20,10,0,164,160,1,0,0,0,164,162,1,0,0,0,165,
-		23,1,0,0,0,166,171,3,22,11,0,167,168,7,0,0,0,168,170,3,22,11,0,169,167,
-		1,0,0,0,170,173,1,0,0,0,171,169,1,0,0,0,171,172,1,0,0,0,172,25,1,0,0,0,
-		173,171,1,0,0,0,174,179,3,24,12,0,175,176,7,1,0,0,176,178,3,24,12,0,177,
-		175,1,0,0,0,178,181,1,0,0,0,179,177,1,0,0,0,179,180,1,0,0,0,180,27,1,0,
-		0,0,181,179,1,0,0,0,182,187,3,26,13,0,183,184,5,46,0,0,184,186,3,26,13,
-		0,185,183,1,0,0,0,186,189,1,0,0,0,187,185,1,0,0,0,187,188,1,0,0,0,188,
-		29,1,0,0,0,189,187,1,0,0,0,190,195,3,28,14,0,191,192,5,48,0,0,192,194,
-		3,28,14,0,193,191,1,0,0,0,194,197,1,0,0,0,195,193,1,0,0,0,195,196,1,0,
-		0,0,196,31,1,0,0,0,197,195,1,0,0,0,198,203,3,30,15,0,199,200,5,47,0,0,
-		200,202,3,30,15,0,201,199,1,0,0,0,202,205,1,0,0,0,203,201,1,0,0,0,203,
-		204,1,0,0,0,204,33,1,0,0,0,205,203,1,0,0,0,206,211,3,32,16,0,207,208,5,
-		42,0,0,208,210,3,32,16,0,209,207,1,0,0,0,210,213,1,0,0,0,211,209,1,0,0,
-		0,211,212,1,0,0,0,212,35,1,0,0,0,213,211,1,0,0,0,214,219,3,34,17,0,215,
-		216,5,44,0,0,216,218,3,34,17,0,217,215,1,0,0,0,218,221,1,0,0,0,219,217,
-		1,0,0,0,219,220,1,0,0,0,220,37,1,0,0,0,221,219,1,0,0,0,222,227,3,36,18,
-		0,223,224,5,43,0,0,224,226,3,36,18,0,225,223,1,0,0,0,226,229,1,0,0,0,227,
-		225,1,0,0,0,227,228,1,0,0,0,228,39,1,0,0,0,229,227,1,0,0,0,230,235,3,38,
-		19,0,231,232,5,49,0,0,232,234,3,38,19,0,233,231,1,0,0,0,234,237,1,0,0,
-		0,235,233,1,0,0,0,235,236,1,0,0,0,236,41,1,0,0,0,237,235,1,0,0,0,238,243,
-		3,40,20,0,239,240,7,2,0,0,240,242,3,40,20,0,241,239,1,0,0,0,242,245,1,
-		0,0,0,243,241,1,0,0,0,243,244,1,0,0,0,244,43,1,0,0,0,245,243,1,0,0,0,246,
-		247,3,42,21,0,247,45,1,0,0,0,248,249,7,3,0,0,249,47,1,0,0,0,250,251,7,
-		4,0,0,251,49,1,0,0,0,252,253,5,131,0,0,253,254,5,1,0,0,254,255,5,169,0,
-		0,255,51,1,0,0,0,256,257,5,117,0,0,257,258,5,1,0,0,258,259,5,169,0,0,259,
-		53,1,0,0,0,260,261,5,123,0,0,261,262,5,155,0,0,262,263,3,62,31,0,263,264,
-		5,156,0,0,264,265,5,1,0,0,265,266,5,169,0,0,266,55,1,0,0,0,267,268,5,132,
-		0,0,268,269,5,155,0,0,269,270,3,62,31,0,270,271,5,156,0,0,271,272,5,1,
-		0,0,272,273,5,169,0,0,273,57,1,0,0,0,274,275,5,139,0,0,275,276,5,1,0,0,
-		276,277,5,169,0,0,277,59,1,0,0,0,278,279,5,133,0,0,279,280,5,155,0,0,280,
-		281,3,64,32,0,281,282,5,156,0,0,282,283,5,1,0,0,283,284,5,169,0,0,284,
-		61,1,0,0,0,285,288,3,64,32,0,286,288,3,66,33,0,287,285,1,0,0,0,287,286,
-		1,0,0,0,288,63,1,0,0,0,289,290,3,68,34,0,290,291,5,168,0,0,291,65,1,0,
-		0,0,292,293,5,130,0,0,293,294,5,153,0,0,294,295,5,168,0,0,295,299,5,154,
-		0,0,296,297,5,149,0,0,297,299,5,168,0,0,298,292,1,0,0,0,298,296,1,0,0,
-		0,299,67,1,0,0,0,300,301,7,5,0,0,301,69,1,0,0,0,23,73,77,87,93,108,119,
-		128,148,150,158,164,171,179,187,195,203,211,219,227,235,243,287,298
+		2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,2,33,7,33,2,34,7,34,2,35,7,35,
+		2,36,7,36,2,37,7,37,2,38,7,38,2,39,7,39,2,40,7,40,2,41,7,41,2,42,7,42,
+		2,43,7,43,2,44,7,44,2,45,7,45,2,46,7,46,2,47,7,47,2,48,7,48,2,49,7,49,
+		2,50,7,50,2,51,7,51,2,52,7,52,2,53,7,53,2,54,7,54,2,55,7,55,2,56,7,56,
+		2,57,7,57,2,58,7,58,2,59,7,59,2,60,7,60,2,61,7,61,2,62,7,62,2,63,7,63,
+		2,64,7,64,2,65,7,65,2,66,7,66,2,67,7,67,2,68,7,68,1,0,5,0,140,8,0,10,0,
+		12,0,143,9,0,1,0,5,0,146,8,0,10,0,12,0,149,9,0,1,0,3,0,152,8,0,1,0,1,0,
+		1,1,3,1,157,8,1,1,1,1,1,1,2,3,2,162,8,2,1,2,1,2,1,3,1,3,1,3,3,3,169,8,
+		3,1,3,5,3,172,8,3,10,3,12,3,175,9,3,1,3,5,3,178,8,3,10,3,12,3,181,9,3,
+		1,3,1,3,1,4,1,4,1,4,1,4,5,4,189,8,4,10,4,12,4,192,9,4,1,4,1,4,1,5,1,5,
+		3,5,198,8,5,1,6,1,6,1,6,1,6,3,6,204,8,6,1,7,1,7,1,7,1,7,3,7,210,8,7,1,
+		8,1,8,1,8,3,8,215,8,8,1,9,1,9,1,9,1,9,1,9,1,10,1,10,4,10,224,8,10,11,10,
+		12,10,225,1,10,1,10,3,10,230,8,10,1,11,1,11,1,11,1,11,1,11,5,11,237,8,
+		11,10,11,12,11,240,9,11,1,12,1,12,1,12,3,12,245,8,12,1,13,1,13,3,13,249,
+		8,13,1,13,1,13,5,13,253,8,13,10,13,12,13,256,9,13,1,13,1,13,1,14,1,14,
+		3,14,262,8,14,1,15,1,15,1,16,1,16,1,16,3,16,269,8,16,1,17,1,17,3,17,273,
+		8,17,1,17,3,17,276,8,17,1,17,3,17,279,8,17,1,17,1,17,1,18,1,18,3,18,285,
+		8,18,1,19,1,19,3,19,289,8,19,1,19,1,19,3,19,293,8,19,1,20,1,20,1,20,1,
+		20,3,20,299,8,20,1,20,1,20,3,20,303,8,20,1,20,1,20,1,21,1,21,1,21,1,21,
+		1,21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,318,8,21,1,22,1,22,1,22,1,22,1,
+		22,1,22,4,22,326,8,22,11,22,12,22,327,1,22,3,22,331,8,22,1,23,1,23,1,23,
+		5,23,336,8,23,10,23,12,23,339,9,23,1,23,1,23,5,23,343,8,23,10,23,12,23,
+		346,9,23,3,23,348,8,23,1,23,1,23,1,24,1,24,1,24,1,24,1,24,1,24,4,24,358,
+		8,24,11,24,12,24,359,1,24,1,24,3,24,364,8,24,1,25,1,25,1,25,1,25,3,25,
+		370,8,25,1,26,1,26,1,26,5,26,375,8,26,10,26,12,26,378,9,26,1,26,1,26,1,
+		27,1,27,1,27,1,27,1,27,1,27,1,27,5,27,389,8,27,10,27,12,27,392,9,27,1,
+		27,1,27,1,28,1,28,5,28,398,8,28,10,28,12,28,401,9,28,1,28,1,28,1,28,1,
+		29,1,29,5,29,408,8,29,10,29,12,29,411,9,29,1,29,1,29,1,30,1,30,1,30,3,
+		30,418,8,30,1,30,1,30,1,30,1,30,1,30,1,30,3,30,426,8,30,3,30,428,8,30,
+		1,31,3,31,431,8,31,1,31,1,31,1,31,3,31,436,8,31,1,31,1,31,1,31,3,31,441,
+		8,31,1,31,1,31,1,31,3,31,446,8,31,1,31,1,31,1,31,3,31,451,8,31,1,31,3,
+		31,454,8,31,1,32,1,32,1,32,1,33,1,33,1,34,1,34,1,35,1,35,1,35,3,35,466,
+		8,35,1,36,1,36,1,36,5,36,471,8,36,10,36,12,36,474,9,36,1,37,1,37,1,37,
+		5,37,479,8,37,10,37,12,37,482,9,37,1,38,1,38,1,38,5,38,487,8,38,10,38,
+		12,38,490,9,38,1,39,1,39,1,39,5,39,495,8,39,10,39,12,39,498,9,39,1,40,
+		1,40,1,40,5,40,503,8,40,10,40,12,40,506,9,40,1,41,1,41,1,41,5,41,511,8,
+		41,10,41,12,41,514,9,41,1,42,1,42,1,42,5,42,519,8,42,10,42,12,42,522,9,
+		42,1,43,1,43,1,43,5,43,527,8,43,10,43,12,43,530,9,43,1,44,1,44,1,44,5,
+		44,535,8,44,10,44,12,44,538,9,44,1,45,3,45,541,8,45,1,45,1,45,1,46,1,46,
+		1,46,1,46,1,46,1,46,1,46,1,46,1,46,3,46,554,8,46,1,47,1,47,1,47,1,47,1,
+		47,3,47,561,8,47,1,48,3,48,564,8,48,1,48,1,48,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,
+		1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,1,49,3,49,836,8,49,1,
+		50,1,50,1,50,1,50,1,50,1,50,3,50,844,8,50,1,51,1,51,1,51,1,51,1,51,1,51,
+		3,51,852,8,51,1,52,1,52,3,52,856,8,52,1,53,1,53,1,54,1,54,1,54,1,54,1,
+		54,1,54,3,54,866,8,54,1,55,1,55,1,55,3,55,871,8,55,1,56,1,56,3,56,875,
+		8,56,1,57,1,57,3,57,879,8,57,1,57,1,57,5,57,883,8,57,10,57,12,57,886,9,
+		57,1,57,1,57,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,
+		58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,1,58,3,58,1068,
+		8,58,1,59,1,59,1,59,1,59,1,59,1,59,5,59,1076,8,59,10,59,12,59,1079,9,59,
+		1,59,1,59,3,59,1083,8,59,3,59,1085,8,59,1,60,1,60,1,60,1,60,1,61,1,61,
+		1,61,1,61,1,62,1,62,1,62,1,62,1,62,1,62,1,62,1,63,1,63,1,63,1,63,1,63,
+		1,63,1,63,1,64,1,64,1,64,1,64,1,65,1,65,1,65,1,65,1,65,1,65,1,65,1,66,
+		1,66,1,67,1,67,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,
+		1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,
+		1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,
+		1,68,1,68,1,68,1,68,1,68,1,68,3,68,1169,8,68,1,68,1,68,1,68,1,68,1,68,
+		1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,
+		1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,
+		1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,
+		1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,1,68,3,68,1230,
+		8,68,1,68,0,0,69,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,
+		40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,
+		88,90,92,94,96,98,100,102,104,106,108,110,112,114,116,118,120,122,124,
+		126,128,130,132,134,136,0,8,2,0,800,800,827,827,1,0,53,58,1,0,48,49,1,
+		0,50,52,2,0,59,59,63,63,1,0,5,6,2,0,90,90,174,174,2,0,823,823,827,827,
+		1724,0,151,1,0,0,0,2,156,1,0,0,0,4,161,1,0,0,0,6,165,1,0,0,0,8,184,1,0,
+		0,0,10,197,1,0,0,0,12,199,1,0,0,0,14,205,1,0,0,0,16,214,1,0,0,0,18,216,
+		1,0,0,0,20,229,1,0,0,0,22,231,1,0,0,0,24,241,1,0,0,0,26,246,1,0,0,0,28,
+		261,1,0,0,0,30,263,1,0,0,0,32,265,1,0,0,0,34,270,1,0,0,0,36,282,1,0,0,
+		0,38,286,1,0,0,0,40,294,1,0,0,0,42,317,1,0,0,0,44,330,1,0,0,0,46,332,1,
+		0,0,0,48,351,1,0,0,0,50,369,1,0,0,0,52,371,1,0,0,0,54,381,1,0,0,0,56,395,
+		1,0,0,0,58,405,1,0,0,0,60,427,1,0,0,0,62,453,1,0,0,0,64,455,1,0,0,0,66,
+		458,1,0,0,0,68,460,1,0,0,0,70,462,1,0,0,0,72,467,1,0,0,0,74,475,1,0,0,
+		0,76,483,1,0,0,0,78,491,1,0,0,0,80,499,1,0,0,0,82,507,1,0,0,0,84,515,1,
+		0,0,0,86,523,1,0,0,0,88,531,1,0,0,0,90,540,1,0,0,0,92,553,1,0,0,0,94,560,
+		1,0,0,0,96,563,1,0,0,0,98,835,1,0,0,0,100,843,1,0,0,0,102,851,1,0,0,0,
+		104,855,1,0,0,0,106,857,1,0,0,0,108,865,1,0,0,0,110,870,1,0,0,0,112,872,
+		1,0,0,0,114,876,1,0,0,0,116,1067,1,0,0,0,118,1069,1,0,0,0,120,1086,1,0,
+		0,0,122,1090,1,0,0,0,124,1094,1,0,0,0,126,1101,1,0,0,0,128,1108,1,0,0,
+		0,130,1112,1,0,0,0,132,1119,1,0,0,0,134,1121,1,0,0,0,136,1229,1,0,0,0,
+		138,140,3,2,1,0,139,138,1,0,0,0,140,143,1,0,0,0,141,139,1,0,0,0,141,142,
+		1,0,0,0,142,147,1,0,0,0,143,141,1,0,0,0,144,146,3,4,2,0,145,144,1,0,0,
+		0,146,149,1,0,0,0,147,145,1,0,0,0,147,148,1,0,0,0,148,152,1,0,0,0,149,
+		147,1,0,0,0,150,152,3,6,3,0,151,141,1,0,0,0,151,150,1,0,0,0,152,153,1,
+		0,0,0,153,154,5,0,0,1,154,1,1,0,0,0,155,157,5,800,0,0,156,155,1,0,0,0,
+		156,157,1,0,0,0,157,158,1,0,0,0,158,159,3,16,8,0,159,3,1,0,0,0,160,162,
+		5,800,0,0,161,160,1,0,0,0,161,162,1,0,0,0,162,163,1,0,0,0,163,164,3,44,
+		22,0,164,5,1,0,0,0,165,166,5,81,0,0,166,168,5,827,0,0,167,169,3,8,4,0,
+		168,167,1,0,0,0,168,169,1,0,0,0,169,173,1,0,0,0,170,172,3,2,1,0,171,170,
+		1,0,0,0,172,175,1,0,0,0,173,171,1,0,0,0,173,174,1,0,0,0,174,179,1,0,0,
+		0,175,173,1,0,0,0,176,178,3,4,2,0,177,176,1,0,0,0,178,181,1,0,0,0,179,
+		177,1,0,0,0,179,180,1,0,0,0,180,182,1,0,0,0,181,179,1,0,0,0,182,183,5,
+		82,0,0,183,7,1,0,0,0,184,185,5,792,0,0,185,190,3,10,5,0,186,187,5,799,
+		0,0,187,189,3,10,5,0,188,186,1,0,0,0,189,192,1,0,0,0,190,188,1,0,0,0,190,
+		191,1,0,0,0,191,193,1,0,0,0,192,190,1,0,0,0,193,194,5,793,0,0,194,9,1,
+		0,0,0,195,198,3,12,6,0,196,198,3,14,7,0,197,195,1,0,0,0,197,196,1,0,0,
+		0,198,11,1,0,0,0,199,200,3,42,21,0,200,203,5,827,0,0,201,202,5,47,0,0,
+		202,204,3,68,34,0,203,201,1,0,0,0,203,204,1,0,0,0,204,13,1,0,0,0,205,206,
+		5,85,0,0,206,207,3,42,21,0,207,209,5,827,0,0,208,210,3,34,17,0,209,208,
+		1,0,0,0,209,210,1,0,0,0,210,15,1,0,0,0,211,215,3,18,9,0,212,215,3,22,11,
+		0,213,215,3,24,12,0,214,211,1,0,0,0,214,212,1,0,0,0,214,213,1,0,0,0,215,
+		17,1,0,0,0,216,217,5,86,0,0,217,218,5,827,0,0,218,219,5,87,0,0,219,220,
+		3,20,10,0,220,19,1,0,0,0,221,230,3,68,34,0,222,224,3,98,49,0,223,222,1,
+		0,0,0,224,225,1,0,0,0,225,223,1,0,0,0,225,226,1,0,0,0,226,230,1,0,0,0,
+		227,230,3,110,55,0,228,230,3,62,31,0,229,221,1,0,0,0,229,223,1,0,0,0,229,
+		227,1,0,0,0,229,228,1,0,0,0,230,21,1,0,0,0,231,232,5,84,0,0,232,233,3,
+		42,21,0,233,238,3,38,19,0,234,235,5,799,0,0,235,237,3,38,19,0,236,234,
+		1,0,0,0,237,240,1,0,0,0,238,236,1,0,0,0,238,239,1,0,0,0,239,23,1,0,0,0,
+		240,238,1,0,0,0,241,242,5,83,0,0,242,244,5,827,0,0,243,245,3,26,13,0,244,
+		243,1,0,0,0,244,245,1,0,0,0,245,25,1,0,0,0,246,248,5,792,0,0,247,249,3,
+		28,14,0,248,247,1,0,0,0,248,249,1,0,0,0,249,254,1,0,0,0,250,251,5,799,
+		0,0,251,253,3,28,14,0,252,250,1,0,0,0,253,256,1,0,0,0,254,252,1,0,0,0,
+		254,255,1,0,0,0,255,257,1,0,0,0,256,254,1,0,0,0,257,258,5,793,0,0,258,
+		27,1,0,0,0,259,262,3,30,15,0,260,262,3,32,16,0,261,259,1,0,0,0,261,260,
+		1,0,0,0,262,29,1,0,0,0,263,264,3,42,21,0,264,31,1,0,0,0,265,266,5,85,0,
+		0,266,268,3,42,21,0,267,269,3,34,17,0,268,267,1,0,0,0,268,269,1,0,0,0,
+		269,33,1,0,0,0,270,272,5,794,0,0,271,273,3,68,34,0,272,271,1,0,0,0,272,
+		273,1,0,0,0,273,275,1,0,0,0,274,276,3,36,18,0,275,274,1,0,0,0,275,276,
+		1,0,0,0,276,278,1,0,0,0,277,279,3,36,18,0,278,277,1,0,0,0,278,279,1,0,
+		0,0,279,280,1,0,0,0,280,281,5,795,0,0,281,35,1,0,0,0,282,284,5,799,0,0,
+		283,285,3,68,34,0,284,283,1,0,0,0,284,285,1,0,0,0,285,37,1,0,0,0,286,288,
+		5,827,0,0,287,289,3,40,20,0,288,287,1,0,0,0,288,289,1,0,0,0,289,292,1,
+		0,0,0,290,291,5,47,0,0,291,293,3,68,34,0,292,290,1,0,0,0,292,293,1,0,0,
+		0,293,39,1,0,0,0,294,295,5,794,0,0,295,298,3,68,34,0,296,297,5,799,0,0,
+		297,299,3,68,34,0,298,296,1,0,0,0,298,299,1,0,0,0,299,302,1,0,0,0,300,
+		301,5,799,0,0,301,303,3,68,34,0,302,300,1,0,0,0,302,303,1,0,0,0,303,304,
+		1,0,0,0,304,305,5,795,0,0,305,41,1,0,0,0,306,318,5,234,0,0,307,318,5,235,
+		0,0,308,318,5,236,0,0,309,318,5,237,0,0,310,311,5,238,0,0,311,312,5,794,
+		0,0,312,313,3,68,34,0,313,314,5,795,0,0,314,318,1,0,0,0,315,318,5,239,
+		0,0,316,318,5,240,0,0,317,306,1,0,0,0,317,307,1,0,0,0,317,308,1,0,0,0,
+		317,309,1,0,0,0,317,310,1,0,0,0,317,315,1,0,0,0,317,316,1,0,0,0,318,43,
+		1,0,0,0,319,331,3,46,23,0,320,331,3,48,24,0,321,331,3,50,25,0,322,331,
+		3,60,30,0,323,331,3,68,34,0,324,326,3,98,49,0,325,324,1,0,0,0,326,327,
+		1,0,0,0,327,325,1,0,0,0,327,328,1,0,0,0,328,331,1,0,0,0,329,331,3,110,
+		55,0,330,319,1,0,0,0,330,320,1,0,0,0,330,321,1,0,0,0,330,322,1,0,0,0,330,
+		323,1,0,0,0,330,325,1,0,0,0,330,329,1,0,0,0,331,45,1,0,0,0,332,333,5,22,
+		0,0,333,337,3,68,34,0,334,336,3,4,2,0,335,334,1,0,0,0,336,339,1,0,0,0,
+		337,335,1,0,0,0,337,338,1,0,0,0,338,347,1,0,0,0,339,337,1,0,0,0,340,344,
+		5,23,0,0,341,343,3,4,2,0,342,341,1,0,0,0,343,346,1,0,0,0,344,342,1,0,0,
+		0,344,345,1,0,0,0,345,348,1,0,0,0,346,344,1,0,0,0,347,340,1,0,0,0,347,
+		348,1,0,0,0,348,349,1,0,0,0,349,350,5,24,0,0,350,47,1,0,0,0,351,352,5,
+		25,0,0,352,353,3,68,34,0,353,357,5,26,0,0,354,355,3,94,47,0,355,356,3,
+		62,31,0,356,358,1,0,0,0,357,354,1,0,0,0,358,359,1,0,0,0,359,357,1,0,0,
+		0,359,360,1,0,0,0,360,363,1,0,0,0,361,362,5,27,0,0,362,364,3,62,31,0,363,
+		361,1,0,0,0,363,364,1,0,0,0,364,49,1,0,0,0,365,370,3,52,26,0,366,370,3,
+		54,27,0,367,370,3,56,28,0,368,370,3,58,29,0,369,365,1,0,0,0,369,366,1,
+		0,0,0,369,367,1,0,0,0,369,368,1,0,0,0,370,51,1,0,0,0,371,372,5,12,0,0,
+		372,376,3,68,34,0,373,375,3,4,2,0,374,373,1,0,0,0,375,378,1,0,0,0,376,
+		374,1,0,0,0,376,377,1,0,0,0,377,379,1,0,0,0,378,376,1,0,0,0,379,380,5,
+		13,0,0,380,53,1,0,0,0,381,382,5,14,0,0,382,383,5,827,0,0,383,384,5,47,
+		0,0,384,385,3,68,34,0,385,386,5,16,0,0,386,390,3,68,34,0,387,389,3,4,2,
+		0,388,387,1,0,0,0,389,392,1,0,0,0,390,388,1,0,0,0,390,391,1,0,0,0,391,
+		393,1,0,0,0,392,390,1,0,0,0,393,394,5,15,0,0,394,55,1,0,0,0,395,399,5,
+		19,0,0,396,398,3,4,2,0,397,396,1,0,0,0,398,401,1,0,0,0,399,397,1,0,0,0,
+		399,400,1,0,0,0,400,402,1,0,0,0,401,399,1,0,0,0,402,403,5,21,0,0,403,404,
+		3,68,34,0,404,57,1,0,0,0,405,409,5,17,0,0,406,408,3,4,2,0,407,406,1,0,
+		0,0,408,411,1,0,0,0,409,407,1,0,0,0,409,410,1,0,0,0,410,412,1,0,0,0,411,
+		409,1,0,0,0,412,413,5,18,0,0,413,59,1,0,0,0,414,428,3,62,31,0,415,417,
+		5,40,0,0,416,418,5,827,0,0,417,416,1,0,0,0,417,418,1,0,0,0,418,419,1,0,
+		0,0,419,420,5,44,0,0,420,421,5,827,0,0,421,422,5,16,0,0,422,428,5,827,
+		0,0,423,425,5,39,0,0,424,426,3,68,34,0,425,424,1,0,0,0,425,426,1,0,0,0,
+		426,428,1,0,0,0,427,414,1,0,0,0,427,415,1,0,0,0,427,423,1,0,0,0,428,61,
+		1,0,0,0,429,431,3,64,32,0,430,429,1,0,0,0,430,431,1,0,0,0,431,432,1,0,
+		0,0,432,433,5,28,0,0,433,454,3,66,33,0,434,436,3,64,32,0,435,434,1,0,0,
+		0,435,436,1,0,0,0,436,437,1,0,0,0,437,438,5,29,0,0,438,454,3,66,33,0,439,
+		441,3,64,32,0,440,439,1,0,0,0,440,441,1,0,0,0,441,442,1,0,0,0,442,443,
+		5,30,0,0,443,454,3,66,33,0,444,446,3,64,32,0,445,444,1,0,0,0,445,446,1,
+		0,0,0,446,447,1,0,0,0,447,448,5,31,0,0,448,454,3,66,33,0,449,451,3,64,
+		32,0,450,449,1,0,0,0,450,451,1,0,0,0,451,452,1,0,0,0,452,454,5,32,0,0,
+		453,430,1,0,0,0,453,435,1,0,0,0,453,440,1,0,0,0,453,445,1,0,0,0,453,450,
+		1,0,0,0,454,63,1,0,0,0,455,456,5,22,0,0,456,457,3,68,34,0,457,65,1,0,0,
+		0,458,459,7,0,0,0,459,67,1,0,0,0,460,461,3,70,35,0,461,69,1,0,0,0,462,
+		465,3,72,36,0,463,464,7,1,0,0,464,466,3,72,36,0,465,463,1,0,0,0,465,466,
+		1,0,0,0,466,71,1,0,0,0,467,472,3,74,37,0,468,469,5,67,0,0,469,471,3,74,
+		37,0,470,468,1,0,0,0,471,474,1,0,0,0,472,470,1,0,0,0,472,473,1,0,0,0,473,
+		73,1,0,0,0,474,472,1,0,0,0,475,480,3,76,38,0,476,477,5,61,0,0,477,479,
+		3,76,38,0,478,476,1,0,0,0,479,482,1,0,0,0,480,478,1,0,0,0,480,481,1,0,
+		0,0,481,75,1,0,0,0,482,480,1,0,0,0,483,488,3,78,39,0,484,485,5,62,0,0,
+		485,487,3,78,39,0,486,484,1,0,0,0,487,490,1,0,0,0,488,486,1,0,0,0,488,
+		489,1,0,0,0,489,77,1,0,0,0,490,488,1,0,0,0,491,496,3,80,40,0,492,493,5,
+		60,0,0,493,495,3,80,40,0,494,492,1,0,0,0,495,498,1,0,0,0,496,494,1,0,0,
+		0,496,497,1,0,0,0,497,79,1,0,0,0,498,496,1,0,0,0,499,504,3,82,41,0,500,
+		501,5,65,0,0,501,503,3,82,41,0,502,500,1,0,0,0,503,506,1,0,0,0,504,502,
+		1,0,0,0,504,505,1,0,0,0,505,81,1,0,0,0,506,504,1,0,0,0,507,512,3,84,42,
+		0,508,509,5,66,0,0,509,511,3,84,42,0,510,508,1,0,0,0,511,514,1,0,0,0,512,
+		510,1,0,0,0,512,513,1,0,0,0,513,83,1,0,0,0,514,512,1,0,0,0,515,520,3,86,
+		43,0,516,517,5,64,0,0,517,519,3,86,43,0,518,516,1,0,0,0,519,522,1,0,0,
+		0,520,518,1,0,0,0,520,521,1,0,0,0,521,85,1,0,0,0,522,520,1,0,0,0,523,528,
+		3,88,44,0,524,525,7,2,0,0,525,527,3,88,44,0,526,524,1,0,0,0,527,530,1,
+		0,0,0,528,526,1,0,0,0,528,529,1,0,0,0,529,87,1,0,0,0,530,528,1,0,0,0,531,
+		536,3,90,45,0,532,533,7,3,0,0,533,535,3,90,45,0,534,532,1,0,0,0,535,538,
+		1,0,0,0,536,534,1,0,0,0,536,537,1,0,0,0,537,89,1,0,0,0,538,536,1,0,0,0,
+		539,541,7,4,0,0,540,539,1,0,0,0,540,541,1,0,0,0,541,542,1,0,0,0,542,543,
+		3,92,46,0,543,91,1,0,0,0,544,554,5,827,0,0,545,554,5,821,0,0,546,554,5,
+		825,0,0,547,554,3,94,47,0,548,554,3,132,66,0,549,550,5,792,0,0,550,551,
+		3,68,34,0,551,552,5,793,0,0,552,554,1,0,0,0,553,544,1,0,0,0,553,545,1,
+		0,0,0,553,546,1,0,0,0,553,547,1,0,0,0,553,548,1,0,0,0,553,549,1,0,0,0,
+		554,93,1,0,0,0,555,561,3,96,48,0,556,561,5,8,0,0,557,561,5,7,0,0,558,561,
+		5,11,0,0,559,561,5,9,0,0,560,555,1,0,0,0,560,556,1,0,0,0,560,557,1,0,0,
+		0,560,558,1,0,0,0,560,559,1,0,0,0,561,95,1,0,0,0,562,564,5,49,0,0,563,
+		562,1,0,0,0,563,564,1,0,0,0,564,565,1,0,0,0,565,566,7,5,0,0,566,97,1,0,
+		0,0,567,836,5,827,0,0,568,836,5,626,0,0,569,836,5,651,0,0,570,836,5,628,
+		0,0,571,836,3,100,50,0,572,836,5,528,0,0,573,836,5,529,0,0,574,836,5,530,
+		0,0,575,836,5,531,0,0,576,836,5,532,0,0,577,836,5,533,0,0,578,836,5,534,
+		0,0,579,836,5,535,0,0,580,836,5,536,0,0,581,836,5,537,0,0,582,836,5,538,
+		0,0,583,836,5,539,0,0,584,836,5,540,0,0,585,836,5,541,0,0,586,836,5,542,
+		0,0,587,836,5,543,0,0,588,836,5,544,0,0,589,836,5,545,0,0,590,836,5,546,
+		0,0,591,836,5,547,0,0,592,836,5,548,0,0,593,836,5,549,0,0,594,836,5,550,
+		0,0,595,836,5,551,0,0,596,836,5,552,0,0,597,836,5,553,0,0,598,836,5,554,
+		0,0,599,836,5,555,0,0,600,836,5,556,0,0,601,836,5,557,0,0,602,836,5,558,
+		0,0,603,836,5,559,0,0,604,836,5,560,0,0,605,836,5,561,0,0,606,836,5,562,
+		0,0,607,836,5,563,0,0,608,836,5,564,0,0,609,836,5,565,0,0,610,836,5,566,
+		0,0,611,836,5,567,0,0,612,836,5,568,0,0,613,836,5,569,0,0,614,836,5,570,
+		0,0,615,836,5,571,0,0,616,836,5,572,0,0,617,836,5,573,0,0,618,836,5,574,
+		0,0,619,836,5,575,0,0,620,836,5,576,0,0,621,836,5,577,0,0,622,836,5,578,
+		0,0,623,836,5,579,0,0,624,836,5,580,0,0,625,836,5,581,0,0,626,836,5,582,
+		0,0,627,836,5,583,0,0,628,836,5,584,0,0,629,836,5,585,0,0,630,836,5,586,
+		0,0,631,836,5,587,0,0,632,836,5,588,0,0,633,836,5,589,0,0,634,836,5,590,
+		0,0,635,836,5,591,0,0,636,836,5,592,0,0,637,836,5,593,0,0,638,836,5,594,
+		0,0,639,836,5,595,0,0,640,836,5,596,0,0,641,836,5,597,0,0,642,836,5,598,
+		0,0,643,836,5,599,0,0,644,836,5,600,0,0,645,836,5,601,0,0,646,836,5,602,
+		0,0,647,836,5,603,0,0,648,836,5,604,0,0,649,836,5,605,0,0,650,836,5,606,
+		0,0,651,836,5,607,0,0,652,836,5,608,0,0,653,654,5,609,0,0,654,655,5,47,
+		0,0,655,836,3,68,34,0,656,836,5,610,0,0,657,836,5,611,0,0,658,836,5,612,
+		0,0,659,836,5,613,0,0,660,836,5,614,0,0,661,836,5,615,0,0,662,836,5,616,
+		0,0,663,836,5,617,0,0,664,836,5,618,0,0,665,836,5,619,0,0,666,836,5,620,
+		0,0,667,836,5,621,0,0,668,836,5,622,0,0,669,836,5,623,0,0,670,836,5,624,
+		0,0,671,836,5,625,0,0,672,836,5,627,0,0,673,836,5,629,0,0,674,836,5,630,
+		0,0,675,836,5,631,0,0,676,836,5,632,0,0,677,836,5,633,0,0,678,836,5,634,
+		0,0,679,836,5,635,0,0,680,836,5,636,0,0,681,836,5,637,0,0,682,836,5,638,
+		0,0,683,836,5,639,0,0,684,836,5,640,0,0,685,836,5,641,0,0,686,836,5,642,
+		0,0,687,836,5,643,0,0,688,836,5,644,0,0,689,836,5,645,0,0,690,836,5,646,
+		0,0,691,836,5,647,0,0,692,836,5,648,0,0,693,836,5,649,0,0,694,836,5,650,
+		0,0,695,836,5,652,0,0,696,836,5,653,0,0,697,836,5,654,0,0,698,836,5,655,
+		0,0,699,836,5,656,0,0,700,836,5,657,0,0,701,836,5,658,0,0,702,836,5,659,
+		0,0,703,836,5,660,0,0,704,836,5,661,0,0,705,836,5,662,0,0,706,836,5,663,
+		0,0,707,836,5,664,0,0,708,836,5,665,0,0,709,836,5,666,0,0,710,836,5,667,
+		0,0,711,836,5,668,0,0,712,836,5,669,0,0,713,836,5,670,0,0,714,836,5,671,
+		0,0,715,836,5,672,0,0,716,836,5,673,0,0,717,836,5,674,0,0,718,836,5,675,
+		0,0,719,836,5,676,0,0,720,836,5,677,0,0,721,836,5,678,0,0,722,836,5,679,
+		0,0,723,836,5,680,0,0,724,836,5,681,0,0,725,836,5,682,0,0,726,836,5,683,
+		0,0,727,836,5,684,0,0,728,836,5,685,0,0,729,836,5,686,0,0,730,836,5,687,
+		0,0,731,836,5,688,0,0,732,836,5,689,0,0,733,836,5,690,0,0,734,836,5,691,
+		0,0,735,836,5,692,0,0,736,836,5,693,0,0,737,836,5,694,0,0,738,836,5,695,
+		0,0,739,836,5,696,0,0,740,836,5,697,0,0,741,836,5,698,0,0,742,836,5,699,
+		0,0,743,836,5,700,0,0,744,836,5,701,0,0,745,836,5,702,0,0,746,836,5,703,
+		0,0,747,836,5,704,0,0,748,836,5,705,0,0,749,836,5,706,0,0,750,836,5,707,
+		0,0,751,836,5,708,0,0,752,836,5,709,0,0,753,836,5,710,0,0,754,836,5,711,
+		0,0,755,836,5,712,0,0,756,836,5,713,0,0,757,836,5,714,0,0,758,836,5,715,
+		0,0,759,836,5,716,0,0,760,836,5,717,0,0,761,836,5,718,0,0,762,836,5,719,
+		0,0,763,836,5,720,0,0,764,836,5,721,0,0,765,836,5,722,0,0,766,836,5,723,
+		0,0,767,836,5,724,0,0,768,836,5,725,0,0,769,836,5,726,0,0,770,836,5,727,
+		0,0,771,836,5,728,0,0,772,836,5,729,0,0,773,836,5,730,0,0,774,836,5,731,
+		0,0,775,836,5,732,0,0,776,836,5,733,0,0,777,836,5,734,0,0,778,836,5,735,
+		0,0,779,836,5,736,0,0,780,836,5,737,0,0,781,836,5,738,0,0,782,836,5,739,
+		0,0,783,836,5,740,0,0,784,836,5,741,0,0,785,836,5,742,0,0,786,836,5,743,
+		0,0,787,836,5,744,0,0,788,836,5,745,0,0,789,836,5,746,0,0,790,836,5,747,
+		0,0,791,836,5,748,0,0,792,836,5,749,0,0,793,836,5,750,0,0,794,836,5,751,
+		0,0,795,836,5,752,0,0,796,836,5,753,0,0,797,836,5,754,0,0,798,836,5,755,
+		0,0,799,836,5,756,0,0,800,836,5,757,0,0,801,836,5,758,0,0,802,836,5,759,
+		0,0,803,836,5,760,0,0,804,836,5,761,0,0,805,836,5,762,0,0,806,836,5,763,
+		0,0,807,836,5,764,0,0,808,836,5,765,0,0,809,836,5,766,0,0,810,836,5,767,
+		0,0,811,836,5,768,0,0,812,836,5,769,0,0,813,836,5,770,0,0,814,836,5,771,
+		0,0,815,836,5,772,0,0,816,836,5,773,0,0,817,836,5,774,0,0,818,836,5,775,
+		0,0,819,836,5,776,0,0,820,836,5,777,0,0,821,836,5,778,0,0,822,836,5,779,
+		0,0,823,836,5,780,0,0,824,836,5,781,0,0,825,836,5,782,0,0,826,836,5,783,
+		0,0,827,836,5,784,0,0,828,836,5,785,0,0,829,836,5,786,0,0,830,836,5,787,
+		0,0,831,836,5,788,0,0,832,836,5,789,0,0,833,836,5,790,0,0,834,836,5,791,
+		0,0,835,567,1,0,0,0,835,568,1,0,0,0,835,569,1,0,0,0,835,570,1,0,0,0,835,
+		571,1,0,0,0,835,572,1,0,0,0,835,573,1,0,0,0,835,574,1,0,0,0,835,575,1,
+		0,0,0,835,576,1,0,0,0,835,577,1,0,0,0,835,578,1,0,0,0,835,579,1,0,0,0,
+		835,580,1,0,0,0,835,581,1,0,0,0,835,582,1,0,0,0,835,583,1,0,0,0,835,584,
+		1,0,0,0,835,585,1,0,0,0,835,586,1,0,0,0,835,587,1,0,0,0,835,588,1,0,0,
+		0,835,589,1,0,0,0,835,590,1,0,0,0,835,591,1,0,0,0,835,592,1,0,0,0,835,
+		593,1,0,0,0,835,594,1,0,0,0,835,595,1,0,0,0,835,596,1,0,0,0,835,597,1,
+		0,0,0,835,598,1,0,0,0,835,599,1,0,0,0,835,600,1,0,0,0,835,601,1,0,0,0,
+		835,602,1,0,0,0,835,603,1,0,0,0,835,604,1,0,0,0,835,605,1,0,0,0,835,606,
+		1,0,0,0,835,607,1,0,0,0,835,608,1,0,0,0,835,609,1,0,0,0,835,610,1,0,0,
+		0,835,611,1,0,0,0,835,612,1,0,0,0,835,613,1,0,0,0,835,614,1,0,0,0,835,
+		615,1,0,0,0,835,616,1,0,0,0,835,617,1,0,0,0,835,618,1,0,0,0,835,619,1,
+		0,0,0,835,620,1,0,0,0,835,621,1,0,0,0,835,622,1,0,0,0,835,623,1,0,0,0,
+		835,624,1,0,0,0,835,625,1,0,0,0,835,626,1,0,0,0,835,627,1,0,0,0,835,628,
+		1,0,0,0,835,629,1,0,0,0,835,630,1,0,0,0,835,631,1,0,0,0,835,632,1,0,0,
+		0,835,633,1,0,0,0,835,634,1,0,0,0,835,635,1,0,0,0,835,636,1,0,0,0,835,
+		637,1,0,0,0,835,638,1,0,0,0,835,639,1,0,0,0,835,640,1,0,0,0,835,641,1,
+		0,0,0,835,642,1,0,0,0,835,643,1,0,0,0,835,644,1,0,0,0,835,645,1,0,0,0,
+		835,646,1,0,0,0,835,647,1,0,0,0,835,648,1,0,0,0,835,649,1,0,0,0,835,650,
+		1,0,0,0,835,651,1,0,0,0,835,652,1,0,0,0,835,653,1,0,0,0,835,656,1,0,0,
+		0,835,657,1,0,0,0,835,658,1,0,0,0,835,659,1,0,0,0,835,660,1,0,0,0,835,
+		661,1,0,0,0,835,662,1,0,0,0,835,663,1,0,0,0,835,664,1,0,0,0,835,665,1,
+		0,0,0,835,666,1,0,0,0,835,667,1,0,0,0,835,668,1,0,0,0,835,669,1,0,0,0,
+		835,670,1,0,0,0,835,671,1,0,0,0,835,672,1,0,0,0,835,673,1,0,0,0,835,674,
+		1,0,0,0,835,675,1,0,0,0,835,676,1,0,0,0,835,677,1,0,0,0,835,678,1,0,0,
+		0,835,679,1,0,0,0,835,680,1,0,0,0,835,681,1,0,0,0,835,682,1,0,0,0,835,
+		683,1,0,0,0,835,684,1,0,0,0,835,685,1,0,0,0,835,686,1,0,0,0,835,687,1,
+		0,0,0,835,688,1,0,0,0,835,689,1,0,0,0,835,690,1,0,0,0,835,691,1,0,0,0,
+		835,692,1,0,0,0,835,693,1,0,0,0,835,694,1,0,0,0,835,695,1,0,0,0,835,696,
+		1,0,0,0,835,697,1,0,0,0,835,698,1,0,0,0,835,699,1,0,0,0,835,700,1,0,0,
+		0,835,701,1,0,0,0,835,702,1,0,0,0,835,703,1,0,0,0,835,704,1,0,0,0,835,
+		705,1,0,0,0,835,706,1,0,0,0,835,707,1,0,0,0,835,708,1,0,0,0,835,709,1,
+		0,0,0,835,710,1,0,0,0,835,711,1,0,0,0,835,712,1,0,0,0,835,713,1,0,0,0,
+		835,714,1,0,0,0,835,715,1,0,0,0,835,716,1,0,0,0,835,717,1,0,0,0,835,718,
+		1,0,0,0,835,719,1,0,0,0,835,720,1,0,0,0,835,721,1,0,0,0,835,722,1,0,0,
+		0,835,723,1,0,0,0,835,724,1,0,0,0,835,725,1,0,0,0,835,726,1,0,0,0,835,
+		727,1,0,0,0,835,728,1,0,0,0,835,729,1,0,0,0,835,730,1,0,0,0,835,731,1,
+		0,0,0,835,732,1,0,0,0,835,733,1,0,0,0,835,734,1,0,0,0,835,735,1,0,0,0,
+		835,736,1,0,0,0,835,737,1,0,0,0,835,738,1,0,0,0,835,739,1,0,0,0,835,740,
+		1,0,0,0,835,741,1,0,0,0,835,742,1,0,0,0,835,743,1,0,0,0,835,744,1,0,0,
+		0,835,745,1,0,0,0,835,746,1,0,0,0,835,747,1,0,0,0,835,748,1,0,0,0,835,
+		749,1,0,0,0,835,750,1,0,0,0,835,751,1,0,0,0,835,752,1,0,0,0,835,753,1,
+		0,0,0,835,754,1,0,0,0,835,755,1,0,0,0,835,756,1,0,0,0,835,757,1,0,0,0,
+		835,758,1,0,0,0,835,759,1,0,0,0,835,760,1,0,0,0,835,761,1,0,0,0,835,762,
+		1,0,0,0,835,763,1,0,0,0,835,764,1,0,0,0,835,765,1,0,0,0,835,766,1,0,0,
+		0,835,767,1,0,0,0,835,768,1,0,0,0,835,769,1,0,0,0,835,770,1,0,0,0,835,
+		771,1,0,0,0,835,772,1,0,0,0,835,773,1,0,0,0,835,774,1,0,0,0,835,775,1,
+		0,0,0,835,776,1,0,0,0,835,777,1,0,0,0,835,778,1,0,0,0,835,779,1,0,0,0,
+		835,780,1,0,0,0,835,781,1,0,0,0,835,782,1,0,0,0,835,783,1,0,0,0,835,784,
+		1,0,0,0,835,785,1,0,0,0,835,786,1,0,0,0,835,787,1,0,0,0,835,788,1,0,0,
+		0,835,789,1,0,0,0,835,790,1,0,0,0,835,791,1,0,0,0,835,792,1,0,0,0,835,
+		793,1,0,0,0,835,794,1,0,0,0,835,795,1,0,0,0,835,796,1,0,0,0,835,797,1,
+		0,0,0,835,798,1,0,0,0,835,799,1,0,0,0,835,800,1,0,0,0,835,801,1,0,0,0,
+		835,802,1,0,0,0,835,803,1,0,0,0,835,804,1,0,0,0,835,805,1,0,0,0,835,806,
+		1,0,0,0,835,807,1,0,0,0,835,808,1,0,0,0,835,809,1,0,0,0,835,810,1,0,0,
+		0,835,811,1,0,0,0,835,812,1,0,0,0,835,813,1,0,0,0,835,814,1,0,0,0,835,
+		815,1,0,0,0,835,816,1,0,0,0,835,817,1,0,0,0,835,818,1,0,0,0,835,819,1,
+		0,0,0,835,820,1,0,0,0,835,821,1,0,0,0,835,822,1,0,0,0,835,823,1,0,0,0,
+		835,824,1,0,0,0,835,825,1,0,0,0,835,826,1,0,0,0,835,827,1,0,0,0,835,828,
+		1,0,0,0,835,829,1,0,0,0,835,830,1,0,0,0,835,831,1,0,0,0,835,832,1,0,0,
+		0,835,833,1,0,0,0,835,834,1,0,0,0,836,99,1,0,0,0,837,838,5,822,0,0,838,
+		844,3,96,48,0,839,840,3,106,53,0,840,841,5,47,0,0,841,842,3,102,51,0,842,
+		844,1,0,0,0,843,837,1,0,0,0,843,839,1,0,0,0,844,101,1,0,0,0,845,852,3,
+		68,34,0,846,847,7,6,0,0,847,848,5,792,0,0,848,849,3,68,34,0,849,850,5,
+		793,0,0,850,852,1,0,0,0,851,845,1,0,0,0,851,846,1,0,0,0,852,103,1,0,0,
+		0,853,856,3,106,53,0,854,856,3,108,54,0,855,853,1,0,0,0,855,854,1,0,0,
+		0,856,105,1,0,0,0,857,858,7,7,0,0,858,107,1,0,0,0,859,860,5,826,0,0,860,
+		861,5,792,0,0,861,862,5,5,0,0,862,866,5,793,0,0,863,866,5,824,0,0,864,
+		866,5,827,0,0,865,859,1,0,0,0,865,863,1,0,0,0,865,864,1,0,0,0,866,109,
+		1,0,0,0,867,871,3,116,58,0,868,871,3,112,56,0,869,871,3,132,66,0,870,867,
+		1,0,0,0,870,868,1,0,0,0,870,869,1,0,0,0,871,111,1,0,0,0,872,874,5,827,
+		0,0,873,875,3,114,57,0,874,873,1,0,0,0,874,875,1,0,0,0,875,113,1,0,0,0,
+		876,878,5,792,0,0,877,879,3,68,34,0,878,877,1,0,0,0,878,879,1,0,0,0,879,
+		884,1,0,0,0,880,881,5,799,0,0,881,883,3,68,34,0,882,880,1,0,0,0,883,886,
+		1,0,0,0,884,882,1,0,0,0,884,885,1,0,0,0,885,887,1,0,0,0,886,884,1,0,0,
+		0,887,888,5,793,0,0,888,115,1,0,0,0,889,1068,3,118,59,0,890,1068,5,353,
+		0,0,891,1068,5,354,0,0,892,1068,5,355,0,0,893,1068,5,356,0,0,894,1068,
+		5,357,0,0,895,1068,5,358,0,0,896,1068,5,359,0,0,897,1068,5,360,0,0,898,
+		1068,5,361,0,0,899,1068,5,362,0,0,900,1068,5,363,0,0,901,1068,5,364,0,
+		0,902,1068,5,365,0,0,903,1068,5,366,0,0,904,1068,5,367,0,0,905,1068,5,
+		368,0,0,906,1068,5,369,0,0,907,1068,5,370,0,0,908,1068,5,371,0,0,909,1068,
+		5,372,0,0,910,1068,5,373,0,0,911,1068,5,374,0,0,912,1068,5,375,0,0,913,
+		1068,5,376,0,0,914,1068,5,377,0,0,915,1068,5,378,0,0,916,1068,5,379,0,
+		0,917,1068,5,380,0,0,918,1068,5,381,0,0,919,1068,5,382,0,0,920,1068,5,
+		383,0,0,921,1068,5,384,0,0,922,1068,5,385,0,0,923,1068,5,386,0,0,924,1068,
+		5,387,0,0,925,1068,5,388,0,0,926,1068,5,389,0,0,927,1068,5,390,0,0,928,
+		1068,5,391,0,0,929,1068,5,392,0,0,930,1068,5,393,0,0,931,1068,5,394,0,
+		0,932,1068,5,395,0,0,933,1068,5,396,0,0,934,1068,5,397,0,0,935,1068,5,
+		398,0,0,936,1068,5,399,0,0,937,1068,5,400,0,0,938,1068,5,401,0,0,939,1068,
+		5,402,0,0,940,1068,5,403,0,0,941,1068,5,404,0,0,942,1068,5,405,0,0,943,
+		1068,5,406,0,0,944,1068,5,407,0,0,945,1068,5,408,0,0,946,1068,5,409,0,
+		0,947,1068,5,410,0,0,948,1068,5,411,0,0,949,1068,5,412,0,0,950,1068,5,
+		413,0,0,951,1068,5,414,0,0,952,1068,5,415,0,0,953,1068,5,416,0,0,954,1068,
+		5,417,0,0,955,1068,5,418,0,0,956,957,5,419,0,0,957,958,5,792,0,0,958,1068,
+		5,793,0,0,959,1068,5,420,0,0,960,1068,5,421,0,0,961,1068,5,422,0,0,962,
+		1068,5,423,0,0,963,1068,5,424,0,0,964,1068,5,425,0,0,965,1068,5,426,0,
+		0,966,1068,5,427,0,0,967,1068,5,428,0,0,968,1068,5,429,0,0,969,1068,5,
+		430,0,0,970,1068,5,431,0,0,971,1068,5,432,0,0,972,1068,5,433,0,0,973,1068,
+		5,434,0,0,974,1068,5,435,0,0,975,1068,5,436,0,0,976,1068,5,437,0,0,977,
+		1068,5,438,0,0,978,1068,5,439,0,0,979,1068,5,440,0,0,980,1068,5,441,0,
+		0,981,1068,5,442,0,0,982,1068,5,443,0,0,983,1068,5,444,0,0,984,1068,5,
+		445,0,0,985,1068,5,446,0,0,986,1068,5,447,0,0,987,1068,5,448,0,0,988,1068,
+		5,449,0,0,989,1068,5,450,0,0,990,1068,5,451,0,0,991,1068,5,452,0,0,992,
+		1068,5,453,0,0,993,1068,5,454,0,0,994,1068,5,455,0,0,995,1068,5,456,0,
+		0,996,1068,5,457,0,0,997,1068,5,458,0,0,998,1068,5,459,0,0,999,1068,5,
+		460,0,0,1000,1068,5,461,0,0,1001,1068,5,462,0,0,1002,1068,5,463,0,0,1003,
+		1068,5,464,0,0,1004,1068,5,465,0,0,1005,1068,5,466,0,0,1006,1068,5,467,
+		0,0,1007,1068,5,468,0,0,1008,1068,5,469,0,0,1009,1068,5,470,0,0,1010,1068,
+		5,471,0,0,1011,1068,5,472,0,0,1012,1068,5,473,0,0,1013,1068,5,474,0,0,
+		1014,1068,5,475,0,0,1015,1068,5,476,0,0,1016,1068,5,477,0,0,1017,1068,
+		5,478,0,0,1018,1068,5,479,0,0,1019,1068,5,480,0,0,1020,1068,5,481,0,0,
+		1021,1068,5,482,0,0,1022,1068,5,483,0,0,1023,1068,5,484,0,0,1024,1068,
+		5,485,0,0,1025,1068,5,486,0,0,1026,1068,5,487,0,0,1027,1068,5,488,0,0,
+		1028,1068,5,489,0,0,1029,1068,5,490,0,0,1030,1068,5,491,0,0,1031,1068,
+		5,492,0,0,1032,1068,5,493,0,0,1033,1068,5,494,0,0,1034,1068,5,495,0,0,
+		1035,1068,5,496,0,0,1036,1068,5,497,0,0,1037,1068,5,498,0,0,1038,1068,
+		5,499,0,0,1039,1068,5,500,0,0,1040,1068,5,501,0,0,1041,1068,5,502,0,0,
+		1042,1068,5,503,0,0,1043,1068,5,504,0,0,1044,1068,5,505,0,0,1045,1068,
+		5,506,0,0,1046,1068,5,507,0,0,1047,1068,5,508,0,0,1048,1068,5,509,0,0,
+		1049,1068,5,510,0,0,1050,1068,5,511,0,0,1051,1068,5,512,0,0,1052,1068,
+		5,513,0,0,1053,1068,5,514,0,0,1054,1068,5,515,0,0,1055,1068,5,516,0,0,
+		1056,1068,5,517,0,0,1057,1068,5,518,0,0,1058,1068,5,519,0,0,1059,1068,
+		5,520,0,0,1060,1068,5,521,0,0,1061,1068,5,522,0,0,1062,1068,5,523,0,0,
+		1063,1068,5,524,0,0,1064,1068,5,525,0,0,1065,1068,5,526,0,0,1066,1068,
+		5,527,0,0,1067,889,1,0,0,0,1067,890,1,0,0,0,1067,891,1,0,0,0,1067,892,
+		1,0,0,0,1067,893,1,0,0,0,1067,894,1,0,0,0,1067,895,1,0,0,0,1067,896,1,
+		0,0,0,1067,897,1,0,0,0,1067,898,1,0,0,0,1067,899,1,0,0,0,1067,900,1,0,
+		0,0,1067,901,1,0,0,0,1067,902,1,0,0,0,1067,903,1,0,0,0,1067,904,1,0,0,
+		0,1067,905,1,0,0,0,1067,906,1,0,0,0,1067,907,1,0,0,0,1067,908,1,0,0,0,
+		1067,909,1,0,0,0,1067,910,1,0,0,0,1067,911,1,0,0,0,1067,912,1,0,0,0,1067,
+		913,1,0,0,0,1067,914,1,0,0,0,1067,915,1,0,0,0,1067,916,1,0,0,0,1067,917,
+		1,0,0,0,1067,918,1,0,0,0,1067,919,1,0,0,0,1067,920,1,0,0,0,1067,921,1,
+		0,0,0,1067,922,1,0,0,0,1067,923,1,0,0,0,1067,924,1,0,0,0,1067,925,1,0,
+		0,0,1067,926,1,0,0,0,1067,927,1,0,0,0,1067,928,1,0,0,0,1067,929,1,0,0,
+		0,1067,930,1,0,0,0,1067,931,1,0,0,0,1067,932,1,0,0,0,1067,933,1,0,0,0,
+		1067,934,1,0,0,0,1067,935,1,0,0,0,1067,936,1,0,0,0,1067,937,1,0,0,0,1067,
+		938,1,0,0,0,1067,939,1,0,0,0,1067,940,1,0,0,0,1067,941,1,0,0,0,1067,942,
+		1,0,0,0,1067,943,1,0,0,0,1067,944,1,0,0,0,1067,945,1,0,0,0,1067,946,1,
+		0,0,0,1067,947,1,0,0,0,1067,948,1,0,0,0,1067,949,1,0,0,0,1067,950,1,0,
+		0,0,1067,951,1,0,0,0,1067,952,1,0,0,0,1067,953,1,0,0,0,1067,954,1,0,0,
+		0,1067,955,1,0,0,0,1067,956,1,0,0,0,1067,959,1,0,0,0,1067,960,1,0,0,0,
+		1067,961,1,0,0,0,1067,962,1,0,0,0,1067,963,1,0,0,0,1067,964,1,0,0,0,1067,
+		965,1,0,0,0,1067,966,1,0,0,0,1067,967,1,0,0,0,1067,968,1,0,0,0,1067,969,
+		1,0,0,0,1067,970,1,0,0,0,1067,971,1,0,0,0,1067,972,1,0,0,0,1067,973,1,
+		0,0,0,1067,974,1,0,0,0,1067,975,1,0,0,0,1067,976,1,0,0,0,1067,977,1,0,
+		0,0,1067,978,1,0,0,0,1067,979,1,0,0,0,1067,980,1,0,0,0,1067,981,1,0,0,
+		0,1067,982,1,0,0,0,1067,983,1,0,0,0,1067,984,1,0,0,0,1067,985,1,0,0,0,
+		1067,986,1,0,0,0,1067,987,1,0,0,0,1067,988,1,0,0,0,1067,989,1,0,0,0,1067,
+		990,1,0,0,0,1067,991,1,0,0,0,1067,992,1,0,0,0,1067,993,1,0,0,0,1067,994,
+		1,0,0,0,1067,995,1,0,0,0,1067,996,1,0,0,0,1067,997,1,0,0,0,1067,998,1,
+		0,0,0,1067,999,1,0,0,0,1067,1000,1,0,0,0,1067,1001,1,0,0,0,1067,1002,1,
+		0,0,0,1067,1003,1,0,0,0,1067,1004,1,0,0,0,1067,1005,1,0,0,0,1067,1006,
+		1,0,0,0,1067,1007,1,0,0,0,1067,1008,1,0,0,0,1067,1009,1,0,0,0,1067,1010,
+		1,0,0,0,1067,1011,1,0,0,0,1067,1012,1,0,0,0,1067,1013,1,0,0,0,1067,1014,
+		1,0,0,0,1067,1015,1,0,0,0,1067,1016,1,0,0,0,1067,1017,1,0,0,0,1067,1018,
+		1,0,0,0,1067,1019,1,0,0,0,1067,1020,1,0,0,0,1067,1021,1,0,0,0,1067,1022,
+		1,0,0,0,1067,1023,1,0,0,0,1067,1024,1,0,0,0,1067,1025,1,0,0,0,1067,1026,
+		1,0,0,0,1067,1027,1,0,0,0,1067,1028,1,0,0,0,1067,1029,1,0,0,0,1067,1030,
+		1,0,0,0,1067,1031,1,0,0,0,1067,1032,1,0,0,0,1067,1033,1,0,0,0,1067,1034,
+		1,0,0,0,1067,1035,1,0,0,0,1067,1036,1,0,0,0,1067,1037,1,0,0,0,1067,1038,
+		1,0,0,0,1067,1039,1,0,0,0,1067,1040,1,0,0,0,1067,1041,1,0,0,0,1067,1042,
+		1,0,0,0,1067,1043,1,0,0,0,1067,1044,1,0,0,0,1067,1045,1,0,0,0,1067,1046,
+		1,0,0,0,1067,1047,1,0,0,0,1067,1048,1,0,0,0,1067,1049,1,0,0,0,1067,1050,
+		1,0,0,0,1067,1051,1,0,0,0,1067,1052,1,0,0,0,1067,1053,1,0,0,0,1067,1054,
+		1,0,0,0,1067,1055,1,0,0,0,1067,1056,1,0,0,0,1067,1057,1,0,0,0,1067,1058,
+		1,0,0,0,1067,1059,1,0,0,0,1067,1060,1,0,0,0,1067,1061,1,0,0,0,1067,1062,
+		1,0,0,0,1067,1063,1,0,0,0,1067,1064,1,0,0,0,1067,1065,1,0,0,0,1067,1066,
+		1,0,0,0,1068,117,1,0,0,0,1069,1084,5,45,0,0,1070,1082,5,827,0,0,1071,1072,
+		5,794,0,0,1072,1077,3,68,34,0,1073,1074,5,799,0,0,1074,1076,3,68,34,0,
+		1075,1073,1,0,0,0,1076,1079,1,0,0,0,1077,1075,1,0,0,0,1077,1078,1,0,0,
+		0,1078,1080,1,0,0,0,1079,1077,1,0,0,0,1080,1081,5,795,0,0,1081,1083,1,
+		0,0,0,1082,1071,1,0,0,0,1082,1083,1,0,0,0,1083,1085,1,0,0,0,1084,1070,
+		1,0,0,0,1084,1085,1,0,0,0,1085,119,1,0,0,0,1086,1087,5,199,0,0,1087,1088,
+		5,47,0,0,1088,1089,3,68,34,0,1089,121,1,0,0,0,1090,1091,5,201,0,0,1091,
+		1092,5,47,0,0,1092,1093,3,68,34,0,1093,123,1,0,0,0,1094,1095,5,200,0,0,
+		1095,1096,5,794,0,0,1096,1097,3,104,52,0,1097,1098,5,795,0,0,1098,1099,
+		5,47,0,0,1099,1100,3,68,34,0,1100,125,1,0,0,0,1101,1102,5,91,0,0,1102,
+		1103,5,794,0,0,1103,1104,3,104,52,0,1104,1105,5,795,0,0,1105,1106,5,47,
+		0,0,1106,1107,3,68,34,0,1107,127,1,0,0,0,1108,1109,5,613,0,0,1109,1110,
+		5,47,0,0,1110,1111,3,68,34,0,1111,129,1,0,0,0,1112,1113,5,158,0,0,1113,
+		1114,5,794,0,0,1114,1115,3,106,53,0,1115,1116,5,795,0,0,1116,1117,5,47,
+		0,0,1117,1118,3,68,34,0,1118,131,1,0,0,0,1119,1120,3,134,67,0,1120,133,
+		1,0,0,0,1121,1122,3,136,68,0,1122,135,1,0,0,0,1123,1124,5,241,0,0,1124,
+		1125,5,792,0,0,1125,1126,3,68,34,0,1126,1127,5,793,0,0,1127,1230,1,0,0,
+		0,1128,1129,5,242,0,0,1129,1130,5,792,0,0,1130,1131,3,68,34,0,1131,1132,
+		5,793,0,0,1132,1230,1,0,0,0,1133,1134,5,243,0,0,1134,1135,5,792,0,0,1135,
+		1136,3,68,34,0,1136,1137,5,793,0,0,1137,1230,1,0,0,0,1138,1139,5,244,0,
+		0,1139,1140,5,792,0,0,1140,1141,3,68,34,0,1141,1142,5,793,0,0,1142,1230,
+		1,0,0,0,1143,1144,5,245,0,0,1144,1145,5,792,0,0,1145,1146,3,68,34,0,1146,
+		1147,5,793,0,0,1147,1230,1,0,0,0,1148,1149,5,246,0,0,1149,1150,5,792,0,
+		0,1150,1151,3,68,34,0,1151,1152,5,793,0,0,1152,1230,1,0,0,0,1153,1154,
+		5,250,0,0,1154,1155,5,792,0,0,1155,1156,3,68,34,0,1156,1157,5,793,0,0,
+		1157,1230,1,0,0,0,1158,1159,5,247,0,0,1159,1160,5,792,0,0,1160,1161,3,
+		68,34,0,1161,1162,5,793,0,0,1162,1230,1,0,0,0,1163,1164,5,248,0,0,1164,
+		1165,5,792,0,0,1165,1168,3,68,34,0,1166,1167,5,799,0,0,1167,1169,3,68,
+		34,0,1168,1166,1,0,0,0,1168,1169,1,0,0,0,1169,1170,1,0,0,0,1170,1171,5,
+		793,0,0,1171,1230,1,0,0,0,1172,1173,5,249,0,0,1173,1174,5,792,0,0,1174,
+		1175,3,68,34,0,1175,1176,5,793,0,0,1176,1230,1,0,0,0,1177,1178,5,251,0,
+		0,1178,1179,5,792,0,0,1179,1180,3,68,34,0,1180,1181,5,793,0,0,1181,1230,
+		1,0,0,0,1182,1183,5,252,0,0,1183,1184,5,792,0,0,1184,1185,3,68,34,0,1185,
+		1186,5,793,0,0,1186,1230,1,0,0,0,1187,1188,5,253,0,0,1188,1189,5,792,0,
+		0,1189,1190,3,68,34,0,1190,1191,5,793,0,0,1191,1230,1,0,0,0,1192,1193,
+		5,254,0,0,1193,1194,5,792,0,0,1194,1195,3,68,34,0,1195,1196,5,793,0,0,
+		1196,1230,1,0,0,0,1197,1198,5,257,0,0,1198,1199,5,792,0,0,1199,1200,3,
+		68,34,0,1200,1201,5,799,0,0,1201,1202,3,68,34,0,1202,1203,5,793,0,0,1203,
+		1230,1,0,0,0,1204,1205,5,256,0,0,1205,1206,5,792,0,0,1206,1207,3,68,34,
+		0,1207,1208,5,799,0,0,1208,1209,3,68,34,0,1209,1210,5,793,0,0,1210,1230,
+		1,0,0,0,1211,1212,5,255,0,0,1212,1213,5,792,0,0,1213,1214,3,68,34,0,1214,
+		1215,5,799,0,0,1215,1216,3,68,34,0,1216,1217,5,799,0,0,1217,1218,3,68,
+		34,0,1218,1219,5,793,0,0,1219,1230,1,0,0,0,1220,1221,5,258,0,0,1221,1222,
+		5,792,0,0,1222,1223,3,68,34,0,1223,1224,5,799,0,0,1224,1225,3,68,34,0,
+		1225,1226,5,799,0,0,1226,1227,5,827,0,0,1227,1228,5,793,0,0,1228,1230,
+		1,0,0,0,1229,1123,1,0,0,0,1229,1128,1,0,0,0,1229,1133,1,0,0,0,1229,1138,
+		1,0,0,0,1229,1143,1,0,0,0,1229,1148,1,0,0,0,1229,1153,1,0,0,0,1229,1158,
+		1,0,0,0,1229,1163,1,0,0,0,1229,1172,1,0,0,0,1229,1177,1,0,0,0,1229,1182,
+		1,0,0,0,1229,1187,1,0,0,0,1229,1192,1,0,0,0,1229,1197,1,0,0,0,1229,1204,
+		1,0,0,0,1229,1211,1,0,0,0,1229,1220,1,0,0,0,1230,137,1,0,0,0,80,141,147,
+		151,156,161,168,173,179,190,197,203,209,214,225,229,238,244,248,254,261,
+		268,272,275,278,284,288,292,298,302,317,327,330,337,344,347,359,363,369,
+		376,390,399,409,417,425,427,430,435,440,445,450,453,465,472,480,488,496,
+		504,512,520,528,536,540,553,560,563,835,843,851,855,865,870,874,878,884,
+		1067,1077,1082,1084,1168,1229
 	};
 
 	public static readonly ATN _ATN =
