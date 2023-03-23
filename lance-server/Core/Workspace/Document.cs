@@ -8,13 +8,9 @@ namespace LanceServer.Core.Workspace
     /// </summary>
     public class Document
     {
+        public DocumentState State { get; private set; }
         private string _content;
 
-        public bool Changed
-        {
-            get;
-            set;
-        }
         public string Content
         {
             get
@@ -27,7 +23,7 @@ namespace LanceServer.Core.Workspace
                 {
                     return;
                 }
-                Changed = true;
+                State = DocumentState.Read;
                 _content = value;
             }
         }
@@ -42,20 +38,21 @@ namespace LanceServer.Core.Workspace
             }
             set
             {
-                if (_tree != value)
+                if (_tree == value)
                 {
-                    _tree = value;
+                    return;
                 }
-                Changed = false;
+                State = DocumentState.Parsed;
+                _tree = value;
             }
         }
         
-        public string Encoding { get; set; }
-        public Uri Uri { get; private set; }
+        public string Encoding { get; }
+        public Uri Uri { get; }
         
-        private Dictionary<string, Symbol> _symbols = new();
+        private Dictionary<string, ISymbol> _symbols = new();
 
-        public Symbol GetSymbol(string symbolName)
+        public ISymbol GetSymbol(string symbolName)
         {
             return _symbols[symbolName];
         }
@@ -64,10 +61,10 @@ namespace LanceServer.Core.Workspace
         {
             Uri = uri;
             Encoding = encoding;
-            Changed = false;
+            State = DocumentState.Known;
         }
 
-        public void AddSymbol(Symbol symbol)
+        public void AddSymbol(ISymbol symbol)
         {
             _symbols.Add(symbol.Identifier, symbol);
         }
