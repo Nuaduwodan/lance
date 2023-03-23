@@ -10,24 +10,11 @@ namespace LanceServer.SemanticToken
     public class SemanticTokenHandler
     {
 
-        public SemanticTokens ProcessRequest(Document document, DocumentSymbolParams requestParams, CommonTokenStream tokens)
+        public SemanticTokens ProcessRequest(Document document, DocumentSymbolParams requestParams)
         {
             SemanticTokenData tokenData = new SemanticTokenData();
             
-            int previousLine = 0;
-            int previousStartChar = 0;
-            while (tokens.LA(1) != IntStreamConstants.EOF)
-            {
-                tokens.Consume();
-                var token = tokens.LT(0);
-                int deltaLine = token.Line - previousLine;
-                int deltaChar = token.StartIndex - previousStartChar;
-                int length = token.StopIndex - token.StartIndex + 1;
-                int type = TransformType(token.Type);
-                tokenData.AddElement(new SemanticTokenDataElement(deltaLine, deltaChar, length, type, 0));
-                previousLine = token.Line;
-                previousStartChar = token.StartIndex;
-            }
+            //TODO use listener to find all usages of symbols and look them up in the symbol table
                     
             return new SemanticTokens
             {
@@ -47,9 +34,9 @@ namespace LanceServer.SemanticToken
                 case SinumerikNCLexer.COMMENT:
                     return (int) SemanticTokenTypeHelper.SemanticTokenType.Comment;
                 case SinumerikNCLexer.PROC:
-                case SinumerikNCLexer.AUXILIARY_FUNCTION:
-                case SinumerikNCLexer.ADDITIONAL_FUNCTION:
-                case SinumerikNCLexer.PREPARATORY_FUNCTION:
+                case SinumerikNCLexer.GCODE:
+                case SinumerikNCLexer.MCODE:
+                case SinumerikNCLexer.HCODE:
                     return (int) SemanticTokenTypeHelper.SemanticTokenType.Keyword;
                 case SinumerikNCLexer.INT_TYPE:
                 case SinumerikNCLexer.AXIS_TYPE:
@@ -68,8 +55,7 @@ namespace LanceServer.SemanticToken
                 case SinumerikNCLexer.SUB:
                     return (int) SemanticTokenTypeHelper.SemanticTokenType.Operator;
                 // Names should be separated into their purposes
-                case SinumerikNCLexer.PROGRAM_NAME_SIMPLE:
-                case SinumerikNCLexer.PROGRAM_NAME_EXTENDED:
+                case SinumerikNCLexer.NAME:
                     return (int) SemanticTokenTypeHelper.SemanticTokenType.Variable;
                 default:
                     return (int) SemanticTokenTypeHelper.SemanticTokenType.Decorator;
