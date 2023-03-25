@@ -704,7 +704,7 @@ LFON:'lfon';
 LFPOS:'lfpos';
 LFTXT:'lftxt';
 LFWP:'lfwp';
-MCODE: 'm' [0-9]?[0-9]?[1-9];
+MCODE:'m' [0-9]?[0-9]?[1-9];
 MEAC:'meac';
 MEAS:'meas';
 MEASA:'measa';
@@ -858,7 +858,7 @@ DOUBLE_COLON: ':';
 COMMA: ',';
 
 // other (operation types C, PA, empty)
-BLOCK_NUMBER: 'n' INT;
+BLOCK_NUMBER: 'n';
 CYCLE: 'cycle';
 GROUP_ADDEND:'group_addend';
 GROUP_BEGIN:'group_begin';
@@ -899,18 +899,25 @@ NAME: [a-z0-9_]+;
  * Parser Rules
  */
 
-file: (declarationBlock* block* | procedureDefinition) EOF;
+file: (content | procedureDefinition) EOF;
 
-declarationBlock: BLOCK_NUMBER? declaration;
-block: BLOCK_NUMBER? statement;
+content: declarationSpace codeSpace;
+declarationSpace: declarationBlock*;
+codeSpace: block*;
+declarationBlock: blockNumber? declaration | blockNumber;
+block: blockNumber? labelDefinition? statement | blockNumber? labelDefinition | blockNumber;
 
-// procedure definition
-procedureDefinition: PROC NAME parameterDefinitions? declarationBlock* block* PROC_END;
+blockNumber: BLOCK_NUMBER INT;
+
+// definition
+procedureDefinition: PROC NAME parameterDefinitions? content PROC_END;
 
 parameterDefinitions: OPEN_PAREN parameterDefinition (COMMA parameterDefinition)* CLOSE_PAREN;
 parameterDefinition: parameterDefinitionByValue | parameterDefinitionByReference;
 parameterDefinitionByValue: type NAME (ASSIGNMENT expression)?;
 parameterDefinitionByReference: VAR type NAME arrayDeclaration?;
+
+labelDefinition: NAME DOUBLE_COLON;
 
 // declaration
 declaration: macroDeclaration | variableDeclaration | procedureDeclaration;
@@ -948,6 +955,7 @@ statement
     | iterativeStatement
     | jumpStatement
     | expression
+    | variableAssignment
     | command+
     | procedure;
 
@@ -974,31 +982,33 @@ gotoStatement
     | gotoCondition? GOTO_S;
 
 gotoCondition: IF expression;
-gotoTarget: NAME | BLOCK_NUMBER;
+gotoTarget
+    : NAME              #gotoLabel
+    | BLOCK_NUMBER INT  #gotoBlock
+    ;
 
-// expression
 expression
-    : relationalExpression;
-
-relationalExpression : stringExpression ((EQUAL|NOT_EQUAL|LESS_EQUAL|GREATER_EQUAL|LESS|GREATER) stringExpression)?;
-stringExpression : inclusiveOrExpression (CONCAT inclusiveOrExpression)*;
-inclusiveOrExpression : exclusiveOrExpression (OR exclusiveOrExpression)*;
-exclusiveOrExpression : andExpression (XOR andExpression)*;
-andExpression : binaryInclusiveOrExpression (AND binaryInclusiveOrExpression)*;
-binaryInclusiveOrExpression : binaryExclusiveOrExpression (OR_B binaryExclusiveOrExpression)*;
-binaryExclusiveOrExpression : binaryAndExpression (XOR_B binaryAndExpression)*;
-binaryAndExpression : additiveExpression (AND_B additiveExpression)*;
-additiveExpression : multiplicativeExpression ((ADD|SUB) multiplicativeExpression)*;
-multiplicativeExpression : unaryExpression ((MUL|DIV|MOD) unaryExpression)*;
-unaryExpression : (NOT|NOT_B)? primaryExpression;
+    : (NOT|NOT_B)? primaryExpression                                                #unaryExpression
+    | expression (MUL|DIV|MOD) expression                                           #multiplicativeExpression
+    | expression (ADD|SUB) expression                                               #additiveExpression
+    | expression AND_B expression                                                   #binaryAndExpression
+    | expression XOR_B expression                                                   #binaryExclusiveOrExpression
+    | expression OR_B expression                                                    #binaryInclusiveOrExpression
+    | expression AND expression                                                     #andExpression
+    | expression XOR expression                                                     #exclusiveOrExpression
+    | expression OR expression                                                      #inclusiveOrExpression
+    | expression CONCAT expression                                                  #stringExpression
+    | expression (EQUAL|NOT_EQUAL|LESS_EQUAL|GREATER_EQUAL|LESS|GREATER) expression #relationalExpression
+    ;
 
 primaryExpression
-    : NAME
-    | SYS_VAR
-    | R_PARAM
-    | constant
-    | function
-    | OPEN_PAREN expression CLOSE_PAREN;
+    : NAME arrayDefinition?                 #variableUse
+    | SYS_VAR arrayDefinition?              #systemVariableUse
+    | R_PARAM arrayDefinition?              #rParamUse
+    | constant                              #constantUse
+    | predefinedFunction                    #functionUse
+    | OPEN_PAREN expression CLOSE_PAREN     #nestedExpression
+    ;
 
 constant
     : numeric
@@ -1007,14 +1017,14 @@ constant
     | STRING
     | BOOL;
 
-numeric: SUB? (INT | REAL);
+numeric: (SUB|ADD)? (INT|REAL);
 
 // command
 command
-    : NAME
-    | GCODE 
-    | MCODE 
-    | HCODE 
+    : macroUse
+    | gCode
+    | mCode
+    | hCode
     | axisCode
     | ADIS
     | ADISPOS
@@ -1276,7 +1286,13 @@ command
     | UPATH
     | WALCS
     | WALIMOF
-    | WALIMON;
+    | WALIMON
+    ;
+
+macroUse: NAME;
+gCode: GCODE;
+mCode: MCODE;
+hCode: HCODE;
 
 axisCode: AXIS numeric | axis_identifier ASSIGNMENT axisAssignmentExpression;
 axisAssignmentExpression: expression | (AC | IC) OPEN_PAREN expression CLOSE_PAREN;
@@ -1287,7 +1303,7 @@ axis_identifier: AXIS_NUMBERED | NAME;
 spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT CLOSE_PAREN | SPINDLE | NAME;
 
 // procedure
-procedure: predefinedProcedure | ownProcedure | function;
+procedure: predefinedProcedure | ownProcedure | predefinedFunction;
 ownProcedure: NAME parameters?;
 parameters: OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN;
 
@@ -1485,8 +1501,6 @@ feedrate_override_path_handwheel: FD ASSIGNMENT expression;
 feedrate_override_axial_handwheel: FDA OPEN_BRACKET axis_identifier CLOSE_BRACKET ASSIGNMENT expression;
 
 // function
-function: predefinedFunction;
-
 predefinedFunction
     : mathFunction;
 

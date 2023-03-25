@@ -45,6 +45,36 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// <return>The visitor result.</return>
 	public virtual Result VisitFile([NotNull] SinumerikNCParser.FileContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.content"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitContent([NotNull] SinumerikNCParser.ContentContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.declarationSpace"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitDeclarationSpace([NotNull] SinumerikNCParser.DeclarationSpaceContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.codeSpace"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitCodeSpace([NotNull] SinumerikNCParser.CodeSpaceContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.declarationBlock"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -64,6 +94,16 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitBlock([NotNull] SinumerikNCParser.BlockContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.blockNumber"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitBlockNumber([NotNull] SinumerikNCParser.BlockNumberContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.procedureDefinition"/>.
 	/// <para>
@@ -114,6 +154,16 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitParameterDefinitionByReference([NotNull] SinumerikNCParser.ParameterDefinitionByReferenceContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.labelDefinition"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitLabelDefinition([NotNull] SinumerikNCParser.LabelDefinitionContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.declaration"/>.
 	/// <para>
@@ -365,7 +415,8 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// <return>The visitor result.</return>
 	public virtual Result VisitGotoCondition([NotNull] SinumerikNCParser.GotoConditionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.gotoTarget"/>.
+	/// Visit a parse tree produced by the <c>gotoLabel</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.gotoTarget"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -373,9 +424,10 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitGotoTarget([NotNull] SinumerikNCParser.GotoTargetContext context) { return VisitChildren(context); }
+	public virtual Result VisitGotoLabel([NotNull] SinumerikNCParser.GotoLabelContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.expression"/>.
+	/// Visit a parse tree produced by the <c>gotoBlock</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.gotoTarget"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -383,49 +435,10 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitExpression([NotNull] SinumerikNCParser.ExpressionContext context) { return VisitChildren(context); }
+	public virtual Result VisitGotoBlock([NotNull] SinumerikNCParser.GotoBlockContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.relationalExpression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitRelationalExpression([NotNull] SinumerikNCParser.RelationalExpressionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.stringExpression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitStringExpression([NotNull] SinumerikNCParser.StringExpressionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.inclusiveOrExpression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitInclusiveOrExpression([NotNull] SinumerikNCParser.InclusiveOrExpressionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.exclusiveOrExpression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitExclusiveOrExpression([NotNull] SinumerikNCParser.ExclusiveOrExpressionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.andExpression"/>.
+	/// Visit a parse tree produced by the <c>andExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -435,7 +448,8 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// <return>The visitor result.</return>
 	public virtual Result VisitAndExpression([NotNull] SinumerikNCParser.AndExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.binaryInclusiveOrExpression"/>.
+	/// Visit a parse tree produced by the <c>stringExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -443,29 +457,10 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBinaryInclusiveOrExpression([NotNull] SinumerikNCParser.BinaryInclusiveOrExpressionContext context) { return VisitChildren(context); }
+	public virtual Result VisitStringExpression([NotNull] SinumerikNCParser.StringExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.binaryExclusiveOrExpression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitBinaryExclusiveOrExpression([NotNull] SinumerikNCParser.BinaryExclusiveOrExpressionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.binaryAndExpression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitBinaryAndExpression([NotNull] SinumerikNCParser.BinaryAndExpressionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.additiveExpression"/>.
+	/// Visit a parse tree produced by the <c>additiveExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -475,7 +470,74 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// <return>The visitor result.</return>
 	public virtual Result VisitAdditiveExpression([NotNull] SinumerikNCParser.AdditiveExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.multiplicativeExpression"/>.
+	/// Visit a parse tree produced by the <c>binaryAndExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitBinaryAndExpression([NotNull] SinumerikNCParser.BinaryAndExpressionContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>exclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitExclusiveOrExpression([NotNull] SinumerikNCParser.ExclusiveOrExpressionContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>inclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitInclusiveOrExpression([NotNull] SinumerikNCParser.InclusiveOrExpressionContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>relationalExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitRelationalExpression([NotNull] SinumerikNCParser.RelationalExpressionContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>binaryInclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitBinaryInclusiveOrExpression([NotNull] SinumerikNCParser.BinaryInclusiveOrExpressionContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>binaryExclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitBinaryExclusiveOrExpression([NotNull] SinumerikNCParser.BinaryExclusiveOrExpressionContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>multiplicativeExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -485,7 +547,8 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// <return>The visitor result.</return>
 	public virtual Result VisitMultiplicativeExpression([NotNull] SinumerikNCParser.MultiplicativeExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.unaryExpression"/>.
+	/// Visit a parse tree produced by the <c>unaryExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -495,7 +558,8 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// <return>The visitor result.</return>
 	public virtual Result VisitUnaryExpression([NotNull] SinumerikNCParser.UnaryExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// Visit a parse tree produced by the <c>variableUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -503,7 +567,62 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitPrimaryExpression([NotNull] SinumerikNCParser.PrimaryExpressionContext context) { return VisitChildren(context); }
+	public virtual Result VisitVariableUse([NotNull] SinumerikNCParser.VariableUseContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>systemVariableUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitSystemVariableUse([NotNull] SinumerikNCParser.SystemVariableUseContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>rParamUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitRParamUse([NotNull] SinumerikNCParser.RParamUseContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>constantUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitConstantUse([NotNull] SinumerikNCParser.ConstantUseContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>functionUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitFunctionUse([NotNull] SinumerikNCParser.FunctionUseContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>nestedExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitNestedExpression([NotNull] SinumerikNCParser.NestedExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.constant"/>.
 	/// <para>
@@ -534,6 +653,46 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitCommand([NotNull] SinumerikNCParser.CommandContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.macroUse"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitMacroUse([NotNull] SinumerikNCParser.MacroUseContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.gCode"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitGCode([NotNull] SinumerikNCParser.GCodeContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.mCode"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitMCode([NotNull] SinumerikNCParser.MCodeContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.hCode"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitHCode([NotNull] SinumerikNCParser.HCodeContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.axisCode"/>.
 	/// <para>
@@ -694,16 +853,6 @@ public partial class SinumerikNCBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitFeedrate_override_axial_handwheel([NotNull] SinumerikNCParser.Feedrate_override_axial_handwheelContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.function"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitFunction([NotNull] SinumerikNCParser.FunctionContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.predefinedFunction"/>.
 	/// <para>

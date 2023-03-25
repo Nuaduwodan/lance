@@ -48,6 +48,42 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFile([NotNull] SinumerikNCParser.FileContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.content"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterContent([NotNull] SinumerikNCParser.ContentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.content"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitContent([NotNull] SinumerikNCParser.ContentContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.declarationSpace"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDeclarationSpace([NotNull] SinumerikNCParser.DeclarationSpaceContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.declarationSpace"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDeclarationSpace([NotNull] SinumerikNCParser.DeclarationSpaceContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.codeSpace"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCodeSpace([NotNull] SinumerikNCParser.CodeSpaceContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.codeSpace"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCodeSpace([NotNull] SinumerikNCParser.CodeSpaceContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.declarationBlock"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -71,6 +107,18 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBlock([NotNull] SinumerikNCParser.BlockContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.blockNumber"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBlockNumber([NotNull] SinumerikNCParser.BlockNumberContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.blockNumber"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBlockNumber([NotNull] SinumerikNCParser.BlockNumberContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.procedureDefinition"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -131,6 +179,18 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitParameterDefinitionByReference([NotNull] SinumerikNCParser.ParameterDefinitionByReferenceContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.labelDefinition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLabelDefinition([NotNull] SinumerikNCParser.LabelDefinitionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.labelDefinition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLabelDefinition([NotNull] SinumerikNCParser.LabelDefinitionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.declaration"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -432,173 +492,271 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitGotoCondition([NotNull] SinumerikNCParser.GotoConditionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.gotoTarget"/>.
+	/// Enter a parse tree produced by the <c>gotoLabel</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.gotoTarget"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterGotoTarget([NotNull] SinumerikNCParser.GotoTargetContext context) { }
+	public virtual void EnterGotoLabel([NotNull] SinumerikNCParser.GotoLabelContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.gotoTarget"/>.
+	/// Exit a parse tree produced by the <c>gotoLabel</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.gotoTarget"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitGotoTarget([NotNull] SinumerikNCParser.GotoTargetContext context) { }
+	public virtual void ExitGotoLabel([NotNull] SinumerikNCParser.GotoLabelContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.expression"/>.
+	/// Enter a parse tree produced by the <c>gotoBlock</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.gotoTarget"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExpression([NotNull] SinumerikNCParser.ExpressionContext context) { }
+	public virtual void EnterGotoBlock([NotNull] SinumerikNCParser.GotoBlockContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.expression"/>.
+	/// Exit a parse tree produced by the <c>gotoBlock</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.gotoTarget"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExpression([NotNull] SinumerikNCParser.ExpressionContext context) { }
+	public virtual void ExitGotoBlock([NotNull] SinumerikNCParser.GotoBlockContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.relationalExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRelationalExpression([NotNull] SinumerikNCParser.RelationalExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.relationalExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRelationalExpression([NotNull] SinumerikNCParser.RelationalExpressionContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.stringExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterStringExpression([NotNull] SinumerikNCParser.StringExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.stringExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitStringExpression([NotNull] SinumerikNCParser.StringExpressionContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.inclusiveOrExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterInclusiveOrExpression([NotNull] SinumerikNCParser.InclusiveOrExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.inclusiveOrExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitInclusiveOrExpression([NotNull] SinumerikNCParser.InclusiveOrExpressionContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.exclusiveOrExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExclusiveOrExpression([NotNull] SinumerikNCParser.ExclusiveOrExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.exclusiveOrExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExclusiveOrExpression([NotNull] SinumerikNCParser.ExclusiveOrExpressionContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.andExpression"/>.
+	/// Enter a parse tree produced by the <c>andExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void EnterAndExpression([NotNull] SinumerikNCParser.AndExpressionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.andExpression"/>.
+	/// Exit a parse tree produced by the <c>andExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAndExpression([NotNull] SinumerikNCParser.AndExpressionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.binaryInclusiveOrExpression"/>.
+	/// Enter a parse tree produced by the <c>stringExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBinaryInclusiveOrExpression([NotNull] SinumerikNCParser.BinaryInclusiveOrExpressionContext context) { }
+	public virtual void EnterStringExpression([NotNull] SinumerikNCParser.StringExpressionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.binaryInclusiveOrExpression"/>.
+	/// Exit a parse tree produced by the <c>stringExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBinaryInclusiveOrExpression([NotNull] SinumerikNCParser.BinaryInclusiveOrExpressionContext context) { }
+	public virtual void ExitStringExpression([NotNull] SinumerikNCParser.StringExpressionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.binaryExclusiveOrExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBinaryExclusiveOrExpression([NotNull] SinumerikNCParser.BinaryExclusiveOrExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.binaryExclusiveOrExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBinaryExclusiveOrExpression([NotNull] SinumerikNCParser.BinaryExclusiveOrExpressionContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.binaryAndExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBinaryAndExpression([NotNull] SinumerikNCParser.BinaryAndExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.binaryAndExpression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBinaryAndExpression([NotNull] SinumerikNCParser.BinaryAndExpressionContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.additiveExpression"/>.
+	/// Enter a parse tree produced by the <c>additiveExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void EnterAdditiveExpression([NotNull] SinumerikNCParser.AdditiveExpressionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.additiveExpression"/>.
+	/// Exit a parse tree produced by the <c>additiveExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAdditiveExpression([NotNull] SinumerikNCParser.AdditiveExpressionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.multiplicativeExpression"/>.
+	/// Enter a parse tree produced by the <c>binaryAndExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBinaryAndExpression([NotNull] SinumerikNCParser.BinaryAndExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>binaryAndExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBinaryAndExpression([NotNull] SinumerikNCParser.BinaryAndExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>exclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterExclusiveOrExpression([NotNull] SinumerikNCParser.ExclusiveOrExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>exclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitExclusiveOrExpression([NotNull] SinumerikNCParser.ExclusiveOrExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>inclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterInclusiveOrExpression([NotNull] SinumerikNCParser.InclusiveOrExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>inclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitInclusiveOrExpression([NotNull] SinumerikNCParser.InclusiveOrExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>relationalExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRelationalExpression([NotNull] SinumerikNCParser.RelationalExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>relationalExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRelationalExpression([NotNull] SinumerikNCParser.RelationalExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>binaryInclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBinaryInclusiveOrExpression([NotNull] SinumerikNCParser.BinaryInclusiveOrExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>binaryInclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBinaryInclusiveOrExpression([NotNull] SinumerikNCParser.BinaryInclusiveOrExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>binaryExclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBinaryExclusiveOrExpression([NotNull] SinumerikNCParser.BinaryExclusiveOrExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>binaryExclusiveOrExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBinaryExclusiveOrExpression([NotNull] SinumerikNCParser.BinaryExclusiveOrExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>multiplicativeExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void EnterMultiplicativeExpression([NotNull] SinumerikNCParser.MultiplicativeExpressionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.multiplicativeExpression"/>.
+	/// Exit a parse tree produced by the <c>multiplicativeExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMultiplicativeExpression([NotNull] SinumerikNCParser.MultiplicativeExpressionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.unaryExpression"/>.
+	/// Enter a parse tree produced by the <c>unaryExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void EnterUnaryExpression([NotNull] SinumerikNCParser.UnaryExpressionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.unaryExpression"/>.
+	/// Exit a parse tree produced by the <c>unaryExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitUnaryExpression([NotNull] SinumerikNCParser.UnaryExpressionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// Enter a parse tree produced by the <c>variableUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPrimaryExpression([NotNull] SinumerikNCParser.PrimaryExpressionContext context) { }
+	public virtual void EnterVariableUse([NotNull] SinumerikNCParser.VariableUseContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// Exit a parse tree produced by the <c>variableUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPrimaryExpression([NotNull] SinumerikNCParser.PrimaryExpressionContext context) { }
+	public virtual void ExitVariableUse([NotNull] SinumerikNCParser.VariableUseContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>systemVariableUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSystemVariableUse([NotNull] SinumerikNCParser.SystemVariableUseContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>systemVariableUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSystemVariableUse([NotNull] SinumerikNCParser.SystemVariableUseContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>rParamUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRParamUse([NotNull] SinumerikNCParser.RParamUseContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>rParamUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRParamUse([NotNull] SinumerikNCParser.RParamUseContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>constantUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterConstantUse([NotNull] SinumerikNCParser.ConstantUseContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>constantUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitConstantUse([NotNull] SinumerikNCParser.ConstantUseContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>functionUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFunctionUse([NotNull] SinumerikNCParser.FunctionUseContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>functionUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFunctionUse([NotNull] SinumerikNCParser.FunctionUseContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>nestedExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNestedExpression([NotNull] SinumerikNCParser.NestedExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>nestedExpression</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNestedExpression([NotNull] SinumerikNCParser.NestedExpressionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.constant"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -635,6 +793,54 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCommand([NotNull] SinumerikNCParser.CommandContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.macroUse"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMacroUse([NotNull] SinumerikNCParser.MacroUseContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.macroUse"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMacroUse([NotNull] SinumerikNCParser.MacroUseContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.gCode"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterGCode([NotNull] SinumerikNCParser.GCodeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.gCode"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitGCode([NotNull] SinumerikNCParser.GCodeContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.mCode"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMCode([NotNull] SinumerikNCParser.MCodeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.mCode"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMCode([NotNull] SinumerikNCParser.MCodeContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.hCode"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHCode([NotNull] SinumerikNCParser.HCodeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.hCode"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHCode([NotNull] SinumerikNCParser.HCodeContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.axisCode"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -827,18 +1033,6 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFeedrate_override_axial_handwheel([NotNull] SinumerikNCParser.Feedrate_override_axial_handwheelContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.function"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFunction([NotNull] SinumerikNCParser.FunctionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.function"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFunction([NotNull] SinumerikNCParser.FunctionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.predefinedFunction"/>.
 	/// <para>The default implementation does nothing.</para>
