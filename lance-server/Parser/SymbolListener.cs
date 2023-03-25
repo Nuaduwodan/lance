@@ -98,9 +98,9 @@ namespace LanceServer.Parser
             return Enum.Parse<DataType>(typeContext.GetText(), ignoreCase);
         }
 
-        private string[] GetArrayDeclaration(SinumerikNCParser.ArrayDeclarationContext arrayContext)
+        private string[] GetArrayDeclaration(SinumerikNCParser.ArrayDeclarationContext? arrayContext)
         {
-            if (string.IsNullOrEmpty(arrayContext.GetText()))
+            if (arrayContext == null)
             {
                 return Array.Empty<string>();
             }

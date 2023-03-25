@@ -24,7 +24,7 @@ namespace LanceServer.Core.Workspace
 
         public Document GetDocumentWithUpdatedSymbolTable(Uri uri)
         {
-            var document = GetDocument(uri);
+            var document = GetDocumentWithParseTree(uri);
             if (document.State >= DocumentState.Visited)
             {
                 return document;
@@ -40,6 +40,8 @@ namespace LanceServer.Core.Workspace
             {
                 AddSymbol(symbol);
             }
+
+            document.SetVisited();
 
             return document;
         }

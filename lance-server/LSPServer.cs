@@ -233,8 +233,8 @@ namespace LanceServer
 
         // ======= WINDOW ========
 
-        [JsonRpcMethod(Methods.WorkspaceDidChangeConfigurationName)]
-        public void WorkspaceDidChangeConfigurationName(JToken arg)
+        [JsonRpcMethod(Methods.TextDocumentDidChangeName)]
+        public void TextDocumentDidChange(JToken arg)
         {
             lock (_object)
             {
@@ -242,98 +242,21 @@ namespace LanceServer
                 {
                     if (trace)
                     {
-                        System.Console.Error.WriteLine("<-- WorkspaceDidChangeConfiguration");
+                        System.Console.Error.WriteLine("<-- TextDocumentDidChange");
                         System.Console.Error.WriteLine(arg.ToString());
                     }
+                    
+                    // Deserialization
+                    DidChangeTextDocumentParams request = arg.ToObject<DidChangeTextDocumentParams>();
+                    var uri = new Uri(Uri.UnescapeDataString(request.TextDocument.Uri));
 
-                    // code
+                    var document = _workspace.GetDocument(uri);
+                    document.Content = request.ContentChanges.Last().Text;
                 }
-                catch (Exception)
+                catch (Exception exception)
                 {
+                    System.Console.Error.WriteLine(exception.Message, MessageType.Info);
                 }
-            }
-        }
-
-        [JsonRpcMethod(Methods.WorkspaceDidChangeWatchedFilesName)]
-        public void WorkspaceDidChangeWatchedFilesName(JToken arg)
-        {
-            lock (_object)
-            {
-                try
-                {
-                    if (trace)
-                    {
-                        System.Console.Error.WriteLine("<-- WorkspaceDidChangeWatchedFiles");
-                        System.Console.Error.WriteLine(arg.ToString());
-                    }
-
-                    // code
-                }
-                catch (Exception)
-                {
-                }
-            }
-        }
-
-        [JsonRpcMethod(Methods.WorkspaceSymbolName)]
-        public JToken WorkspaceSymbolName(JToken arg)
-        {
-            lock (_object)
-            {
-                try
-                {
-                    if (trace)
-                    {
-                        System.Console.Error.WriteLine("<-- WorkspaceSymbol");
-                        System.Console.Error.WriteLine(arg.ToString());
-                    }
-
-                    // code
-                }
-                catch (Exception)
-                {
-                }
-
-                return null;
-            }
-        }
-
-        [JsonRpcMethod(Methods.WorkspaceExecuteCommandName)]
-        public JToken WorkspaceExecuteCommandName(JToken arg)
-        {
-            lock (_object)
-            {
-                try
-                {
-                    if (trace)
-                    {
-                        System.Console.Error.WriteLine("<-- WorkspaceExecuteCommand");
-                        System.Console.Error.WriteLine(arg.ToString());
-                    }
-
-                    // code
-                }
-                catch (Exception)
-                {
-                }
-
-                return null;
-            }
-        }
-
-        [JsonRpcMethod(Methods.WorkspaceApplyEditName)]
-        public JToken WorkspaceApplyEditName(JToken arg)
-        {
-            lock (_object)
-            {
-                if (trace)
-                {
-                    System.Console.Error.WriteLine("<-- WorkspaceApplyEdit");
-                    System.Console.Error.WriteLine(arg.ToString());
-                }
-
-                // code
-                return null;
             }
         }
 
@@ -369,9 +292,9 @@ namespace LanceServer
                         System.Console.Error.WriteLine(string.Join(" ", result.Data));
                     }
                 }
-                catch (Exception e)
+                catch (Exception exception)
                 {
-                    System.Console.Error.WriteLine(e.Message, MessageType.Info);
+                    System.Console.Error.WriteLine(exception.Message, MessageType.Info);
                 }
 
                 return result;
@@ -402,9 +325,9 @@ namespace LanceServer
                     // Handler could be global as well and the document, handlerParams and the symbolTable could be provided per request
                     result = _hoverHandler.ProcessRequest(document, request, _workspace);
                 }
-                catch (Exception e)
+                catch (Exception exception)
                 {
-                    System.Console.Error.WriteLine(e.Message, MessageType.Info);
+                    System.Console.Error.WriteLine(exception.Message, MessageType.Info);
                 }
 
                 return result;

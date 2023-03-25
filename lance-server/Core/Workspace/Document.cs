@@ -68,5 +68,10 @@ namespace LanceServer.Core.Workspace
         {
             _symbols.Add(symbol.Identifier, symbol);
         }
+
+        public void SetVisited()
+        {
+            State = DocumentState.Visited;
+        }
     }
 }
