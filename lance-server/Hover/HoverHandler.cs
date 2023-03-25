@@ -1,6 +1,8 @@
 ﻿using System.Text;
+using Antlr4.Runtime.Tree;
 using LanceServer.Core.Configuration;
 using LanceServer.Core.Workspace;
+using LanceServer.Parser;
 using LspTypes;
 using Range = LspTypes.Range;
 
@@ -11,8 +13,8 @@ namespace LanceServer.Hover
     /// </summary>
     public class HoverHandler
     {
-        private HoverVisitor visitor = new HoverVisitor();
         private DocumentationConfiguration _documentation;
+        private readonly ParseTreeWalker _walker = new ParseTreeWalker();
 
         public HoverHandler(DocumentationConfiguration documentation)
         {
@@ -21,14 +23,27 @@ namespace LanceServer.Hover
 
         public LspTypes.Hover ProcessRequest(Document document, HoverParams requestParams, Workspace workspace)
         {
-            var token = visitor.Visit(document.Tree);
+            if (document.State < DocumentState.Visited)
+            {
+                throw new ArgumentException(nameof(document)+" has to be in state Visited or higher");
+            }
 
-            if (token.Type != SinumerikNCLexer.NAME)
+            var position = requestParams.Position;
+            position.Line++;
+            var hoverListener = new HoverListener(requestParams.Position);
+            _walker.Walk(hoverListener, document.Tree);
+
+            var token = hoverListener.Token;
+
+            if (token == null)
             {
                 return new LspTypes.Hover();
             }
             
             var symbol = workspace.GetSymbol(token.Text, document.Uri);
+
+            var tokenStart = new Position((uint)token.Line - 1, (uint)token.Column);
+            var tokenEnd = new Position(tokenStart.Line, tokenStart.Character + (uint)token.Text.Length);
 
             return new LspTypes.Hover()
             {
@@ -38,8 +53,8 @@ namespace LanceServer.Hover
                 }),
                 Range = new Range()
                 {
-                    Start = new Position((uint)token.Line, (uint)token.Column),
-                    End = new Position((uint)token.Line, (uint)(token.Column + token.Text.Length))
+                    Start = tokenStart,
+                    End = tokenEnd
                 }
             };
         }
