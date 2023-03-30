@@ -858,7 +858,7 @@ DOUBLE_COLON: ':';
 COMMA: ',';
 
 // other (operation types C, PA, empty)
-BLOCK_NUMBER: 'n';
+BLOCK_NUMBER: 'n' [0-9]?[0-9]?[0-9]?[0-9]?[1-9];
 CYCLE: 'cycle';
 GROUP_ADDEND:'group_addend';
 GROUP_BEGIN:'group_begin';
@@ -907,7 +907,7 @@ codeSpace: block*;
 declarationBlock: blockNumber? declaration | blockNumber;
 block: blockNumber? labelDefinition? statement | blockNumber? labelDefinition | blockNumber;
 
-blockNumber: BLOCK_NUMBER INT;
+blockNumber: BLOCK_NUMBER;
 
 // definition
 procedureDefinition: PROC NAME parameterDefinitions? content PROC_END;
@@ -984,7 +984,7 @@ gotoStatement
 gotoCondition: IF expression;
 gotoTarget
     : NAME              #gotoLabel
-    | BLOCK_NUMBER INT  #gotoBlock
+    | BLOCK_NUMBER      #gotoBlock
     ;
 
 expression
