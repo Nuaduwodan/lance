@@ -13,12 +13,12 @@ namespace LanceServer.Hover
     /// </summary>
     public class HoverHandler
     {
-        private DocumentationConfiguration _documentation;
+        private ConfigurationManager _configurationManager;
         private readonly ParseTreeWalker _walker = new ParseTreeWalker();
 
-        public HoverHandler(DocumentationConfiguration documentation)
+        public HoverHandler(ConfigurationManager configurationManager)
         {
-            _documentation = documentation;
+            _configurationManager = configurationManager;
         }
 
         public LspTypes.Hover ProcessRequest(Document document, HoverParams requestParams, Workspace workspace)

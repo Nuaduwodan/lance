@@ -59,8 +59,8 @@
               },
               "lanceServer.customizing.globalSymbol.fileEndings":{
                 "type": "array",
-                "default": ["def"],
-                "description": "Specifies the file endings of files, which containing symbols should be interpreted as global symbols."
+                "default": [".def"],
+                "description": "Specifies the file endings, with the leading dot, of files, of which containing symbols should be interpreted as global symbols."
               },
               "lanceServer.customizing.globalSymbol.folderNames":{
                 "type": "array",

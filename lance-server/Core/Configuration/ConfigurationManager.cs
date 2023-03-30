@@ -1,21 +1,33 @@
-﻿namespace LanceServer.Core.Configuration;
+﻿using LspTypes;
+
+namespace LanceServer.Core.Configuration;
 
 public class ConfigurationManager
 {
-    private readonly object _initializationOptions;
-    public ConfigurationManager(object initializationOptions)
+    private readonly IConfigurationServer _server;
+    public SymbolTableConfiguration? SymbolTableConfiguration { get; private set; }
+    public FileEndingConfiguration? FileEndingConfiguration { get; private set; }
+    public DocumentationConfiguration? DocumentationConfiguration { get; private set; }
+
+    public ConfigurationManager(IConfigurationServer server)
     {
-        _initializationOptions = initializationOptions;
+        _server = server;
     }
 
-    public SymbolTableConfiguration GetSymbolTableConfiguration()
+    public Task InitConfigurationAsync()
     {
-        // Todo read config from _initializationOptions
-        return new SymbolTableConfiguration(new []{"def"},new []{"cma.dir"});
+        var requestParameters = new ConfigurationParams()
+        {
+            Items = new []{new ConfigurationItem{Section = "lanceServer"}}
+        };
+        
+        return _server.GetConfigurationsAsync(requestParameters).ContinueWith(task => ExtractConfiguration(task.Result), TaskScheduler.Default);
     }
 
-    public DocumentationConfiguration GetDocumentationConfiguration()
+    public void ExtractConfiguration(ConfigurationResult configurationResult)
     {
-        return new DocumentationConfiguration();
+        // Todo extract Configuration from ConfigurationResult
+        SymbolTableConfiguration = new SymbolTableConfiguration(new []{".def"},new []{"cma.dir"});
+        FileEndingConfiguration = new FileEndingConfiguration(new []{".def", ".spf", ".mpf"});
     }
 }
