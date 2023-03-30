@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides some helper functions
     /// </summary>
-    public class Util
+    public class FileIoHelper
     {
         private static Dictionary<string, string> _cache = new();
 
@@ -48,6 +48,12 @@
             return result;
         }
 
+        public static IEnumerable<Uri> GetFilesInDirectory(Uri path, string filter)
+        {
+            var dir = new DirectoryInfo(path.AbsolutePath);
+            return dir.GetFiles(filter).Select(info => new Uri(info.FullName));
+        }
+
         public static Document ReadDocument(Uri uri)
         {
             Document document = new Document(uri);
@@ -61,7 +67,7 @@
             }
             catch (IOException exception)
             {
-                System.Console.Error.WriteLine(exception.StackTrace);
+                Console.Error.WriteLine(exception.StackTrace);
             }
             return document;
         }

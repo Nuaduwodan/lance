@@ -9,7 +9,7 @@ namespace LanceServer.Core.Workspace
     public class Document
     {
         public DocumentState State { get; private set; }
-        private string _content;
+        private string _content = String.Empty;
 
         public string Content
         {
@@ -67,6 +67,15 @@ namespace LanceServer.Core.Workspace
         public void AddSymbol(ISymbol symbol)
         {
             _symbols.Add(symbol.Identifier, symbol);
+        }
+
+        public void DeleteAllSymbols()
+        {
+            _symbols = new Dictionary<string, ISymbol>();
+            if (State >= DocumentState.Visited)
+            {
+                State = DocumentState.Parsed;
+            }
         }
 
         public void SetVisited()
