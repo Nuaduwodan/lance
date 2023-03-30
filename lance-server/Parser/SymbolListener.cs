@@ -8,7 +8,7 @@ namespace LanceServer.Parser
         public List<ISymbol> SymbolTable { get; } = new();
         public Uri Document { get; }
 
-        private List<ParameterSymbol> parameters;
+        private List<ParameterSymbol> _parameters = new();
 
         public SymbolListener(Uri documentUri)
         {
@@ -19,7 +19,7 @@ namespace LanceServer.Parser
         public override void EnterProcedureDefinition(SinumerikNCParser.ProcedureDefinitionContext context)
         {
             base.EnterProcedureDefinition(context);
-            parameters = new List<ParameterSymbol>();
+            _parameters = new List<ParameterSymbol>();
         }
 
         /// <inheritdoc/>
@@ -28,7 +28,7 @@ namespace LanceServer.Parser
             base.ExitParameterDefinitionByReference(context);
             var symbol = new ParameterSymbol(context.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column),
                 GetCompositeDataType(context.type()), GetArrayDeclaration(context.arrayDeclaration()),true);
-            parameters.Add(symbol);
+            _parameters.Add(symbol);
             SymbolTable.Add(symbol);
         }
         
@@ -38,7 +38,7 @@ namespace LanceServer.Parser
             base.ExitParameterDefinitionByValue(context);
             var symbol = new ParameterSymbol(context.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column),
                 GetCompositeDataType(context.type()), Array.Empty<string>());
-            parameters.Add(symbol);
+            _parameters.Add(symbol);
             SymbolTable.Add(symbol);
         }
 
@@ -46,7 +46,7 @@ namespace LanceServer.Parser
         public override void ExitProcedureDefinition(SinumerikNCParser.ProcedureDefinitionContext context)
         {
             base.ExitProcedureDefinition(context);
-            var symbol = new ProcedureSymbol(context.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column), parameters.ToArray());
+            var symbol = new ProcedureSymbol(context.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column), _parameters.ToArray());
             SymbolTable.Add(symbol);
         }
 

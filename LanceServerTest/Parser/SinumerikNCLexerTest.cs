@@ -84,8 +84,6 @@ public class SinumerikNCLexerTest
     public void SimpleProcedure()
     {
         // Arrange
-        int expectedTokenCount = 6;
-
         var code = 
             @"proc testProcedure(int testparam)
 
@@ -163,8 +161,6 @@ public class SinumerikNCLexerTest
     public void GCodeProcedure()
     {
         // Arrange
-        int expectedTokenCount = 6;
-
         var code = 
             @"proc GEA01_HOB01_Modification
 

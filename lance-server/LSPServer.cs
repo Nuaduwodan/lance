@@ -6,16 +6,28 @@ using LanceServer.Parser;
 using LanceServer.SemanticToken;
 using LanceServer.Core.Workspace;
 using LspTypes;
+using StreamJsonRpc.Protocol;
 
 namespace LanceServer
 {
     class LSPServer : IDisposable
     {
-        private readonly JsonRpc rpc;
-        private readonly ManualResetEvent disconnectEvent = new ManualResetEvent(false);
-        public event EventHandler Disconnected;
-        private bool isDisposed;
+        private const string InvalidParamsMessage = "params could not be parsed into type ";
+        private const string TraceIn = "<-- ";
+        private const string TraceOut = "--> ";
+        
+        private readonly JsonRpc _rpc;
+        private readonly IConfigurationServer _configurationServer;
+        
+        private readonly ManualResetEvent _disconnectEvent = new ManualResetEvent(false);
+        private readonly bool _trace = true;
+        
+        private static readonly object Lock = new object();
+        
+        private bool _isDisposed;
 
+        public event EventHandler Disconnected;
+        
         /// <summary>
         /// The workspace containing all the files 
         /// </summary>
@@ -23,16 +35,18 @@ namespace LanceServer
 
         private SemanticTokenHandler _semanticTokenHandler;
         private HoverHandler _hoverHandler;
+        private ConfigurationManager _configurationManager;
 
         public LSPServer(Stream sender, Stream reader)
         {
-            rpc = JsonRpc.Attach(sender, reader, this);
-            rpc.Disconnected += OnRpcDisconnected;
+            _rpc = JsonRpc.Attach(sender, reader, this);
+            _rpc.Disconnected += OnRpcDisconnected;
+            _configurationServer = JsonRpc.Attach<IConfigurationServer>(sender, reader);
         }
 
-        private void OnRpcDisconnected(object sender, JsonRpcDisconnectedEventArgs e)
+        private void OnRpcDisconnected(object? sender, JsonRpcDisconnectedEventArgs e)
         {
-            Exit();
+            InternalExit();
         }
 
         public void Dispose()
@@ -43,20 +57,20 @@ namespace LanceServer
 
         protected virtual void Dispose(bool disposing)
         {
-            if (isDisposed) return;
+            if (_isDisposed) return;
 
             if (disposing)
             {
                 // free managed resources
-                disconnectEvent.Dispose();
+                _disconnectEvent.Dispose();
             }
 
-            isDisposed = true;
+            _isDisposed = true;
         }
 
         public void WaitForExit()
         {
-            disconnectEvent.WaitOne();
+            _disconnectEvent.WaitOne();
         }
 
         ~LSPServer()
@@ -65,273 +79,327 @@ namespace LanceServer
             Dispose(false);
         }
 
-        public void Exit()
+        private void InternalExit()
         {
-            disconnectEvent.Set();
-            Disconnected?.Invoke(this, new EventArgs());
-            System.Environment.Exit(0);
+            _disconnectEvent.Set();
+            Disconnected?.Invoke(this, EventArgs.Empty);
+            Environment.Exit(0);
         }
-
-        private static readonly object _object = new object();
-        private readonly bool trace = true;
 
         /// <summary>
         /// Handles the initialize request
         /// </summary>
         [JsonRpcMethod(Methods.InitializeName)]
-        public object Initialize(JToken arg)
+        public InitializeResult Initialize(JToken parameter)
         {
-            lock (_object)
+            if (_trace)
             {
-                if (trace)
-                {
-                    System.Console.Error.WriteLine("<-- Initialize");
-                    System.Console.Error.WriteLine(arg.ToString());
-                }
-
-                var init_params = arg.ToObject<InitializeParams>();
-                
-                // Configuration
-                var _configurationManager = new ConfigurationManager(init_params.InitializationOptions);
-                
-                var globalFileEndings = new[] {"def"};
-                var globalDirectories = new[] {"CMA.DIR"};
-                
-                _workspace = new Workspace(new ParserManager(), _configurationManager.GetSymbolTableConfiguration());
-                _semanticTokenHandler = new SemanticTokenHandler();
-                _hoverHandler = new HoverHandler(_configurationManager.GetDocumentationConfiguration());
-
-                ServerCapabilities capabilities = new ServerCapabilities
-                {
-                    TextDocumentSync = new TextDocumentSyncOptions
-                    {
-                        OpenClose = true,
-                        Change = TextDocumentSyncKind.Full,
-                        Save = new SaveOptions
-                        {
-                            IncludeText = false
-                        }
-                    },
-
-                    CompletionProvider = null,
-
-                    HoverProvider = true,
-
-                    SignatureHelpProvider = null,
-
-                    DefinitionProvider = false,
-
-                    TypeDefinitionProvider = false,
-
-                    ImplementationProvider = false,
-
-                    ReferencesProvider = false,
-
-                    DocumentHighlightProvider = false,
-
-                    DocumentSymbolProvider = false,
-
-                    CodeLensProvider = null,
-
-                    DocumentLinkProvider = null,
-
-                    DocumentFormattingProvider = false,
-
-                    DocumentRangeFormattingProvider = false,
-
-                    RenameProvider = false,
-
-                    FoldingRangeProvider = false,
-
-                    ExecuteCommandProvider = null,
-
-                    WorkspaceSymbolProvider = false,
-
-                    SemanticTokensProvider = new SemanticTokensOptions()
-                    {
-                        Full = true,
-                        Range = false,
-                        Legend = new SemanticTokensLegend()
-                        {
-                            tokenTypes = SemanticTokenTypeHelper.GetTypes(),
-                            tokenModifiers = SemanticTokenModifierHelper.GetModifiers()
-                        }
-                    },
-                };
-
-                InitializeResult result = new InitializeResult
-                {
-                    Capabilities = capabilities
-                };
-                if (trace)
-                {
-                    System.Console.Error.WriteLine("--> " + Newtonsoft.Json.JsonConvert.SerializeObject(result));
-                }
-
-                return result;
+                Console.Error.WriteLine(TraceIn + nameof(Initialize));
+                Console.Error.WriteLine(parameter.ToString());
             }
+
+            var request = DeserializeParams<InitializeParams>(parameter);
+            
+            InitializeResult result = new InitializeResult();
+            
+            try
+            {
+                lock (Lock)
+                {
+                    // Configuration
+                    _configurationManager = new ConfigurationManager(_configurationServer);
+                    _workspace = new Workspace(new ParserManager(), _configurationManager, request.WorkspaceFolders.Select(folder => new Uri(folder.Uri)));
+                    _semanticTokenHandler = new SemanticTokenHandler();
+                    _hoverHandler = new HoverHandler(_configurationManager);
+
+                    ServerCapabilities capabilities = new ServerCapabilities
+                    {
+                        TextDocumentSync = new TextDocumentSyncOptions
+                        {
+                            OpenClose = true,
+                            Change = TextDocumentSyncKind.Full,
+                            Save = new SaveOptions
+                            {
+                                IncludeText = false
+                            }
+                        },
+
+                        CompletionProvider = null,
+
+                        HoverProvider = true,
+
+                        SignatureHelpProvider = null,
+
+                        DefinitionProvider = false,
+
+                        TypeDefinitionProvider = false,
+
+                        ImplementationProvider = false,
+
+                        ReferencesProvider = false,
+
+                        DocumentHighlightProvider = false,
+
+                        DocumentSymbolProvider = false,
+
+                        CodeLensProvider = null,
+
+                        DocumentLinkProvider = null,
+
+                        DocumentFormattingProvider = false,
+
+                        DocumentRangeFormattingProvider = false,
+
+                        RenameProvider = false,
+
+                        FoldingRangeProvider = false,
+
+                        ExecuteCommandProvider = null,
+
+                        WorkspaceSymbolProvider = false,
+
+                        SemanticTokensProvider = new SemanticTokensOptions()
+                        {
+                            Full = true,
+                            Range = false,
+                            Legend = new SemanticTokensLegend()
+                            {
+                                tokenTypes = SemanticTokenTypeHelper.GetTypes(),
+                                tokenModifiers = SemanticTokenModifierHelper.GetModifiers()
+                            }
+                        },
+                    };
+
+                    result.Capabilities = capabilities;
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
+            }
+            
+            if (_trace)
+            {
+                Console.Error.Write(TraceOut + nameof(Initialized));
+                Console.Error.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
+            }
+            
+            return result;
         }
 
         [JsonRpcMethod(Methods.InitializedName)]
-        public void InitializedName(JToken arg)
+        public void Initialized(JToken parameter)
         {
-            lock (_object)
+            if (_trace)
             {
-                try
+                Console.Error.WriteLine(TraceIn + nameof(Initialized));
+                Console.Error.WriteLine(parameter.ToString());
+            }
+            
+            try
+            {
+                lock (Lock)
                 {
-                    if (trace)
-                    {
-                        System.Console.Error.WriteLine("<-- Initialized");
-                        System.Console.Error.WriteLine(arg.ToString());
-                    }
+                    //_workspace.InitWorkspaceAsync();
                 }
-                catch (Exception)
-                {
-                }
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
+            }
+            
+            if (_trace)
+            {
+                Console.Error.Write(TraceOut + nameof(Initialized));
             }
         }
 
         [JsonRpcMethod(Methods.ShutdownName)]
-        public JToken ShutdownName()
+        public JToken Shutdown()
         {
-            lock (_object)
+            if (_trace)
             {
-                try
+                Console.Error.WriteLine(TraceIn + nameof(Shutdown));
+            }
+            
+            try
+            {
+                lock (Lock)
                 {
-                    if (trace)
-                    {
-                        System.Console.Error.WriteLine("<-- Shutdown");
-                    }
+                    return new JObject();
                 }
-                catch (Exception)
-                {
-                }
-
-                return null;
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
         }
 
         [JsonRpcMethod(Methods.ExitName)]
-        public void ExitName()
+        public void Exit()
         {
-            lock (_object)
+            if (_trace)
             {
-                try
+                Console.Error.WriteLine(TraceIn + nameof(Exit));
+            }
+            
+            try
+            {
+                lock (Lock)
                 {
-                    if (trace)
-                    {
-                        System.Console.Error.WriteLine("<-- Exit");
-                    }
-
-                    Exit();
+                    InternalExit();
                 }
-                catch (Exception)
-                {
-                }
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
         }
 
-        // ======= WINDOW ========
-
-        [JsonRpcMethod(Methods.TextDocumentDidChangeName)]
-        public void TextDocumentDidChange(JToken arg)
+        [JsonRpcMethod(Methods.WorkspaceDidChangeConfigurationName)]
+        public void WorkspaceDidChangeConfiguration(JToken parameter)
         {
-            lock (_object)
+            if (_trace)
             {
-                try
-                {
-                    if (trace)
-                    {
-                        System.Console.Error.WriteLine("<-- TextDocumentDidChange");
-                        System.Console.Error.WriteLine(arg.ToString());
-                    }
-                    
-                    // Deserialization
-                    DidChangeTextDocumentParams request = arg.ToObject<DidChangeTextDocumentParams>();
-                    var uri = new Uri(Uri.UnescapeDataString(request.TextDocument.Uri));
+                Console.Error.WriteLine(TraceIn + nameof(WorkspaceDidChangeConfiguration));
+                Console.Error.WriteLine(parameter.ToString());
+            }
 
+            var request = DeserializeParams<ConfigurationResult>(parameter);
+
+            try
+            {
+                lock (Lock)
+                {
+                    _configurationManager.ExtractConfiguration(request);
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
+            }
+
+            if (_trace)
+            {
+                Console.Error.Write(TraceOut + nameof(WorkspaceDidChangeConfiguration));
+            }
+        }
+        
+        [JsonRpcMethod(Methods.TextDocumentDidChangeName)]
+        public void TextDocumentDidChange(JToken parameter)
+        {
+            if (_trace)
+            {
+                Console.Error.WriteLine(TraceIn + nameof(TextDocumentDidChange));
+                Console.Error.WriteLine(parameter.ToString());
+            }
+            
+            var request = DeserializeParams<DidChangeTextDocumentParams>(parameter);
+            var uri = new Uri(Uri.UnescapeDataString(request.TextDocument.Uri));
+            
+            try
+            {
+                lock (Lock)
+                {
                     var document = _workspace.GetDocument(uri);
                     document.Content = request.ContentChanges.Last().Text;
                 }
-                catch (Exception exception)
-                {
-                    System.Console.Error.WriteLine(exception.Message, MessageType.Info);
-                }
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
+            }
+
+            if (_trace)
+            {
+                Console.Error.Write(TraceOut + nameof(TextDocumentDidChange));
             }
         }
-
-        /// <summary>
-        /// Handles a semantic token request
-        /// </summary>
+        
         [JsonRpcMethod(Methods.TextDocumentSemanticTokensFull)]
-        public SemanticTokens SemanticTokens(JToken arg)
+        public SemanticTokens SemanticTokens(JToken parameter)
         {
-            lock (_object)
+            if (_trace)
             {
-                SemanticTokens result = null;
-                try
+                Console.Error.WriteLine(TraceIn + nameof(SemanticTokens));
+                Console.Error.WriteLine(parameter.ToString());
+            }
+
+            var request = DeserializeParams<DocumentSymbolParams>(parameter);
+            var uri = new Uri(Uri.UnescapeDataString(request.TextDocument.Uri));
+            SemanticTokens result;
+            
+            try
+            {
+                lock (Lock)
                 {
-                    if (trace)
-                    {
-                        System.Console.Error.WriteLine("<-- SemanticTokens");
-                        System.Console.Error.WriteLine(arg.ToString());
-                    }
-
-                    // Deserialization
-                    DocumentSymbolParams request = arg.ToObject<DocumentSymbolParams>();
-                    var uri = new Uri(Uri.UnescapeDataString(request.TextDocument.Uri));
-
                     var document = _workspace.GetDocumentWithParseTree(uri);
 
-                    // Handler could be global as well and the document, handlerParams and the symbolTable could be provided per request
                     result = _semanticTokenHandler.ProcessRequest(document, request);
-
-                    if (trace)
-                    {
-                        System.Console.Error.Write("returning semantictokens");
-                        System.Console.Error.WriteLine(string.Join(" ", result.Data));
-                    }
                 }
-                catch (Exception exception)
-                {
-                    System.Console.Error.WriteLine(exception.Message, MessageType.Info);
-                }
-
-                return result;
             }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
+            }
+
+            if (_trace)
+            {
+                Console.Error.Write(TraceOut + nameof(SemanticTokens));
+                Console.Error.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
+            }
+
+            return result;
         }
 
         [JsonRpcMethod(Methods.TextDocumentHoverName)]
-        public LspTypes.Hover Hover(JToken arg)
+        public LspTypes.Hover Hover(JToken parameter)
         {
-            lock (_object)
+            if (_trace)
             {
-                LspTypes.Hover result = null;
-                try
+                Console.Error.WriteLine(TraceIn + nameof(Hover));
+                Console.Error.WriteLine(parameter.ToString());
+            }
+            
+            var request = DeserializeParams<HoverParams>(parameter);
+            var uri = new Uri(Uri.UnescapeDataString(request.TextDocument.Uri));
+            LspTypes.Hover result;
+            
+            try
+            {
+                lock (Lock)
                 {
-                    if (trace)
-                    {
-                        System.Console.Error.WriteLine("<-- Hover");
-                        System.Console.Error.WriteLine(arg.ToString());
-                    }
-
-                    // Deserialization
-                    HoverParams request = arg.ToObject<HoverParams>();
-                    var uri = new Uri(Uri.UnescapeDataString(request.TextDocument.Uri));
-
-                    // File handling could be done by Workspace, reading of content, workspace is set global
                     var document = _workspace.GetDocumentWithUpdatedSymbolTable(uri);
 
-                    // Handler could be global as well and the document, handlerParams and the symbolTable could be provided per request
                     result = _hoverHandler.ProcessRequest(document, request, _workspace);
                 }
-                catch (Exception exception)
-                {
-                    System.Console.Error.WriteLine(exception.Message, MessageType.Info);
-                }
-
-                return result;
             }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
+            }
+
+            if (_trace)
+            {
+                Console.Error.Write(TraceOut + nameof(Hover));
+                Console.Error.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
+            }
+
+            return result;
+        }
+
+        private T DeserializeParams<T>(JToken parameter)
+        {
+            return parameter.ToObject<T>() ?? 
+                   throw new LocalRpcException(InvalidParamsMessage + nameof(T)){ErrorCode = (int)JsonRpcErrorCode.InvalidParams};
         }
     }
 }
