@@ -34,7 +34,7 @@ public class SemanticTokenDataTest
         var actualResult = tokenData.ToDataFormat();
         
         // Assert
-        Assert.AreEqual(expectedResult, actualResult);
+        CollectionAssert.AreEqual(expectedResult, actualResult);
     }
     
     [TestMethod]
@@ -52,6 +52,6 @@ public class SemanticTokenDataTest
         var actualResult = tokenData.ToDataFormat();
         
         // Assert
-        Assert.AreEqual(expectedResult, actualResult);
+        CollectionAssert.AreEqual(expectedResult, actualResult);
     }
 }

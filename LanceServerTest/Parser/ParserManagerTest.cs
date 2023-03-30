@@ -39,7 +39,7 @@ namespace LanceServerTest.Parser
         public void ParseEmptyDocument()
         {
             // Arrange
-            int expectedTokenCount = 1;
+            var expectedText = "<EOF>";
 
             var code ="";
             var document = new Document(new Uri("file:///testfile.spf"));
@@ -50,7 +50,7 @@ namespace LanceServerTest.Parser
             var actualParseTree = parserManager.Parse(document);
 
             // Assert
-            Assert.AreEqual(expectedTokenCount, actualParseTree.ChildCount);
+            Assert.AreEqual(expectedText, actualParseTree.GetText());
         }
 
         [TestMethod]
