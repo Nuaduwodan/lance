@@ -87,7 +87,7 @@ jobs:
         node-version: 16.10.x
         
     - name: install vsce
-      run: npm -g install vsce
+      run: npm -g install @vscode/vsce
         
     - name: Download server artifact
       uses: actions/download-artifact@v3
