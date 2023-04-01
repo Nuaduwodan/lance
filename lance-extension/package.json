@@ -35,32 +35,53 @@
     ],
     "configuration":[
         {
-            "title": "lance",
+            "title": "Lance",
             "properties": {
-              "lanceServer.maxNumberOfProblems": {
+              "lance.maxNumberOfProblems": {
                 "type": "number",
                 "default": 100,
-                "description": "Controls the maximum number of problems produced by the server."
+                "description": "Controls the maximum number of problems produced by the server.",
+                "order": 1
               },
-              "lanceServer.trace": {
+              "lance.trace": {
                 "type": "boolean",
                 "default": "false",
-                "description": "Traces the communication between VSCode and the lanceServer service."
+                "description": "Traces the communication between VSCode and the Lance server.",
+                "order": 2
               },
-              "lanceServer.customization.preprocessing":{
-                "type": "string",
-                "default": "../../preprocessing.json",
-                "description": "Specifies the path to the configuration to be used to pre process the code."
-              },
-              "lanceServer.customization.globalSymbol.fileEndings":{
+              "lance.customization.globalSymbol.fileEndings":{
                 "type": "array",
                 "default": [".def"],
-                "description": "Specifies the file endings, with the leading dot, of files, of which containing symbols should be interpreted as global symbols."
+                "description": "Specifies the file endings, with the leading dot, of files, of which containing symbols should be interpreted as global symbols.",
+                "order": 3
               },
-              "lanceServer.customization.globalSymbol.folderNames":{
+              "lance.customization.globalSymbol.folderNames":{
                 "type": "array",
                 "default": ["cma.dir"],
-                "description": "Specifies the folder names, which containing files should be interpreted as global procedures."
+                "description": "Specifies the folder names, which containing files should be interpreted as global procedures.",
+                "order": 4
+              },
+              "lance.customization.placeholderPreprocessor.fileEndings":{
+                "type": "array",
+                "default": [],
+                "description": "TODO",
+                "order": 5
+              },
+              "lance.customization.placeholderPreprocessor.keyType":{
+                "type": "string",
+                "default": "RegEx",
+                "enum": [
+                  "RegEx",
+                  "String"
+                ],
+                "description": "TODO",
+                "order": 6
+              },
+              "lance.customization.placeholderPreprocessor.placeholders":{
+                "type": "array",
+                "default": [],
+                "description": "TODO",
+                "order": 7
               }
             }
         }

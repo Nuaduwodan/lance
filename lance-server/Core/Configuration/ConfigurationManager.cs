@@ -1,33 +1,21 @@
-﻿using LspTypes;
+﻿using LanceServer.Core.Configuration.DataModel;
+using LanceServer.Core.Workspace;
+using LspTypes;
+using Newtonsoft.Json.Linq;
 
 namespace LanceServer.Core.Configuration;
 
-public class ConfigurationManager
+public class ConfigurationManager : IConfigurationManager
 {
-    private readonly IConfigurationServer _server;
     public SymbolTableConfiguration? SymbolTableConfiguration { get; private set; }
     public FileEndingConfiguration? FileEndingConfiguration { get; private set; }
     public DocumentationConfiguration? DocumentationConfiguration { get; private set; }
+    public CustomPreprocessorConfiguration? CustomPreprocessorConfiguration { get; private set; }
 
-    public ConfigurationManager(IConfigurationServer server)
+    public void ExtractConfiguration(ConfigurationParameters configurationParameters)
     {
-        _server = server;
-    }
-
-    public Task InitConfigurationAsync()
-    {
-        var requestParameters = new ConfigurationParams()
-        {
-            Items = new []{new ConfigurationItem{Section = "lanceServer"}}
-        };
-        
-        return _server.GetConfigurationsAsync(requestParameters).ContinueWith(task => ExtractConfiguration(task.Result), TaskScheduler.Default);
-    }
-
-    public void ExtractConfiguration(ConfigurationResult configurationResult)
-    {
-        // Todo extract Configuration from ConfigurationResult
-        SymbolTableConfiguration = new SymbolTableConfiguration(new []{".def"},new []{"cma.dir"});
+        SymbolTableConfiguration = configurationParameters.Settings.Lance.Customization.SymbolTableConfiguration;
+        CustomPreprocessorConfiguration = configurationParameters.Settings.Lance.Customization.PlaceholderPreprocessor;
         FileEndingConfiguration = new FileEndingConfiguration(new []{".def", ".spf", ".mpf"});
     }
 }
