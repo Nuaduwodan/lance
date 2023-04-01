@@ -12,7 +12,6 @@ options { caseInsensitive=true; }
 WHITESPACE: [ \t]+ -> skip;
 NEWLINE: ('\r' '\n'? | '\n') -> skip;
 COMMENT: ';' ~[\r\n]* -> skip;
-HIDE: [ \t]*'/'[0-7]?;
 
 ////
 //// constant
@@ -125,6 +124,9 @@ SET: 'set';
 
 // other keywords (operation type K)
 AC: 'ac';
+IC: 'ic';
+
+// other keywords under procedures (operation type K)
 ACC: 'acc';
 ACCLIMA: 'acclima';
 ACN: 'acn';
@@ -207,7 +209,6 @@ FXST: 'fxst';
 FXSW: 'fxsw';
 FZ: 'fz';
 GP: 'gp';
-IC: 'ic';
 ID: 'id';
 IDS: 'ids';
 INICF: 'inicf';
@@ -921,13 +922,11 @@ parameterDefinitionByReference: VAR type NAME arrayDeclaration?;
 declaration: macroDeclaration | variableDeclaration | procedureDeclaration;
 
 macroDeclaration: MACRO_DEFINE NAME MACRO_AS macroValue;
-macroValue: expression | command+ | procedure | gotoStatement;
+macroValue: expression | variableAssignment | command+ | procedure | gotoStatement;
 
 variableDeclaration: DEFINE type variableNameDeclaration (COMMA variableNameDeclaration)*;
-variableNameDeclaration
-    : NAME variableAssignmentExpression?                #simpleVariableNameDeclaration
-    | NAME arrayDefinition arrayAssignmentExpression?   #arrayVariableNameDeclaration
-    ;
+variableNameDeclaration: NAME (variableAssignmentExpression | arrayDefinition arrayAssignmentExpression)?;
+
 arrayDefinition: OPEN_BRACKET expression (COMMA expression)? (COMMA expression)? CLOSE_BRACKET;
 variableAssignmentExpression: ASSIGNMENT expression;
 arrayAssignmentExpression: ASSIGNMENT (expression | SET? parameters);
@@ -944,8 +943,12 @@ labelDefinition: NAME DOUBLE_COLON;
 
 // assignment
 variableAssignment
-    : NAME variableAssignmentExpression                 #simpleVariableAssignment
+    : NAME variableAssignmentExpression                 #userVariableAssignment
+    | R_PARAM variableAssignmentExpression              #RParamAssignment
+    | SYS_VAR variableAssignmentExpression              #SysVarAssignment
     | NAME arrayDefinition arrayAssignmentExpression    #arrayVariableAssignment
+    | R_PARAM arrayDefinition arrayAssignmentExpression #arrayRParamAssignment
+    | SYS_VAR arrayDefinition arrayAssignmentExpression #arraySysVarAssignment
     ;
 
 type
@@ -1035,7 +1038,7 @@ primaryExpression
     | SYS_VAR arrayDefinition?              #systemVariableUse
     | R_PARAM arrayDefinition?              #rParamUse
     | constant                              #constantUse
-    | predefinedFunction                    #functionUse
+    | function                    #functionUse
     | OPEN_PAREN expression CLOSE_PAREN     #nestedExpression
     ;
 
@@ -1333,7 +1336,7 @@ axis_identifier: AXIS_NUMBERED | NAME;
 spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT CLOSE_PAREN | SPINDLE | NAME;
 
 // procedure
-procedure: predefinedProcedure | ownProcedure | predefinedFunction;
+procedure: predefinedProcedure | ownProcedure | function | otherKeywords;
 ownProcedure: NAME parameters?;
 parameters: OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN;
 
@@ -1529,7 +1532,7 @@ feedrate_override_path_handwheel: FD ASSIGNMENT expression;
 feedrate_override_axial_handwheel: FDA OPEN_BRACKET axis_identifier CLOSE_BRACKET ASSIGNMENT expression;
 
 // function
-predefinedFunction
+function
     : mathFunction
     | stringFunction
     | CTAB parameters?
@@ -1644,4 +1647,148 @@ stringFunction // done
     | MATCH OPEN_PAREN expression COMMA expression CLOSE_PAREN
     | TOLOWER OPEN_PAREN expression CLOSE_PAREN
     | TOUPPER OPEN_PAREN expression CLOSE_PAREN
+    ;
+
+otherKeywords
+    : ACC
+    | ACCLIMA
+    | ACN
+    | ACP
+    | APR
+    | APW
+    | APX
+    | AX
+    | BLSYNC
+    | CAC
+    | CACN
+    | CACP
+    | CDC
+    | CIC
+    | COARSEA
+    | CPBC
+    | CPDEF
+    | CPDEL
+    | CPFMOF
+    | CPFMON
+    | CPFMSON
+    | CPFPOS
+    | CPFRS
+    | CPLA
+    | CPLCTID
+    | CPLDEF
+    | CPLDEL
+    | CPLDEN
+    | CPLINSC
+    | CPLINTR
+    | CPLNUM
+    | CPLOF
+    | CPLON
+    | CPLOUTSC
+    | CPLOUTTR
+    | CPLPOS
+    | CPLSETVAL
+    | CPMALARM
+    | CPMBRAKE
+    | CPMPRT
+    | CPMRESET
+    | CPMSTART
+    | CPMVDI
+    | CPOF 
+    | CPON
+    | CPRES
+    | CPSETTYPE
+    | CPSYNCOP
+    | CPSYNCOP2
+    | CPSYNCOV
+    | CPSYNFIP
+    | CPSYNFIP2
+    | CPSYNFIV
+    | DAC
+    | DC
+    | DCI
+    | DCM
+    | DCU
+    | DIACYCOFA
+    | DIAM90A
+    | DIAMCHAN
+    | DIAMCHANA
+    | DIAMOFA
+    | DIAMONA
+    | DIC
+    | EX
+    | FA
+    | FDA
+    | FGREF
+    | FI
+    | FINEA
+    | FL
+    | FMA
+    | FOC
+    | FOCOF
+    | FOCON
+    | FPO
+    | FXS
+    | FXST
+    | FXSW
+    | FZ
+    | GP
+    | ID
+    | IDS
+    | INICF
+    | INIPO
+    | INIRE
+    | IP
+    | IPOENDA
+    | ISOCALL
+    | JERKLIM
+    | JERKLIMA
+    | LIFTFAST
+    | LIMS
+    | MI
+    | MOV
+    | OS
+    | OSB
+    | OSCILL
+    | OSCTRL
+    | OSE
+    | OSNSC
+    | OSP1
+    | OSP2
+    | OST1
+    | OST2
+    | OVR
+    | OVRA
+    | OVRRAP
+    | PHI
+    | PHU
+    | PM
+    | PO
+    | POLF
+    | POS
+    | POSA
+    | POSP
+    | PR
+    | PRIO
+    | PRLOC
+    | PSISYNRW
+    | QU
+    | RAC
+    | REP
+    | RIC
+    | RT
+    | SC
+    | SCC
+    | SCPARA
+    | SETINT
+    | SPOS
+    | SPOSA
+    | SRA
+    | STA
+    | SVC
+    | SYNR
+    | SYNRW
+    | SYNW
+    | TR
+    | VELOLIM
+    | VELOLIMA
     ;

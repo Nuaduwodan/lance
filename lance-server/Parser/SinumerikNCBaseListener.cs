@@ -228,33 +228,17 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVariableDeclaration([NotNull] SinumerikNCParser.VariableDeclarationContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>simpleVariableNameDeclaration</c>
-	/// labeled alternative in <see cref="SinumerikNCParser.variableNameDeclaration"/>.
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.variableNameDeclaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSimpleVariableNameDeclaration([NotNull] SinumerikNCParser.SimpleVariableNameDeclarationContext context) { }
+	public virtual void EnterVariableNameDeclaration([NotNull] SinumerikNCParser.VariableNameDeclarationContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>simpleVariableNameDeclaration</c>
-	/// labeled alternative in <see cref="SinumerikNCParser.variableNameDeclaration"/>.
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.variableNameDeclaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSimpleVariableNameDeclaration([NotNull] SinumerikNCParser.SimpleVariableNameDeclarationContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>arrayVariableNameDeclaration</c>
-	/// labeled alternative in <see cref="SinumerikNCParser.variableNameDeclaration"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterArrayVariableNameDeclaration([NotNull] SinumerikNCParser.ArrayVariableNameDeclarationContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>arrayVariableNameDeclaration</c>
-	/// labeled alternative in <see cref="SinumerikNCParser.variableNameDeclaration"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitArrayVariableNameDeclaration([NotNull] SinumerikNCParser.ArrayVariableNameDeclarationContext context) { }
+	public virtual void ExitVariableNameDeclaration([NotNull] SinumerikNCParser.VariableNameDeclarationContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.arrayDefinition"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -368,19 +352,47 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitLabelDefinition([NotNull] SinumerikNCParser.LabelDefinitionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>simpleVariableAssignment</c>
+	/// Enter a parse tree produced by the <c>userVariableAssignment</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSimpleVariableAssignment([NotNull] SinumerikNCParser.SimpleVariableAssignmentContext context) { }
+	public virtual void EnterUserVariableAssignment([NotNull] SinumerikNCParser.UserVariableAssignmentContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>simpleVariableAssignment</c>
+	/// Exit a parse tree produced by the <c>userVariableAssignment</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSimpleVariableAssignment([NotNull] SinumerikNCParser.SimpleVariableAssignmentContext context) { }
+	public virtual void ExitUserVariableAssignment([NotNull] SinumerikNCParser.UserVariableAssignmentContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>RParamAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRParamAssignment([NotNull] SinumerikNCParser.RParamAssignmentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>RParamAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRParamAssignment([NotNull] SinumerikNCParser.RParamAssignmentContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>SysVarAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSysVarAssignment([NotNull] SinumerikNCParser.SysVarAssignmentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>SysVarAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSysVarAssignment([NotNull] SinumerikNCParser.SysVarAssignmentContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>arrayVariableAssignment</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
@@ -395,6 +407,34 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitArrayVariableAssignment([NotNull] SinumerikNCParser.ArrayVariableAssignmentContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>arrayRParamAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArrayRParamAssignment([NotNull] SinumerikNCParser.ArrayRParamAssignmentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>arrayRParamAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArrayRParamAssignment([NotNull] SinumerikNCParser.ArrayRParamAssignmentContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>arraySysVarAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArraySysVarAssignment([NotNull] SinumerikNCParser.ArraySysVarAssignmentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>arraySysVarAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArraySysVarAssignment([NotNull] SinumerikNCParser.ArraySysVarAssignmentContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.type"/>.
 	/// <para>The default implementation does nothing.</para>

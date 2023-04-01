@@ -128,19 +128,11 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitVariableDeclaration([NotNull] SinumerikNCParser.VariableDeclarationContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>simpleVariableNameDeclaration</c>
-	/// labeled alternative in <see cref="SinumerikNCParser.variableNameDeclaration"/>.
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.variableNameDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitSimpleVariableNameDeclaration([NotNull] SinumerikNCParser.SimpleVariableNameDeclarationContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>arrayVariableNameDeclaration</c>
-	/// labeled alternative in <see cref="SinumerikNCParser.variableNameDeclaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitArrayVariableNameDeclaration([NotNull] SinumerikNCParser.ArrayVariableNameDeclarationContext context);
+	Result VisitVariableNameDeclaration([NotNull] SinumerikNCParser.VariableNameDeclarationContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.arrayDefinition"/>.
 	/// </summary>
@@ -198,12 +190,26 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitLabelDefinition([NotNull] SinumerikNCParser.LabelDefinitionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>simpleVariableAssignment</c>
+	/// Visit a parse tree produced by the <c>userVariableAssignment</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitSimpleVariableAssignment([NotNull] SinumerikNCParser.SimpleVariableAssignmentContext context);
+	Result VisitUserVariableAssignment([NotNull] SinumerikNCParser.UserVariableAssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>RParamAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRParamAssignment([NotNull] SinumerikNCParser.RParamAssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>SysVarAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSysVarAssignment([NotNull] SinumerikNCParser.SysVarAssignmentContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>arrayVariableAssignment</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
@@ -211,6 +217,20 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitArrayVariableAssignment([NotNull] SinumerikNCParser.ArrayVariableAssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>arrayRParamAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArrayRParamAssignment([NotNull] SinumerikNCParser.ArrayRParamAssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>arraySysVarAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArraySysVarAssignment([NotNull] SinumerikNCParser.ArraySysVarAssignmentContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.type"/>.
 	/// </summary>

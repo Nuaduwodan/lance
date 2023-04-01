@@ -69,7 +69,7 @@ namespace LanceServer.Parser
         {
             base.ExitVariableDeclaration(context);
             var type = GetCompositeDataType(context.type());
-            foreach (var variable in context.variableAssignment())
+            foreach (var variable in context.variableNameDeclaration())
             {
                 var symbol = new VariableSymbol(variable.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column), type, GetArrayDefinition(variable.arrayDefinition()));
                 SymbolTable.Add(symbol);
@@ -105,12 +105,18 @@ namespace LanceServer.Parser
                 return Array.Empty<string>();
             }
 
-            var size = arrayContext.arrayDeclarationDimension().Length + 1;
-            var dimensions = new string[size];
-            dimensions[0] = arrayContext.expression().GetText();
-            for (int i = 1; i < size; i++)
+            var dimensions = new string[arrayContext.COMMA().Length + 1];
+            if (arrayContext.first != null)
             {
-                dimensions[i] = arrayContext.arrayDeclarationDimension()[i - 1].expression().GetText();
+                dimensions[0] = arrayContext.first.GetText();
+            }
+            if (arrayContext.second != null)
+            {
+                dimensions[1] = arrayContext.second.GetText();
+            }
+            if (arrayContext.third != null)
+            {
+                dimensions[2] = arrayContext.third.GetText();
             }
 
             return dimensions;
