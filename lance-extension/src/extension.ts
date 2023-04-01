@@ -47,7 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
         ],
         progressOnInitialization: true,
         synchronize: {
-            configurationSection: "lanceServer",
+            configurationSection: "lance",
             fileEvents: vscode.workspace.createFileSystemWatcher("**/*.{spf,mpf,def,tpl}"),
         },
     };
