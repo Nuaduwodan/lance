@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime.Tree;
+﻿using System.Diagnostics.CodeAnalysis;
+using Antlr4.Runtime.Tree;
 using LanceServer.Core.SymbolTable;
 
 namespace LanceServer.Core.Workspace
@@ -9,22 +10,41 @@ namespace LanceServer.Core.Workspace
     public class Document
     {
         public DocumentState State { get; private set; }
-        private string _content = String.Empty;
+        private string _rawContent = String.Empty;
 
-        public string Content
+        public string RawContent
         {
             get
             {
-                return _content;
+                return _rawContent;
             }
             set
             {
-                if (_content == value)
+                if (_rawContent == value)
                 {
                     return;
                 }
                 State = DocumentState.Read;
-                _content = value;
+                _rawContent = value;
+            }
+        }
+        
+        private string _code = String.Empty;
+
+        public string Code
+        {
+            get
+            {
+                return _code;
+            }
+            set
+            {
+                if (_code == value)
+                {
+                    return;
+                }
+                State = DocumentState.Preprocessed;
+                _code = value;
             }
         }
 
@@ -38,35 +58,38 @@ namespace LanceServer.Core.Workspace
             }
             set
             {
-                if (_tree == value)
-                {
-                    return;
-                }
                 State = DocumentState.Parsed;
                 _tree = value;
             }
         }
         
         public string Encoding { get; }
+        public string FileEnding { get; }
         public Uri Uri { get; }
         
         private Dictionary<string, ISymbol> _symbols = new();
 
-        public ISymbol GetSymbol(string symbolName)
+        public bool TryGetSymbol(string symbolName, [MaybeNullWhen(false)] out ISymbol symbol)
         {
-            return _symbols[symbolName];
+            return _symbols.TryGetValue(symbolName, out symbol);
         }
 
         public Document(Uri uri, string encoding = "utf8")
         {
             Uri = uri;
+            FileEnding = Path.GetExtension(uri.LocalPath);
             Encoding = encoding;
             State = DocumentState.Known;
         }
 
-        public void AddSymbol(ISymbol symbol)
+        public bool AddSymbol(ISymbol symbol)
         {
+            if (_symbols.ContainsKey(symbol.Identifier))
+            {
+                return false;
+            }
             _symbols.Add(symbol.Identifier, symbol);
+            return true;
         }
 
         public void DeleteAllSymbols()
