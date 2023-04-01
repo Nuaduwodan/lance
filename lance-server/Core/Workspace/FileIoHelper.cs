@@ -50,26 +50,33 @@
 
         public static IEnumerable<Uri> GetFilesInDirectory(Uri path, string filter)
         {
-            var dir = new DirectoryInfo(path.AbsolutePath);
+            var dir = new DirectoryInfo(path.LocalPath);
             return dir.GetFiles(filter).Select(info => new Uri(info.FullName));
         }
 
         public static Document ReadDocument(Uri uri)
         {
             Document document = new Document(uri);
+            document.RawContent = ReadFileContent(uri.LocalPath);
+            return document;
+        }
+
+        public static string ReadFileContent(string path)
+        {
+            var result = String.Empty;
             try
             {
-                using (StreamReader sr = new StreamReader(uri.AbsolutePath))
+                using (StreamReader sr = new StreamReader(path))
                 {
-                    string str = sr.ReadToEnd();
-                    document.Content = str;
+                    result = sr.ReadToEnd();
                 }
             }
             catch (IOException exception)
             {
                 Console.Error.WriteLine(exception.StackTrace);
             }
-            return document;
+
+            return result;
         }
     }
 }
