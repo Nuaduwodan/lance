@@ -1,10 +1,12 @@
 ﻿using LanceServer.Core.Configuration;
+using LanceServer.Core.Configuration.DataModel;
 using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
 using LanceServer.Hover;
 using LanceServer.Parser;
 using LanceServer.SemanticToken;
 using LanceServer.Core.Workspace;
+using LanceServer.Preprocessor;
 using LspTypes;
 using StreamJsonRpc.Protocol;
 
@@ -17,7 +19,6 @@ namespace LanceServer
         private const string TraceOut = "--> ";
         
         private readonly JsonRpc _rpc;
-        private readonly IConfigurationServer _configurationServer;
         
         private readonly ManualResetEvent _disconnectEvent = new ManualResetEvent(false);
         private readonly bool _trace = true;
@@ -31,17 +32,19 @@ namespace LanceServer
         /// <summary>
         /// The workspace containing all the files 
         /// </summary>
-        private Workspace _workspace;
+        private readonly IWorkspace _workspace;
+        private readonly IConfigurationManager _configurationManager;
+        private readonly ISemanticTokenHandler _semanticTokenHandler;
+        private readonly IHoverHandler _hoverHandler;
 
-        private SemanticTokenHandler _semanticTokenHandler;
-        private HoverHandler _hoverHandler;
-        private ConfigurationManager _configurationManager;
-
-        public LSPServer(Stream sender, Stream reader)
+        public LSPServer(Stream sender, Stream reader, IWorkspace workspace, IConfigurationManager configurationManager, ISemanticTokenHandler semanticTokenHandler, IHoverHandler hoverHandler)
         {
             _rpc = JsonRpc.Attach(sender, reader, this);
             _rpc.Disconnected += OnRpcDisconnected;
-            _configurationServer = JsonRpc.Attach<IConfigurationServer>(sender, reader);
+            _workspace = workspace;
+            _configurationManager = configurationManager;
+            _semanticTokenHandler = semanticTokenHandler;
+            _hoverHandler = hoverHandler;
         }
 
         private void OnRpcDisconnected(object? sender, JsonRpcDisconnectedEventArgs e)
@@ -106,12 +109,6 @@ namespace LanceServer
             {
                 lock (Lock)
                 {
-                    // Configuration
-                    _configurationManager = new ConfigurationManager(_configurationServer);
-                    _workspace = new Workspace(new ParserManager(), _configurationManager, request.WorkspaceFolders.Select(folder => new Uri(folder.Uri)));
-                    _semanticTokenHandler = new SemanticTokenHandler();
-                    _hoverHandler = new HoverHandler(_configurationManager);
-
                     ServerCapabilities capabilities = new ServerCapabilities
                     {
                         TextDocumentSync = new TextDocumentSyncOptions
@@ -269,7 +266,7 @@ namespace LanceServer
                 Console.Error.WriteLine(parameter.ToString());
             }
 
-            var request = DeserializeParams<ConfigurationResult>(parameter);
+            var request = DeserializeParams<ConfigurationParameters>(parameter);
 
             try
             {
@@ -300,14 +297,14 @@ namespace LanceServer
             }
             
             var request = DeserializeParams<DidChangeTextDocumentParams>(parameter);
-            var uri = new Uri(Uri.UnescapeDataString(request.TextDocument.Uri));
+            var uri = ExtractUri(request.TextDocument.Uri);
             
             try
             {
                 lock (Lock)
                 {
                     var document = _workspace.GetDocument(uri);
-                    document.Content = request.ContentChanges.Last().Text;
+                    document.RawContent = request.ContentChanges.Last().Text;
                 }
             }
             catch (Exception exception)
@@ -332,7 +329,7 @@ namespace LanceServer
             }
 
             var request = DeserializeParams<DocumentSymbolParams>(parameter);
-            var uri = new Uri(Uri.UnescapeDataString(request.TextDocument.Uri));
+            var uri = ExtractUri(request.TextDocument.Uri);
             SemanticTokens result;
             
             try
@@ -369,7 +366,7 @@ namespace LanceServer
             }
             
             var request = DeserializeParams<HoverParams>(parameter);
-            var uri = new Uri(Uri.UnescapeDataString(request.TextDocument.Uri));
+            var uri = ExtractUri(request.TextDocument.Uri);
             LspTypes.Hover result;
             
             try
@@ -400,6 +397,14 @@ namespace LanceServer
         {
             return parameter.ToObject<T>() ?? 
                    throw new LocalRpcException(InvalidParamsMessage + nameof(T)){ErrorCode = (int)JsonRpcErrorCode.InvalidParams};
+        }
+
+        private Uri ExtractUri(string escapedUriString)
+        {
+            var uriString = Uri.UnescapeDataString(escapedUriString);
+            var escapedPath = uriString.Replace("#", "%23");
+            Uri uri = new Uri(escapedPath);
+            return uri;
         }
     }
 }

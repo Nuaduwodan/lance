@@ -5,11 +5,11 @@ using LanceServer.Core.Workspace;
 
 namespace LanceServer.Parser;
 
-public class ParserManager
+public class ParserManager : IParserManager
 {
     private CommonTokenStream Tokenize(Document document)
     {
-        ICharStream stream = CharStreams.fromString(document.Content);
+        ICharStream stream = CharStreams.fromString(document.Code);
         ITokenSource lexer = new SinumerikNCLexer(stream);
         return new CommonTokenStream(lexer);
     }
