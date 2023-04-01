@@ -7,7 +7,7 @@ namespace LanceServer.SemanticToken
     /// <summary>
     /// Class responsible for handling semantic token requests
     /// </summary>
-    public class SemanticTokenHandler
+    public class SemanticTokenHandler : ISemanticTokenHandler
     {
 
         public SemanticTokens ProcessRequest(Document document, DocumentSymbolParams requestParams)

@@ -11,7 +11,7 @@ namespace LanceServer.Hover
     /// <summary>
     /// Handles hover requests and returns the respective data to be displayed
     /// </summary>
-    public class HoverHandler
+    public class HoverHandler : IHoverHandler
     {
         private ConfigurationManager _configurationManager;
         private readonly ParseTreeWalker _walker = new ParseTreeWalker();
@@ -21,7 +21,7 @@ namespace LanceServer.Hover
             _configurationManager = configurationManager;
         }
 
-        public LspTypes.Hover ProcessRequest(Document document, HoverParams requestParams, Workspace workspace)
+        public LspTypes.Hover ProcessRequest(Document document, HoverParams requestParams, IWorkspace workspace)
         {
             if (document.State < DocumentState.Visited)
             {
