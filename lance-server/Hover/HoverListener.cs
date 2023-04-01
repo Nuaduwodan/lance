@@ -14,9 +14,31 @@ public class HoverListener : SinumerikNCBaseListener
         _position = position;
     }
 
-    public override void ExitVariableAssignment(SinumerikNCParser.VariableAssignmentContext context)
+    public override void ExitVariableNameDeclaration(SinumerikNCParser.VariableNameDeclarationContext context)
     {
-        base.ExitVariableAssignment(context);
+        base.ExitVariableNameDeclaration(context);
+        if (Token != null)
+        {
+            return;
+        }
+        
+        SetTokenIfPositionMatches(context.NAME().Symbol);
+    }
+    
+    public override void ExitUserVariableAssignment(SinumerikNCParser.UserVariableAssignmentContext context)
+    {
+        base.ExitUserVariableAssignment(context);
+        if (Token != null)
+        {
+            return;
+        }
+        
+        SetTokenIfPositionMatches(context.NAME().Symbol);
+    }
+
+    public override void ExitArrayVariableAssignment(SinumerikNCParser.ArrayVariableAssignmentContext context)
+    {
+        base.ExitArrayVariableAssignment(context);
         if (Token != null)
         {
             return;
