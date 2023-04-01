@@ -151,16 +151,6 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitParameterDefinitionByReference([NotNull] SinumerikNCParser.ParameterDefinitionByReferenceContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.labelDefinition"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterLabelDefinition([NotNull] SinumerikNCParser.LabelDefinitionContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.labelDefinition"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitLabelDefinition([NotNull] SinumerikNCParser.LabelDefinitionContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -201,6 +191,60 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableDeclaration([NotNull] SinumerikNCParser.VariableDeclarationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>simpleVariableNameDeclaration</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableNameDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSimpleVariableNameDeclaration([NotNull] SinumerikNCParser.SimpleVariableNameDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>simpleVariableNameDeclaration</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableNameDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSimpleVariableNameDeclaration([NotNull] SinumerikNCParser.SimpleVariableNameDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>arrayVariableNameDeclaration</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableNameDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayVariableNameDeclaration([NotNull] SinumerikNCParser.ArrayVariableNameDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>arrayVariableNameDeclaration</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableNameDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayVariableNameDeclaration([NotNull] SinumerikNCParser.ArrayVariableNameDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.arrayDefinition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayDefinition([NotNull] SinumerikNCParser.ArrayDefinitionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.arrayDefinition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayDefinition([NotNull] SinumerikNCParser.ArrayDefinitionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.variableAssignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVariableAssignmentExpression([NotNull] SinumerikNCParser.VariableAssignmentExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.variableAssignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVariableAssignmentExpression([NotNull] SinumerikNCParser.VariableAssignmentExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.arrayAssignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayAssignmentExpression([NotNull] SinumerikNCParser.ArrayAssignmentExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.arrayAssignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayAssignmentExpression([NotNull] SinumerikNCParser.ArrayAssignmentExpressionContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.procedureDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -221,32 +265,26 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitParameterDeclarations([NotNull] SinumerikNCParser.ParameterDeclarationsContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.parameterDeclaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterParameterDeclaration([NotNull] SinumerikNCParser.ParameterDeclarationContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.parameterDeclaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitParameterDeclaration([NotNull] SinumerikNCParser.ParameterDeclarationContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.parameterDeclarationByValue"/>.
+	/// Enter a parse tree produced by the <c>parameterDeclarationByValue</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.parameterDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void EnterParameterDeclarationByValue([NotNull] SinumerikNCParser.ParameterDeclarationByValueContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.parameterDeclarationByValue"/>.
+	/// Exit a parse tree produced by the <c>parameterDeclarationByValue</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.parameterDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitParameterDeclarationByValue([NotNull] SinumerikNCParser.ParameterDeclarationByValueContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.parameterDeclarationByReference"/>.
+	/// Enter a parse tree produced by the <c>parameterDeclarationByReference</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.parameterDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void EnterParameterDeclarationByReference([NotNull] SinumerikNCParser.ParameterDeclarationByReferenceContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.parameterDeclarationByReference"/>.
+	/// Exit a parse tree produced by the <c>parameterDeclarationByReference</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.parameterDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitParameterDeclarationByReference([NotNull] SinumerikNCParser.ParameterDeclarationByReferenceContext context);
@@ -261,35 +299,39 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitArrayDeclaration([NotNull] SinumerikNCParser.ArrayDeclarationContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.arrayDeclarationDimension"/>.
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.labelDefinition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterArrayDeclarationDimension([NotNull] SinumerikNCParser.ArrayDeclarationDimensionContext context);
+	void EnterLabelDefinition([NotNull] SinumerikNCParser.LabelDefinitionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.arrayDeclarationDimension"/>.
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.labelDefinition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitArrayDeclarationDimension([NotNull] SinumerikNCParser.ArrayDeclarationDimensionContext context);
+	void ExitLabelDefinition([NotNull] SinumerikNCParser.LabelDefinitionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// Enter a parse tree produced by the <c>simpleVariableAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterVariableAssignment([NotNull] SinumerikNCParser.VariableAssignmentContext context);
+	void EnterSimpleVariableAssignment([NotNull] SinumerikNCParser.SimpleVariableAssignmentContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// Exit a parse tree produced by the <c>simpleVariableAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitVariableAssignment([NotNull] SinumerikNCParser.VariableAssignmentContext context);
+	void ExitSimpleVariableAssignment([NotNull] SinumerikNCParser.SimpleVariableAssignmentContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.arrayDefinition"/>.
+	/// Enter a parse tree produced by the <c>arrayVariableAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterArrayDefinition([NotNull] SinumerikNCParser.ArrayDefinitionContext context);
+	void EnterArrayVariableAssignment([NotNull] SinumerikNCParser.ArrayVariableAssignmentContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.arrayDefinition"/>.
+	/// Exit a parse tree produced by the <c>arrayVariableAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitArrayDefinition([NotNull] SinumerikNCParser.ArrayDefinitionContext context);
+	void ExitArrayVariableAssignment([NotNull] SinumerikNCParser.ArrayVariableAssignmentContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.type"/>.
 	/// </summary>
@@ -434,6 +476,68 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitGotoBlock([NotNull] SinumerikNCParser.GotoBlockContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.callStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCallStatement([NotNull] SinumerikNCParser.CallStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.callStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCallStatement([NotNull] SinumerikNCParser.CallStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.syncActionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSyncActionStatement([NotNull] SinumerikNCParser.SyncActionStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.syncActionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSyncActionStatement([NotNull] SinumerikNCParser.SyncActionStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.syncActionId"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSyncActionId([NotNull] SinumerikNCParser.SyncActionIdContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.syncActionId"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSyncActionId([NotNull] SinumerikNCParser.SyncActionIdContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.syncActionCondition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSyncActionCondition([NotNull] SinumerikNCParser.SyncActionConditionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.syncActionCondition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSyncActionCondition([NotNull] SinumerikNCParser.SyncActionConditionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.syncActionAction"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSyncActionAction([NotNull] SinumerikNCParser.SyncActionActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.syncActionAction"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSyncActionAction([NotNull] SinumerikNCParser.SyncActionActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>primaryExpressionLabel</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPrimaryExpressionLabel([NotNull] SinumerikNCParser.PrimaryExpressionLabelContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>primaryExpressionLabel</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPrimaryExpressionLabel([NotNull] SinumerikNCParser.PrimaryExpressionLabelContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>andExpression</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.expression"/>.
@@ -799,16 +903,6 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPredefinedProcedure([NotNull] SinumerikNCParser.PredefinedProcedureContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.modalSubprogramCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterModalSubprogramCall([NotNull] SinumerikNCParser.ModalSubprogramCallContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.modalSubprogramCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitModalSubprogramCall([NotNull] SinumerikNCParser.ModalSubprogramCallContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.feedrate_override_path"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -888,4 +982,14 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitMathFunction([NotNull] SinumerikNCParser.MathFunctionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.stringFunction"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStringFunction([NotNull] SinumerikNCParser.StringFunctionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.stringFunction"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStringFunction([NotNull] SinumerikNCParser.StringFunctionContext context);
 }

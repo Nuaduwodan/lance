@@ -56,6 +56,7 @@ GOTO_S: 'gotos';
 LABEL_END: 'endlabel';
 SYNC_WHEN: 'when';
 SYNC_WHENEVER: 'whenever';
+SYNC_FROM: 'from';
 SYNC_DO: 'do';
 SYNC_EVERY: 'every';
 SYNC_CANCEL: 'cancel';
@@ -201,7 +202,6 @@ FOC: 'foc';
 FOCOF: 'focof';
 FOCON: 'focon';
 FPO: 'fpo';
-FROM: 'from';
 FXS: 'fxs';
 FXST: 'fxst';
 FXSW: 'fxsw';
@@ -318,6 +318,7 @@ AXNAME: 'axname';
 AXSTRING: 'axstring';
 INDEX: 'index';
 MINDEX: 'mindex';
+RINDEX: 'rindex';
 ISNUMBER: 'isnumber';
 NUMBER: 'number';
 MATCH: 'match';
@@ -395,7 +396,6 @@ NEWT: 'newt';
 ORISOLH: 'orisolh';
 POSRANGE: 'posrange';
 PROTD: 'protd';
-RINDEX: 'rindex';
 SETDNO: 'setdno';
 SETTCOR: 'settcor';
 SIRELAY: 'sirelay';
@@ -909,7 +909,7 @@ block: blockNumber? labelDefinition? statement | blockNumber? labelDefinition | 
 
 blockNumber: BLOCK_NUMBER;
 
-// definition
+// procedure
 procedureDefinition: PROC NAME parameterDefinitions? content PROC_END;
 
 parameterDefinitions: OPEN_PAREN parameterDefinition (COMMA parameterDefinition)* CLOSE_PAREN;
@@ -917,27 +917,36 @@ parameterDefinition: parameterDefinitionByValue | parameterDefinitionByReference
 parameterDefinitionByValue: type NAME (ASSIGNMENT expression)?;
 parameterDefinitionByReference: VAR type NAME arrayDeclaration?;
 
-labelDefinition: NAME DOUBLE_COLON;
-
 // declaration
 declaration: macroDeclaration | variableDeclaration | procedureDeclaration;
 
 macroDeclaration: MACRO_DEFINE NAME MACRO_AS macroValue;
 macroValue: expression | command+ | procedure | gotoStatement;
-variableDeclaration: DEFINE type variableAssignment (COMMA variableAssignment)*;
+
+variableDeclaration: DEFINE type variableNameDeclaration (COMMA variableNameDeclaration)*;
+variableNameDeclaration
+    : NAME variableAssignmentExpression?                #simpleVariableNameDeclaration
+    | NAME arrayDefinition arrayAssignmentExpression?   #arrayVariableNameDeclaration
+    ;
+arrayDefinition: OPEN_BRACKET expression (COMMA expression)? (COMMA expression)? CLOSE_BRACKET;
+variableAssignmentExpression: ASSIGNMENT expression;
+arrayAssignmentExpression: ASSIGNMENT (expression | SET? parameters);
+
 procedureDeclaration: EXTERN NAME parameterDeclarations?;
-
 parameterDeclarations: OPEN_PAREN parameterDeclaration? (COMMA parameterDeclaration)* CLOSE_PAREN;
-parameterDeclaration: parameterDeclarationByValue | parameterDeclarationByReference;
-parameterDeclarationByValue: type;
-parameterDeclarationByReference: VAR type arrayDeclaration?;
+parameterDeclaration
+    : type                          #parameterDeclarationByValue 
+    | VAR type arrayDeclaration?    #parameterDeclarationByReference
+    ;
+arrayDeclaration: OPEN_BRACKET first=expression? (COMMA second=expression?)? (COMMA third=expression?)? CLOSE_BRACKET;
 
-arrayDeclaration: OPEN_BRACKET expression? arrayDeclarationDimension? arrayDeclarationDimension? CLOSE_BRACKET;
-arrayDeclarationDimension: COMMA expression?;
+labelDefinition: NAME DOUBLE_COLON;
 
 // assignment
-variableAssignment: NAME arrayDefinition? (ASSIGNMENT expression)?;
-arrayDefinition: OPEN_BRACKET expression (COMMA expression)? (COMMA expression)? CLOSE_BRACKET;
+variableAssignment
+    : NAME variableAssignmentExpression                 #simpleVariableAssignment
+    | NAME arrayDefinition arrayAssignmentExpression    #arrayVariableAssignment
+    ;
 
 type
     : BOOL_TYPE
@@ -954,6 +963,7 @@ statement
     | caseStatement
     | iterativeStatement
     | jumpStatement
+    | syncActionStatement
     | expression
     | variableAssignment
     | command+
@@ -971,8 +981,9 @@ iterativeLoop: LOOP block* LOOP_END;
 
 jumpStatement
     : gotoStatement
+    | callStatement
     | CALL NAME? CALL_BLOCK NAME TO NAME
-    | RETURN expression?;
+    | RETURN (OPEN_PAREN expression (COMMA expression)? (COMMA expression)? (COMMA expression)? CLOSE_PAREN)?;
 
 gotoStatement
     : gotoCondition? GOTO gotoTarget
@@ -987,8 +998,25 @@ gotoTarget
     | BLOCK_NUMBER      #gotoBlock
     ;
 
+callStatement
+    : CALL NAME? CALL_BLOCK NAME TO NAME
+    | CALL_P NAME (OPEN_PAREN expression (COMMA expression)* CLOSE_PAREN)?
+    | CALL_EXT OPEN_PAREN expression CLOSE_PAREN
+    | CALL_PATH OPEN_PAREN expression CLOSE_PAREN
+    | CALL_MODAL (NAME (OPEN_BRACKET expression (COMMA expression)* CLOSE_BRACKET)? )?
+    ;
+
+syncActionStatement
+    : syncActionId? syncActionCondition? SYNC_DO syncActionAction+ (ELSE syncActionAction+)?;
+
+syncActionId: (ID | IDS) ASSIGNMENT INT;
+
+syncActionCondition: (SYNC_WHEN | SYNC_WHENEVER | SYNC_FROM | SYNC_EVERY) expression;
+
+syncActionAction: command | procedure | variableAssignment;
+
 expression
-    : (NOT|NOT_B)? primaryExpression                                                #unaryExpression
+    : (NOT|NOT_B) expression                                                        #unaryExpression
     | expression (MUL|DIV|MOD) expression                                           #multiplicativeExpression
     | expression (ADD|SUB) expression                                               #additiveExpression
     | expression AND_B expression                                                   #binaryAndExpression
@@ -999,6 +1027,7 @@ expression
     | expression OR expression                                                      #inclusiveOrExpression
     | expression CONCAT expression                                                  #stringExpression
     | expression (EQUAL|NOT_EQUAL|LESS_EQUAL|GREATER_EQUAL|LESS|GREATER) expression #relationalExpression
+    | primaryExpression                                                             #primaryExpressionLabel
     ;
 
 primaryExpression
@@ -1026,267 +1055,268 @@ command
     | mCode
     | hCode
     | axisCode
-    | ADIS
-    | ADISPOS
-    | ALF
-    | AMIRROR
-    | ANG
-    | AP
-    | AR
-    | AROT
-    | AROTS
-    | ASCALE
-    | ASPLINE
-    | ATOL
-    | ATRANS
-    | BAUTO
-    | BNAT
-    | BRISK
-    | BSPLINE
-    | BTAN
-    | CDOF
-    | CDOF2
-    | CDON
-    | CFC
-    | CFIN
-    | CFTCP
-    | CHF
-    | CHR
-    | CIP
-    | COMPCAD
-    | COMPCURV
-    | COMPOF
-    | COMPON
-    | COMPPATH
-    | COMPSURF
-    | CP
-    | CPRECOF
-    | CPRECON
-    | CR
-    | CT
-    | CTOL
-    | CTOLG0
-    | CUT2D
-    | CUT2DD
-    | CUT2DF
-    | CUT2DFD
-    | CUT3DC
-    | CUT3DCC
-    | CUT3DCCD
-    | CUT3DCD
-    | CUT3DF
-    | CUT3DFD
-    | CUT3DFF
-    | CUT3DFS
-    | CUTCONOF
-    | CUTCONON
-    | CUTMOD
-    | CUTMODK
-    | D
-    | D0
-    | DIAM90
-    | DIAMCYCOF
-    | DIAMOF
-    | DIAMON
-    | DILF
-    | DISC
-    | DISCL
-    | DISPR
-    | DISR
-    | DISRP
-    | DITE
-    | DITS
-    | DL
-    | DRIVE
-    | DYNFINISH
-    | DYNNORM
-    | DYNPOS
-    | DYNPREC
-    | DYNROUGH
-    | DYNSEMIFIN
-    | EAUTO
-    | ENAT
-    | ETAN
+    | CALL_MODAL_OFF                // done
+    | ADIS parameters?
+    | ADISPOS parameters?
+    | ALF parameters?
+    | AMIRROR parameters?
+    | ANG parameters?
+    | AP parameters?
+    | AR parameters?
+    | AROT parameters?
+    | AROTS parameters?
+    | ASCALE parameters?
+    | ASPLINE parameters?
+    | ATOL parameters?
+    | ATRANS parameters?
+    | BAUTO parameters?
+    | BNAT parameters?
+    | BRISK parameters?
+    | BSPLINE parameters?
+    | BTAN parameters?
+    | CDOF parameters?
+    | CDOF2 parameters?
+    | CDON parameters?
+    | CFC parameters?
+    | CFIN parameters?
+    | CFTCP parameters?
+    | CHF parameters?
+    | CHR parameters?
+    | CIP parameters?
+    | COMPCAD parameters?
+    | COMPCURV parameters?
+    | COMPOF parameters?
+    | COMPON parameters?
+    | COMPPATH parameters?
+    | COMPSURF parameters?
+    | CP parameters?
+    | CPRECOF parameters?
+    | CPRECON parameters?
+    | CR parameters?
+    | CT parameters?
+    | CTOL parameters?
+    | CTOLG0 parameters?
+    | CUT2D parameters?
+    | CUT2DD parameters?
+    | CUT2DF parameters?
+    | CUT2DFD parameters?
+    | CUT3DC parameters?
+    | CUT3DCC parameters?
+    | CUT3DCCD parameters?
+    | CUT3DCD parameters?
+    | CUT3DF parameters?
+    | CUT3DFD parameters?
+    | CUT3DFF parameters?
+    | CUT3DFS parameters?
+    | CUTCONOF parameters?
+    | CUTCONON parameters?
+    | CUTMOD parameters?
+    | CUTMODK parameters?
+    | D parameters?
+    | D0 parameters?
+    | DIAM90 parameters?
+    | DIAMCYCOF parameters?
+    | DIAMOF parameters?
+    | DIAMON parameters?
+    | DILF parameters?
+    | DISC parameters?
+    | DISCL parameters?
+    | DISPR parameters?
+    | DISR parameters?
+    | DISRP parameters?
+    | DITE parameters?
+    | DITS parameters?
+    | DL parameters?
+    | DRIVE parameters?
+    | DYNFINISH parameters?
+    | DYNNORM parameters?
+    | DYNPOS parameters?
+    | DYNPREC parameters?
+    | DYNROUGH parameters?
+    | DYNSEMIFIN parameters?
+    | EAUTO parameters?
+    | ENAT parameters?
+    | ETAN parameters?
     | F ASSIGNMENT expression
-    | FAD
-    | FB
-    | FCUB
-    | FD
-    | FENDNORM
-    | FFWOF
-    | FFWON
-    | FIFOCTRL
-    | FLIM
-    | FLIN
-    | FNORM
-    | FP
-    | FRC
-    | FRCM
-    | FTOCOF
-    | FTOCON
-    | GFRAME
-    | I
-    | I1
-    | INVCCW
-    | INVCW
-    | IR
-    | ISD
-    | J
-    | J1
-    | JR
-    | K
-    | K1
-    | KONT
-    | KONTC
-    | KONTT
-    | KR
-    | L
-    | LEAD
-    | LFOF
-    | LFON
-    | LFPOS
-    | LFTXT
-    | LFWP
-    | MEAC
-    | MEAS
-    | MEASA
-    | MEASF
-    | MEAW
-    | MEAWA
-    | MIRROR
-    | MOVT
-    | NORM
-    | OEMIPO1
-    | OEMIPO2
-    | OFFN
-    | OMA
-    | ORIANGLE
-    | ORIAXES
-    | ORIAXESFR
-    | ORIAXPOS
-    | ORIC
-    | ORICONCCW
-    | ORICONCW
-    | ORICONIO
-    | ORICONTO
-    | ORICURINV
-    | ORICURVE
-    | ORID
-    | ORIEULER
-    | ORIMKS
-    | ORIPATH
-    | ORIPATHS
-    | ORIPLANE
-    | ORIROTA
-    | ORIROTC
-    | ORIROTR
-    | ORIROTT
-    | ORIRPY
-    | ORIRPY2
-    | ORIS
-    | ORISOF
-    | ORISON
-    | ORIVECT
-    | ORIVIRT1
-    | ORIVIRT2
-    | ORIWKS
-    | OSC
-    | OSD
-    | OSOF
-    | OSS
-    | OSSE
-    | OST
-    | OTOL
-    | OTOLG0
-    | P
-    | PACCLIM
-    | PAROT
-    | PAROTOF
-    | PDELAYOF
-    | PDELAYON
-    | PL
-    | POLY
-    | PON
-    | PONS
-    | PTP
-    | PTPG0
-    | PTPWOC
-    | PW
-    | REPOSA
-    | REPOSH
-    | REPOSHA
-    | REPOSL
-    | REPOSQ
-    | REPOSQA
-    | RMB
-    | RMBBL
-    | RME
-    | RMEBL
-    | RMI
-    | RMIBL
-    | RMN
-    | RMNBL
-    | RND
-    | RNDM
-    | ROT
-    | ROTS
-    | RP
-    | RPL
-    | RTLIOF
-    | RTLION
-    | SCALE
-    | SD
-    | SF
-    | SOFT
-    | SON
-    | SONS
-    | SPATH
-    | SPIF1
-    | SPIF2
-    | SPN
-    | SPOF
-    | SPP
-    | SR
-    | ST
-    | STARTFIFO
-    | STOLF
-    | STOPFIFO
-    | SUPA
-    | SUPD
-    | T
-    | TCARR
-    | TCOABS
-    | TCOFR
-    | TCOFRX
-    | TCOFRY
-    | TCOFRZ
-    | THETA
-    | TILT
-    | TOFF
-    | TOFFL
-    | TOFFLR
-    | TOFFR
-    | TOFRAME
-    | TOFRAMEX
-    | TOFRAMEY
-    | TOFRAMEZ
-    | TOROT
-    | TOROTOF
-    | TOROTX
-    | TOROTY
-    | TOROTZ
-    | TOWBCS
-    | TOWKCS
-    | TOWMCS
-    | TOWSTD
-    | TOWTCS
-    | TOWWCS
-    | TRANS
-    | TURN
-    | UPATH
-    | WALCS
-    | WALIMOF
-    | WALIMON
+    | FAD parameters?
+    | FB parameters?
+    | FCUB parameters?
+    | FD parameters?
+    | FENDNORM parameters?
+    | FFWOF parameters?
+    | FFWON parameters?
+    | FIFOCTRL parameters?
+    | FLIM parameters?
+    | FLIN parameters?
+    | FNORM parameters?
+    | FP parameters?
+    | FRC parameters?
+    | FRCM parameters?
+    | FTOCOF parameters?
+    | FTOCON parameters?
+    | GFRAME parameters?
+    | I parameters?
+    | I1 parameters?
+    | INVCCW parameters?
+    | INVCW parameters?
+    | IR parameters?
+    | ISD parameters?
+    | J parameters?
+    | J1 parameters?
+    | JR parameters?
+    | K parameters?
+    | K1 parameters?
+    | KONT parameters?
+    | KONTC parameters?
+    | KONTT parameters?
+    | KR parameters?
+    | L parameters?
+    | LEAD parameters?
+    | LFOF parameters?
+    | LFON parameters?
+    | LFPOS parameters?
+    | LFTXT parameters?
+    | LFWP parameters?
+    | MEAC parameters?
+    | MEAS parameters?
+    | MEASA parameters?
+    | MEASF parameters?
+    | MEAW parameters?
+    | MEAWA parameters?
+    | MIRROR parameters?
+    | MOVT parameters?
+    | NORM parameters?
+    | OEMIPO1 parameters?
+    | OEMIPO2 parameters?
+    | OFFN parameters?
+    | OMA parameters?
+    | ORIANGLE parameters?
+    | ORIAXES parameters?
+    | ORIAXESFR parameters?
+    | ORIAXPOS parameters?
+    | ORIC parameters?
+    | ORICONCCW parameters?
+    | ORICONCW parameters?
+    | ORICONIO parameters?
+    | ORICONTO parameters?
+    | ORICURINV parameters?
+    | ORICURVE parameters?
+    | ORID parameters?
+    | ORIEULER parameters?
+    | ORIMKS parameters?
+    | ORIPATH parameters?
+    | ORIPATHS parameters?
+    | ORIPLANE parameters?
+    | ORIROTA parameters?
+    | ORIROTC parameters?
+    | ORIROTR parameters?
+    | ORIROTT parameters?
+    | ORIRPY parameters?
+    | ORIRPY2 parameters?
+    | ORIS parameters?
+    | ORISOF parameters?
+    | ORISON parameters?
+    | ORIVECT parameters?
+    | ORIVIRT1 parameters?
+    | ORIVIRT2 parameters?
+    | ORIWKS parameters?
+    | OSC parameters?
+    | OSD parameters?
+    | OSOF parameters?
+    | OSS parameters?
+    | OSSE parameters?
+    | OST parameters?
+    | OTOL parameters?
+    | OTOLG0 parameters?
+    | P parameters?
+    | PACCLIM parameters?
+    | PAROT parameters?
+    | PAROTOF parameters?
+    | PDELAYOF parameters?
+    | PDELAYON parameters?
+    | PL parameters?
+    | POLY parameters?
+    | PON parameters?
+    | PONS parameters?
+    | PTP parameters?
+    | PTPG0 parameters?
+    | PTPWOC parameters?
+    | PW parameters?
+    | REPOSA parameters?
+    | REPOSH parameters?
+    | REPOSHA parameters?
+    | REPOSL parameters?
+    | REPOSQ parameters?
+    | REPOSQA parameters?
+    | RMB parameters?
+    | RMBBL parameters?
+    | RME parameters?
+    | RMEBL parameters?
+    | RMI parameters?
+    | RMIBL parameters?
+    | RMN parameters?
+    | RMNBL parameters?
+    | RND parameters?
+    | RNDM parameters?
+    | ROT parameters?
+    | ROTS parameters?
+    | RP parameters?
+    | RPL parameters?
+    | RTLIOF parameters?
+    | RTLION parameters?
+    | SCALE parameters?
+    | SD parameters?
+    | SF parameters?
+    | SOFT parameters?
+    | SON parameters?
+    | SONS parameters?
+    | SPATH parameters?
+    | SPIF1 parameters?
+    | SPIF2 parameters?
+    | SPN parameters?
+    | SPOF parameters?
+    | SPP parameters?
+    | SR parameters?
+    | ST parameters?
+    | STARTFIFO parameters?
+    | STOLF parameters?
+    | STOPFIFO parameters?
+    | SUPA parameters?
+    | SUPD parameters?
+    | T parameters?
+    | TCARR parameters?
+    | TCOABS parameters?
+    | TCOFR parameters?
+    | TCOFRX parameters?
+    | TCOFRY parameters?
+    | TCOFRZ parameters?
+    | THETA parameters?
+    | TILT parameters?
+    | TOFF parameters?
+    | TOFFL parameters?
+    | TOFFLR parameters?
+    | TOFFR parameters?
+    | TOFRAME parameters?
+    | TOFRAMEX parameters?
+    | TOFRAMEY parameters?
+    | TOFRAMEZ parameters?
+    | TOROT parameters?
+    | TOROTOF parameters?
+    | TOROTX parameters?
+    | TOROTY parameters?
+    | TOROTZ parameters?
+    | TOWBCS parameters?
+    | TOWKCS parameters?
+    | TOWMCS parameters?
+    | TOWSTD parameters?
+    | TOWTCS parameters?
+    | TOWWCS parameters?
+    | TRANS parameters?
+    | TURN parameters?
+    | UPATH parameters?
+    | WALCS parameters?
+    | WALIMOF parameters?
+    | WALIMON parameters?
     ;
 
 macroUse: NAME;
@@ -1309,184 +1339,182 @@ parameters: OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN;
 
 //// predefined procedure
 predefinedProcedure
-    : modalSubprogramCall
-    | ACTBLOCNO
-    | ADISPOSA
-    | AFISOF
-    | AFISON
-    | AUXFUDEL
-    | AUXFUDELG
-    | AUXFUMSEQ
-    | AUXFUSYNC
-    | AXCTSWE
-    | AXCTSWEC
-    | AXCTSWED
-    | AXTOCHAN
-    | BRISKA
-    | CADAPTOF
-    | CADAPTON
-    | CALCFIR
-    | CANCELSUB
-    | CHANDATA
-    | CLEARM
-    | CLRINT
-    | CONTDCON
-    | CONTPRON
-    | CORROF
-    | COUPDEF
-    | COUPDEL
-    | COUPOF
-    | COUPOFS
-    | COUPON
-    | COUPONC
-    | COUPRES
-    | CPROT
-    | CPROTDEF
-    | CTABDEF
-    | CTABDEL
-    | CTABEND
-    | CTABLOCK
-    | CTABUNLOCK
-    | DELAYFSTOF
-    | DELAYFSTON
-    | DELDTG
-    | DELETE
-    | DELMT
-    | DELT
-    | DELTC
-    | DISABLE
-    | DRFOF
-    | DRIVEA
-    | DRVPRD
-    | DRVPWR
-    | DZERO
-    | EGDEF
-    | EGDEL
-    | EGOFC
-    | EGOFS
-    | EGON
-    | EGONSYN
-    | EGONSYNE
-    | ENABLE
-    | ESRR
-    | ESRS
-    | EXECSTRING
-    | EXECTAB
-    | EXECUTE
-    | EXTCLOSE
-    | EXTOPEN
-    | FCTDEF
+    : ACTBLOCNO parameters?
+    | ADISPOSA parameters?
+    | AFISOF parameters?
+    | AFISON parameters?
+    | AUXFUDEL parameters?
+    | AUXFUDELG parameters?
+    | AUXFUMSEQ parameters?
+    | AUXFUSYNC parameters?
+    | AXCTSWE parameters?
+    | AXCTSWEC parameters?
+    | AXCTSWED parameters?
+    | AXTOCHAN parameters?
+    | BRISKA parameters?
+    | CADAPTOF parameters?
+    | CADAPTON parameters?
+    | CALCFIR parameters?
+    | CANCELSUB parameters?
+    | CHANDATA parameters?
+    | CLEARM parameters?
+    | CLRINT parameters?
+    | CONTDCON parameters?
+    | CONTPRON parameters?
+    | CORROF parameters?
+    | COUPDEF parameters?
+    | COUPDEL parameters?
+    | COUPOF parameters?
+    | COUPOFS parameters?
+    | COUPON parameters?
+    | COUPONC parameters?
+    | COUPRES parameters?
+    | CPROT parameters?
+    | CPROTDEF parameters?
+    | CTABDEF parameters?
+    | CTABDEL parameters?
+    | CTABEND parameters?
+    | CTABLOCK parameters?
+    | CTABUNLOCK parameters?
+    | DELAYFSTOF parameters?
+    | DELAYFSTON parameters?
+    | DELDTG parameters?
+    | DELETE parameters?
+    | DELMT parameters?
+    | DELT parameters?
+    | DELTC parameters?
+    | DISABLE parameters?
+    | DRFOF parameters?
+    | DRIVEA parameters?
+    | DRVPRD parameters?
+    | DRVPWR parameters?
+    | DZERO parameters?
+    | EGDEF parameters?
+    | EGDEL parameters?
+    | EGOFC parameters?
+    | EGOFS parameters?
+    | EGON parameters?
+    | EGONSYN parameters?
+    | EGONSYNE parameters?
+    | ENABLE parameters?
+    | ESRR parameters?
+    | ESRS parameters?
+    | EXECSTRING parameters?
+    | EXECTAB parameters?
+    | EXECUTE parameters?
+    | EXTCLOSE parameters?
+    | EXTOPEN parameters?
+    | FCTDEF parameters?
     | FGROUP OPEN_PAREN CLOSE_PAREN
-    | FILEDATE
-    | FILEINFO
-    | FILESIZE
-    | FILESTAT
-    | FILETIME
-    | FPR
-    | FPRAOF
-    | FPRAON
-    | FTOC
-    | GEOAX
-    | GET
-    | GETD
-    | GETEXET
-    | GETFREELOC
-    | GETSELT
-    | GWPSOF
-    | GWPSON
-    | ICYCOF
-    | ICYCON
-    | INIT
-    | IPOBRKA
-    | IPTRLOCK
-    | IPTRUNLOCK
-    | JERKA
-    | LEADOF
-    | LEADON
-    | LOCK
-    | MASLDEF
-    | MASLDEL
-    | MASLOF
-    | MASLOFS
-    | MASLON
-    | MMC
-    | MSG
-    | MVTOOL
-    | NEWCONF
-    | NPROT
-    | NPROTDEF
-    | ORIRESET
-    | POLFA
-    | POLFMASK
-    | POLFMLIN
-    | POLYPATH
-    | POSM
-    | POSMT
-    | PRESETON
-    | PRESETONS
-    | PROTA
-    | PROTS
-    | PUNCHACC
-    | PUTFTOC
-    | PUTFTOCF
-    | RDISABLE
-    | READ
-    | RELEASE
-    | RESETMON
-    | RETB
-    | SBLOF
-    | SBLON
-    | SETAL
-    | SETM
-    | SETMS
-    | SETMTH
-    | SETPIECE
-    | SETTA
-    | SETTIA
-    | SIRELIN
-    | SIRELOUT
-    | SIRELTIME
-    | SOFTA
-    | SPCOF
-    | SPCON
-    | SPLINEPATH
-    | START
-    | STOPRE
-    | STOPREOF
-    | SYNFCT
-    | TANG
-    | TANGDEL
-    | TANGOF
-    | TANGON
-    | TCA
-    | TCI
-    | TLIFT
-    | TML
-    | TMOF
-    | TMON
-    | TOFFOF
-    | TOFFON
-    | TRAANG
-    | TRACON
-    | TRACYL
-    | TRAFOOF
-    | TRAFOON
-    | TRAILOF
-    | TRAILON
-    | TRANSMIT
-    | TRAORI
-    | UNLOCK
-    | WAITC
-    | WAITE
-    | WAITENC
-    | WAITM
-    | WAITMC
-    | WAITP
-    | WAITS
-    | WRITE
-    | WRTPR;
-
-modalSubprogramCall: CALL_MODAL (NAME (OPEN_BRACKET expression (COMMA expression)* CLOSE_BRACKET)? )?;
+    | FILEDATE parameters?
+    | FILEINFO parameters?
+    | FILESIZE parameters?
+    | FILESTAT parameters?
+    | FILETIME parameters?
+    | FPR parameters?
+    | FPRAOF parameters?
+    | FPRAON parameters?
+    | FTOC parameters?
+    | GEOAX parameters?
+    | GET parameters?
+    | GETD parameters?
+    | GETEXET parameters?
+    | GETFREELOC parameters?
+    | GETSELT parameters?
+    | GWPSOF parameters?
+    | GWPSON parameters?
+    | ICYCOF parameters?
+    | ICYCON parameters?
+    | INIT parameters?
+    | IPOBRKA parameters?
+    | IPTRLOCK parameters?
+    | IPTRUNLOCK parameters?
+    | JERKA parameters?
+    | LEADOF parameters?
+    | LEADON parameters?
+    | LOCK parameters?
+    | MASLDEF parameters?
+    | MASLDEL parameters?
+    | MASLOF parameters?
+    | MASLOFS parameters?
+    | MASLON parameters?
+    | MMC parameters?
+    | MSG OPEN_PAREN expression CLOSE_PAREN
+    | MVTOOL parameters?
+    | NEWCONF parameters?
+    | NPROT parameters?
+    | NPROTDEF parameters?
+    | ORIRESET parameters?
+    | POLFA parameters?
+    | POLFMASK parameters?
+    | POLFMLIN parameters?
+    | POLYPATH parameters?
+    | POSM parameters?
+    | POSMT parameters?
+    | PRESETON parameters?
+    | PRESETONS parameters?
+    | PROTA parameters?
+    | PROTS parameters?
+    | PUNCHACC parameters?
+    | PUTFTOC parameters?
+    | PUTFTOCF parameters?
+    | RDISABLE parameters?
+    | READ parameters?
+    | RELEASE parameters?
+    | RESETMON parameters?
+    | RETB parameters?
+    | SBLOF parameters?
+    | SBLON parameters?
+    | SETAL parameters?
+    | SETM parameters?
+    | SETMS parameters?
+    | SETMTH parameters?
+    | SETPIECE parameters?
+    | SETTA parameters?
+    | SETTIA parameters?
+    | SIRELIN parameters?
+    | SIRELOUT parameters?
+    | SIRELTIME parameters?
+    | SOFTA parameters?
+    | SPCOF parameters?
+    | SPCON parameters?
+    | SPLINEPATH parameters?
+    | START parameters?
+    | STOPRE parameters?
+    | STOPREOF parameters?
+    | SYNFCT parameters?
+    | TANG parameters?
+    | TANGDEL parameters?
+    | TANGOF parameters?
+    | TANGON parameters?
+    | TCA parameters?
+    | TCI parameters?
+    | TLIFT parameters?
+    | TML parameters?
+    | TMOF parameters?
+    | TMON parameters?
+    | TOFFOF parameters?
+    | TOFFON parameters?
+    | TRAANG parameters?
+    | TRACON parameters?
+    | TRACYL parameters?
+    | TRAFOOF parameters?
+    | TRAFOON parameters?
+    | TRAILOF parameters?
+    | TRAILON parameters?
+    | TRANSMIT parameters?
+    | TRAORI parameters?
+    | UNLOCK parameters?
+    | WAITC parameters?
+    | WAITE parameters?
+    | WAITENC parameters?
+    | WAITM parameters?
+    | WAITMC parameters?
+    | WAITP parameters?
+    | WAITS parameters?
+    | WRITE parameters?
+    | WRTPR parameters?
+    ;
 
 // feedrate override
 feedrate_override_path: OVR ASSIGNMENT expression;
@@ -1502,9 +1530,85 @@ feedrate_override_axial_handwheel: FDA OPEN_BRACKET axis_identifier CLOSE_BRACKE
 
 // function
 predefinedFunction
-    : mathFunction;
+    : mathFunction
+    | stringFunction
+    | CTAB parameters?
+    | CTABEXISTS parameters?
+    | CTABFNO parameters?
+    | CTABFPOL parameters?
+    | CTABFSEG parameters?
+    | CTABID parameters?
+    | CTABINV parameters?
+    | CTABISLOCK parameters?
+    | CTABMEMTYP parameters?
+    | CTABMPOL parameters?
+    | CTABMSEG parameters?
+    | CTABNO parameters?
+    | CTABNOMEM parameters?
+    | CTABPERIOD parameters?
+    | CTABPOL parameters?
+    | CTABPOLID parameters?
+    | CTABSEG parameters?
+    | CTABSEGID parameters?
+    | CTABSEV parameters?
+    | CTABSSV parameters?
+    | CTABTEP parameters?
+    | CTABTEV parameters?
+    | CTABTMAX parameters?
+    | CTABTMIN parameters?
+    | CTABTSP parameters?
+    | CTABTSV parameters?
+    | ADDFRAME parameters?
+    | AXTOSPI parameters?
+    | CALCPOSI parameters?
+    | CALCTRAVAR parameters?
+    | CFINE parameters?
+    | CHKDM parameters?
+    | CHKDNO parameters?
+    | COLLPAIR parameters?
+    | CORRTC parameters?
+    | CORRTRAFO parameters?
+    | CSPLINE parameters?
+    | DELDL parameters?
+    | DELMLOWNER parameters?
+    | DELMLRES parameters?
+    | DELOBJ parameters?
+    | DELTOOLENV parameters?
+    | GETACTT parameters?
+    | GETACTTD parameters?
+    | GETDNO parameters?
+    | GETT parameters?
+    | GETTCOR parameters?
+    | GETTENV parameters?
+    | GETVARAP parameters?
+    | GETVARDFT parameters?
+    | GETVARLIM parameters?
+    | GETVARPHU parameters?
+    | GETVARTYP parameters?
+    | INTERSEC parameters?
+    | INVFRAME parameters?
+    | ISAXIS parameters?
+    | ISFILE parameters?
+    | ISVAR parameters?
+    | LENTOAX parameters?
+    | MEAFRAME parameters?
+    | MEASURE parameters?
+    | MODAXVAL parameters?
+    | NAMETOINT parameters?
+    | NEWMT parameters?
+    | NEWT parameters?
+    | ORISOLH parameters?
+    | POSRANGE parameters?
+    | PROTD parameters?
+    | SETDNO parameters?
+    | SETTCOR parameters?
+    | SIRELAY parameters?
+    | TOOLENV parameters?
+    | TOOLGNT parameters?
+    | TOOLGT parameters?
+    ;
 
-mathFunction 
+mathFunction // done
     : SIN OPEN_PAREN expression CLOSE_PAREN
     | COS OPEN_PAREN expression CLOSE_PAREN
     | TAN OPEN_PAREN expression CLOSE_PAREN
@@ -1522,4 +1626,22 @@ mathFunction
     | MINVAL OPEN_PAREN expression COMMA expression CLOSE_PAREN
     | MAXVAL OPEN_PAREN expression COMMA expression CLOSE_PAREN
     | BOUND OPEN_PAREN expression COMMA expression COMMA expression CLOSE_PAREN
-    | CALCDAT OPEN_PAREN expression COMMA expression COMMA NAME CLOSE_PAREN;
+    | CALCDAT OPEN_PAREN expression COMMA expression COMMA NAME CLOSE_PAREN
+    ;
+
+stringFunction // done
+    : STRLEN OPEN_PAREN expression CLOSE_PAREN
+    | SPRINT OPEN_PAREN expression (COMMA expression)* CLOSE_PAREN
+    | STRINGIS OPEN_PAREN expression CLOSE_PAREN
+    | SUBSTR OPEN_PAREN expression COMMA expression (COMMA expression)? CLOSE_PAREN
+    | AXNAME OPEN_PAREN expression CLOSE_PAREN
+    | AXSTRING OPEN_PAREN expression CLOSE_PAREN
+    | INDEX OPEN_PAREN expression COMMA expression CLOSE_PAREN
+    | MINDEX OPEN_PAREN expression COMMA expression CLOSE_PAREN
+    | RINDEX OPEN_PAREN expression COMMA expression CLOSE_PAREN
+    | ISNUMBER OPEN_PAREN expression CLOSE_PAREN
+    | NUMBER OPEN_PAREN expression CLOSE_PAREN
+    | MATCH OPEN_PAREN expression COMMA expression CLOSE_PAREN
+    | TOLOWER OPEN_PAREN expression CLOSE_PAREN
+    | TOUPPER OPEN_PAREN expression CLOSE_PAREN
+    ;
