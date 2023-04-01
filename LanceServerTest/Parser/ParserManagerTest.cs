@@ -43,7 +43,7 @@ namespace LanceServerTest.Parser
 
             var code ="";
             var document = new Document(new Uri("file:///testfile.spf"));
-            document.Content = code;
+            document.Code = code;
             var parserManager = new ParserManager();
 
             // Act
@@ -71,7 +71,7 @@ namespace LanceServerTest.Parser
                 ret
                 endproc";
             var document = new Document(new Uri("file:///testfile.spf"));
-            document.Content = code;
+            document.Code = code;
             var parserManager = new ParserManager();
 
             // Act
@@ -137,7 +137,7 @@ namespace LanceServerTest.Parser
                 ret
                 endproc";
             var document = new Document(new Uri("file:///testfile.spf"));
-            document.Content = code;
+            document.Code = code;
             var parserManager = new ParserManager();
             document.Tree = parserManager.Parse(document);
 
