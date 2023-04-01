@@ -15,10 +15,10 @@ public enum DocumentState
     /// </summary>
     Read,
     
-    ///// <summary>
-    ///// The State of a document after its content has been pre processed.
-    ///// </summary>
-    //Preprocessed,
+    /// <summary>
+    /// The State of a document after its content has been pre processed.
+    /// </summary>
+    Preprocessed,
     
     /// <summary>
     /// The State of a document after its content has been parsed.
