@@ -9,6 +9,7 @@ namespace LanceServer.Core.SymbolTable
         public Position Position { get; }
         public string Description { get; }
         
+        private const string ArraySizeDelimiter = ", ";
         private readonly CompositeDataType _compositeDataType;
         private readonly string[] _arraySize;
         private readonly bool _outVar;
@@ -36,7 +37,13 @@ namespace LanceServer.Core.SymbolTable
                 var = "var ";
             }
 
-            return $"{var}{_compositeDataType} {Identifier}{_arraySize}";
+            var arraySize = string.Empty;
+            if (_arraySize.Length >= 1)
+            {
+                arraySize = $"[{string.Join(ArraySizeDelimiter, _arraySize)}]";
+            }
+
+            return $"{var}{_compositeDataType} {Identifier}{arraySize}";
         }
     }
 }
