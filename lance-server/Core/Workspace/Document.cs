@@ -71,7 +71,7 @@ namespace LanceServer.Core.Workspace
 
         public bool TryGetSymbol(string symbolName, [MaybeNullWhen(false)] out ISymbol symbol)
         {
-            return _symbols.TryGetValue(symbolName, out symbol);
+            return _symbols.TryGetValue(symbolName.ToLower(), out symbol);
         }
 
         public Document(Uri uri, string encoding = "utf8")
@@ -84,11 +84,11 @@ namespace LanceServer.Core.Workspace
 
         public bool AddSymbol(ISymbol symbol)
         {
-            if (_symbols.ContainsKey(symbol.Identifier))
+            if (_symbols.ContainsKey(symbol.Identifier.ToLower()))
             {
                 return false;
             }
-            _symbols.Add(symbol.Identifier, symbol);
+            _symbols.Add(symbol.Identifier.ToLower(), symbol);
             return true;
         }
 

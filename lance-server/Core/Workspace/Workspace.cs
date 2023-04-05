@@ -199,7 +199,7 @@ namespace LanceServer.Core.Workspace
                 return symbol;
             }
             
-            if (_globalSymbols.TryGetValue(symbolName, out symbol))
+            if (_globalSymbols.TryGetValue(symbolName.ToLower(), out symbol))
             {
                 return symbol;
             }
@@ -211,11 +211,11 @@ namespace LanceServer.Core.Workspace
         {
             if (IsGlobalSymbol(symbol.SourceDocument, config))
             {
-                if (_globalSymbols.ContainsKey(symbol.Identifier))
+                if (_globalSymbols.ContainsKey(symbol.Identifier.ToLower()))
                 {
                     return false;
                 }
-                _globalSymbols.Add(symbol.Identifier, symbol);
+                _globalSymbols.Add(symbol.Identifier.ToLower(), symbol);
                 return true;
             }
             else
