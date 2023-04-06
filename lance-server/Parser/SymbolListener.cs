@@ -43,9 +43,9 @@ namespace LanceServer.Parser
         }
 
         /// <inheritdoc/>
-        public override void ExitProcedureDefinition(SinumerikNCParser.ProcedureDefinitionContext context)
+        public override void ExitProcedureDefinitionHeader(SinumerikNCParser.ProcedureDefinitionHeaderContext context)
         {
-            base.ExitProcedureDefinition(context);
+            base.ExitProcedureDefinitionHeader(context);
             var symbol = new ProcedureSymbol(context.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column), _parameters.ToArray());
             SymbolTable.Add(symbol);
         }

@@ -48,8 +48,8 @@ namespace LanceServer.SemanticToken
                     return (int) SemanticTokenTypeHelper.SemanticTokenType.Type;
                 case SinumerikNCLexer.BLOCK_NUMBER:
                     return (int) SemanticTokenTypeHelper.SemanticTokenType.Decorator;
-                case SinumerikNCLexer.REAL:
-                case SinumerikNCLexer.INT:
+                case SinumerikNCLexer.REAL_UNSIGNED:
+                case SinumerikNCLexer.INT_UNSIGNED:
                     return (int) SemanticTokenTypeHelper.SemanticTokenType.Number;
                 case SinumerikNCLexer.ADD:
                 case SinumerikNCLexer.SUB:

@@ -676,8 +676,10 @@ FRCM:'frcm';
 FTOCOF:'ftocof';
 FTOCON:'ftocon';
 GCODE:'g';
+GCODE_NUMBERED: GCODE INT_UNSIGNED;
 GFRAME:'gframe';
 HCODE:'h';
+HCODE_NUMBERED: HCODE INT_UNSIGNED;
 I:'i';
 I1:'i1';
 INVCCW:'invccw';
@@ -701,6 +703,7 @@ LFPOS:'lfpos';
 LFTXT:'lftxt';
 LFWP:'lfwp';
 MCODE:'m';
+MCODE_NUMBERED: MCODE INT_UNSIGNED;
 MEAC:'meac';
 MEAS:'meas';
 MEASA:'measa';
@@ -1068,13 +1071,7 @@ macroUse: NAME+;
 
 // command
 command
-    : macroUse
-    | gCode
-    | mCode
-    | hCode
-    | axisCode
-    | CALL_MODAL_OFF                // done
-    | expression ASSIGNMENT ACN OPEN_PAREN expression CLOSE_PAREN
+    : expression ASSIGNMENT ACN OPEN_PAREN expression CLOSE_PAREN
     | expression ASSIGNMENT ACP OPEN_PAREN expression CLOSE_PAREN
     | ADIS parameters?
     | ADISPOS parameters?
@@ -1346,11 +1343,17 @@ command
     | WALCS parameters?
     | WALIMOF parameters?
     | WALIMON parameters?
+    | CALL_MODAL_OFF                // done
+    | gCode
+    | mCode
+    | hCode
+    | axisCode
+    | macroUse
     ;
 
-gCode: GCODE (INT_UNSIGNED | ASSIGNMENT codeAssignmentExpression);
-mCode: MCODE (INT_UNSIGNED | ASSIGNMENT codeAssignmentExpression);
-hCode: HCODE (INT_UNSIGNED | ASSIGNMENT codeAssignmentExpression);
+gCode: GCODE_NUMBERED | GCODE ASSIGNMENT codeAssignmentExpression;
+mCode: MCODE_NUMBERED | MCODE ASSIGNMENT codeAssignmentExpression;
+hCode: HCODE_NUMBERED | HCODE ASSIGNMENT codeAssignmentExpression;
 codeAssignmentExpression: expression | QU OPEN_PAREN expression CLOSE_PAREN;
 
 axisCode: AXIS numeric | expression ASSIGNMENT axisAssignmentExpression;

@@ -87,18 +87,28 @@ namespace LanceServerTest.Parser
             Assert.AreEqual("int", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("testparam", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual(")", treeWalker.Elements[elementPosition++]);
+            elementPosition++; //newline
+            elementPosition++; //newline
             Assert.AreEqual("define", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("definedMacro", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("as", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("42", treeWalker.Elements[elementPosition++]);
+            elementPosition++; //newline
             Assert.AreEqual("def", treeWalker.Elements[elementPosition++]);
+            Assert.AreEqual("", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("int", treeWalker.Elements[elementPosition++]);
+            Assert.AreEqual("", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("declaredVariable", treeWalker.Elements[elementPosition++]);
+            elementPosition++; //newline
             Assert.AreEqual("def", treeWalker.Elements[elementPosition++]);
+            Assert.AreEqual("", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("real", treeWalker.Elements[elementPosition++]);
+            Assert.AreEqual("", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("definedVariable", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("=", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("2.3", treeWalker.Elements[elementPosition++]);
+            elementPosition++; //newline
+            elementPosition++; //newline
             Assert.AreEqual("if", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("(", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("definedMacro", treeWalker.Elements[elementPosition++]);
@@ -111,11 +121,16 @@ namespace LanceServerTest.Parser
             Assert.AreEqual("<", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("0", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual(")", treeWalker.Elements[elementPosition++]);
+            elementPosition++; //newline
             Assert.AreEqual("declaredVariable", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("=", treeWalker.Elements[elementPosition++]);
             Assert.AreEqual("7", treeWalker.Elements[elementPosition++]);
+            elementPosition++; //newline
             Assert.AreEqual("endif", treeWalker.Elements[elementPosition++]);
+            elementPosition++; //newline
+            elementPosition++; //newline
             Assert.AreEqual("ret", treeWalker.Elements[elementPosition++]);
+            elementPosition++; //newline
             Assert.AreEqual("endproc", treeWalker.Elements[elementPosition++]);
         }
 
@@ -148,10 +163,10 @@ namespace LanceServerTest.Parser
             var symbolPosition = 0;
             
             Assert.AreEqual("testparam", actualSymbols[symbolPosition++].Identifier);
+            Assert.AreEqual("testProcedure", actualSymbols[symbolPosition++].Identifier);
             Assert.AreEqual("definedMacro", actualSymbols[symbolPosition++].Identifier);
             Assert.AreEqual("declaredVariable", actualSymbols[symbolPosition++].Identifier);
             Assert.AreEqual("definedVariable", actualSymbols[symbolPosition++].Identifier);
-            Assert.AreEqual("testProcedure", actualSymbols[symbolPosition++].Identifier);
         }
     }
 }
