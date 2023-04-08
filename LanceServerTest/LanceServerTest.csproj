@@ -27,13 +27,4 @@
       <ProjectReference Include="..\lance-server\LanceServer.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Hover" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="InCycleFpController.spf" />
-      <None Remove="preprocessing.json" />
-    </ItemGroup>
-
 </Project>
