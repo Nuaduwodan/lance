@@ -171,6 +171,50 @@ public class SinumerikNCLexerTest
     }
     
     [TestMethod]
+    public void StringExpression()
+    {
+        // Arrange
+        var code = 
+            @"define definedMacro as ""42""<<"" is the answer""
+            def string[10] declaredVariable = ""12345""<<""678""<<""90""";
+        ICharStream stream = CharStreams.fromString(code);
+        ITokenSource lexer = new SinumerikNCLexer(stream);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        // Act
+        while (tokens.LA(1) != IntStreamConstants.EOF)
+        {
+            tokens.Consume();
+        }
+        var actualTokenList = tokens.GetTokens();
+
+        // Assert
+        var tokenPosition = 0;
+        Assert.AreEqual(SinumerikNCLexer.MACRO_DEFINE, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.NAME, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.MACRO_AS, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.STRING, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.CONCAT, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.STRING, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
+        
+        Assert.AreEqual(SinumerikNCLexer.DEFINE, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.STRING_TYPE, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.OPEN_BRACKET, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.INT_UNSIGNED, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.CLOSE_BRACKET, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.NAME, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.ASSIGNMENT, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.STRING, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.CONCAT, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.STRING, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.CONCAT, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.STRING, actualTokenList[tokenPosition++].Type);
+        
+        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition++].Type);
+    }
+    
+    [TestMethod]
     public void ExpressionInMacroValue()
     {
         // Arrange
