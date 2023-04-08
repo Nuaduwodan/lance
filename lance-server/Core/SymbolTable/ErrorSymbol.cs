@@ -8,12 +8,12 @@ public class ErrorSymbol : ISymbol
     public string Identifier { get; } = string.Empty;
     public Uri SourceDocument { get; } = null;
     public Position Position { get; } = null;
-    public string Description { get; }
+    public string Description => string.Empty;
     public string Code => string.Empty;
-    public string Documentation => string.Empty;
+    public string Documentation { get; }
 
-    public ErrorSymbol(string description)
+    public ErrorSymbol(string documentation)
     {
-        Description = description;
+        Documentation = documentation;
     }
 }
