@@ -7,9 +7,9 @@ namespace LanceServer.Core.Configuration.DataModel
     [DataContract]
     public class CustomPreprocessorConfiguration
     {
-        [DataMember(Name = "keyType")]
+        [DataMember(Name = "placeholderType")]
         [JsonProperty(Required = Required.Always)]
-        public KeyType KeyType { get; set; }
+        public PlaceholderType PlaceholderType { get; set; }
         
         [DataMember(Name = "fileEndings")]
         [JsonProperty(Required = Required.Always)]

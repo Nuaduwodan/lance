@@ -14,7 +14,7 @@ namespace LanceServerTest.Core.Configuration
         {
             // Arrange
             var expectedCustomPreprocessorConfiguration = new CustomPreprocessorConfiguration();
-            expectedCustomPreprocessorConfiguration.KeyType = KeyType.RegEx;
+            expectedCustomPreprocessorConfiguration.PlaceholderType = PlaceholderType.RegEx;
             expectedCustomPreprocessorConfiguration.FileEndings = new[]{ ".tpl" };
             expectedCustomPreprocessorConfiguration.Placeholders = new []{ "proc <InstanceName>", "([^\"])<[a-zA-Z0-9\\.]+>" };
             var expectedSymbolTableConfiguration = new SymbolTableConfiguration() { GlobalDirectories = new[]{ "asdf" }, GlobalFileEndings = new[]{ "asdf" } };
@@ -38,7 +38,7 @@ namespace LanceServerTest.Core.Configuration
             // Assert
             CollectionAssert.AreEqual(expectedSymbolTableConfiguration.GlobalDirectories, actualSymbolTableConfiguration.GlobalDirectories);
             CollectionAssert.AreEqual(expectedSymbolTableConfiguration.GlobalFileEndings, actualSymbolTableConfiguration.GlobalFileEndings);
-            Assert.AreEqual(expectedCustomPreprocessorConfiguration.KeyType, actualCustomPreprocessorConfiguration.KeyType);
+            Assert.AreEqual(expectedCustomPreprocessorConfiguration.PlaceholderType, actualCustomPreprocessorConfiguration.PlaceholderType);
             CollectionAssert.AreEqual(expectedCustomPreprocessorConfiguration.FileEndings, actualCustomPreprocessorConfiguration.FileEndings);
             CollectionAssert.AreEqual(expectedCustomPreprocessorConfiguration.Placeholders, actualCustomPreprocessorConfiguration.Placeholders);
         }

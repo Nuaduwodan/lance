@@ -55,6 +55,12 @@
                 "description": "Specifies the file endings, with the leading dot, of files, of which containing symbols should be interpreted as global symbols.",
                 "order": 3
               },
+              "lance.customization.globalSymbol.subProcedureFileEndings":{
+                "type": "array",
+                "default": [".spf"],
+                "description": "Specifies the file endings, with the leading dot, of files, of which containing procedures should be interpreted as global symbols.",
+                "order": 3
+              },
               "lance.customization.globalSymbol.folderNames":{
                 "type": "array",
                 "default": ["cma.dir"],
@@ -64,23 +70,23 @@
               "lance.customization.placeholderPreprocessor.fileEndings":{
                 "type": "array",
                 "default": [],
-                "description": "TODO",
+                "description": "Specifies the file endings, of the files which should be processed by the placeholder preprocessor.",
                 "order": 5
               },
-              "lance.customization.placeholderPreprocessor.keyType":{
+              "lance.customization.placeholderPreprocessor.placeholderType":{
                 "type": "string",
                 "default": "RegEx",
                 "enum": [
                   "RegEx",
                   "String"
                 ],
-                "description": "TODO",
+                "description": "Specifies the type of the of the placeholders.",
                 "order": 6
               },
               "lance.customization.placeholderPreprocessor.placeholders":{
                 "type": "array",
                 "default": [],
-                "description": "TODO",
+                "description": "Specifies the placeholders which should get replaced by the preprocessor.",
                 "order": 7
               }
             }
