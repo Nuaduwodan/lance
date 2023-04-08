@@ -24,8 +24,7 @@ HEX: '\'H'[0-9A-F]+'\'';
 
 // language
 BOOL: 'true'|'false';
-PI: '$PI';
-STRING: '"'~[\r\n]*'"';
+STRING: '"'~[\r\n]*?'"';
 
 ////
 //// keywords
@@ -142,42 +141,42 @@ CACP: 'cacp';
 CDC: 'cdc';
 CIC: 'cic';
 COARSEA: 'coarsea';
-CPBC: 'cpbc'; //this
+CPBC: 'cpbc';
 CPDEF: 'cpdef';
-CPDEL: 'cpdel'; //this
+CPDEL: 'cpdel';
 CPFMOF: 'cpfmof';
 CPFMON: 'cpfmon';
-CPFMSON: 'cpfmson'; //this
+CPFMSON: 'cpfmson';
 CPFPOS: 'cpfpos';
 CPFRS: 'cpfrs';
 CPLA: 'cpla';
 CPLCTID: 'cplctid';
-CPLDEF: 'cpldef'; //this
+CPLDEF: 'cpldef';
 CPLDEL: 'cpldel'; 
-CPLDEN: 'cplden'; //this
+CPLDEN: 'cplden';
 CPLINSC: 'cplinsc';
 CPLINTR: 'cplintr';
-CPLNUM: 'cplnum'; //this
+CPLNUM: 'cplnum';
 CPLOF: 'cplof';
 CPLON: 'cplon';
 CPLOUTSC: 'cploutsc';
 CPLOUTTR: 'cplouttr';
 CPLPOS: 'cplpos';
-CPLSETVAL: 'cplsetval'; //this
-CPMALARM: 'cpmalarm'; //this
+CPLSETVAL: 'cplsetval';
+CPMALARM: 'cpmalarm';
 CPMBRAKE: 'cpmbrake';
 CPMPRT: 'cpmprt';
-CPMRESET: 'cpmreset'; //this
-CPMSTART: 'cpmstart'; //this
+CPMRESET: 'cpmreset';
+CPMSTART: 'cpmstart';
 CPMVDI: 'cpmvdi';
 CPOF: 'cpof';
-CPON: 'cpon'; //this
+CPON: 'cpon';
 CPRES: 'cpres';
 CPSETTYPE: 'cpsettype';
-CPSYNCOP: 'cpsyncop'; //this
+CPSYNCOP: 'cpsyncop';
 CPSYNCOP2: 'cpsyncop2';
 CPSYNCOV: 'cpsyncov';
-CPSYNFIP: 'cpsynfip'; //this
+CPSYNFIP: 'cpsynfip';
 CPSYNFIP2: 'cpsynfip2';
 CPSYNFIV: 'cpsynfiv';
 DAC: 'dac';
@@ -791,6 +790,9 @@ RP:'rp';
 RPL:'rpl';
 RTLIOF:'rtliof';
 RTLION:'rtlion';
+S_REAL:'s' REAL_UNSIGNED;
+S_NUMBERED:'s' INT_UNSIGNED;
+S:'s';
 SCALE:'scale';
 SD:'sd';
 SF:'sf';
@@ -883,10 +885,9 @@ TU:'tu';
 RESERVED: 'con' | 'prn' | 'aux' | 'nul' | 'com'[1-9] | 'lpt'[1-9];
 
 // variables
-SYS_VAR: '$'[$acmnopstv]*[a-z0-9_]*; // could be improved
+SYS_VAR: '$'[$acmnopstv]+[a-z0-9_]*; // could be improved
 AXIS: [abcxyz];
 AXIS_NUMBERED: AXIS [0-9]?[0-9];
-SPINDLE: 's' [0-9]?[0-9];
 R_PARAM: '$'?'r'[0-9]+;
 SPINDLE_IDENTIFIER: 'spi';
 
@@ -1016,7 +1017,7 @@ callStatement
     : CALL (expression | primaryExpression? CALL_BLOCK NAME TO NAME)
     | CALL_P primaryExpression (OPEN_PAREN expression (COMMA expression)* CLOSE_PAREN)?
     | CALL_EXT OPEN_PAREN expression CLOSE_PAREN
-    | CALL_PATH OPEN_PAREN expression CLOSE_PAREN
+    | CALL_PATH OPEN_PAREN expression? CLOSE_PAREN
     | CALL_MODAL (NAME (OPEN_BRACKET expression (COMMA expression)* CLOSE_BRACKET)? )?
     ;
 
@@ -1206,6 +1207,7 @@ command
     | MEAW ASSIGNMENT expression
     | MEAWA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT parameters?
     | MIRROR parameters?
+    | MOV OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | MOVT parameters?
     | NORM parameters?
     | OEMIPO1 parameters?
@@ -1260,8 +1262,8 @@ command
     | POLY parameters?
     | PON parameters?
     | PONS parameters?
-    | POS OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
-    | POSA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
+    | POS OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT axisAssignmentExpression
+    | POSA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT axisAssignmentExpression
     | POSM
     | POSP OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT OPEN_PAREN expression COMMA expression COMMA expression CLOSE_PAREN
     | PTP parameters?
@@ -1345,25 +1347,27 @@ command
     | WALIMON parameters?
     | CALL_MODAL_OFF                // done
     | gCode
-    | mCode
     | hCode
+    | mCode
+    | spindleSpeed
     | axisCode
     | macroUse
     ;
 
 gCode: GCODE_NUMBERED | GCODE ASSIGNMENT codeAssignmentExpression;
-mCode: MCODE_NUMBERED | MCODE ASSIGNMENT codeAssignmentExpression;
 hCode: HCODE_NUMBERED | HCODE ASSIGNMENT codeAssignmentExpression;
+mCode: MCODE_NUMBERED | (MCODE_NUMBERED | MCODE) ASSIGNMENT codeAssignmentExpression;
+spindleSpeed: S_NUMBERED | S_REAL | (S_NUMBERED | S | expression) ASSIGNMENT expression;
 codeAssignmentExpression: expression | QU OPEN_PAREN expression CLOSE_PAREN;
 
-axisCode: AXIS numeric | expression ASSIGNMENT axisAssignmentExpression;
-axisAssignmentExpression: expression | (AC | IC) OPEN_PAREN expression CLOSE_PAREN;
+axisCode: AXIS_NUMBERED | expression ASSIGNMENT axisAssignmentExpression;
+axisAssignmentExpression: expression | (AC | IC | CAC | CACN | CACP | CDC | CIC) OPEN_PAREN expression CLOSE_PAREN;
 
 // axis
 // todo how about expressions that lead to an axis
 axis_spindle_identifier: axis_identifier | spindle_identifier;
 axis_identifier: AXIS | AXIS_NUMBERED;
-spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT_UNSIGNED CLOSE_PAREN | SPINDLE;
+spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT_UNSIGNED CLOSE_PAREN;
 
 // procedure
 procedure: predefinedProcedure | ownProcedure | function | otherKeywords;
@@ -1681,11 +1685,6 @@ otherKeywords
     | APX
     | AX
     | BLSYNC
-    | CAC
-    | CACN
-    | CACP
-    | CDC
-    | CIC
     | COARSEA
     | CPBC OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | CPDEF ASSIGNMENT OPEN_PAREN expression CLOSE_PAREN
@@ -1759,7 +1758,6 @@ otherKeywords
     | LIFTFAST
     | LIMS
     | MI
-    | MOV
     | OS
     | OSB
     | OSCILL
@@ -1788,7 +1786,7 @@ otherKeywords
     | RT
     | SC
     | SCC
-    | SCPARA
+    | SCPARA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | SETINT
     | SPOS
     | SPOSA

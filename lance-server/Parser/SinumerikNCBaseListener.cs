@@ -1180,6 +1180,18 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitGCode([NotNull] SinumerikNCParser.GCodeContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.hCode"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHCode([NotNull] SinumerikNCParser.HCodeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.hCode"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHCode([NotNull] SinumerikNCParser.HCodeContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.mCode"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1192,17 +1204,17 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMCode([NotNull] SinumerikNCParser.MCodeContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.hCode"/>.
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.spindleSpeed"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterHCode([NotNull] SinumerikNCParser.HCodeContext context) { }
+	public virtual void EnterSpindleSpeed([NotNull] SinumerikNCParser.SpindleSpeedContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.hCode"/>.
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.spindleSpeed"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitHCode([NotNull] SinumerikNCParser.HCodeContext context) { }
+	public virtual void ExitSpindleSpeed([NotNull] SinumerikNCParser.SpindleSpeedContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.codeAssignmentExpression"/>.
 	/// <para>The default implementation does nothing.</para>

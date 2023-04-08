@@ -604,17 +604,23 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitGCode([NotNull] SinumerikNCParser.GCodeContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.hCode"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitHCode([NotNull] SinumerikNCParser.HCodeContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.mCode"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMCode([NotNull] SinumerikNCParser.MCodeContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.hCode"/>.
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.spindleSpeed"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitHCode([NotNull] SinumerikNCParser.HCodeContext context);
+	Result VisitSpindleSpeed([NotNull] SinumerikNCParser.SpindleSpeedContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.codeAssignmentExpression"/>.
 	/// </summary>
