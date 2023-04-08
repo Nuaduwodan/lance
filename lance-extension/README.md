@@ -7,14 +7,22 @@ Lance is an Extension which provides common language features for the g-code bas
 
 ## Features
 
-Syntax highlighting without semantic highlighting.
+Syntax highlighting with theme support.
 
-![Syntax highlighting](images/syntax_highlighting.png)
+![Syntax highlighting](images/syntax_highlight_feature.gif)
+
+Hover over symbols to see the definition of them.
+
+![Hover feature](images/hover_feature.gif)
 
 ## Extension Settings
 
-There aren't currently any settings having a meaningful impact. But you can change the colorscheme the highlighting is using by changing your theme and or by configuring some color customizations. see [customizing a color theme](https://code.visualstudio.com/docs/getstarted/themes#_customizing-a-color-theme).
+To change the colors of the syntax highlighting you can [change the theme](https://code.visualstudio.com/docs/getstarted/themes) or [configure some color customizations](https://code.visualstudio.com/docs/getstarted/themes#_customizing-a-color-theme).
+
+There is a setting to set the file extensions of the files which contain global symbols. These files are loaded on startup to provide the respective insights. 
+
+There are also some settings for a customizable preprocessor. It can be used to replace project specific placeholders before the file is parsed.
 
 ## Known Issues
 
-currently none
+If you have any problems, see if there is a related issue or write me one on [github](https://github.com/Nuaduwodan/lance/issues/new).

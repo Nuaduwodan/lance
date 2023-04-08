@@ -5,9 +5,7 @@ import {
     LanguageClient,
     LanguageClientOptions,
     ServerOptions,
-    TransportKind,
-    Executable,
-    SemanticTokenTypes
+    Executable
 } from "vscode-languageclient/node";
 
 let client: LanguageClient;
@@ -41,14 +39,11 @@ export function activate(context: vscode.ExtensionContext) {
             {
                 pattern: "**/*.def",
             },
-            {
-                pattern: "**/*.tpl",
-            },
         ],
         progressOnInitialization: true,
         synchronize: {
             configurationSection: "lance",
-            fileEvents: vscode.workspace.createFileSystemWatcher("**/*.{spf,mpf,def,tpl}"),
+            fileEvents: vscode.workspace.createFileSystemWatcher("**/*.{spf,mpf,def}"),
         },
     };
 
