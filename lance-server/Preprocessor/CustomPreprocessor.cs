@@ -13,7 +13,7 @@ namespace LanceServer.Preprocessor
             _configurationManager = configurationManager;
         }
         
-        public string Filter(Document document)
+        public string Filter(ReadDocument document)
         {
             var preprocessorConfiguration = _configurationManager.CustomPreprocessorConfiguration;
             if(!preprocessorConfiguration.FileEndings.Contains(document.FileEnding))
@@ -25,7 +25,7 @@ namespace LanceServer.Preprocessor
             foreach (var placeholder in preprocessorConfiguration.Placeholders)
             {
                 var pattern = placeholder;
-                if (preprocessorConfiguration.KeyType == KeyType.String)
+                if (preprocessorConfiguration.PlaceholderType == PlaceholderType.String)
                 {
                     pattern = Regex.Escape(placeholder);
                 }

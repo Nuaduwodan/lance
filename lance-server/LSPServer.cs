@@ -3,10 +3,8 @@ using LanceServer.Core.Configuration.DataModel;
 using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
 using LanceServer.Hover;
-using LanceServer.Parser;
 using LanceServer.SemanticToken;
 using LanceServer.Core.Workspace;
-using LanceServer.Preprocessor;
 using LspTypes;
 using StreamJsonRpc.Protocol;
 
@@ -109,6 +107,7 @@ namespace LanceServer
             {
                 lock (Lock)
                 {
+                    _configurationManager.Initialize(request);
                     ServerCapabilities capabilities = new ServerCapabilities
                     {
                         TextDocumentSync = new TextDocumentSyncOptions
@@ -198,7 +197,6 @@ namespace LanceServer
             {
                 lock (Lock)
                 {
-                    //_workspace.InitWorkspaceAsync();
                 }
             }
             catch (Exception exception)
@@ -303,8 +301,7 @@ namespace LanceServer
             {
                 lock (Lock)
                 {
-                    var document = _workspace.GetDocument(uri);
-                    document.RawContent = request.ContentChanges.Last().Text;
+                    _workspace.UpdateDocumentContent(uri, request.ContentChanges.Last().Text);
                 }
             }
             catch (Exception exception)
@@ -319,6 +316,72 @@ namespace LanceServer
             }
         }
         
+        [JsonRpcMethod(Methods.TextDocumentDidOpenName)]
+        public void TextDocumentDidOpen(JToken parameter)
+        {
+            if (_trace)
+            {
+                Console.Error.WriteLine(TraceIn + nameof(TextDocumentDidOpen));
+                Console.Error.WriteLine(parameter.ToString());
+            }
+            
+            var request = DeserializeParams<DidOpenTextDocumentParams>(parameter);
+            var uri = ExtractUri(request.TextDocument.Uri);
+            
+            try
+            {
+                lock (Lock)
+                {
+                    _workspace.GetSymbolisedDocument(uri);
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
+            }
+
+            if (_trace)
+            {
+                Console.Error.Write(TraceOut + nameof(TextDocumentDidOpen));
+            }
+        }
+        
+        [JsonRpcMethod(Methods.TextDocumentDefinitionName)]
+        public LocationLink[] TextDocumentDefinition(JToken parameter)
+        {
+            if (_trace)
+            {
+                Console.Error.WriteLine(TraceIn + nameof(TextDocumentDefinition));
+                Console.Error.WriteLine(parameter.ToString());
+            }
+            
+            var request = DeserializeParams<TypeDefinitionParams>(parameter);
+            var uri = ExtractUri(request.TextDocument.Uri);
+            LocationLink[] result = Array.Empty<LocationLink>();
+            
+            try
+            {
+                lock (Lock)
+                {
+                    var document = _workspace.GetSymbolisedDocument(uri);
+                    // Todo process request
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
+            }
+
+            if (_trace)
+            {
+                Console.Error.Write(TraceOut + nameof(TextDocumentDefinition));
+            }
+
+            return result;
+        }
+
         [JsonRpcMethod(Methods.TextDocumentSemanticTokensFull)]
         public SemanticTokens SemanticTokens(JToken parameter)
         {
@@ -336,7 +399,9 @@ namespace LanceServer
             {
                 lock (Lock)
                 {
-                    var document = _workspace.GetDocumentWithParseTree(uri);
+                    _workspace.InitWorkspace();
+                    
+                    var document = _workspace.GetParsedDocument(uri);
 
                     result = _semanticTokenHandler.ProcessRequest(document, request);
                 }
@@ -373,7 +438,7 @@ namespace LanceServer
             {
                 lock (Lock)
                 {
-                    var document = _workspace.GetDocumentWithUpdatedSymbolTable(uri);
+                    var document = _workspace.GetSymbolisedDocument(uri);
 
                     result = _hoverHandler.ProcessRequest(document, request, _workspace);
                 }

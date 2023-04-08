@@ -6,6 +6,6 @@ namespace LanceServer.Parser;
 
 public interface IParserManager
 {
-    IParseTree Parse(Document document);
-    List<ISymbol> GetSymbolTableForDocument(Document document);
+    IParseTree Parse(PreprocessedDocument document);
+    List<ISymbol> GetSymbolTableForDocument(ParsedDocument document);
 }

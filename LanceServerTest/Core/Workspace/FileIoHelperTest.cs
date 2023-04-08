@@ -13,12 +13,10 @@ namespace LanceServerTest.Core.Workspace
             var path = "c:/Users/YBigler/workspace/lance/LanceServerTest/testfile##test##test##.spf";
             var expectedContent = "testfile";
             Uri uri = new Uri(path);
-            var expectedResult = new Document(uri);
         
-            var actualResult = FileIoHelper.ReadDocument(uri);
+            var actualResult = FileIoHelper.ReadContent(uri);
 
-            Assert.AreEqual(expectedResult.Uri, actualResult.Uri);
-            Assert.AreEqual(expectedContent, actualResult.RawContent);
+            Assert.AreEqual(expectedContent, actualResult);
         }
         
         [TestMethod]

@@ -18,7 +18,7 @@ namespace LanceServerTest.Preprocessor
             var configurationManagerMock = new Mock<IConfigurationManager>();
             
             var customPreprocessorConfiguration = new CustomPreprocessorConfiguration();
-            customPreprocessorConfiguration.KeyType = KeyType.RegEx;
+            customPreprocessorConfiguration.PlaceholderType = PlaceholderType.RegEx;
             customPreprocessorConfiguration.FileEndings = new[]{ ".tpl" };
             customPreprocessorConfiguration.Placeholders = new []{ "([^\"])<[a-zA-Z0-9\\.]+>" };
 
@@ -34,8 +34,7 @@ namespace LanceServerTest.Preprocessor
             // Arrange
             var preprocessor = new CustomPreprocessor(_configurationManagerMock);
             var code = "";
-            var document = new Document(new Uri("file:///testfile.tpl"));
-            document.RawContent = code;
+            var document = new ReadDocument(new Uri("file:///testfile.tpl"), code);
 
             var expectedResult = code;
 
@@ -64,8 +63,7 @@ namespace LanceServerTest.Preprocessor
 
                 ret
                 endproc";
-            var document = new Document(new Uri("file:///testfile.tpl"));
-            document.RawContent = code;
+            var document = new ReadDocument(new Uri("file:///testfile.tpl"), code);
 
             var expectedResult = code;
 
@@ -94,8 +92,7 @@ namespace LanceServerTest.Preprocessor
 
                 ret
                 endproc";
-            var document = new Document(new Uri("file:///testfile.tpl"));
-            document.RawContent = code;
+            var document = new ReadDocument(new Uri("file:///testfile.tpl"), code);
 
             var expectedResult = 
                 @"proc testProcedure(int testparam)
@@ -136,8 +133,7 @@ namespace LanceServerTest.Preprocessor
 
                 ret
                 endproc";
-            var document = new Document(new Uri("file:///testfile.tpl"));
-            document.RawContent = code;
+            var document = new ReadDocument(new Uri("file:///testfile.tpl"), code);
 
             var expectedResult = code;
 
@@ -166,8 +162,7 @@ namespace LanceServerTest.Preprocessor
 
                 ret
                 endproc";
-            var document = new Document(new Uri("file:///testfile.tpl"));
-            document.RawContent = code;
+            var document = new ReadDocument(new Uri("file:///testfile.tpl"), code);
 
             var expectedResult = 
                 @"proc _InstanceName_Procedure(int testparam)
@@ -208,8 +203,7 @@ namespace LanceServerTest.Preprocessor
 
                 ret
                 endproc";
-            var document = new Document(new Uri("file:///testfile.spf"));
-            document.RawContent = code;
+            var document = new ReadDocument(new Uri("file:///testfile.spf"), code);
 
             var expectedResult = code;
 

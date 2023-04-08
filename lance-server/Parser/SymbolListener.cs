@@ -1,4 +1,5 @@
 ﻿using LanceServer.Core.SymbolTable;
+using LanceServer.Core.Workspace;
 using Position = LspTypes.Position;
 
 namespace LanceServer.Parser
@@ -6,13 +7,13 @@ namespace LanceServer.Parser
     public class SymbolListener : SinumerikNCBaseListener
     {
         public List<ISymbol> SymbolTable { get; } = new();
-        public Uri Document { get; }
+        public ReadDocument Document { get; }
 
         private List<ParameterSymbol> _parameters = new();
 
-        public SymbolListener(Uri documentUri)
+        public SymbolListener(ReadDocument document)
         {
-            Document = documentUri;
+            Document = document;
         }
 
         /// <inheritdoc/>
@@ -26,7 +27,7 @@ namespace LanceServer.Parser
         public override void ExitParameterDefinitionByReference(SinumerikNCParser.ParameterDefinitionByReferenceContext context)
         {
             base.ExitParameterDefinitionByReference(context);
-            var symbol = new ParameterSymbol(context.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column),
+            var symbol = new ParameterSymbol(context.NAME().GetText(), Document.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column),
                 GetCompositeDataType(context.type()), GetArrayDeclaration(context.arrayDeclaration()),true);
             _parameters.Add(symbol);
             SymbolTable.Add(symbol);
@@ -36,7 +37,7 @@ namespace LanceServer.Parser
         public override void ExitParameterDefinitionByValue(SinumerikNCParser.ParameterDefinitionByValueContext context)
         {
             base.ExitParameterDefinitionByValue(context);
-            var symbol = new ParameterSymbol(context.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column),
+            var symbol = new ParameterSymbol(context.NAME().GetText(), Document.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column),
                 GetCompositeDataType(context.type()), Array.Empty<string>());
             _parameters.Add(symbol);
             SymbolTable.Add(symbol);
@@ -46,21 +47,15 @@ namespace LanceServer.Parser
         public override void ExitProcedureDefinitionHeader(SinumerikNCParser.ProcedureDefinitionHeaderContext context)
         {
             base.ExitProcedureDefinitionHeader(context);
-            var symbol = new ProcedureSymbol(context.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column), _parameters.ToArray());
+            var symbol = new ProcedureSymbol(context.NAME().GetText(), Document.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), _parameters.ToArray());
             SymbolTable.Add(symbol);
-        }
-
-        public override void ExitProcedureDeclaration(SinumerikNCParser.ProcedureDeclarationContext context)
-        {
-            base.ExitProcedureDeclaration(context);
-            //TODO 
         }
 
         /// <inheritdoc/>
         public override void ExitMacroDeclaration(SinumerikNCParser.MacroDeclarationContext context)
         {
             base.ExitMacroDeclaration(context);
-            var symbol = new MacroSymbol(context.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column), context.macroValue().GetText());
+            var symbol = new MacroSymbol(context.NAME().GetText(), Document.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), context.macroValue().GetText(), Document.IsGlobalFile);
             SymbolTable.Add(symbol);
         }
 
@@ -71,7 +66,7 @@ namespace LanceServer.Parser
             var type = GetCompositeDataType(context.type());
             foreach (var variable in context.variableNameDeclaration())
             {
-                var symbol = new VariableSymbol(variable.NAME().GetText(), Document, new Position((uint)context.Start.Line, (uint)context.Start.Column), type, GetArrayDefinition(variable.arrayDefinition()));
+                var symbol = new VariableSymbol(variable.NAME().GetText(), Document.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), type, GetArrayDefinition(variable.arrayDefinition()), Document.IsGlobalFile);
                 SymbolTable.Add(symbol);
             }
         }

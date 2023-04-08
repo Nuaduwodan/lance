@@ -19,7 +19,7 @@ namespace LanceServer.Core.Workspace
 
         private IEnumerable<Uri> _workspaceFolders;
         
-        private Dictionary<Uri, Document> _documents = new();
+        private Dictionary<Uri, KnownDocument> _documents = new();
         private Dictionary<string, ISymbol> _globalSymbols = new();
 
         public Workspace(IParserManager parserManager, ICustomPreprocessor customPreprocessor, IConfigurationManager configurationManager)
@@ -35,87 +35,106 @@ namespace LanceServer.Core.Workspace
         /// <param name="uri"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public Document GetDocumentWithUpdatedSymbolTable(Uri uri)
+        public SymbolisedDocument GetSymbolisedDocument(Uri uri)
         {
-            var config = _configurationManager.SymbolTableConfiguration;
-            
-            var document = GetDocumentWithParseTree(uri);
-            if (document.State >= DocumentState.Visited)
+            var parsedDocument = GetParsedDocument(uri);
+            if (parsedDocument is SymbolisedDocument symbolisedDocument)
             {
-                return document;
+                return symbolisedDocument;
             }
             
-            if (document.State != DocumentState.Parsed)
-            {
-                throw new ArgumentException();
-            }
-
-            var symbolTable = _parserManager.GetSymbolTableForDocument(document);
+            var symbolTable = _parserManager.GetSymbolTableForDocument(parsedDocument);
             
             //update symbol table
-            DeleteGlobalSymbolsOfFile(document.Uri);
-            document.DeleteAllSymbols();
-            
-            foreach (var symbol in symbolTable)
+            DeleteGlobalSymbolsOfFile(uri);
+
+            var globalSymbols = symbolTable.Where(symbol => symbol is ProcedureSymbol).ToList();
+
+            if (parsedDocument.IsGlobalFile)
             {
-                AddSymbol(symbol, config);
+                globalSymbols.AddRange(symbolTable.Where(symbol => symbol is VariableSymbol or MacroSymbol));
             }
 
-            document.SetVisited();
+            var localSymbols = symbolTable.Except(globalSymbols);
+            
+            foreach (var symbol in globalSymbols)
+            {
+                AddSymbol(symbol);
+            }
 
-            return document;
+            var newSymbolisedDocument = new SymbolisedDocument(parsedDocument, localSymbols);
+            _documents[uri] = newSymbolisedDocument;
+            return newSymbolisedDocument;
         }
 
         /// <summary>
         /// Returns the document with a parse tree from memory or creates it.
         /// </summary>
         /// <param name="uri">The URI of the document</param>
-        public Document GetDocumentWithParseTree(Uri uri)
+        public ParsedDocument GetParsedDocument(Uri uri)
         {
-            var document = GetPreprocessedDocument(uri);
-            if (document.State >= DocumentState.Parsed)
+            var preprocessedDocument = GetPreprocessedDocument(uri);
+            if (preprocessedDocument is ParsedDocument parsedDocument)
             {
-                return document;
-            }
-            
-            if (document.State != DocumentState.Preprocessed)
-            {
-                throw new ArgumentException();
+                return parsedDocument;
             }
 
-            document.Tree = _parserManager.Parse(document);
-            return document;
+            var newParsedDocument = new ParsedDocument(preprocessedDocument, _parserManager.Parse(preprocessedDocument));
+            _documents[uri] = newParsedDocument;
+            return newParsedDocument;
         }
 
-        public Document GetPreprocessedDocument(Uri uri)
+        public PreprocessedDocument GetPreprocessedDocument(Uri uri)
         {
-            var document = GetDocument(uri);
-            if (document.State >= DocumentState.Preprocessed)
+            var readDocument = GetReadDocument(uri);
+            if (readDocument is PreprocessedDocument preprocessedDocument)
             {
-                return document;
+                return preprocessedDocument;
             }
             
-            if (document.State != DocumentState.Read)
-            {
-                throw new ArgumentException(nameof(document) + " should be of state " + DocumentState.Read + " or higher");
-            }
-
-            document.Code = _customPreprocessor.Filter(document);
-            return document;
+            var newPreprocessedDocument = new PreprocessedDocument(readDocument, _customPreprocessor.Filter(readDocument));
+            _documents[uri] = newPreprocessedDocument;
+            return newPreprocessedDocument;
         }
 
         /// <summary>
         /// Returns the document from memory or creates it.
         /// </summary>
         /// <param name="uri">The URI of the document</param>
-        public Document GetDocument(Uri uri)
+        public ReadDocument GetReadDocument(Uri uri)
+        {
+            var knownDocument = GetKnownDocument(uri);
+
+            if (knownDocument is ReadDocument readDocument)
+            {
+                return readDocument;
+            }
+
+            var config = _configurationManager.SymbolTableConfiguration;
+            var content = FileIoHelper.ReadContent(uri);
+            var isGlobalFile = config.GlobalFileEndings.Contains(knownDocument.FileEnding);
+            var isSubProcedure = config.SubProcedureFileEndings.Contains(knownDocument.FileEnding);
+            
+            var directories = Path.GetDirectoryName(uri.LocalPath)!.Split(Path.DirectorySeparatorChar);
+            var procedureNeedsDeclaration = config.GlobalDirectories.Intersect(directories).Any();
+            
+            var newReadDocument = new ReadDocument(knownDocument, content, isGlobalFile, isSubProcedure, procedureNeedsDeclaration);
+            _documents[uri] = newReadDocument;
+            return newReadDocument;
+        }
+
+        /// <summary>
+        /// Adds the document to this workspace, returns true if successfully added or false if a document with that URI already exists.
+        /// </summary>
+        /// <param name="uri">The URI of the document</param>
+        public KnownDocument GetKnownDocument(Uri uri)
         {
             if (HasDocument(uri))
             {
                 return _documents[uri];
             }
-
-            var document = FileIoHelper.ReadDocument(uri);
+            
+            var document = new KnownDocument(uri);
             _documents.Add(uri, document);
             return document;
         }
@@ -129,21 +148,6 @@ namespace LanceServer.Core.Workspace
             return _documents.ContainsKey(uri);
         }
 
-        /// <summary>
-        /// Adds the document to this workspace, returns true if successfully added or false if a document with that URI already exists.
-        /// </summary>
-        /// <param name="documentUri">The URI of the document</param>
-        public bool AddDocument(Uri documentUri)
-        {
-            if (HasDocument(documentUri))
-            {
-                return false;
-            }
-
-            GetDocument(documentUri);
-            return true;
-        }
-
         /*
         public async Task InitWorkspaceAsync()
         {
@@ -151,8 +155,9 @@ namespace LanceServer.Core.Workspace
         }
         */
 
-        public void InitWorkspace(IEnumerable<Uri> workspaceFolders)
+        public void InitWorkspace()
         {
+            var workspaceFolders = _configurationManager.WorkspaceFolders;
             var symbolTableConfig = _configurationManager.SymbolTableConfiguration;
             var fileEndingConfig = _configurationManager.FileEndingConfiguration;
             
@@ -170,21 +175,22 @@ namespace LanceServer.Core.Workspace
             
             foreach (var defFile in defFiles)
             {
-                GetDocumentWithParseTree(defFile);
+                GetSymbolisedDocument(defFile);
             }
-            
+            /*
             var globalFiles = documentUris.Where(uri => symbolTableConfig.GlobalDirectories.Intersect(Path.GetDirectoryName(uri.LocalPath)!.Split(Path.DirectorySeparatorChar)).Any());
             documentUris = documentUris.Except(globalFiles).ToList();
             
             foreach (var globalFile in globalFiles)
             {
-                GetDocumentWithParseTree(globalFile);
+                GetDocumentWithUpdatedSymbolTable(globalFile);
             }
             
             foreach (var documentUri in documentUris)
             {
-                GetDocumentWithParseTree(documentUri);
+                GetDocumentWithUpdatedSymbolTable(documentUri);
             }
+            */
         }
 
         /// <summary>
@@ -194,7 +200,7 @@ namespace LanceServer.Core.Workspace
         /// <param name="documentOfReference">The URI of the document where the symbol is used</param>
         public ISymbol GetSymbol(string symbolName, Uri documentOfReference)
         {
-            if (GetDocument(documentOfReference).TryGetSymbol(symbolName, out var symbol))
+            if (GetSymbolisedDocument(documentOfReference).TryGetSymbol(symbolName, out var symbol))
             {
                 return symbol;
             }
@@ -207,40 +213,25 @@ namespace LanceServer.Core.Workspace
             return new ErrorSymbol($"Cannot resolve symbol '{symbolName}'");
         }
 
-        private bool AddSymbol(ISymbol symbol, SymbolTableConfiguration config)
+        public void UpdateDocumentContent(Uri uri, string newContent)
         {
-            if (IsGlobalSymbol(symbol.SourceDocument, config))
+            var document = GetReadDocument(uri);
+            if (document.RawContent != newContent)
             {
-                if (_globalSymbols.ContainsKey(symbol.Identifier.ToLower()))
-                {
-                    return false;
-                }
-                _globalSymbols.Add(symbol.Identifier.ToLower(), symbol);
-                return true;
+                _documents[uri] = new ReadDocument(uri, newContent, document.IsGlobalFile, document.IsSubProcedure, document.ProcedureNeedsDeclaration, document.Encoding);
             }
-            else
-            {
-                return GetDocument(symbol.SourceDocument).AddSymbol(symbol);
-            }
+
+            GetSymbolisedDocument(uri);
         }
 
-        private bool IsGlobalSymbol(Uri sourceDocument, SymbolTableConfiguration config)
+        private bool AddSymbol(ISymbol symbol)
         {
-            var fileEnding = Path.GetExtension(sourceDocument.LocalPath);
-
-            if (config.GlobalFileEndings.Contains(fileEnding))
+            if (_globalSymbols.ContainsKey(symbol.Identifier.ToLower()))
             {
-                return true;
+                return false;
             }
-
-            var directories = Path.GetDirectoryName(sourceDocument.LocalPath)!.Split(Path.DirectorySeparatorChar);
-
-            if (config.GlobalDirectories.Intersect(directories).Any())
-            {
-                return true;
-            }
-            
-            return false;
+            _globalSymbols.Add(symbol.Identifier.ToLower(), symbol);
+            return true;
         }
 
         private void DeleteGlobalSymbolsOfFile(Uri documentUri)

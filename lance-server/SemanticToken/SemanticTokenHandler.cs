@@ -10,7 +10,7 @@ namespace LanceServer.SemanticToken
     public class SemanticTokenHandler : ISemanticTokenHandler
     {
 
-        public SemanticTokens ProcessRequest(Document document, DocumentSymbolParams requestParams)
+        public SemanticTokens ProcessRequest(ParsedDocument document, DocumentSymbolParams requestParams)
         {
             SemanticTokenData tokenData = new SemanticTokenData();
             

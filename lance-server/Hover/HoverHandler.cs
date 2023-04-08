@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Antlr4.Runtime.Tree;
 using LanceServer.Core.Configuration;
+using LanceServer.Core.SymbolTable;
 using LanceServer.Core.Workspace;
 using LanceServer.Parser;
 using LspTypes;
@@ -21,13 +22,8 @@ namespace LanceServer.Hover
             _configurationManager = configurationManager;
         }
 
-        public LspTypes.Hover ProcessRequest(Document document, HoverParams requestParams, IWorkspace workspace)
+        public LspTypes.Hover ProcessRequest(SymbolisedDocument document, HoverParams requestParams, IWorkspace workspace)
         {
-            if (document.State < DocumentState.Visited)
-            {
-                throw new ArgumentException(nameof(document)+" has to be in state Visited or higher");
-            }
-
             var position = requestParams.Position;
             position.Line++;
             var hoverListener = new HoverListener(requestParams.Position);
@@ -49,7 +45,7 @@ namespace LanceServer.Hover
             {
                 Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(new MarkupContent()
                 {
-                    Kind = MarkupKind.Markdown, Value = CreateMarkdownString(symbol.GetCode(), symbol.Description)
+                    Kind = MarkupKind.Markdown, Value = CreateMarkdownString(symbol)
                 }),
                 Range = new Range()
                 {
@@ -59,9 +55,19 @@ namespace LanceServer.Hover
             };
         }
 
-        private string CreateMarkdownString(string code, string description = "")
+        private string CreateMarkdownString(ISymbol symbol)
         {
             var markdownString = new StringBuilder();
+            var description = symbol.Description;
+            var code = symbol.Code;
+            var documentation = symbol.Documentation;
+
+            if (!string.IsNullOrEmpty(description))
+            {
+                markdownString.Append(description);
+                markdownString.Append("\n");
+            }
+            
             if (!string.IsNullOrEmpty(code))
             {
                 markdownString.Append("```sinumeriknc\n");
@@ -69,17 +75,28 @@ namespace LanceServer.Hover
                 markdownString.Append("\n```");
             }
 
-            if (!(string.IsNullOrEmpty(code) || string.IsNullOrEmpty(description)))
+            if (!(string.IsNullOrEmpty(code) || string.IsNullOrEmpty(documentation)))
             {
                 markdownString.Append("\n\n***\n\n");
             }
             
-            if (!string.IsNullOrEmpty(description))
+            if (!string.IsNullOrEmpty(documentation))
             {
-                markdownString.Append(description);
+                markdownString.Append(EscapeMarkdown(documentation));
             }
 
             return markdownString.ToString();
+        }
+
+        private string EscapeMarkdown(string text)
+        {
+            text = text.Replace("\\", "\\\\");
+            text = text.Replace("*", "\\*");
+            text = text.Replace("_", "\\_");
+            text = text.Replace(".", "\\.");
+            text = text.Replace("<", "\\<");
+            text = text.Replace(">", "\\>");
+            return text;
         }
     }
 }

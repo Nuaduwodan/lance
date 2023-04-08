@@ -42,8 +42,7 @@ namespace LanceServerTest.Parser
             var expectedText = "<EOF>";
 
             var code ="";
-            var document = new Document(new Uri("file:///testfile.spf"));
-            document.Code = code;
+            var document = new PreprocessedDocument(new Uri("file:///testfile.spf"), code, code);
             var parserManager = new ParserManager();
 
             // Act
@@ -70,8 +69,7 @@ namespace LanceServerTest.Parser
 
                 ret
                 endproc";
-            var document = new Document(new Uri("file:///testfile.spf"));
-            document.Code = code;
+            var document = new PreprocessedDocument(new Uri("file:///testfile.spf"), code, code);
             var parserManager = new ParserManager();
 
             // Act
@@ -151,10 +149,9 @@ namespace LanceServerTest.Parser
 
                 ret
                 endproc";
-            var document = new Document(new Uri("file:///testfile.spf"));
-            document.Code = code;
+            var preprocessedDocument = new PreprocessedDocument(new Uri("file:///testfile.spf"), code, code);
             var parserManager = new ParserManager();
-            document.Tree = parserManager.Parse(document);
+            var document = new ParsedDocument(preprocessedDocument, parserManager.Parse(preprocessedDocument));
 
             // Act
             var actualSymbols = parserManager.GetSymbolTableForDocument(document);

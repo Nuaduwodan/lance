@@ -51,14 +51,12 @@
         public static IEnumerable<Uri> GetFilesInDirectory(Uri path, string filter)
         {
             var dir = new DirectoryInfo(path.LocalPath);
-            return dir.GetFiles(filter).Select(info => new Uri(info.FullName));
+            return dir.GetFiles(filter, SearchOption.AllDirectories).Select(info => new Uri(info.FullName));
         }
 
-        public static Document ReadDocument(Uri uri)
+        public static string ReadContent(Uri uri)
         {
-            Document document = new Document(uri);
-            document.RawContent = ReadFileContent(uri.LocalPath);
-            return document;
+            return ReadFileContent(uri.LocalPath);
         }
 
         public static string ReadFileContent(string path)

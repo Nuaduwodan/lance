@@ -10,41 +10,49 @@ public interface IWorkspace
     /// <param name="uri"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    Document GetDocumentWithUpdatedSymbolTable(Uri uri);
+    public SymbolisedDocument GetSymbolisedDocument(Uri uri);
 
     /// <summary>
     /// Returns the document with a parse tree from memory or creates it.
     /// </summary>
     /// <param name="uri">The URI of the document</param>
-    Document GetDocumentWithParseTree(Uri uri);
+    public ParsedDocument GetParsedDocument(Uri uri);
 
-    Document GetPreprocessedDocument(Uri uri);
+    /// <summary>
+    /// Returns the document with the preprocessed code..
+    /// </summary>
+    /// <param name="uri">The URI of the document</param>
+    public PreprocessedDocument GetPreprocessedDocument(Uri uri);
 
     /// <summary>
     /// Returns the document from memory or creates it.
     /// </summary>
     /// <param name="uri">The URI of the document</param>
-    Document GetDocument(Uri uri);
-
-    /// <summary>
-    /// Returns true if this workspace has a document with that URI.
-    /// </summary>
-    /// <param name="uri">The URI of the document</param>
-    bool HasDocument(Uri uri);
+    public ReadDocument GetReadDocument(Uri uri);
 
     /// <summary>
     /// Adds the document to this workspace, returns true if successfully added or false if a document with that URI already exists.
     /// </summary>
     /// <param name="documentUri">The URI of the document</param>
-    bool AddDocument(Uri documentUri);
+    public KnownDocument GetKnownDocument(Uri documentUri);
 
-    //Task InitWorkspaceAsync();
-    void InitWorkspace(IEnumerable<Uri> workspaceFolders);
+    /// <summary>
+    /// Returns true if this workspace has a document with that URI.
+    /// </summary>
+    /// <param name="uri">The URI of the document</param>
+    public bool HasDocument(Uri uri);
+
+    /// <summary>
+    /// Loads all the files of a workspace to be able to provide project wide insights.
+    /// </summary>
+    public void InitWorkspace();
 
     /// <summary>
     /// Returns the symbol.
     /// </summary>
     /// <param name="symbolName">The name of the symbol</param>
     /// <param name="documentOfReference">The URI of the document where the symbol is used</param>
-    ISymbol GetSymbol(string symbolName, Uri documentOfReference);
+    public ISymbol GetSymbol(string symbolName, Uri documentOfReference);
+
+    public void UpdateDocumentContent(Uri uri, string newContent);
 }

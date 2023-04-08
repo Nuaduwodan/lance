@@ -5,5 +5,5 @@ namespace LanceServer.Hover;
 
 public interface IHoverHandler
 {
-    LspTypes.Hover ProcessRequest(Document document, HoverParams requestParams, IWorkspace workspace);
+    LspTypes.Hover ProcessRequest(SymbolisedDocument document, HoverParams requestParams, IWorkspace workspace);
 }

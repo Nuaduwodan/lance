@@ -4,5 +4,5 @@ namespace LanceServer.Preprocessor;
 
 public interface ICustomPreprocessor
 {
-    string Filter(Document document);
+    string Filter(ReadDocument document);
 }
