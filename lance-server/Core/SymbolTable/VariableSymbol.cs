@@ -7,25 +7,29 @@ namespace LanceServer.Core.SymbolTable
         public string Identifier { get; }
         public Uri SourceDocument { get; }
         public Position Position { get; }
-        public string Description { get; }
-        
+        public string Description => $"{(isGlobal?"global":"local")} variable";
+        public string Code => GetCode();
+        public string Documentation { get; }
+
         private readonly CompositeDataType _compositeDataType;
         private readonly string[] _arraySize;
+        private readonly bool isGlobal;
         
         private const string ArraySizeDelimiter = ", ";
 
-        public VariableSymbol(string identifier, Uri sourceDocument, Position position, CompositeDataType compositeDataType, string[] arraySize,
-            string description = "")
+        public VariableSymbol(string identifier, Uri sourceDocument, Position position, CompositeDataType compositeDataType, string[] arraySize, bool isGlobal,
+            string documentation = "")
         {
             Identifier = identifier;
             SourceDocument = sourceDocument;
             Position = position;
             _compositeDataType = compositeDataType;
             _arraySize = arraySize;
-            Description = description;
+            this.isGlobal = isGlobal;
+            Documentation = documentation;
         }
 
-        public string GetCode()
+        private string GetCode()
         {
             var arraySizeString = string.Empty;
             if (_arraySize?.Length >= 1)

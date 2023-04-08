@@ -8,5 +8,6 @@ public interface ISymbol
     public Uri SourceDocument { get; }
     public Position Position { get; }
     public string Description { get; }
-    public string GetCode();
+    public string Code { get; }
+    public string Documentation { get; }
 }

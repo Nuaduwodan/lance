@@ -7,15 +7,18 @@ namespace LanceServer.Core.SymbolTable
         public string Identifier { get; }
         public Uri SourceDocument { get; }
         public Position Position { get; }
-        public string Description { get; }
         
+        public string Description => "parameter";
+        public string Code => GetCode();
+        public string Documentation { get; }
+
         private const string ArraySizeDelimiter = ", ";
         private readonly CompositeDataType _compositeDataType;
         private readonly string[] _arraySize;
         private readonly bool _outVar;
 
         public ParameterSymbol(string identifier, Uri sourceDocument, Position position, CompositeDataType compositeDataType, string[] arraySize, bool outVar = false,
-            string description = "")
+            string documentation = "")
         {
             Identifier = identifier;
             SourceDocument = sourceDocument;
@@ -23,12 +26,10 @@ namespace LanceServer.Core.SymbolTable
             _compositeDataType = compositeDataType;
             _arraySize = arraySize;
             _outVar = outVar;
-            Description = description;
+            Documentation = documentation;
         }
 
-
-
-        public string GetCode()
+        private string GetCode()
         {
             string var = string.Empty;
 

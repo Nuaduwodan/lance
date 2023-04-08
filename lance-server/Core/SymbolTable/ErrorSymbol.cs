@@ -9,13 +9,11 @@ public class ErrorSymbol : ISymbol
     public Uri SourceDocument { get; } = null;
     public Position Position { get; } = null;
     public string Description { get; }
-    
+    public string Code => string.Empty;
+    public string Documentation => string.Empty;
+
     public ErrorSymbol(string description)
     {
         Description = description;
-    }
-    public string GetCode()
-    {
-        return string.Empty;
     }
 }

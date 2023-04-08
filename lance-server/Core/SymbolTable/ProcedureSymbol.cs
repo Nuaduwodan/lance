@@ -10,24 +10,20 @@ namespace LanceServer.Core.SymbolTable
         public string Identifier { get; }
         public Uri SourceDocument { get; }
         public Position Position { get; }
-        public string Description { get; }
-        
+        public string Description => "procedure";
+        public string Code => $"proc {Identifier}({string.Join(ParameterDelimiter, _parameters.Select(p => p.Code))})";
+        public string Documentation { get; }
+
         private readonly ParameterSymbol[] _parameters;
         private const string ParameterDelimiter = ", ";
 
-        public ProcedureSymbol(string identifier, Uri sourceDocument, Position position, ParameterSymbol[] parameters, string description = "")
+        public ProcedureSymbol(string identifier, Uri sourceDocument, Position position, ParameterSymbol[] parameters, string documentation = "")
         {
             Identifier = identifier;
             SourceDocument = sourceDocument;
             Position = position;
             _parameters = parameters;
-            Description = description;
-        }
-
-        public string GetCode()
-        {
-            var parameters = string.Join(ParameterDelimiter, _parameters.Select(p => p.GetCode()));
-            return $"proc {Identifier}({parameters})";
+            Documentation = documentation;
         }
 
     }
