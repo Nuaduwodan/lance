@@ -25,4 +25,4 @@ There are also some settings for a customizable preprocessor. It can be used to 
 
 ## Known Issues
 
-If you have any problems, see if there is a related issue or write me one on [github](https://github.com/Nuaduwodan/lance/issues/new).
+If you have any problems, see if there is a related issue or write me one on [github](https://github.com/Nuaduwodan/lance/issues).
