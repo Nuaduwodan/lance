@@ -11,9 +11,9 @@ namespace LanceServer.Core.Configuration.DataModel
         [JsonProperty(Required = Required.Always)]
         public PlaceholderType PlaceholderType { get; set; }
         
-        [DataMember(Name = "fileEndings")]
+        [DataMember(Name = "fileExtensions")]
         [JsonProperty(Required = Required.Always)]
-        public string[] FileEndings { get; set; }
+        public string[] FileExtensions { get; set; }
 
         [DataMember(Name = "placeholders")]
         [JsonProperty(Required = Required.Always)]

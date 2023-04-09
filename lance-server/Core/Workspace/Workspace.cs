@@ -112,8 +112,8 @@ namespace LanceServer.Core.Workspace
 
             var config = _configurationManager.SymbolTableConfiguration;
             var content = FileIoHelper.ReadContent(uri);
-            var isGlobalFile = config.GlobalFileEndings.Contains(knownDocument.FileEnding);
-            var isSubProcedure = config.SubProcedureFileEndings.Contains(knownDocument.FileEnding);
+            var isGlobalFile = config.GlobalFileExtensions.Contains(knownDocument.FileEnding);
+            var isSubProcedure = config.SubProcedureFileExtensions.Contains(knownDocument.FileEnding);
             
             var directories = Path.GetDirectoryName(uri.LocalPath)!.Split(Path.DirectorySeparatorChar);
             var procedureNeedsDeclaration = config.GlobalDirectories.Intersect(directories).Any();
@@ -170,7 +170,7 @@ namespace LanceServer.Core.Workspace
                 }
             }
 
-            var defFiles = documentUris.Where(uri => symbolTableConfig.GlobalFileEndings.Contains(Path.GetExtension(uri.LocalPath)));
+            var defFiles = documentUris.Where(uri => symbolTableConfig.GlobalFileExtensions.Contains(Path.GetExtension(uri.LocalPath)));
             documentUris = documentUris.Except(defFiles).ToList();
             
             foreach (var defFile in defFiles)

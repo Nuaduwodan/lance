@@ -19,7 +19,7 @@ namespace LanceServer
         private readonly JsonRpc _rpc;
         
         private readonly ManualResetEvent _disconnectEvent = new ManualResetEvent(false);
-        private readonly bool _trace = true;
+        private bool _trace = true;
         
         private static readonly object Lock = new object();
         
@@ -271,6 +271,7 @@ namespace LanceServer
                 lock (Lock)
                 {
                     _configurationManager.ExtractConfiguration(request);
+                    _trace = request.Settings.Lance.Trace;
                 }
             }
             catch (Exception exception)

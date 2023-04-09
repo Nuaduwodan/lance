@@ -15,9 +15,9 @@ namespace LanceServerTest.Core.Configuration
             // Arrange
             var expectedCustomPreprocessorConfiguration = new CustomPreprocessorConfiguration();
             expectedCustomPreprocessorConfiguration.PlaceholderType = PlaceholderType.RegEx;
-            expectedCustomPreprocessorConfiguration.FileEndings = new[]{ ".tpl" };
+            expectedCustomPreprocessorConfiguration.FileExtensions = new[]{ ".tpl" };
             expectedCustomPreprocessorConfiguration.Placeholders = new []{ "proc <InstanceName>", "([^\"])<[a-zA-Z0-9\\.]+>" };
-            var expectedSymbolTableConfiguration = new SymbolTableConfiguration() { GlobalDirectories = new[]{ "asdf" }, GlobalFileEndings = new[]{ "asdf" } };
+            var expectedSymbolTableConfiguration = new SymbolTableConfiguration() { GlobalDirectories = new[]{ "asdf" }, GlobalFileExtensions = new[]{ "asdf" } };
             
             var configurationParams = new ConfigurationParameters();
             configurationParams.Settings = new Settings();
@@ -37,9 +37,9 @@ namespace LanceServerTest.Core.Configuration
 
             // Assert
             CollectionAssert.AreEqual(expectedSymbolTableConfiguration.GlobalDirectories, actualSymbolTableConfiguration.GlobalDirectories);
-            CollectionAssert.AreEqual(expectedSymbolTableConfiguration.GlobalFileEndings, actualSymbolTableConfiguration.GlobalFileEndings);
+            CollectionAssert.AreEqual(expectedSymbolTableConfiguration.GlobalFileExtensions, actualSymbolTableConfiguration.GlobalFileExtensions);
             Assert.AreEqual(expectedCustomPreprocessorConfiguration.PlaceholderType, actualCustomPreprocessorConfiguration.PlaceholderType);
-            CollectionAssert.AreEqual(expectedCustomPreprocessorConfiguration.FileEndings, actualCustomPreprocessorConfiguration.FileEndings);
+            CollectionAssert.AreEqual(expectedCustomPreprocessorConfiguration.FileExtensions, actualCustomPreprocessorConfiguration.FileExtensions);
             CollectionAssert.AreEqual(expectedCustomPreprocessorConfiguration.Placeholders, actualCustomPreprocessorConfiguration.Placeholders);
         }
         

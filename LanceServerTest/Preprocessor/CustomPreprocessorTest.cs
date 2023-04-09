@@ -19,7 +19,7 @@ namespace LanceServerTest.Preprocessor
             
             var customPreprocessorConfiguration = new CustomPreprocessorConfiguration();
             customPreprocessorConfiguration.PlaceholderType = PlaceholderType.RegEx;
-            customPreprocessorConfiguration.FileEndings = new[]{ ".tpl" };
+            customPreprocessorConfiguration.FileExtensions = new[]{ ".tpl" };
             customPreprocessorConfiguration.Placeholders = new []{ "([^\"])<[a-zA-Z0-9\\.]+>" };
 
             configurationManagerMock.Setup(m => m.CustomPreprocessorConfiguration)

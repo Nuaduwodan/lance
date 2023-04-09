@@ -16,7 +16,7 @@ namespace LanceServer.Preprocessor
         public string Filter(ReadDocument document)
         {
             var preprocessorConfiguration = _configurationManager.CustomPreprocessorConfiguration;
-            if(!preprocessorConfiguration.FileEndings.Contains(document.FileEnding))
+            if(!preprocessorConfiguration.FileExtensions.Contains(document.FileEnding))
             {
                 return document.RawContent;
             }

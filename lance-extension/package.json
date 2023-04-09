@@ -5,6 +5,10 @@
   "version": "0.0.3",
   "publisher": "YanikBigler",
   "icon": "images/lance_icon_128.png",
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": ["Siemens", "Sinumerik", "One", "NC"],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Nuaduwodan/lance"
@@ -12,10 +16,8 @@
   "engines": {
     "vscode": "^1.75.0"
   },
-  "categories": [
-    "Other"
-  ],
   "main": "./out/extension.js",
+  "activationEvents": ["onLanguage:sinumeriknc"],
   "contributes": {
     "languages": [
       {
@@ -23,7 +25,8 @@
         "configuration": "./language-configuration.json",
         "extensions": [
           ".spf", ".mpf", ".def"
-        ]
+        ],
+        "aliases": ["Sinumerik NC", "Sinumerik One NC"]
       }
     ],
     "grammars": [
@@ -41,37 +44,37 @@
                 "type": "number",
                 "default": 100,
                 "description": "Controls the maximum number of problems produced by the server.",
-                "order": 1
+                "order": 2
               },
               "lance.trace": {
                 "type": "boolean",
                 "default": "false",
                 "description": "Traces the communication between VSCode and the Lance server.",
-                "order": 2
+                "order": 3
               },
-              "lance.customization.globalSymbol.fileEndings":{
+              "lance.customization.globalSymbol.fileExtensions":{
                 "type": "array",
                 "default": [".def"],
-                "description": "Specifies the file endings, with the leading dot, of files, of which containing symbols should be interpreted as global symbols.",
-                "order": 3
+                "description": "Specifies the file extensions, with the leading dot, of files, of which containing symbols should be interpreted as global symbols.",
+                "order": 11
               },
-              "lance.customization.globalSymbol.subProcedureFileEndings":{
+              "lance.customization.globalSymbol.subProcedureFileExtensions":{
                 "type": "array",
                 "default": [".spf"],
-                "description": "Specifies the file endings, with the leading dot, of files, of which containing procedures should be interpreted as global symbols.",
-                "order": 3
+                "description": "Specifies the file extensions, with the leading dot, of files, of which containing procedures should be interpreted as global symbols.",
+                "order": 12
               },
               "lance.customization.globalSymbol.folderNames":{
                 "type": "array",
                 "default": ["cma.dir"],
                 "description": "Specifies the folder names, which containing files should be interpreted as global procedures.",
-                "order": 4
+                "order": 13
               },
-              "lance.customization.placeholderPreprocessor.fileEndings":{
+              "lance.customization.placeholderPreprocessor.fileExtensions":{
                 "type": "array",
                 "default": [],
-                "description": "Specifies the file endings, of the files which should be processed by the placeholder preprocessor.",
-                "order": 5
+                "description": "Specifies the file extensions, of the files which should be processed by the placeholder preprocessor.",
+                "order": 21
               },
               "lance.customization.placeholderPreprocessor.placeholderType":{
                 "type": "string",
@@ -81,13 +84,13 @@
                   "String"
                 ],
                 "description": "Specifies the type of the placeholders.",
-                "order": 6
+                "order": 22
               },
               "lance.customization.placeholderPreprocessor.placeholders":{
                 "type": "array",
                 "default": [],
                 "description": "Specifies the placeholders which should get replaced by the preprocessor.",
-                "order": 7
+                "order": 23
               }
             }
         }
