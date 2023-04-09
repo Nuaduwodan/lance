@@ -9,6 +9,7 @@ import {
 } from "vscode-languageclient/node";
 
 let client: LanguageClient;
+const languageID = "sinumeriknc";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -26,24 +27,24 @@ export function activate(context: vscode.ExtensionContext) {
         options: { shell: false, detached: false }
     };
 
+    const languageConfig = vscode.workspace.getConfiguration("files.associations");
+    let fileExtensions = ["*.def","*.mpf","*.spf"];
+    let moreExtensions = Object.keys(languageConfig)
+
+    moreExtensions.forEach(element => {
+        if (languageConfig[element] === languageID){
+            fileExtensions.push(element);
+        }
+    });
+
     const serverOptions: ServerOptions = server;
 
     let clientOptions: LanguageClientOptions = {
-        documentSelector: [
-            {
-                pattern: "**/*.spf",
-            },
-            {
-                pattern: "**/*.mpf",
-            },
-            {
-                pattern: "**/*.def",
-            },
-        ],
+        documentSelector: [{language: languageID}],
         progressOnInitialization: true,
         synchronize: {
             configurationSection: "lance",
-            fileEvents: vscode.workspace.createFileSystemWatcher("**/*.{spf,mpf,def}"),
+            fileEvents: vscode.workspace.createFileSystemWatcher(`**/{${fileExtensions.toString()}}`),
         },
     };
 
