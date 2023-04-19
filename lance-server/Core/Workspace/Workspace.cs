@@ -1,12 +1,11 @@
 ﻿using LanceServer.Core.Configuration;
 using LanceServer.Parser;
-using System.Linq;
-using LanceServer.Core.Configuration.DataModel;
 using LanceServer.Core.Symbol;
 using LanceServer.Preprocessor;
 
 namespace LanceServer.Core.Workspace
 {
+    /// <inheritdoc cref="IWorkspace"/>
     public class Workspace : IWorkspace
     {
         
@@ -27,7 +26,24 @@ namespace LanceServer.Core.Workspace
             _configurationManager = configurationManager;
         }
         
-        /// <inheritdoc cref="IWorkspace"/>
+        /// <inheritdoc/>
+        public SymbolUseExtractedDocument GetSymbolUseExtractedDocument(Uri uri)
+        {
+            var symbolisedDocument = GetSymbolisedDocument(uri);
+            if (symbolisedDocument is SymbolUseExtractedDocument symbolUseExtractedDocument)
+            {
+                return symbolUseExtractedDocument;
+            }
+            
+            var symbolUseList = _parserManager.GetSymbolUseForDocument(symbolisedDocument);
+
+            var symbolUseTable = new SymbolUseTable(symbolUseList);
+            var newSymbolUseExtractedDocument = new SymbolUseExtractedDocument(symbolisedDocument, symbolUseTable);
+            _documents[uri] = newSymbolUseExtractedDocument;
+            return newSymbolUseExtractedDocument;
+        }
+        
+        /// <inheritdoc/>
         public SymbolisedDocument GetSymbolisedDocument(Uri uri)
         {
             var parsedDocument = GetParsedDocument(uri);
@@ -55,13 +71,13 @@ namespace LanceServer.Core.Workspace
                 AddSymbol(symbol);
             }
 
-            var symbolTable = new SymbolTable(localSymbols.ToDictionary(symbol => symbol.Identifier.ToLower(), symbol => symbol));
+            var symbolTable = new SymbolTable(localSymbols);
             var newSymbolisedDocument = new SymbolisedDocument(parsedDocument, symbolTable);
             _documents[uri] = newSymbolisedDocument;
             return newSymbolisedDocument;
         }
 
-        /// <inheritdoc cref="IWorkspace"/>
+        /// <inheritdoc/>
         public ParsedDocument GetParsedDocument(Uri uri)
         {
             var preprocessedDocument = GetPreprocessedDocument(uri);
@@ -75,7 +91,7 @@ namespace LanceServer.Core.Workspace
             return newParsedDocument;
         }
 
-        /// <inheritdoc cref="IWorkspace"/>
+        /// <inheritdoc/>
         public PreprocessedDocument GetPreprocessedDocument(Uri uri)
         {
             var document = GetMacroExtractedDocument(uri);
@@ -89,7 +105,7 @@ namespace LanceServer.Core.Workspace
             return newPreprocessedDocument;
         }
 
-        /// <inheritdoc cref="IWorkspace"/>
+        /// <inheritdoc/>
         public MacroExtractedDocument GetMacroExtractedDocument(Uri uri)
         {
             var document = GetPlaceholderPreprocessedDocument(uri);
@@ -103,7 +119,7 @@ namespace LanceServer.Core.Workspace
             return newMacroExtractedDocument;
         }
 
-        /// <inheritdoc cref="IWorkspace"/>
+        /// <inheritdoc/>
         public PlaceholderPreprocessedDocument GetPlaceholderPreprocessedDocument(Uri uri)
         {
             var document = GetDocument(uri);
@@ -117,7 +133,7 @@ namespace LanceServer.Core.Workspace
             return newPlaceholderPreprocessedDocument;
         }
 
-        /// <inheritdoc cref="IWorkspace"/>
+        /// <inheritdoc/>
         public Document GetDocument(Uri uri)
         {
             if (HasDocument(uri))

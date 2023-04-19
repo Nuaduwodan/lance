@@ -3,56 +3,43 @@ using Antlr4.Runtime.Tree;
 using LanceServer.Core.Configuration;
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
-using LanceServer.Parser;
 using LspTypes;
 using Range = LspTypes.Range;
 
 namespace LanceServer.Hover
 {
-    /// <summary>
-    /// Handles hover requests and returns the respective data to be displayed
-    /// </summary>
+    /// <inheritdoc cref="IHoverHandler"/>
     public class HoverHandler : IHoverHandler
     {
         private ConfigurationManager _configurationManager;
         private readonly ParseTreeWalker _walker = new ParseTreeWalker();
 
+        /// <summary>
+        /// Instantiates a new <see cref="HoverHandler"/>
+        /// </summary>
         public HoverHandler(ConfigurationManager configurationManager)
         {
             _configurationManager = configurationManager;
         }
 
-        public LspTypes.Hover ProcessRequest(SymbolisedDocument document, HoverParams requestParams, IWorkspace workspace)
+        /// <inheritdoc/>
+        public LspTypes.Hover HandleRequest(SymbolUseExtractedDocument document, HoverParams requestParams, IWorkspace workspace)
         {
             var position = requestParams.Position;
-            position.Line++;
-            var hoverListener = new HoverListener(requestParams.Position);
-            _walker.Walk(hoverListener, document.Tree);
-
-            var token = hoverListener.Token;
-
-            if (token == null || document.Placeholders.IsPlaceholder(token.Text))
+            if (document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))
             {
-                return new LspTypes.Hover();
-            }
+                var symbol = workspace.GetSymbol(symbolUse.Identifier.ToLower(), document.Information.Uri);
             
-            var symbol = workspace.GetSymbol(token.Text, document.Information.Uri);
-
-            var tokenStart = new Position((uint)token.Line - 1, (uint)token.Column);
-            var tokenEnd = new Position(tokenStart.Line, tokenStart.Character + (uint)token.Text.Length);
-
-            return new LspTypes.Hover()
-            {
-                Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(new MarkupContent()
+                return new LspTypes.Hover()
                 {
-                    Kind = MarkupKind.Markdown, Value = CreateMarkdownString(symbol)
-                }),
-                Range = new Range()
-                {
-                    Start = tokenStart,
-                    End = tokenEnd
-                }
-            };
+                    Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(new MarkupContent()
+                    {
+                        Kind = MarkupKind.Markdown, Value = CreateMarkdownString(symbol)
+                    }),
+                    Range = symbolUse.Position
+                };
+            }
+            return new LspTypes.Hover();
         }
 
         private string CreateMarkdownString(ISymbol symbol)
