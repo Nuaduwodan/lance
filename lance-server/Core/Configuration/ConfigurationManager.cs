@@ -1,7 +1,6 @@
 ﻿using LanceServer.Core.Configuration.DataModel;
 using LanceServer.Core.Workspace;
 using LspTypes;
-using Newtonsoft.Json.Linq;
 
 namespace LanceServer.Core.Configuration;
 

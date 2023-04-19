@@ -1,20 +1,19 @@
 ﻿using LanceServer.Core.Workspace;
 using LspTypes;
 
-namespace LanceServer.Hover
+namespace LanceServer.Hover;
+
+/// <summary>
+/// Handles hover requests and returns the respective data to be displayed
+/// </summary>
+public interface IHoverHandler
 {
     /// <summary>
-    /// Handles hover requests and returns the respective data to be displayed
+    /// Handles the hover request.
     /// </summary>
-    public interface IHoverHandler
-    {
-        /// <summary>
-        /// Handles the hover request.
-        /// </summary>
-        /// <param name="document">The document with the necessary symbol information</param>
-        /// <param name="requestParams">The hover request parameters</param>
-        /// <param name="workspace">The workspace</param>
-        /// <returns>The hover response <see cref="LspTypes.Hover"/></returns>
-        LspTypes.Hover HandleRequest(SymbolUseExtractedDocument document, HoverParams requestParams, IWorkspace workspace);
-    }
+    /// <param name="document">The document with the necessary symbol information</param>
+    /// <param name="requestParams">The hover request parameters</param>
+    /// <param name="workspace">The workspace</param>
+    /// <returns>The hover response <see cref="LspTypes.Hover"/></returns>
+    LspTypes.Hover HandleRequest(SymbolUseExtractedDocument document, HoverParams requestParams, IWorkspace workspace);
 }

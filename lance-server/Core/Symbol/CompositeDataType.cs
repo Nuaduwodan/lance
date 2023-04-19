@@ -1,29 +1,28 @@
-﻿namespace LanceServer.Core.Symbol
+﻿namespace LanceServer.Core.Symbol;
+
+/// <summary>
+/// The data type of a symbol with an optional length if the type is string
+/// </summary>
+public class CompositeDataType
 {
-    /// <summary>
-    /// The data type of a symbol with an optional length if the type is string
-    /// </summary>
-    public class CompositeDataType
+    private readonly DataType _dataType;
+    private readonly string _length;
+
+    public CompositeDataType(DataType dataType, string length = "")
     {
-        private readonly DataType _dataType;
-        private readonly string _length;
+        _length = length;
+        _dataType = dataType;
+    }
 
-        public CompositeDataType(DataType dataType, string length = "")
+    public override string ToString()
+    {
+        string length = string.Empty;
+
+        if (_dataType == DataType.String)
         {
-            _length = length;
-            _dataType = dataType;
+            length = $"[{_length}]";
         }
-
-        public override string ToString()
-        {
-            string length = string.Empty;
-
-            if (_dataType == DataType.String)
-            {
-                length = $"[{_length}]";
-            }
             
-            return $"{_dataType.ToString().ToLowerInvariant()}{length}";
-        }
+        return $"{_dataType.ToString().ToLowerInvariant()}{length}";
     }
 }

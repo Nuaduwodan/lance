@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace LanceServer.Core.Workspace;
+﻿namespace LanceServer.Core.Workspace;
 
 public class PlaceholderPreprocessedDocument : Document
 {

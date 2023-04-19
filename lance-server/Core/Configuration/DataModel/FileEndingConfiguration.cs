@@ -1,12 +1,11 @@
-﻿namespace LanceServer.Core.Configuration.DataModel
-{
-    public class FileEndingConfiguration
-    {
-        public string[] FileEndings { get; }
+﻿namespace LanceServer.Core.Configuration.DataModel;
 
-        public FileEndingConfiguration(string[] fileEndings)
-        {
-            FileEndings = fileEndings;
-        }
+public class FileEndingConfiguration
+{
+    public string[] FileEndings { get; }
+
+    public FileEndingConfiguration(string[] fileEndings)
+    {
+        FileEndings = fileEndings;
     }
 }

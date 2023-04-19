@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime.Tree;
 using LanceServer.Core.Symbol;
 
 namespace LanceServer.Core.Workspace;

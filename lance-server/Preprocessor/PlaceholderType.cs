@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace LanceServer.Preprocessor
+namespace LanceServer.Preprocessor;
+
+[JsonConverter(typeof(StringEnumConverter))]
+public enum PlaceholderType
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum PlaceholderType
-    {
-        String,
-        RegEx
-    }
+    String,
+    RegEx
 }

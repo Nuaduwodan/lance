@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
-
-namespace LanceServer.Core.Workspace;
+﻿namespace LanceServer.Core.Workspace;
 
 public class Placeholders
 {

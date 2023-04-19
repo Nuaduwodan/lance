@@ -1,7 +1,6 @@
-﻿namespace LanceServer.Core.Configuration.DataModel
+﻿namespace LanceServer.Core.Configuration.DataModel;
+
+public class DocumentationConfiguration
 {
-    public class DocumentationConfiguration
-    {
     
-    }
 }

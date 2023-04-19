@@ -4,86 +4,84 @@ using LanceServer.Core.Configuration;
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
 using LspTypes;
-using Range = LspTypes.Range;
 
-namespace LanceServer.Hover
+namespace LanceServer.Hover;
+
+/// <inheritdoc cref="IHoverHandler"/>
+public class HoverHandler : IHoverHandler
 {
-    /// <inheritdoc cref="IHoverHandler"/>
-    public class HoverHandler : IHoverHandler
+    private ConfigurationManager _configurationManager;
+    private readonly ParseTreeWalker _walker = new();
+
+    /// <summary>
+    /// Instantiates a new <see cref="HoverHandler"/>
+    /// </summary>
+    public HoverHandler(ConfigurationManager configurationManager)
     {
-        private ConfigurationManager _configurationManager;
-        private readonly ParseTreeWalker _walker = new ParseTreeWalker();
+        _configurationManager = configurationManager;
+    }
 
-        /// <summary>
-        /// Instantiates a new <see cref="HoverHandler"/>
-        /// </summary>
-        public HoverHandler(ConfigurationManager configurationManager)
+    /// <inheritdoc/>
+    public LspTypes.Hover HandleRequest(SymbolUseExtractedDocument document, HoverParams requestParams, IWorkspace workspace)
+    {
+        var position = requestParams.Position;
+        if (document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))
         {
-            _configurationManager = configurationManager;
-        }
-
-        /// <inheritdoc/>
-        public LspTypes.Hover HandleRequest(SymbolUseExtractedDocument document, HoverParams requestParams, IWorkspace workspace)
-        {
-            var position = requestParams.Position;
-            if (document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))
-            {
-                var symbol = workspace.GetSymbol(symbolUse.Identifier.ToLower(), document.Information.Uri);
+            var symbol = workspace.GetSymbol(symbolUse.Identifier.ToLower(), document.Information.Uri);
             
-                return new LspTypes.Hover()
+            return new LspTypes.Hover()
+            {
+                Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(new MarkupContent()
                 {
-                    Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(new MarkupContent()
-                    {
-                        Kind = MarkupKind.Markdown, Value = CreateMarkdownString(symbol)
-                    }),
-                    Range = symbolUse.Position
-                };
-            }
-            return new LspTypes.Hover();
+                    Kind = MarkupKind.Markdown, Value = CreateMarkdownString(symbol)
+                }),
+                Range = symbolUse.Position
+            };
         }
+        return new LspTypes.Hover();
+    }
 
-        private string CreateMarkdownString(ISymbol symbol)
+    private string CreateMarkdownString(ISymbol symbol)
+    {
+        var markdownString = new StringBuilder();
+        var description = symbol.Description;
+        var code = symbol.Code;
+        var documentation = symbol.Documentation;
+
+        if (!string.IsNullOrEmpty(description))
         {
-            var markdownString = new StringBuilder();
-            var description = symbol.Description;
-            var code = symbol.Code;
-            var documentation = symbol.Documentation;
-
-            if (!string.IsNullOrEmpty(description))
-            {
-                markdownString.Append(description);
-                markdownString.Append("\n");
-            }
-            
-            if (!string.IsNullOrEmpty(code))
-            {
-                markdownString.Append("```sinumeriknc\n");
-                markdownString.Append(code);
-                markdownString.Append("\n```");
-            }
-
-            if (!(string.IsNullOrEmpty(code) || string.IsNullOrEmpty(documentation)))
-            {
-                markdownString.Append("\n\n***\n\n");
-            }
-            
-            if (!string.IsNullOrEmpty(documentation))
-            {
-                markdownString.Append(EscapeMarkdown(documentation));
-            }
-
-            return markdownString.ToString();
+            markdownString.Append(description);
+            markdownString.Append("\n");
         }
-
-        private string EscapeMarkdown(string text)
+            
+        if (!string.IsNullOrEmpty(code))
         {
-            text = text.Replace("\\", "\\\\");
-            text = text.Replace("*", "\\*");
-            text = text.Replace("_", "\\_");
-            text = text.Replace(".", "\\.");
-            text = text.Replace("<", "\\<");
-            text = text.Replace(">", "\\>");
-            return text;
+            markdownString.Append("```sinumeriknc\n");
+            markdownString.Append(code);
+            markdownString.Append("\n```");
         }
+
+        if (!(string.IsNullOrEmpty(code) || string.IsNullOrEmpty(documentation)))
+        {
+            markdownString.Append("\n\n***\n\n");
+        }
+            
+        if (!string.IsNullOrEmpty(documentation))
+        {
+            markdownString.Append(EscapeMarkdown(documentation));
+        }
+
+        return markdownString.ToString();
+    }
+
+    private string EscapeMarkdown(string text)
+    {
+        text = text.Replace("\\", "\\\\");
+        text = text.Replace("*", "\\*");
+        text = text.Replace("_", "\\_");
+        text = text.Replace(".", "\\.");
+        text = text.Replace("<", "\\<");
+        text = text.Replace(">", "\\>");
+        return text;
     }
 }

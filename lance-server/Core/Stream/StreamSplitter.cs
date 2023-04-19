@@ -1,270 +1,350 @@
 ﻿using System.Diagnostics;
 
-namespace LanceServer.Core.Stream
+namespace LanceServer.Core.Stream;
+
+class StreamSplitter : System.IO.Stream
 {
-    class StreamSplitter : System.IO.Stream
+    [Flags]
+    public enum StreamOwnership
     {
-        [Flags]
-        public enum StreamOwnership
+        OwnNone = 0x0,
+        OwnPrimaryStream = 0x1,
+        OwnSlaveStream = 0x2,
+        OwnBoth = OwnPrimaryStream | OwnSlaveStream
+    }
+    public enum SlaveFailAction
+    {
+        Propagate,
+        Ignore,
+        Filter
+    }
+
+    public delegate SlaveFailAction SlaveFailHandler(
+        object oSender, SlaveFailMethod method, Exception exc
+    );
+
+    public enum SlaveFailMethod
+    {
+        Read,
+        Write,
+        Seek
+    }
+
+    private readonly System.IO.Stream _primaryStream;
+    private readonly System.IO.Stream _slaveStream;
+    private StreamOwnership _streamsOwned;
+
+    private SlaveFailAction _readFailAction = SlaveFailAction.Propagate;
+    private SlaveFailAction _writeFailAction = SlaveFailAction.Propagate;
+    private SlaveFailAction _seekFailAction = SlaveFailAction.Propagate;
+
+    private SlaveFailHandler? _slaveReadFailFilter;
+    private SlaveFailHandler? _slaveWriteFailFilter;
+    private SlaveFailHandler? _slaveSeekFailFilter;
+
+    private int _lastReadResult;
+    public StreamSplitter(
+        System.IO.Stream primaryStream, System.IO.Stream slaveStream,
+        StreamOwnership streamsOwned)
+    {
+        _primaryStream = primaryStream;
+        _slaveStream = slaveStream;
+        _streamsOwned = streamsOwned;
+    }
+    public override void Close()
+    {
+        Flush();
+        if ((_streamsOwned & StreamOwnership.OwnPrimaryStream) > 0)
         {
-            OwnNone = 0x0,
-            OwnPrimaryStream = 0x1,
-            OwnSlaveStream = 0x2,
-            OwnBoth = OwnPrimaryStream | OwnSlaveStream
+            _primaryStream.Close();
         }
-        public enum SlaveFailAction
+
+        if ((_streamsOwned & StreamOwnership.OwnSlaveStream) > 0)
         {
-            Propagate,
-            Ignore,
-            Filter
+            _slaveStream.Close();
         }
+        base.Close();
+    }
+    public StreamOwnership StreamsOwned
+    {
+        get => _streamsOwned;
+        set => _streamsOwned = value;
+    }
 
-        public delegate SlaveFailAction SlaveFailHandler(
-            object oSender, SlaveFailMethod method, Exception exc
-        );
-
-        public enum SlaveFailMethod
+    public System.IO.Stream PrimaryStream => _primaryStream;
+    public System.IO.Stream SlaveStream => _slaveStream;
+    public int LastReadResult => _lastReadResult;
+    public SlaveFailAction SlaveFailActions
+    {
+        set
         {
-            Read,
-            Write,
-            Seek
+            SlaveReadFailAction = value;
+            SlaveWriteFailAction = value;
+            SlaveSeekFailAction = value;
         }
+    }
 
-        private readonly System.IO.Stream _primaryStream;
-        private readonly System.IO.Stream _slaveStream;
-        private StreamOwnership _streamsOwned;
-
-        private SlaveFailAction _readFailAction = SlaveFailAction.Propagate;
-        private SlaveFailAction _writeFailAction = SlaveFailAction.Propagate;
-        private SlaveFailAction _seekFailAction = SlaveFailAction.Propagate;
-
-        private SlaveFailHandler? _slaveReadFailFilter;
-        private SlaveFailHandler? _slaveWriteFailFilter;
-        private SlaveFailHandler? _slaveSeekFailFilter;
-
-        private int _lastReadResult;
-        public StreamSplitter(
-            System.IO.Stream primaryStream, System.IO.Stream slaveStream,
-            StreamOwnership streamsOwned)
+    public SlaveFailHandler? SlaveFailFilters
+    {
+        set
         {
-            _primaryStream = primaryStream;
-            _slaveStream = slaveStream;
-            _streamsOwned = streamsOwned;
+            SlaveReadFailFilter = value;
+            SlaveWriteFailFilter = value;
+            SlaveSeekFailFilter = value;
         }
-        public override void Close()
+    }
+
+    public SlaveFailAction SlaveReadFailAction
+    {
+        get => _readFailAction;
+
+        set
         {
-            Flush();
-            if ((_streamsOwned & StreamOwnership.OwnPrimaryStream) > 0)
+            if (value == SlaveFailAction.Filter)
             {
-                _primaryStream.Close();
+                throw new InvalidOperationException(
+                    "You cannot set this property to "
+                    + "SlaveFailAction.Filter manually.  Use the "
+                    + "SlaveReadFailFilter property instead."
+                );
             }
-
-            if ((_streamsOwned & StreamOwnership.OwnSlaveStream) > 0)
+            else
             {
-                _slaveStream.Close();
-            }
-            base.Close();
-        }
-        public StreamOwnership StreamsOwned
-        {
-            get => _streamsOwned;
-            set => _streamsOwned = value;
-        }
-
-        public System.IO.Stream PrimaryStream => _primaryStream;
-        public System.IO.Stream SlaveStream => _slaveStream;
-        public int LastReadResult => _lastReadResult;
-        public SlaveFailAction SlaveFailActions
-        {
-            set
-            {
-                SlaveReadFailAction = value;
-                SlaveWriteFailAction = value;
-                SlaveSeekFailAction = value;
-            }
-        }
-
-        public SlaveFailHandler? SlaveFailFilters
-        {
-            set
-            {
-                SlaveReadFailFilter = value;
-                SlaveWriteFailFilter = value;
-                SlaveSeekFailFilter = value;
-            }
-        }
-
-        public SlaveFailAction SlaveReadFailAction
-        {
-            get => _readFailAction;
-
-            set
-            {
-                if (value == SlaveFailAction.Filter)
-                {
-                    throw new InvalidOperationException(
-                        "You cannot set this property to "
-                        + "SlaveFailAction.Filter manually.  Use the "
-                        + "SlaveReadFailFilter property instead."
-                    );
-                }
-                else
-                {
-                    _slaveReadFailFilter = null;
-                    _readFailAction = value;
-                }
+                _slaveReadFailFilter = null;
+                _readFailAction = value;
             }
         }
+    }
 
-        public SlaveFailAction SlaveWriteFailAction
+    public SlaveFailAction SlaveWriteFailAction
+    {
+        get => _writeFailAction;
+
+        set
         {
-            get => _writeFailAction;
-
-            set
+            if (value == SlaveFailAction.Filter)
             {
-                if (value == SlaveFailAction.Filter)
-                {
-                    throw new InvalidOperationException(
-                        "You cannot set this property to "
-                        + "SlaveFailAction.Filter manually.  Use the "
-                        + "SlaveWriteFailFilter property instead."
-                        );
-                }
-                else
-                {
-                    _slaveWriteFailFilter = null;
-                    _writeFailAction = value;
-                }
+                throw new InvalidOperationException(
+                    "You cannot set this property to "
+                    + "SlaveFailAction.Filter manually.  Use the "
+                    + "SlaveWriteFailFilter property instead."
+                );
+            }
+            else
+            {
+                _slaveWriteFailFilter = null;
+                _writeFailAction = value;
             }
         }
+    }
 
-        public SlaveFailAction SlaveSeekFailAction
+    public SlaveFailAction SlaveSeekFailAction
+    {
+        get => _seekFailAction;
+
+        set
         {
-            get => _seekFailAction;
-
-            set
+            if (value == SlaveFailAction.Filter)
             {
-                if (value == SlaveFailAction.Filter)
-                {
-                    throw new InvalidOperationException(
-                        "You cannot set this property to "
-                        + "SlaveFailAction.Filter manually.  Use the "
-                        + "SlaveSeekFailFilter property instead."
-                        );
-                }
-                else
-                {
-                    _slaveSeekFailFilter = null;
-                    _seekFailAction = value;
-                }
+                throw new InvalidOperationException(
+                    "You cannot set this property to "
+                    + "SlaveFailAction.Filter manually.  Use the "
+                    + "SlaveSeekFailFilter property instead."
+                );
+            }
+            else
+            {
+                _slaveSeekFailFilter = null;
+                _seekFailAction = value;
             }
         }
+    }
 
-        public SlaveFailHandler? SlaveWriteFailFilter
+    public SlaveFailHandler? SlaveWriteFailFilter
+    {
+        get => _slaveWriteFailFilter;
+
+        set
         {
-            get => _slaveWriteFailFilter;
-
-            set
+            if (_slaveWriteFailFilter != null)
             {
-                if (_slaveWriteFailFilter != null)
-                {
-                    _writeFailAction = SlaveFailAction.Propagate;
-                }
+                _writeFailAction = SlaveFailAction.Propagate;
+            }
 
-                _slaveWriteFailFilter = value;
-                if (value != null)
-                {
-                    _writeFailAction = SlaveFailAction.Filter;
-                }
+            _slaveWriteFailFilter = value;
+            if (value != null)
+            {
+                _writeFailAction = SlaveFailAction.Filter;
             }
         }
+    }
 
-        public SlaveFailHandler? SlaveReadFailFilter
+    public SlaveFailHandler? SlaveReadFailFilter
+    {
+        get => _slaveReadFailFilter;
+
+        set
         {
-            get => _slaveReadFailFilter;
-
-            set
+            if (_slaveReadFailFilter != null)
             {
-                if (_slaveReadFailFilter != null)
-                {
-                    _readFailAction = SlaveFailAction.Propagate;
-                }
+                _readFailAction = SlaveFailAction.Propagate;
+            }
 
-                _slaveReadFailFilter = value;
+            _slaveReadFailFilter = value;
 
-                if (value != null)
-                {
-                    _readFailAction = SlaveFailAction.Filter;
-                }
+            if (value != null)
+            {
+                _readFailAction = SlaveFailAction.Filter;
             }
         }
+    }
 
-        public SlaveFailHandler? SlaveSeekFailFilter
+    public SlaveFailHandler? SlaveSeekFailFilter
+    {
+        get => _slaveSeekFailFilter;
+
+        set
         {
-            get => _slaveSeekFailFilter;
-
-            set
+            if (_slaveSeekFailFilter != null)
             {
-                if (_slaveSeekFailFilter != null)
-                {
-                    _seekFailAction = SlaveFailAction.Propagate;
-                }
+                _seekFailAction = SlaveFailAction.Propagate;
+            }
 
-                _slaveSeekFailFilter = value;
-                if (value != null)
-                {
-                    _seekFailAction = SlaveFailAction.Filter;
-                }
+            _slaveSeekFailFilter = value;
+            if (value != null)
+            {
+                _seekFailAction = SlaveFailAction.Filter;
             }
         }
+    }
 
-        public override bool CanRead => _primaryStream.CanRead;
+    public override bool CanRead => _primaryStream.CanRead;
 
-        public override bool CanSeek => _primaryStream.CanSeek && _slaveStream.CanSeek;
+    public override bool CanSeek => _primaryStream.CanSeek && _slaveStream.CanSeek;
 
-        public override bool CanWrite => _primaryStream.CanWrite && _slaveStream.CanWrite;
+    public override bool CanWrite => _primaryStream.CanWrite && _slaveStream.CanWrite;
 
-        public override void Flush()
+    public override void Flush()
+    {
+        _primaryStream.Flush();
+
+        if (_writeFailAction == SlaveFailAction.Propagate)
         {
-            _primaryStream.Flush();
-
-            if (_writeFailAction == SlaveFailAction.Propagate)
+            _slaveStream.Flush();
+        }
+        else
+        {
+            try
             {
                 _slaveStream.Flush();
+            }
+            catch (Exception exc)
+            {
+                HandleSlaveException(
+                    exc, SlaveFailMethod.Write,
+                    _writeFailAction
+                );
+            }
+        }
+    }
+
+    public override long Length => _primaryStream.Length;
+
+    public override void SetLength(long len)
+    {
+        long diff = len - _primaryStream.Length;
+
+        _primaryStream.SetLength(len);
+
+        if (_seekFailAction == SlaveFailAction.Propagate)
+        {
+            _slaveStream.SetLength(_slaveStream.Length + diff);
+        }
+        else
+        {
+            try
+            {
+                _slaveStream.SetLength(_slaveStream.Length + diff);
+            }
+            catch (Exception exc)
+            {
+                HandleSlaveException(
+                    exc, SlaveFailMethod.Seek, _seekFailAction
+                );
+            }
+        }
+    }
+
+    public override int Read(byte[] buffer, int offset, int count)
+    {
+        _lastReadResult = _primaryStream.Read(buffer, offset, count);
+        if (_lastReadResult != 0)
+        {
+            if (_readFailAction == SlaveFailAction.Propagate)
+            {
+                _slaveStream.Write(buffer, offset, _lastReadResult);
             }
             else
             {
                 try
                 {
-                    _slaveStream.Flush();
+                    _slaveStream.Write(buffer, offset, _lastReadResult);
                 }
                 catch (Exception exc)
                 {
                     HandleSlaveException(
-                        exc, SlaveFailMethod.Write,
-                        _writeFailAction
+                        exc, SlaveFailMethod.Read, _readFailAction
                     );
                 }
             }
         }
 
-        public override long Length => _primaryStream.Length;
+        return _lastReadResult;
+    }
 
-        public override void SetLength(long len)
+    public override void Write(byte[] buffer, int offset, int count)
+    {
+        _primaryStream.Write(buffer, offset, count);
+
+        if (_writeFailAction == SlaveFailAction.Propagate)
         {
-            long diff = len - _primaryStream.Length;
+            _slaveStream.Write(buffer, offset, count);
+        }
+        else
+        {
+            try
+            {
+                _slaveStream.Write(buffer, offset, count);
+            }
+            catch (Exception exc)
+            {
+                HandleSlaveException(
+                    exc, SlaveFailMethod.Write,
+                    _writeFailAction
+                );
+            }
+        }
+    }
 
-            _primaryStream.SetLength(len);
+    public override long Position
+    {
+        get => _primaryStream.Position;
+
+        set
+        {
+            long diff = value - _primaryStream.Position;
+
+            _primaryStream.Position = value;
 
             if (_seekFailAction == SlaveFailAction.Propagate)
             {
-                _slaveStream.SetLength(_slaveStream.Length + diff);
+                _slaveStream.Position += diff;
             }
             else
             {
                 try
                 {
-                    _slaveStream.SetLength(_slaveStream.Length + diff);
+                    _slaveStream.Position += diff;
                 }
                 catch (Exception exc)
                 {
@@ -274,157 +354,76 @@ namespace LanceServer.Core.Stream
                 }
             }
         }
+    }
 
-        public override int Read(byte[] buffer, int offset, int count)
+    public override long Seek(long offset, SeekOrigin origin)
+    {
+        if (origin == SeekOrigin.Begin)
         {
-            _lastReadResult = _primaryStream.Read(buffer, offset, count);
-            if (_lastReadResult != 0)
-            {
-                if (_readFailAction == SlaveFailAction.Propagate)
-                {
-                    _slaveStream.Write(buffer, offset, _lastReadResult);
-                }
-                else
-                {
-                    try
-                    {
-                        _slaveStream.Write(buffer, offset, _lastReadResult);
-                    }
-                    catch (Exception exc)
-                    {
-                        HandleSlaveException(
-                            exc, SlaveFailMethod.Read, _readFailAction
-                        );
-                    }
-                }
-            }
-
-            return _lastReadResult;
+            Position = offset;
+        }
+        else if (origin == SeekOrigin.Current)
+        {
+            Position += offset;
+        }
+        else if (origin == SeekOrigin.End)
+        {
+            Position = Length + offset;
         }
 
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            _primaryStream.Write(buffer, offset, count);
+        return Position;
+    }
 
-            if (_writeFailAction == SlaveFailAction.Propagate)
-            {
-                _slaveStream.Write(buffer, offset, count);
-            }
-            else
-            {
-                try
-                {
-                    _slaveStream.Write(buffer, offset, count);
-                }
-                catch (Exception exc)
-                {
-                    HandleSlaveException(
-                        exc, SlaveFailMethod.Write,
-                        _writeFailAction
-                    );
-                }
-            }
+    private void FilterException(Exception exc, SlaveFailMethod method)
+    {
+        SlaveFailAction action = SlaveFailAction.Filter;
+
+        if (method == SlaveFailMethod.Read)
+        {
+            action = _slaveReadFailFilter(this, method, exc);
+        }
+        else if (method == SlaveFailMethod.Write)
+        {
+            action = _slaveWriteFailFilter(this, method, exc);
+        }
+        else if (method == SlaveFailMethod.Seek)
+        {
+            action = _slaveSeekFailFilter(this, method, exc);
+        }
+        else
+        {
+            Debug.Assert(false, "Unhandled SlaveFailMethod.");
         }
 
-        public override long Position
+        if (action == SlaveFailAction.Filter)
         {
-            get => _primaryStream.Position;
-
-            set
-            {
-                long diff = value - _primaryStream.Position;
-
-                _primaryStream.Position = value;
-
-                if (_seekFailAction == SlaveFailAction.Propagate)
-                {
-                    _slaveStream.Position += diff;
-                }
-                else
-                {
-                    try
-                    {
-                        _slaveStream.Position += diff;
-                    }
-                    catch (Exception exc)
-                    {
-                        HandleSlaveException(
-                            exc, SlaveFailMethod.Seek, _seekFailAction
-                        );
-                    }
-                }
-            }
+            throw new InvalidOperationException(
+                "SlaveFailAction.Filter is not a valid return "
+                + "value for the ReadFailFilter delegate.",
+                exc
+            );
         }
+        HandleSlaveException(exc, method, action);
+    }
 
-        public override long Seek(long offset, SeekOrigin origin)
+    private void HandleSlaveException(
+        Exception exc, SlaveFailMethod method, SlaveFailAction action)
+    {
+        if (action == SlaveFailAction.Propagate)
         {
-            if (origin == SeekOrigin.Begin)
-            {
-                Position = offset;
-            }
-            else if (origin == SeekOrigin.Current)
-            {
-                Position += offset;
-            }
-            else if (origin == SeekOrigin.End)
-            {
-                Position = Length + offset;
-            }
-
-            return Position;
+            throw exc;
         }
-
-        private void FilterException(Exception exc, SlaveFailMethod method)
+        else if (action == SlaveFailAction.Ignore)
         {
-            SlaveFailAction action = SlaveFailAction.Filter;
-
-            if (method == SlaveFailMethod.Read)
-            {
-                action = _slaveReadFailFilter(this, method, exc);
-            }
-            else if (method == SlaveFailMethod.Write)
-            {
-                action = _slaveWriteFailFilter(this, method, exc);
-            }
-            else if (method == SlaveFailMethod.Seek)
-            {
-                action = _slaveSeekFailFilter(this, method, exc);
-            }
-            else
-            {
-                Debug.Assert(false, "Unhandled SlaveFailMethod.");
-            }
-
-            if (action == SlaveFailAction.Filter)
-            {
-                throw new InvalidOperationException(
-                    "SlaveFailAction.Filter is not a valid return "
-                    + "value for the ReadFailFilter delegate.",
-                    exc
-                );
-            }
-            HandleSlaveException(exc, method, action);
+            // Intentionally Empty
         }
-
-        private void HandleSlaveException(
-            Exception exc, SlaveFailMethod method, SlaveFailAction action)
+        else if (action == SlaveFailAction.Filter)
         {
-            if (action == SlaveFailAction.Propagate)
-            {
-                throw exc;
-            }
-            else if (action == SlaveFailAction.Ignore)
-            {
-                // Intentionally Empty
-            }
-            else if (action == SlaveFailAction.Filter)
-            {
-                FilterException(exc, method);
-            }
-            else
-            {
-                Debug.Assert(false, "Unhandled SlaveFailAction");
-            }
+            FilterException(exc, method);
+        }
+        else
+        {
+            Debug.Assert(false, "Unhandled SlaveFailAction");
         }
     }
 }
