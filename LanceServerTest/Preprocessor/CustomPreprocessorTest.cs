@@ -42,7 +42,7 @@ public class CustomPreprocessorTest
         var actualResult = preprocessor.Filter(document);
             
         // Assert
-        Assert.AreEqual(expectedResult, actualResult);
+        Assert.AreEqual(expectedResult, actualResult.Code);
     }
         
     [TestMethod]
@@ -71,7 +71,7 @@ public class CustomPreprocessorTest
         var actualResult = preprocessor.Filter(document);
             
         // Assert
-        Assert.AreEqual(expectedResult, actualResult);
+        Assert.AreEqual(expectedResult, actualResult.Code);
     }
         
     [TestMethod]
@@ -112,7 +112,7 @@ public class CustomPreprocessorTest
         var actualResult = preprocessor.Filter(document);
             
         // Assert
-        Assert.AreEqual(expectedResult, actualResult);
+        Assert.AreEqual(expectedResult, actualResult.Code);
     }
         
     [TestMethod]
@@ -141,7 +141,7 @@ public class CustomPreprocessorTest
         var actualResult = preprocessor.Filter(document);
             
         // Assert
-        Assert.AreEqual(expectedResult, actualResult);
+        Assert.AreEqual(expectedResult, actualResult.Code);
     }
         
     [TestMethod]
@@ -182,7 +182,7 @@ public class CustomPreprocessorTest
         var actualResult = preprocessor.Filter(document);
             
         // Assert
-        Assert.AreEqual(expectedResult, actualResult);
+        Assert.AreEqual(expectedResult, actualResult.Code);
     }
         
     [TestMethod]
@@ -211,6 +211,6 @@ public class CustomPreprocessorTest
         var actualResult = preprocessor.Filter(document);
             
         // Assert
-        Assert.AreEqual(expectedResult, actualResult);
+        Assert.AreEqual(expectedResult, actualResult.Code);
     }
 }

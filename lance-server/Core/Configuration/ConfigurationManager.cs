@@ -12,11 +12,14 @@ public class ConfigurationManager : IConfigurationManager
     public CustomPreprocessorConfiguration? CustomPreprocessorConfiguration { get; private set; }
     public Uri[] WorkspaceFolders { get; private set; } = Array.Empty<Uri>();
 
+    public bool IsUpdated { get; private set; } = false;
+    
     public void ExtractConfiguration(ConfigurationParameters configurationParameters)
     {
         SymbolTableConfiguration = configurationParameters.Settings.Lance.Customization.SymbolTableConfiguration;
         CustomPreprocessorConfiguration = configurationParameters.Settings.Lance.Customization.PlaceholderPreprocessor;
         FileEndingConfiguration = new FileEndingConfiguration(new []{".def", ".spf", ".mpf"});
+        IsUpdated = true;
     }
 
     public void Initialize(InitializeParams initializeParams)

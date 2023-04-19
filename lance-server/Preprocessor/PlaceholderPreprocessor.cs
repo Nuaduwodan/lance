@@ -38,7 +38,7 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
             {
                 var processedMatch = Regex.Replace(match, "[^a-zA-Z0-9_ ]", "_");
                 result = Regex.Replace(result, match, processedMatch);
-                placeholders.Add(processedMatch, match);
+                placeholders.TryAdd(processedMatch, match);
             }
         }
             

@@ -41,6 +41,11 @@ public class FileUtil
         return new Uri(Uri.UnescapeDataString(escapedUriString).Replace("#", "%23"));
     }
 
+    public static string UriToUriString(Uri uri)
+    {
+        return Uri.EscapeDataString(uri.LocalPath);
+    }
+
     public static string FileExtensionFromUri(Uri uri)
     {
         return Path.GetExtension(uri.LocalPath).ToLower();

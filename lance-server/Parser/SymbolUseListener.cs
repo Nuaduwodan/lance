@@ -62,6 +62,9 @@ public class SymbolUseListener : SinumerikNCBaseListener
             return;
         }
         
-        SymbolUseTable.Add(new SymbolUse(token.Text, new Range(){Start = new Position(), End = new Position()}, _document.Information.Uri));
+        var line = (uint)token.Line - 1;
+        var characterStart = (uint)token.Column;
+        var characterEnd = characterStart + (uint)token.Text.Length;
+        SymbolUseTable.Add(new SymbolUse(token.Text, new Range{Start = new Position(line, characterStart), End = new Position(line, characterEnd)}, _document.Information.Uri));
     }
 }

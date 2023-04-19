@@ -7,6 +7,7 @@ using LanceServer.SemanticToken;
 using LanceServer.Core.Workspace;
 using LanceServer.GoToDefinition;
 using LspTypes;
+using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc.Protocol;
 
 namespace LanceServer;
@@ -129,7 +130,7 @@ class LSPServer : IDisposable
 
                     SignatureHelpProvider = null,
 
-                    DefinitionProvider = false,
+                    DefinitionProvider = true,
 
                     TypeDefinitionProvider = false,
 
@@ -200,6 +201,7 @@ class LSPServer : IDisposable
         {
             lock (Lock)
             {
+                _configurationManager.ExtractConfiguration(RequestConfiguration());
             }
         }
         catch (Exception exception)
@@ -287,6 +289,46 @@ class LSPServer : IDisposable
         {
             Console.Error.Write(TraceOut + nameof(WorkspaceDidChangeConfiguration));
         }
+    }
+
+    public ConfigurationParameters RequestConfiguration()
+    {
+        if (_trace)
+        {
+            Console.Error.WriteLine(TraceOut + nameof(RequestConfiguration));
+        }
+
+        ConfigurationParameters? result;
+        
+        try
+        {
+            lock (Lock)
+            {
+                result = Task.Run(async delegate
+                {
+                    var response = await _rpc.InvokeWithParameterObjectAsync<JToken>("workspace/configuration", new ConfigurationParams
+                    {
+                        Items = new []{new ConfigurationItem
+                        {
+                            Section = "lance"
+                        }}
+                    });
+                    return DeserializeParams<ConfigurationParameters>(response);
+                }).Result;
+            }
+        }
+        catch (Exception exception)
+        {
+            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
+        }
+
+        if (_trace)
+        {
+            Console.Error.Write(TraceIn + nameof(RequestConfiguration));
+        }
+
+        return result;
     }
         
     [JsonRpcMethod(Methods.TextDocumentDidChangeName)]

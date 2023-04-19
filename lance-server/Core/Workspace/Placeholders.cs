@@ -18,7 +18,7 @@ public class Placeholders
     {
         foreach (var kvp in _placeholders)
         {
-            placeholder.Replace(kvp.Key, kvp.Value);
+            placeholder = placeholder.Replace(kvp.Key, kvp.Value);
         }
 
         return placeholder;

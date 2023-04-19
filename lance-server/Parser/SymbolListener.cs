@@ -161,14 +161,18 @@ public class SymbolListener : SinumerikNCBaseListener
 
     private Range GetSymbolRange(IToken startToken, IToken endToken)
     {
-        return new Range() { Start = new Position((uint)startToken.Line, (uint)startToken.Column), End = new Position((uint)endToken.Line, (uint)endToken.Column) };
+        var lineStart = (uint)startToken.Line - 1;
+        var characterStart = (uint)startToken.Column;
+        var lineEnd = (uint)endToken.Line - 1;
+        var characterEnd = (uint)endToken.Column + (uint)endToken.Text.Length;
+        return new Range { Start = new Position(lineStart, characterStart), End = new Position(lineEnd, characterEnd) };
     }
 
     private Range GetIdentifierRange(IToken identifierToken)
     {
-        var line = (uint)identifierToken.Line;
-        var start = (uint)identifierToken.Column;
-        var end = start + (uint)identifierToken.Text.Length;
-        return new Range() { Start = new Position(line, start), End = new Position(line, end)};
+        var line = (uint)identifierToken.Line - 1;
+        var characterStart = (uint)identifierToken.Column;
+        var characterEnd = characterStart + (uint)identifierToken.Text.Length;
+        return new Range { Start = new Position(line, characterStart), End = new Position(line, characterEnd)};
     }
 }

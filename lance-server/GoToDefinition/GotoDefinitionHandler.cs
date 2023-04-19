@@ -13,7 +13,7 @@ public class GotoDefinitionHandler : IGotoDefinitionHandler
             var locationLink = new LocationLink()
             {
                 OriginSelectionRange = symbolUse.Position,
-                TargetUri = symbol.SourceDocument.LocalPath,
+                TargetUri = FileUtil.UriToUriString(symbol.SourceDocument),
                 TargetRange = symbol.SymbolRange,
                 TargetSelectionRange = symbol.IdentifierRange
             };
