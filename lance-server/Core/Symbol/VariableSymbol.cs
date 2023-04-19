@@ -7,7 +7,7 @@ namespace LanceServer.Core.Symbol
         public string Identifier { get; }
         public Uri SourceDocument { get; }
         public Position Position { get; }
-        public string Description => $"{(isGlobal?"global":"local")} variable";
+        public string Description => $"{(isGlobal?"global":"local")} variable{(isGlobal?" in "+Path.GetFileName(SourceDocument.LocalPath):"")}";
         public string Code => GetCode();
         public string Documentation { get; }
 

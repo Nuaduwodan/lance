@@ -10,7 +10,7 @@ namespace LanceServer.Core.Symbol
         public string Identifier { get; }
         public Uri SourceDocument { get; }
         public Position Position { get; }
-        public string Description => "procedure";
+        public string Description => $"procedure in {Path.GetFileName(SourceDocument.LocalPath)}";
         public string Code => $"proc {Identifier}({string.Join(ParameterDelimiter, _parameters.Select(p => p.Code))})";
         public string Documentation { get; }
 

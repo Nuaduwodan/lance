@@ -8,7 +8,7 @@ namespace LanceServer.Core.Symbol
         public Uri SourceDocument { get; }
         public Position Position { get; }
         
-        public string Description => $"{(_outVar?"reference":"value")} parameter";
+        public string Description => $"parameter by {(_outVar?"reference":"value")}";
         public string Code => GetCode();
         public string Documentation { get; }
 
