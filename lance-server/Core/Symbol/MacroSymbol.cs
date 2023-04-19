@@ -1,6 +1,6 @@
 ﻿using LspTypes;
 
-namespace LanceServer.Core.SymbolTable
+namespace LanceServer.Core.Symbol
 {
     public class MacroSymbol : ISymbol
     {

@@ -18,7 +18,7 @@ namespace LanceServer
             Stream stdout = new StreamSplitter(Console.OpenStandardOutput(), new StreamLog("server"), StreamSplitter.StreamOwnership.OwnNone);
             var config = new ConfigurationManager();
             var parser = new ParserManager();
-            var customPreprocessor = new CustomPreprocessor(config);
+            var customPreprocessor = new PlaceholderPreprocessor(config);
             var workspace = new Workspace(parser, customPreprocessor, config);
             var semanticTokenHandler = new SemanticTokenHandler();
             var hoverHandler = new HoverHandler(config);

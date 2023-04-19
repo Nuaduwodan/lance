@@ -1,7 +1,6 @@
-﻿using System.Data.SqlTypes;
-using LspTypes;
+﻿using LspTypes;
 
-namespace LanceServer.Core.SymbolTable;
+namespace LanceServer.Core.Symbol;
 
 public class ErrorSymbol : ISymbol
 {

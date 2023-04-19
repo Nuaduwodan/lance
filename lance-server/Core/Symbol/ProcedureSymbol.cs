@@ -1,6 +1,6 @@
 ﻿using LspTypes;
 
-namespace LanceServer.Core.SymbolTable
+namespace LanceServer.Core.Symbol
 {
     /// <summary>
     /// A symbol representing a function, having zero or more <see cref="ParameterSymbol"/>s

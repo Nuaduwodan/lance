@@ -1,4 +1,4 @@
-﻿namespace LanceServer.Core.SymbolTable
+﻿namespace LanceServer.Core.Symbol
 {
     /// <summary>
     /// All available data types

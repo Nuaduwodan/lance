@@ -1,4 +1,4 @@
-﻿namespace LanceServer.Core.SymbolTable
+﻿namespace LanceServer.Core.Symbol
 {
     /// <summary>
     /// The data type of a symbol with an optional length if the type is string
