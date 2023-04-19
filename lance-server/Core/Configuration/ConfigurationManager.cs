@@ -22,6 +22,6 @@ public class ConfigurationManager : IConfigurationManager
 
     public void Initialize(InitializeParams initializeParams)
     {
-        WorkspaceFolders = initializeParams.WorkspaceFolders.Select(folder => new Uri(Uri.UnescapeDataString(folder.Uri).Replace("#", "%23"))).ToArray();
+        WorkspaceFolders = initializeParams.WorkspaceFolders.Select(folder => FileUtil.UriStringToUri(folder.Uri)).ToArray();
     }
 }

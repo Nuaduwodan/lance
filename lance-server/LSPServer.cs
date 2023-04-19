@@ -171,7 +171,7 @@ namespace LanceServer
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
                 throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
             
@@ -201,7 +201,7 @@ namespace LanceServer
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
                 throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
             
@@ -228,7 +228,7 @@ namespace LanceServer
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
                 throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
         }
@@ -250,7 +250,7 @@ namespace LanceServer
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
                 throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
         }
@@ -276,7 +276,7 @@ namespace LanceServer
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
                 throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
 
@@ -296,7 +296,7 @@ namespace LanceServer
             }
             
             var request = DeserializeParams<DidChangeTextDocumentParams>(parameter);
-            var uri = ExtractUri(request.TextDocument.Uri);
+            var uri = FileUtil.UriStringToUri(request.TextDocument.Uri);
             
             try
             {
@@ -307,7 +307,7 @@ namespace LanceServer
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
                 throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
 
@@ -327,7 +327,7 @@ namespace LanceServer
             }
             
             var request = DeserializeParams<DidOpenTextDocumentParams>(parameter);
-            var uri = ExtractUri(request.TextDocument.Uri);
+            var uri = FileUtil.UriStringToUri(request.TextDocument.Uri);
             
             try
             {
@@ -338,7 +338,7 @@ namespace LanceServer
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
                 throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
 
@@ -358,7 +358,7 @@ namespace LanceServer
             }
             
             var request = DeserializeParams<TypeDefinitionParams>(parameter);
-            var uri = ExtractUri(request.TextDocument.Uri);
+            var uri = FileUtil.UriStringToUri(request.TextDocument.Uri);
             LocationLink[] result = Array.Empty<LocationLink>();
             
             try
@@ -371,7 +371,7 @@ namespace LanceServer
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
                 throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
 
@@ -393,7 +393,7 @@ namespace LanceServer
             }
 
             var request = DeserializeParams<DocumentSymbolParams>(parameter);
-            var uri = ExtractUri(request.TextDocument.Uri);
+            var uri = FileUtil.UriStringToUri(request.TextDocument.Uri);
             SemanticTokens result;
             
             try
@@ -409,7 +409,7 @@ namespace LanceServer
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
                 throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
 
@@ -432,7 +432,7 @@ namespace LanceServer
             }
             
             var request = DeserializeParams<HoverParams>(parameter);
-            var uri = ExtractUri(request.TextDocument.Uri);
+            var uri = FileUtil.UriStringToUri(request.TextDocument.Uri);
             LspTypes.Hover result;
             
             try
@@ -446,7 +446,7 @@ namespace LanceServer
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine(exception.Message, MessageType.Info);
+                Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
                 throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
             }
 
@@ -463,14 +463,6 @@ namespace LanceServer
         {
             return parameter.ToObject<T>() ?? 
                    throw new LocalRpcException(InvalidParamsMessage + nameof(T)){ErrorCode = (int)JsonRpcErrorCode.InvalidParams};
-        }
-
-        private Uri ExtractUri(string escapedUriString)
-        {
-            var uriString = Uri.UnescapeDataString(escapedUriString);
-            var escapedPath = uriString.Replace("#", "%23");
-            Uri uri = new Uri(escapedPath);
-            return uri;
         }
     }
 }
