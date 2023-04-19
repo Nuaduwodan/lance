@@ -1,26 +1,21 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Antlr4.Runtime.Tree;
-using LanceServer.Core.SymbolTable;
+using LanceServer.Core.Symbol;
 
 namespace LanceServer.Core.Workspace;
 
 public class SymbolisedDocument : ParsedDocument
 {
-    private Dictionary<string, ISymbol> _symbols;
+    public SymbolTable SymbolTable { get; }
 
-    public SymbolisedDocument(IEnumerable<ISymbol> symbols, IParseTree tree, Uri uri, string rawContent, string code, bool isGlobalFile = false, bool isSubProcedure = false, bool procedureNeedsDeclaration = true, string encoding = "utf8") 
-        : base(tree, uri, rawContent, code, isGlobalFile, isSubProcedure, procedureNeedsDeclaration, encoding)
+    public SymbolisedDocument(DocumentInformation information, string code, Placeholders placeholders, string macroTable, IParseTree tree, SymbolTable symbolTable) 
+        : base(information, code, placeholders, macroTable, tree)
     {
-        _symbols = symbols.ToDictionary(symbol => symbol.Identifier.ToLower(), symbol => symbol);
+        SymbolTable = symbolTable;
     }
 
-    public SymbolisedDocument(ParsedDocument parsedDocument, IEnumerable<ISymbol> symbols) 
-        : this(symbols, parsedDocument.Tree, parsedDocument.Uri, parsedDocument.RawContent, parsedDocument.Code, parsedDocument.IsGlobalFile, parsedDocument.IsSubProcedure, parsedDocument.ProcedureNeedsDeclaration, parsedDocument.Encoding)
+    public SymbolisedDocument(ParsedDocument parsedDocument, SymbolTable symbolTable) 
+        : this(parsedDocument.Information, parsedDocument.Code, parsedDocument.Placeholders, parsedDocument.MacroTable, parsedDocument.Tree, symbolTable)
     {
-    }
-
-    public bool TryGetSymbol(string symbolName, [MaybeNullWhen(false)] out ISymbol symbol)
-    {
-        return _symbols.TryGetValue(symbolName.ToLower(), out symbol);
     }
 }

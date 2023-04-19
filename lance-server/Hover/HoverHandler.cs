@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Antlr4.Runtime.Tree;
 using LanceServer.Core.Configuration;
-using LanceServer.Core.SymbolTable;
+using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
 using LanceServer.Parser;
 using LspTypes;
@@ -31,12 +31,12 @@ namespace LanceServer.Hover
 
             var token = hoverListener.Token;
 
-            if (token == null)
+            if (token == null || document.Placeholders.IsPlaceholder(token.Text))
             {
                 return new LspTypes.Hover();
             }
             
-            var symbol = workspace.GetSymbol(token.Text, document.Uri);
+            var symbol = workspace.GetSymbol(token.Text, document.Information.Uri);
 
             var tokenStart = new Position((uint)token.Line - 1, (uint)token.Column);
             var tokenEnd = new Position(tokenStart.Line, tokenStart.Character + (uint)token.Text.Length);

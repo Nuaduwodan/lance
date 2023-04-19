@@ -1,11 +1,12 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using LanceServer.Core.SymbolTable;
+using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
 using LspTypes;
 
 namespace LanceServer.Parser;
 
+/// <inheritdoc cref="IParserManager"/>
 public class ParserManager : IParserManager
 {
     private CommonTokenStream Tokenize(PreprocessedDocument document)
@@ -29,10 +30,10 @@ public class ParserManager : IParserManager
         walker.Walk(symbolListener, document.Tree);
 
         var symbolTable = symbolListener.SymbolTable;
-        var fileName = Path.GetFileNameWithoutExtension(document.Uri.LocalPath);
-        if (!symbolTable.Any(symbol => symbol.Identifier.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)) && document.IsSubProcedure)
+        var fileName = Path.GetFileNameWithoutExtension(document.Information.Uri.LocalPath);
+        if (!symbolTable.Any(symbol => symbol.Identifier.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)) && document.Information.IsSubProcedure)
         {
-            symbolTable.Add(new ProcedureSymbol(fileName, document.Uri, new Position(0, 0), Array.Empty<ParameterSymbol>()));
+            symbolTable.Add(new ProcedureSymbol(fileName, document.Information.Uri, new Position(0, 0), Array.Empty<ParameterSymbol>()));
         }
 
         return symbolTable;

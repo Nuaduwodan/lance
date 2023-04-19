@@ -1,17 +1,14 @@
 ﻿namespace LanceServer.Core.Workspace;
 
-public class PreprocessedDocument : ReadDocument
+public class PreprocessedDocument : MacroExtractedDocument
 {
-    public string Code { get; }
-    
-    public PreprocessedDocument(Uri uri, string rawContent, string code, bool isGlobalFile = false, bool isSubProcedure = false, bool procedureNeedsDeclaration = true, string encoding = "utf8") 
-        : base(uri, rawContent, isGlobalFile, isSubProcedure, procedureNeedsDeclaration, encoding)
-    {
-        Code = code;
-    }
-    
-    public PreprocessedDocument(ReadDocument readDocument, string code) 
-        : this(readDocument.Uri, readDocument.RawContent, code, readDocument.IsGlobalFile, readDocument.IsSubProcedure, readDocument.ProcedureNeedsDeclaration, readDocument.Encoding)
+    public PreprocessedDocument(DocumentInformation information, string code, Placeholders placeholders, string macroTable) 
+        : base(information, code, placeholders, macroTable)
     {
     }
+    
+    public PreprocessedDocument(MacroExtractedDocument macroExtractedDocument, string code) 
+        : this(macroExtractedDocument.Information, code, macroExtractedDocument.Placeholders, macroExtractedDocument.MacroTable)
+    {
+    } 
 }

@@ -1,4 +1,4 @@
-﻿using LanceServer.Core.SymbolTable;
+﻿using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
 using Position = LspTypes.Position;
 
@@ -7,13 +7,13 @@ namespace LanceServer.Parser
     public class SymbolListener : SinumerikNCBaseListener
     {
         public List<ISymbol> SymbolTable { get; } = new();
-        public ReadDocument Document { get; }
+        private readonly PlaceholderPreprocessedDocument _document;
 
         private List<ParameterSymbol> _parameters = new();
 
-        public SymbolListener(ReadDocument document)
+        public SymbolListener(PlaceholderPreprocessedDocument document)
         {
-            Document = document;
+            _document = document;
         }
 
         /// <inheritdoc/>
@@ -27,7 +27,7 @@ namespace LanceServer.Parser
         public override void ExitParameterDefinitionByReference(SinumerikNCParser.ParameterDefinitionByReferenceContext context)
         {
             base.ExitParameterDefinitionByReference(context);
-            var symbol = new ParameterSymbol(context.NAME().GetText(), Document.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column),
+            var symbol = new ParameterSymbol(context.NAME().GetText(), _document.Information.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column),
                 GetCompositeDataType(context.type()), GetArrayDeclaration(context.arrayDeclaration()),true);
             _parameters.Add(symbol);
             SymbolTable.Add(symbol);
@@ -37,7 +37,7 @@ namespace LanceServer.Parser
         public override void ExitParameterDefinitionByValue(SinumerikNCParser.ParameterDefinitionByValueContext context)
         {
             base.ExitParameterDefinitionByValue(context);
-            var symbol = new ParameterSymbol(context.NAME().GetText(), Document.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column),
+            var symbol = new ParameterSymbol(context.NAME().GetText(), _document.Information.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column),
                 GetCompositeDataType(context.type()), Array.Empty<string>());
             _parameters.Add(symbol);
             SymbolTable.Add(symbol);
@@ -47,7 +47,7 @@ namespace LanceServer.Parser
         public override void ExitProcedureDefinitionHeader(SinumerikNCParser.ProcedureDefinitionHeaderContext context)
         {
             base.ExitProcedureDefinitionHeader(context);
-            var symbol = new ProcedureSymbol(context.NAME().GetText(), Document.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), _parameters.ToArray());
+            var symbol = new ProcedureSymbol(context.NAME().GetText(), _document.Information.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), _parameters.ToArray());
             SymbolTable.Add(symbol);
         }
 
@@ -55,7 +55,7 @@ namespace LanceServer.Parser
         public override void ExitMacroDeclaration(SinumerikNCParser.MacroDeclarationContext context)
         {
             base.ExitMacroDeclaration(context);
-            var symbol = new MacroSymbol(context.NAME().GetText(), Document.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), context.macroValue().GetText(), Document.IsGlobalFile);
+            var symbol = new MacroSymbol(context.NAME().GetText(), _document.Information.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), ReplacePlaceholder(context.macroValue().GetText()), _document.Information.IsGlobalFile);
             SymbolTable.Add(symbol);
         }
 
@@ -66,7 +66,7 @@ namespace LanceServer.Parser
             var type = GetCompositeDataType(context.type());
             foreach (var variable in context.variableNameDeclaration())
             {
-                var symbol = new VariableSymbol(variable.NAME().GetText(), Document.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), type, GetArrayDefinition(variable.arrayDefinition()), Document.IsGlobalFile);
+                var symbol = new VariableSymbol(variable.NAME().GetText(), _document.Information.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), type, GetArrayDefinition(variable.arrayDefinition()), _document.Information.IsGlobalFile);
                 SymbolTable.Add(symbol);
             }
         }
@@ -125,6 +125,11 @@ namespace LanceServer.Parser
             }
 
             return arrayContext.expression().Select(expression => expression.GetText()).ToArray();
+        }
+
+        private string ReplacePlaceholder(string textWithPlaceholder)
+        {
+            return _document.Placeholders.ReplacePlaceholder(textWithPlaceholder);
         }
     }
 }

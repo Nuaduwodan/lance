@@ -6,14 +6,14 @@ public class ParsedDocument : PreprocessedDocument
 {
     public IParseTree Tree { get; }
     
-    public ParsedDocument(IParseTree tree, Uri uri, string rawContent, string code, bool isGlobalFile = false, bool isSubProcedure = false, bool procedureNeedsDeclaration = true, string encoding = "utf8") 
-        : base(uri, rawContent, code, isGlobalFile, isSubProcedure, procedureNeedsDeclaration, encoding)
+    public ParsedDocument(DocumentInformation information, string code, Placeholders placeholders, string macroTable, IParseTree tree) 
+        : base(information, code, placeholders, macroTable)
     {
         Tree = tree;
     }
     
     public ParsedDocument(PreprocessedDocument preprocessedDocument, IParseTree tree) 
-        : this(tree, preprocessedDocument.Uri, preprocessedDocument.RawContent, preprocessedDocument.Code, preprocessedDocument.IsGlobalFile, preprocessedDocument.IsSubProcedure, preprocessedDocument.ProcedureNeedsDeclaration, preprocessedDocument.Encoding)
+        : this(preprocessedDocument.Information, preprocessedDocument.Code, preprocessedDocument.Placeholders, preprocessedDocument.MacroTable, tree)
     {
     }
 }
