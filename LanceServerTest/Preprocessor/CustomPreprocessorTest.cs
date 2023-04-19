@@ -32,9 +32,9 @@ namespace LanceServerTest.Preprocessor
         public void FilterTest_Empty()
         {
             // Arrange
-            var preprocessor = new CustomPreprocessor(_configurationManagerMock);
+            var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
             var code = "";
-            var document = new ReadDocument(new Uri("file:///testfile.tpl"), code);
+            var document = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.tpl"), ".tpl", code), code, new Placeholders(new Dictionary<string, string>()), "");
 
             var expectedResult = code;
 
@@ -49,7 +49,7 @@ namespace LanceServerTest.Preprocessor
         public void FilterTest_Identical()
         {
             // Arrange
-            var preprocessor = new CustomPreprocessor(_configurationManagerMock);
+            var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
             var code = 
                 @"proc testProcedure(int testparam)
 
@@ -63,7 +63,7 @@ namespace LanceServerTest.Preprocessor
 
                 ret
                 endproc";
-            var document = new ReadDocument(new Uri("file:///testfile.tpl"), code);
+            var document = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.tpl"), ".tpl", code), code, new Placeholders(new Dictionary<string, string>()), "");
 
             var expectedResult = code;
 
@@ -78,7 +78,7 @@ namespace LanceServerTest.Preprocessor
         public void FilterTest_Replace()
         {
             // Arrange
-            var preprocessor = new CustomPreprocessor(_configurationManagerMock);
+            var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
             var code = 
                 @"proc testProcedure(int testparam)
 
@@ -92,7 +92,7 @@ namespace LanceServerTest.Preprocessor
 
                 ret
                 endproc";
-            var document = new ReadDocument(new Uri("file:///testfile.tpl"), code);
+            var document = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.tpl"), ".tpl", code), code, new Placeholders(new Dictionary<string, string>()), "");
 
             var expectedResult = 
                 @"proc testProcedure(int testparam)
@@ -119,7 +119,7 @@ namespace LanceServerTest.Preprocessor
         public void FilterTest_IdenticalInString()
         {
             // Arrange
-            var preprocessor = new CustomPreprocessor(_configurationManagerMock);
+            var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
             var code = 
                 @"proc testProcedure(int testparam)
 
@@ -133,7 +133,7 @@ namespace LanceServerTest.Preprocessor
 
                 ret
                 endproc";
-            var document = new ReadDocument(new Uri("file:///testfile.tpl"), code);
+            var document = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.tpl"), ".tpl", code), code, new Placeholders(new Dictionary<string, string>()), "");
 
             var expectedResult = code;
 
@@ -148,7 +148,7 @@ namespace LanceServerTest.Preprocessor
         public void FilterTest_ReplaceInSymbolName()
         {
             // Arrange
-            var preprocessor = new CustomPreprocessor(_configurationManagerMock);
+            var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
             var code = 
                 @"proc <InstanceName>Procedure(int testparam)
 
@@ -162,7 +162,7 @@ namespace LanceServerTest.Preprocessor
 
                 ret
                 endproc";
-            var document = new ReadDocument(new Uri("file:///testfile.tpl"), code);
+            var document = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.tpl"), ".tpl", code), code, new Placeholders(new Dictionary<string, string>()), "");
 
             var expectedResult = 
                 @"proc _InstanceName_Procedure(int testparam)
@@ -189,7 +189,7 @@ namespace LanceServerTest.Preprocessor
         public void FilterTest_NonMatchingFileEnding()
         {
             // Arrange
-            var preprocessor = new CustomPreprocessor(_configurationManagerMock);
+            var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
             var code = 
                 @"proc testProcedure(int testparam)
 
@@ -203,7 +203,7 @@ namespace LanceServerTest.Preprocessor
 
                 ret
                 endproc";
-            var document = new ReadDocument(new Uri("file:///testfile.spf"), code);
+            var document = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.spf"), ".spf", code), code, new Placeholders(new Dictionary<string, string>()), "");
 
             var expectedResult = code;
 

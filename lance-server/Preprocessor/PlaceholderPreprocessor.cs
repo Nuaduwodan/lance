@@ -4,24 +4,27 @@ using LanceServer.Core.Workspace;
 
 namespace LanceServer.Preprocessor
 {
-    public class CustomPreprocessor : ICustomPreprocessor
+    public class PlaceholderPreprocessor : IPlaceholderPreprocessor
     {
         private IConfigurationManager _configurationManager;
 
-        public CustomPreprocessor(IConfigurationManager configurationManager)
+        public PlaceholderPreprocessor(IConfigurationManager configurationManager)
         {
             _configurationManager = configurationManager;
         }
         
-        public string Filter(ReadDocument document)
+        public PlaceholderPreprocessedDocument Filter(Document document)
         {
             var preprocessorConfiguration = _configurationManager.CustomPreprocessorConfiguration;
-            if(!preprocessorConfiguration.FileExtensions.Contains(document.FileEnding))
+
+            var placeholders = new Dictionary<string, string>();
+            
+            if(!preprocessorConfiguration.FileExtensions.Contains(document.Information.FileEnding))
             {
-                return document.RawContent;
+                return new PlaceholderPreprocessedDocument(document, document.Information.RawContent, new Placeholders(placeholders));
             }
 
-            var result = document.RawContent;
+            var result = document.Information.RawContent;
             foreach (var placeholder in preprocessorConfiguration.Placeholders)
             {
                 var pattern = placeholder;
@@ -35,10 +38,11 @@ namespace LanceServer.Preprocessor
                 {
                     var processedMatch = Regex.Replace(match, "[^a-zA-Z0-9_ ]", "_");
                     result = Regex.Replace(result, match, processedMatch);
+                    placeholders.Add(processedMatch, match);
                 }
             }
             
-            return result;
+            return new PlaceholderPreprocessedDocument(document, result, new Placeholders(placeholders));
         }
     }
 }
