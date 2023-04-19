@@ -1,6 +1,8 @@
-﻿using LanceServer.Core.Symbol;
+﻿using Antlr4.Runtime;
+using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
 using Position = LspTypes.Position;
+using Range = LspTypes.Range;
 
 namespace LanceServer.Parser
 {
@@ -27,8 +29,13 @@ namespace LanceServer.Parser
         public override void ExitParameterDefinitionByReference(SinumerikNCParser.ParameterDefinitionByReferenceContext context)
         {
             base.ExitParameterDefinitionByReference(context);
-            var symbol = new ParameterSymbol(context.NAME().GetText(), _document.Information.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column),
-                GetCompositeDataType(context.type()), GetArrayDeclaration(context.arrayDeclaration()),true);
+            var identifier = context.NAME().GetText();
+            var uri = _document.Information.Uri;
+            var symbolRange = GetSymbolRange(context.Start, context.Stop);
+            var identifierRange = GetIdentifierRange(context.NAME().Symbol);
+            var dataType = GetCompositeDataType(context.type());
+            var arrayDeclaration = GetArrayDeclaration(context.arrayDeclaration());
+            var symbol = new ParameterSymbol(identifier, uri, symbolRange, identifierRange, dataType, arrayDeclaration,true);
             _parameters.Add(symbol);
             SymbolTable.Add(symbol);
         }
@@ -37,8 +44,12 @@ namespace LanceServer.Parser
         public override void ExitParameterDefinitionByValue(SinumerikNCParser.ParameterDefinitionByValueContext context)
         {
             base.ExitParameterDefinitionByValue(context);
-            var symbol = new ParameterSymbol(context.NAME().GetText(), _document.Information.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column),
-                GetCompositeDataType(context.type()), Array.Empty<string>());
+            var identifier = context.NAME().GetText();
+            var uri = _document.Information.Uri;
+            var symbolRange = GetSymbolRange(context.Start, context.Stop);
+            var identifierRange = GetIdentifierRange(context.NAME().Symbol);
+            var dataType = GetCompositeDataType(context.type());
+            var symbol = new ParameterSymbol(identifier, uri, symbolRange, identifierRange, dataType, Array.Empty<string>(), false);
             _parameters.Add(symbol);
             SymbolTable.Add(symbol);
         }
@@ -47,7 +58,11 @@ namespace LanceServer.Parser
         public override void ExitProcedureDefinitionHeader(SinumerikNCParser.ProcedureDefinitionHeaderContext context)
         {
             base.ExitProcedureDefinitionHeader(context);
-            var symbol = new ProcedureSymbol(context.NAME().GetText(), _document.Information.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), _parameters.ToArray());
+            var identifier = context.NAME().GetText();
+            var uri = _document.Information.Uri;
+            var symbolRange = GetSymbolRange(context.Start, context.Stop);
+            var identifierRange = GetIdentifierRange(context.NAME().Symbol);
+            var symbol = new ProcedureSymbol(identifier, uri, symbolRange, identifierRange, _parameters.ToArray());
             SymbolTable.Add(symbol);
         }
 
@@ -55,7 +70,13 @@ namespace LanceServer.Parser
         public override void ExitMacroDeclaration(SinumerikNCParser.MacroDeclarationContext context)
         {
             base.ExitMacroDeclaration(context);
-            var symbol = new MacroSymbol(context.NAME().GetText(), _document.Information.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), ReplacePlaceholder(context.macroValue().GetText()), _document.Information.IsGlobalFile);
+            var identifier = context.NAME().GetText();
+            var uri = _document.Information.Uri;
+            var symbolRange = GetSymbolRange(context.Start, context.Stop);
+            var identifierRange = GetIdentifierRange(context.NAME().Symbol);
+            var value = ReplacePlaceholder(context.macroValue().GetText());
+            var isGlobal = _document.Information.IsGlobalFile;
+            var symbol = new MacroSymbol(identifier, uri, symbolRange, identifierRange, value, isGlobal);
             SymbolTable.Add(symbol);
         }
 
@@ -63,10 +84,16 @@ namespace LanceServer.Parser
         public override void ExitVariableDeclaration(SinumerikNCParser.VariableDeclarationContext context)
         {
             base.ExitVariableDeclaration(context);
+            var uri = _document.Information.Uri;
+            var symbolRange = GetSymbolRange(context.Start, context.Stop);
             var type = GetCompositeDataType(context.type());
+            var isGlobal = _document.Information.IsGlobalFile;
             foreach (var variable in context.variableNameDeclaration())
             {
-                var symbol = new VariableSymbol(variable.NAME().GetText(), _document.Information.Uri, new Position((uint)context.Start.Line, (uint)context.Start.Column), type, GetArrayDefinition(variable.arrayDefinition()), _document.Information.IsGlobalFile);
+                var identifier = variable.NAME().GetText();
+                var identifierRange = GetIdentifierRange(variable.NAME().Symbol);
+                var arrayDefinition = GetArrayDefinition(variable.arrayDefinition());
+                var symbol = new VariableSymbol(identifier, uri, symbolRange, identifierRange, type, arrayDefinition, isGlobal);
                 SymbolTable.Add(symbol);
             }
         }
@@ -130,6 +157,19 @@ namespace LanceServer.Parser
         private string ReplacePlaceholder(string textWithPlaceholder)
         {
             return _document.Placeholders.ReplacePlaceholder(textWithPlaceholder);
+        }
+
+        private Range GetSymbolRange(IToken startToken, IToken endToken)
+        {
+            return new Range() { Start = new Position((uint)startToken.Line, (uint)startToken.Column), End = new Position((uint)endToken.Line, (uint)endToken.Column) };
+        }
+
+        private Range GetIdentifierRange(IToken identifierToken)
+        {
+            var line = (uint)identifierToken.Line;
+            var start = (uint)identifierToken.Column;
+            var end = start + (uint)identifierToken.Text.Length;
+            return new Range() { Start = new Position(line, start), End = new Position(line, end)};
         }
     }
 }

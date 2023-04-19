@@ -1,18 +1,41 @@
 ﻿using LspTypes;
+using Range = LspTypes.Range;
 
-namespace LanceServer.Core.Symbol;
-
-public class ErrorSymbol : ISymbol
+namespace LanceServer.Core.Symbol
 {
-    public string Identifier { get; } = string.Empty;
-    public Uri SourceDocument { get; } = null;
-    public Position Position { get; } = null;
-    public string Description => string.Empty;
-    public string Code => string.Empty;
-    public string Documentation { get; }
-
-    public ErrorSymbol(string documentation)
+    /// <summary>
+    /// Represents a not found symbol
+    /// </summary>
+    public class ErrorSymbol : ISymbol
     {
-        Documentation = documentation;
+        /// <inheritdoc/>
+        public string Identifier { get; } = string.Empty;
+    
+        /// <inheritdoc/>
+        public Uri SourceDocument { get; } = null;
+
+        /// <inheritdoc/>
+        public Range SymbolRange { get; } = null;
+    
+        /// <inheritdoc/>
+        public Range IdentifierRange { get; } = null;
+    
+        /// <inheritdoc/>
+        public string Description => string.Empty;
+    
+        /// <inheritdoc/>
+        public string Code => string.Empty;
+    
+        /// <inheritdoc/>
+        public string Documentation { get; }
+
+        /// <summary>
+        /// Instantiates a new <see cref="ErrorSymbol"/>
+        /// </summary>
+        /// <param name="documentation">A human readable description of the problem.</param>
+        public ErrorSymbol(string documentation)
+        {
+            Documentation = documentation;
+        }
     }
 }

@@ -1,6 +1,7 @@
-﻿namespace LanceServer.Core.Symbol;
-
-public class LabelSymbol
+﻿namespace LanceServer.Core.Symbol
 {
+    public class LabelSymbol
+    {
     
+    }
 }

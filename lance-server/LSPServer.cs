@@ -5,6 +5,7 @@ using StreamJsonRpc;
 using LanceServer.Hover;
 using LanceServer.SemanticToken;
 using LanceServer.Core.Workspace;
+using LanceServer.GoToDefinition;
 using LspTypes;
 using StreamJsonRpc.Protocol;
 
@@ -34,8 +35,9 @@ namespace LanceServer
         private readonly IConfigurationManager _configurationManager;
         private readonly ISemanticTokenHandler _semanticTokenHandler;
         private readonly IHoverHandler _hoverHandler;
+        private readonly IGotoDefinitionHandler _gotoDefinitionHandler;
 
-        public LSPServer(Stream sender, Stream reader, IWorkspace workspace, IConfigurationManager configurationManager, ISemanticTokenHandler semanticTokenHandler, IHoverHandler hoverHandler)
+        public LSPServer(Stream sender, Stream reader, IWorkspace workspace, IConfigurationManager configurationManager, ISemanticTokenHandler semanticTokenHandler, IHoverHandler hoverHandler, IGotoDefinitionHandler gotoDefinitionHandler)
         {
             _rpc = JsonRpc.Attach(sender, reader, this);
             _rpc.Disconnected += OnRpcDisconnected;
@@ -43,6 +45,7 @@ namespace LanceServer
             _configurationManager = configurationManager;
             _semanticTokenHandler = semanticTokenHandler;
             _hoverHandler = hoverHandler;
+            _gotoDefinitionHandler = gotoDefinitionHandler;
         }
 
         private void OnRpcDisconnected(object? sender, JsonRpcDisconnectedEventArgs e)
@@ -365,8 +368,8 @@ namespace LanceServer
             {
                 lock (Lock)
                 {
-                    var document = _workspace.GetSymbolisedDocument(uri);
-                    // Todo process request
+                    var document = _workspace.GetSymbolUseExtractedDocument(uri);
+                    result = _gotoDefinitionHandler.HandleRequest(document, request, _workspace);
                 }
             }
             catch (Exception exception)
@@ -439,9 +442,9 @@ namespace LanceServer
             {
                 lock (Lock)
                 {
-                    var document = _workspace.GetSymbolisedDocument(uri);
+                    var document = _workspace.GetSymbolUseExtractedDocument(uri);
 
-                    result = _hoverHandler.ProcessRequest(document, request, _workspace);
+                    result = _hoverHandler.HandleRequest(document, request, _workspace);
                 }
             }
             catch (Exception exception)

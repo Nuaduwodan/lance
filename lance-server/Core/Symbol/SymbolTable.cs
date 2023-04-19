@@ -1,18 +1,19 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace LanceServer.Core.Symbol;
-
-public class SymbolTable
+namespace LanceServer.Core.Symbol
 {
-    private Dictionary<string, ISymbol> _symbols;
-
-    public SymbolTable(Dictionary<string, ISymbol> symbols)
+    public class SymbolTable
     {
-        _symbols = symbols;
-    }
+        private Dictionary<string, ISymbol> _symbols;
 
-    public bool TryGetSymbol(string symbolName, [MaybeNullWhen(false)] out ISymbol symbol)
-    {
-        return _symbols.TryGetValue(symbolName.ToLower(), out symbol);
+        public SymbolTable(IEnumerable<ISymbol> symbols)
+        {
+            _symbols = symbols.ToDictionary(symbol => symbol.Identifier.ToLower(), symbol => symbol);
+        }
+
+        public bool TryGetSymbol(string symbolName, [MaybeNullWhen(false)] out ISymbol symbol)
+        {
+            return _symbols.TryGetValue(symbolName.ToLower(), out symbol);
+        }
     }
 }

@@ -3,6 +3,7 @@ using Antlr4.Runtime.Tree;
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
 using LspTypes;
+using Range = LspTypes.Range;
 
 namespace LanceServer.Parser
 {
@@ -35,7 +36,8 @@ namespace LanceServer.Parser
             var fileName = Path.GetFileNameWithoutExtension(document.Information.Uri.LocalPath);
             if (!symbolTable.Any(symbol => symbol.Identifier.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)) && document.Information.IsSubProcedure)
             {
-                symbolTable.Add(new ProcedureSymbol(fileName, document.Information.Uri, new Position(0, 0), Array.Empty<ParameterSymbol>()));
+                var emptyRange = new Range(){Start = new Position(0, 0), End = new Position(0, 0)};
+                symbolTable.Add(new ProcedureSymbol(fileName, document.Information.Uri, emptyRange, emptyRange, Array.Empty<ParameterSymbol>()));
             }
 
             return symbolTable;

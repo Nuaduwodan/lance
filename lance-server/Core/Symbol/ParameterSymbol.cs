@@ -1,15 +1,32 @@
-﻿using LspTypes;
+﻿using Range = LspTypes.Range;
 
 namespace LanceServer.Core.Symbol
 {
+    /// <summary>
+    /// Represents a parameter symbol
+    /// </summary>
     public class ParameterSymbol : ISymbol
     {        
+        /// <inheritdoc/>
         public string Identifier { get; }
+        
+        /// <inheritdoc/>
         public Uri SourceDocument { get; }
-        public Position Position { get; }
+        
+        /// <inheritdoc/>
+        public Range SymbolRange { get; }
+        
+        /// <inheritdoc/>
+        public Range IdentifierRange { get; }
+        
+        /// <inheritdoc/>
         
         public string Description => $"parameter by {(_outVar?"reference":"value")}";
+        
+        /// <inheritdoc/>
         public string Code => GetCode();
+        
+        /// <inheritdoc/>
         public string Documentation { get; }
 
         private const string ArraySizeDelimiter = ", ";
@@ -17,12 +34,13 @@ namespace LanceServer.Core.Symbol
         private readonly string[] _arraySize;
         private readonly bool _outVar;
 
-        public ParameterSymbol(string identifier, Uri sourceDocument, Position position, CompositeDataType compositeDataType, string[] arraySize, bool outVar = false,
+        public ParameterSymbol(string identifier, Uri sourceDocument, Range symbolRange, Range identifierRange, CompositeDataType compositeDataType, string[] arraySize, bool outVar = false,
             string documentation = "")
         {
             Identifier = identifier;
             SourceDocument = sourceDocument;
-            Position = position;
+            SymbolRange = symbolRange;
+            IdentifierRange = identifierRange;
             _compositeDataType = compositeDataType;
             _arraySize = arraySize;
             _outVar = outVar;

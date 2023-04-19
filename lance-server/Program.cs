@@ -1,6 +1,7 @@
 ﻿using LanceServer.Core.Configuration;
 using LanceServer.Core.Stream;
 using LanceServer.Core.Workspace;
+using LanceServer.GoToDefinition;
 using LanceServer.Hover;
 using LanceServer.Parser;
 using LanceServer.Preprocessor;
@@ -22,13 +23,15 @@ namespace LanceServer
             var workspace = new Workspace(parser, customPreprocessor, config);
             var semanticTokenHandler = new SemanticTokenHandler();
             var hoverHandler = new HoverHandler(config);
+            var gotoDefinitionHandler = new GotoDefinitionHandler();
             var lsp = new LSPServer(
                 stdout,
                 stdin,
                 workspace,
                 config,
                 semanticTokenHandler,
-                hoverHandler
+                hoverHandler,
+                gotoDefinitionHandler
             );
             
             await Task.Delay(-1);
