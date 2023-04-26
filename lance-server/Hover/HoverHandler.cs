@@ -27,15 +27,25 @@ public class HoverHandler : IHoverHandler
         var position = requestParams.Position;
         if (document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))
         {
-            var symbol = workspace.GetSymbol(symbolUse.Identifier.ToLower(), document.Information.Uri);
+            if (workspace.TryGetSymbol(symbolUse.Identifier.ToLower(), document.Information.Uri, out var symbol))
+            {
+                return new LspTypes.Hover()
+                {
+                    Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(new MarkupContent()
+                    {
+                        Kind = MarkupKind.Markdown, Value = CreateMarkdownString(symbol)
+                    }),
+                    Range = symbolUse.Range
+                };
+            }
             
             return new LspTypes.Hover()
             {
                 Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(new MarkupContent()
                 {
-                    Kind = MarkupKind.Markdown, Value = CreateMarkdownString(symbol)
+                    Kind = MarkupKind.Markdown, Value = EscapeMarkdown($"Cannot resolve symbol '{symbolUse.Identifier}'")
                 }),
-                Range = symbolUse.Position
+                Range = symbolUse.Range
             };
         }
         return new LspTypes.Hover();
@@ -61,6 +71,7 @@ public class HoverHandler : IHoverHandler
             markdownString.Append("\n```");
         }
 
+        // if code and documentation are not empty
         if (!(string.IsNullOrEmpty(code) || string.IsNullOrEmpty(documentation)))
         {
             markdownString.Append("\n\n***\n\n");
