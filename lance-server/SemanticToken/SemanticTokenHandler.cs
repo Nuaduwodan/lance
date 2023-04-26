@@ -1,4 +1,5 @@
-﻿using LanceServer.Core.Workspace;
+﻿using LanceServer.Core.Symbol;
+using LanceServer.Core.Workspace;
 using LspTypes;
 
 namespace LanceServer.SemanticToken;
@@ -9,55 +10,90 @@ namespace LanceServer.SemanticToken;
 public class SemanticTokenHandler : ISemanticTokenHandler
 {
 
-    public SemanticTokens ProcessRequest(ParsedDocument document, DocumentSymbolParams requestParams)
+    public SemanticTokens ProcessRequest(SymbolUseExtractedDocument document, DocumentSymbolParams requestParams, IWorkspace workspace)
     {
+        var localSymbols = document.SymbolTable.GetAll();
+        var globalSymbols = workspace.GetGlobalSymbolsOfDocument(document.Information.Uri);
+        var symbolUses = document.SymbolUseTable.GetAll();
+
+        List<SemanticToken> semanticTokens = new List<SemanticToken>();
+
+        foreach (var symbol in localSymbols)
+        {
+            var startCharacter = symbol.SymbolRange.Start.Character;
+            semanticTokens.Add(new SemanticToken(symbol.SymbolRange.Start.Line, startCharacter, symbol.SymbolRange.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol)));
+        }
+        
+        foreach (var symbol in globalSymbols)
+        {
+            var startCharacter = symbol.SymbolRange.Start.Character;
+            semanticTokens.Add(new SemanticToken(symbol.SymbolRange.Start.Line, startCharacter, symbol.SymbolRange.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol)));
+        }
+        
+        foreach (var symbolUse in symbolUses)
+        {
+            if (workspace.TryGetSymbol(symbolUse.Identifier, document.Information.Uri, out var symbol))
+            {
+                var startCharacter = symbolUse.Range.Start.Character;
+                semanticTokens.Add(new SemanticToken(symbolUse.Range.Start.Line, startCharacter, symbolUse.Range.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol)));
+            }
+        }
+
+        var orderedSemanticTokens = semanticTokens.OrderBy(symbolUse => symbolUse.Line).ThenBy(symbolUse => symbolUse.StartCharacter);
+        
         SemanticTokenData tokenData = new SemanticTokenData();
+        uint previousLine = 0;
+        uint previousCharacter = 0;
+        foreach (var semanticToken in orderedSemanticTokens)
+        {
+            var deltaLine = semanticToken.Line - previousLine;
             
-        //TODO use listener to find all usages of symbols and look them up in the symbol table
+            if (deltaLine > 0)
+            {
+                previousLine = semanticToken.Line;
+                previousCharacter = 0;
+            }
+
+            var deltaCharacter = semanticToken.StartCharacter - previousCharacter;
+            
+            previousCharacter = semanticToken.StartCharacter;
+            
+            tokenData.AddElement(new SemanticTokenDataElement(deltaLine, deltaCharacter, semanticToken.Length, semanticToken.Type, semanticToken.Modifiers));
+        }
                     
         return new SemanticTokens
         {
             Data = tokenData.ToDataFormat()
         };
     }
-        
-    /// <summary>
-    /// Maps the token type as defined by the grammar to a type as defined by the LSP.
-    /// <seealso cref="SinumerikNCLexer"/>
-    /// </summary>
-    /// <param name="tokenType">The token type as defined by the grammar.</param>
-    public int TransformType(int tokenType)
+
+    private uint GetModifiers(ISymbol symbol)
     {
-        switch (tokenType)
+        return 0;
+    }
+
+    /// <summary>
+    /// Maps the symbol type to a type as defined by the LSP.
+    /// </summary>
+    private uint TransformType(ISymbol symbol)
+    {
+        switch (symbol.Type)
         {
-            case SinumerikNCLexer.COMMENT:
-                return (int) SemanticTokenTypeHelper.SemanticTokenType.Comment;
-            case SinumerikNCLexer.PROC:
-            case SinumerikNCLexer.GCODE:
-            case SinumerikNCLexer.MCODE:
-            case SinumerikNCLexer.HCODE:
-                return (int) SemanticTokenTypeHelper.SemanticTokenType.Keyword;
-            case SinumerikNCLexer.INT_TYPE:
-            case SinumerikNCLexer.AXIS_TYPE:
-            case SinumerikNCLexer.BOOL_TYPE:
-            case SinumerikNCLexer.CHAR_TYPE:
-            case SinumerikNCLexer.REAL_TYPE:
-            case SinumerikNCLexer.FRAME_TYPE:
-            case SinumerikNCLexer.STRING_TYPE:
-                return (int) SemanticTokenTypeHelper.SemanticTokenType.Type;
-            case SinumerikNCLexer.BLOCK_NUMBER:
-                return (int) SemanticTokenTypeHelper.SemanticTokenType.Decorator;
-            case SinumerikNCLexer.REAL_UNSIGNED:
-            case SinumerikNCLexer.INT_UNSIGNED:
-                return (int) SemanticTokenTypeHelper.SemanticTokenType.Number;
-            case SinumerikNCLexer.ADD:
-            case SinumerikNCLexer.SUB:
-                return (int) SemanticTokenTypeHelper.SemanticTokenType.Operator;
-            // Names should be separated into their purposes
-            case SinumerikNCLexer.NAME:
-                return (int) SemanticTokenTypeHelper.SemanticTokenType.Variable;
+            case SymbolType.Variable:
+                return (uint) SemanticTokenTypeHelper.SemanticTokenType.Variable;
+            case SymbolType.Macro:
+                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Macro;
+            case SymbolType.Procedure:
+                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Function;
+            case SymbolType.Parameter:
+                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Parameter;
+            case SymbolType.Label:
+                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Decorator;
+            case SymbolType.BlockNumber:
+                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Decorator;
+            case SymbolType.Error:
             default:
-                return (int) SemanticTokenTypeHelper.SemanticTokenType.Decorator;
+                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Variable;
         }
     }
 }

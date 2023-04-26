@@ -8,4 +8,4 @@
 /// <param name="Length">The length of the token.</param>
 /// <param name="TokenType">The type of the token as defined by the LSP.</param>
 /// <param name="TokenModifiers">The token modifiers as defined by the LSP.</param>
-public readonly record struct SemanticTokenDataElement(int DeltaLine, int DeltaChar, int Length, int TokenType, int TokenModifiers);
+public readonly record struct SemanticTokenDataElement(uint DeltaLine, uint DeltaChar, uint Length, uint TokenType, uint TokenModifiers);
