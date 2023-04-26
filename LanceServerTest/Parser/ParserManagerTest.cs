@@ -163,4 +163,39 @@ public class ParserManagerTest
         Assert.AreEqual("declaredVariable", actualSymbols[symbolPosition++].Identifier);
         Assert.AreEqual("definedVariable", actualSymbols[symbolPosition++].Identifier);
     }
+
+    [TestMethod]
+    public void ParsingErrorTest()
+    {
+        // Arrange
+        var code = 
+            @"proc testProcedure(int testparam)
+
+                define definedMacro as 42
+                def int declaredVariable
+                def real definedVariable = 2.3
+
+                if (definedMacro > definedVariable) or (testparam < 0)
+                    declaredVariable = 7
+                endif
+
+                ret
+                endproc
+                ";
+        var preprocessedDocument = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.spf"), ".spf", code), code, new Placeholders(new Dictionary<string, string>()), "");
+        var parserManager = new ParserManager();
+        var document = new ParsedDocument(preprocessedDocument, parserManager.Parse(preprocessedDocument));
+
+        // Act
+        var actualSymbols = parserManager.GetSymbolTableForDocument(document).ToList();
+
+        // Assert
+        var symbolPosition = 0;
+            
+        Assert.AreEqual("testparam", actualSymbols[symbolPosition++].Identifier);
+        Assert.AreEqual("testProcedure", actualSymbols[symbolPosition++].Identifier);
+        Assert.AreEqual("definedMacro", actualSymbols[symbolPosition++].Identifier);
+        Assert.AreEqual("declaredVariable", actualSymbols[symbolPosition++].Identifier);
+        Assert.AreEqual("definedVariable", actualSymbols[symbolPosition++].Identifier);
+    }
 }

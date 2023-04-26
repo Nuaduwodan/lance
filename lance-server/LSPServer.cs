@@ -5,10 +5,13 @@ using StreamJsonRpc;
 using LanceServer.Hover;
 using LanceServer.SemanticToken;
 using LanceServer.Core.Workspace;
+using LanceServer.Diagnostic;
 using LanceServer.GoToDefinition;
+using LanceServer.LanguageServerProtocol;
 using LspTypes;
-using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc.Protocol;
+using InitializeResult = LanceServer.LanguageServerProtocol.InitializeResult;
+using ServerCapabilities = LanceServer.LanguageServerProtocol.ServerCapabilities;
 
 namespace LanceServer;
 
@@ -37,8 +40,9 @@ class LSPServer : IDisposable
     private readonly ISemanticTokenHandler _semanticTokenHandler;
     private readonly IHoverHandler _hoverHandler;
     private readonly IGotoDefinitionHandler _gotoDefinitionHandler;
+    private readonly IDiagnosticHandler _diagnosticHandler;
 
-    public LSPServer(Stream sender, Stream reader, IWorkspace workspace, IConfigurationManager configurationManager, ISemanticTokenHandler semanticTokenHandler, IHoverHandler hoverHandler, IGotoDefinitionHandler gotoDefinitionHandler)
+    public LSPServer(Stream sender, Stream reader, IWorkspace workspace, IConfigurationManager configurationManager, ISemanticTokenHandler semanticTokenHandler, IHoverHandler hoverHandler, IGotoDefinitionHandler gotoDefinitionHandler, IDiagnosticHandler diagnosticHandler)
     {
         _rpc = JsonRpc.Attach(sender, reader, this);
         _rpc.Disconnected += OnRpcDisconnected;
@@ -47,6 +51,7 @@ class LSPServer : IDisposable
         _semanticTokenHandler = semanticTokenHandler;
         _hoverHandler = hoverHandler;
         _gotoDefinitionHandler = gotoDefinitionHandler;
+        _diagnosticHandler = diagnosticHandler;
     }
 
     private void OnRpcDisconnected(object? sender, JsonRpcDisconnectedEventArgs e)
@@ -168,6 +173,10 @@ class LSPServer : IDisposable
                             tokenModifiers = SemanticTokenModifierHelper.GetModifiers()
                         }
                     },
+                    DiagnosticProvider = new DiagnosticOptions{
+                        InterFileDependencies = true,
+                        WorkspaceDiagnostics = false
+                    }
                 };
 
                 result.Capabilities = capabilities;
@@ -175,7 +184,7 @@ class LSPServer : IDisposable
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
             
@@ -206,7 +215,7 @@ class LSPServer : IDisposable
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
             
@@ -233,7 +242,7 @@ class LSPServer : IDisposable
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
     }
@@ -255,7 +264,7 @@ class LSPServer : IDisposable
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
     }
@@ -275,13 +284,13 @@ class LSPServer : IDisposable
         {
             lock (Lock)
             {
-                _configurationManager.ExtractConfiguration(request);
+                _configurationManager.ExtractConfiguration(request.Settings.Lance);
                 _trace = request.Settings.Lance.Trace;
             }
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
 
@@ -291,14 +300,14 @@ class LSPServer : IDisposable
         }
     }
 
-    public ConfigurationParameters RequestConfiguration()
+    public ServerConfiguration RequestConfiguration()
     {
         if (_trace)
         {
             Console.Error.WriteLine(TraceOut + nameof(RequestConfiguration));
         }
 
-        ConfigurationParameters? result;
+        ServerConfiguration result = new ServerConfiguration();
         
         try
         {
@@ -306,20 +315,20 @@ class LSPServer : IDisposable
             {
                 result = Task.Run(async delegate
                 {
-                    var response = await _rpc.InvokeWithParameterObjectAsync<JToken>("workspace/configuration", new ConfigurationParams
+                    var response = await _rpc.InvokeWithParameterObjectAsync<JArray>("workspace/configuration", new ConfigurationParams
                     {
                         Items = new []{new ConfigurationItem
                         {
                             Section = "lance"
                         }}
                     });
-                    return DeserializeParams<ConfigurationParameters>(response);
+                    return DeserializeParams<ServerConfiguration>(response.First);
                 }).Result;
             }
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
 
@@ -352,7 +361,7 @@ class LSPServer : IDisposable
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
 
@@ -383,7 +392,7 @@ class LSPServer : IDisposable
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
 
@@ -393,6 +402,43 @@ class LSPServer : IDisposable
         }
     }
         
+    // Language Features
+    
+    [JsonRpcMethod(Method.TextDocumentDiagnostic)]
+    public DocumentDiagnosticReport TextDocumentDiagnostic(JToken parameter)
+    {
+        if (_trace)
+        {
+            Console.Error.WriteLine(TraceIn + nameof(TextDocumentDiagnostic));
+            Console.Error.WriteLine(parameter.ToString());
+        }
+            
+        var request = DeserializeParams<DocumentDiagnosticParams>(parameter);
+        var uri = FileUtil.UriStringToUri(request.TextDocument.Uri);
+        var result = new DocumentDiagnosticReport();
+            
+        try
+        {
+            lock (Lock)
+            {
+                var document = _workspace.GetSymbolUseExtractedDocument(uri);
+                result = _diagnosticHandler.HandleRequest(document, request, _workspace);
+            }
+        }
+        catch (Exception exception)
+        {
+            Console.Error.WriteLine(exception.ToString());
+            throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
+        }
+
+        if (_trace)
+        {
+            Console.Error.Write(TraceOut + nameof(TextDocumentDiagnostic));
+        }
+
+        return result;
+    }
+    
     [JsonRpcMethod(Methods.TextDocumentDefinitionName)]
     public LocationLink[] TextDocumentDefinition(JToken parameter)
     {
@@ -416,7 +462,7 @@ class LSPServer : IDisposable
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
 
@@ -447,14 +493,14 @@ class LSPServer : IDisposable
             {
                 _workspace.InitWorkspace();
                     
-                var document = _workspace.GetParsedDocument(uri);
+                var document = _workspace.GetSymbolUseExtractedDocument(uri);
 
-                result = _semanticTokenHandler.ProcessRequest(document, request);
+                result = _semanticTokenHandler.ProcessRequest(document, request, _workspace);
             }
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
 
@@ -491,7 +537,7 @@ class LSPServer : IDisposable
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine(String.Concat(exception.Message, "\n", exception.StackTrace), MessageType.Info);
+            Console.Error.WriteLine(exception.ToString());
             throw new LocalRpcException(exception.Message, exception){ErrorCode = (int)JsonRpcErrorCode.InternalError};
         }
 

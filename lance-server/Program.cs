@@ -1,6 +1,7 @@
 ﻿using LanceServer.Core.Configuration;
 using LanceServer.Core.Stream;
 using LanceServer.Core.Workspace;
+using LanceServer.Diagnostic;
 using LanceServer.GoToDefinition;
 using LanceServer.Hover;
 using LanceServer.Parser;
@@ -24,6 +25,7 @@ class Program
         var semanticTokenHandler = new SemanticTokenHandler();
         var hoverHandler = new HoverHandler(config);
         var gotoDefinitionHandler = new GotoDefinitionHandler();
+        var diagnosticHandler = new DiagnosticHandler();
         var lsp = new LSPServer(
             stdout,
             stdin,
@@ -31,7 +33,8 @@ class Program
             config,
             semanticTokenHandler,
             hoverHandler,
-            gotoDefinitionHandler
+            gotoDefinitionHandler,
+            diagnosticHandler
         );
             
         await Task.Delay(-1);

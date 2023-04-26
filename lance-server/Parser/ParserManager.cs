@@ -13,7 +13,9 @@ public class ParserManager : IParserManager
     private CommonTokenStream Tokenize(PreprocessedDocument document)
     {
         ICharStream stream = CharStreams.fromString(document.Code);
-        ITokenSource lexer = new SinumerikNCLexer(stream);
+        SinumerikNCLexer lexer = new SinumerikNCLexer(stream);
+        lexer.RemoveErrorListeners();
+        lexer.AddErrorListener(new ErrorListener());
         return new CommonTokenStream(lexer);
     }
 
@@ -21,6 +23,8 @@ public class ParserManager : IParserManager
     public IParseTree Parse(PreprocessedDocument document)
     {
         var parser = new SinumerikNCParser(Tokenize(document));
+        parser.RemoveErrorListeners();
+        parser.AddErrorListener(new ErrorListener());
         IParseTree tree = parser.file();
         return tree;
     }
