@@ -14,6 +14,5 @@ public interface IGotoDefinitionHandler
     /// <param name="document">The document with the necessary symbol information</param>
     /// <param name="requestParams">The goto definition request parameters</param>
     /// <param name="workspace">The workspace</param>
-    /// <returns></returns>
     LocationLink[] HandleRequest(SymbolUseExtractedDocument document, TypeDefinitionParams requestParams, IWorkspace workspace);
 }

@@ -7,12 +7,12 @@ public class GotoDefinitionHandler : IGotoDefinitionHandler
 {
     public LocationLink[] HandleRequest(SymbolUseExtractedDocument document, TypeDefinitionParams requestParams, IWorkspace workspace)
     {
-        if (document.SymbolUseTable.TryGetSymbol(requestParams.Position, out var symbolUse))
+        if (document.SymbolUseTable.TryGetSymbol(requestParams.Position, out var symbolUse) &&
+            workspace.TryGetSymbol(symbolUse.Identifier.ToLower(), document.Information.Uri, out var symbol))
         {
-            var symbol = workspace.GetSymbol(symbolUse.Identifier.ToLower(), document.Information.Uri);
             var locationLink = new LocationLink()
             {
-                OriginSelectionRange = symbolUse.Position,
+                OriginSelectionRange = symbolUse.Range,
                 TargetUri = FileUtil.UriToUriString(symbol.SourceDocument),
                 TargetRange = symbol.SymbolRange,
                 TargetSelectionRange = symbol.IdentifierRange
