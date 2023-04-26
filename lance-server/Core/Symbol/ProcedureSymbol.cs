@@ -9,7 +9,10 @@ public class ProcedureSymbol : ISymbol
 {
     /// <inheritdoc/>
     public string Identifier { get; }
-        
+
+    /// <inheritdoc/>
+    public SymbolType Type { get; }
+
     /// <inheritdoc/>
     public Uri SourceDocument { get; }
         
@@ -39,6 +42,8 @@ public class ProcedureSymbol : ISymbol
         IdentifierRange = identifierRange;
         _parameters = parameters;
         Documentation = documentation;
+
+        Type = SymbolType.Procedure;
     }
 
 }

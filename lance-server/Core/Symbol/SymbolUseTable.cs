@@ -19,9 +19,9 @@ public class SymbolUseTable
     public bool TryGetSymbol(Position position, [MaybeNullWhen(false)] out SymbolUse symbol)
     {
         symbol = null;
-        if (_symbolUses.Any(symbolUse => IsInRange(symbolUse.Position, position)))
+        if (_symbolUses.Any(symbolUse => IsInRange(symbolUse.Range, position)))
         {
-            symbol = _symbolUses.First(symbolUse => IsInRange(symbolUse.Position, position));
+            symbol = _symbolUses.First(symbolUse => IsInRange(symbolUse.Range, position));
             return true;
         }
 
@@ -40,5 +40,10 @@ public class SymbolUseTable
         }
 
         return true;
+    }
+
+    public IEnumerable<SymbolUse> GetAll()
+    {
+        return _symbolUses;
     }
 }

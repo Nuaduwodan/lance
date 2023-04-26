@@ -9,7 +9,10 @@ public class ParameterSymbol : ISymbol
 {        
     /// <inheritdoc/>
     public string Identifier { get; }
-        
+
+    /// <inheritdoc/>
+    public SymbolType Type { get; }
+
     /// <inheritdoc/>
     public Uri SourceDocument { get; }
         
@@ -45,6 +48,8 @@ public class ParameterSymbol : ISymbol
         _arraySize = arraySize;
         _outVar = outVar;
         Documentation = documentation;
+
+        Type = SymbolType.Parameter;
     }
 
     private string GetCode()

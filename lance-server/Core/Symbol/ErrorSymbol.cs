@@ -9,7 +9,10 @@ public class ErrorSymbol : ISymbol
 {
     /// <inheritdoc/>
     public string Identifier { get; } = string.Empty;
-    
+
+    /// <inheritdoc/>
+    public SymbolType Type { get; }
+
     /// <inheritdoc/>
     public Uri SourceDocument { get; } = null;
 
@@ -35,5 +38,6 @@ public class ErrorSymbol : ISymbol
     public ErrorSymbol(string documentation)
     {
         Documentation = documentation;
+        Type = SymbolType.Error;
     }
 }

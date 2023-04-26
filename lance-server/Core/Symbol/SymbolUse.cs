@@ -9,7 +9,7 @@ public class SymbolUse
 {
     public string Identifier { get; }
 
-    public Range Position { get; }
+    public Range Range { get; }
 
     public Uri SourceDocument { get; }
 
@@ -17,12 +17,12 @@ public class SymbolUse
     /// Creates a new symbol use
     /// </summary>
     /// <param name="identifier">The identifier of the symbol used</param>
-    /// <param name="position">The position of the usage</param>
+    /// <param name="range">The position of the usage</param>
     /// <param name="sourceDocument">The source document of the usage</param>
-    public SymbolUse(string identifier, Range position, Uri sourceDocument)
+    public SymbolUse(string identifier, Range range, Uri sourceDocument)
     {
         Identifier = identifier;
-        Position = position;
+        Range = range;
         SourceDocument = sourceDocument;
     }
 }

@@ -4,15 +4,20 @@ namespace LanceServer.Core.Symbol;
 
 public class SymbolTable
 {
-    private Dictionary<string, ISymbol> _symbols;
+    private Dictionary<string, ISymbol> _symbols = new();
 
-    public SymbolTable(IEnumerable<ISymbol> symbols)
+    public bool AddSymbol(ISymbol symbol)
     {
-        _symbols = symbols.ToDictionary(symbol => symbol.Identifier.ToLower(), symbol => symbol);
+        return _symbols.TryAdd(symbol.Identifier.ToLower(), symbol);
     }
 
     public bool TryGetSymbol(string symbolName, [MaybeNullWhen(false)] out ISymbol symbol)
     {
         return _symbols.TryGetValue(symbolName.ToLower(), out symbol);
+    }
+
+    public IEnumerable<ISymbol> GetAll()
+    {
+        return _symbols.Select(pair => pair.Value);
     }
 }

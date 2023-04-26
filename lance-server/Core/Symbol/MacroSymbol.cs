@@ -9,7 +9,10 @@ public class MacroSymbol : ISymbol
 {
     /// <inheritdoc/>
     public string Identifier { get; }
-        
+
+    /// <inheritdoc/>
+    public SymbolType Type { get; }
+
     /// <inheritdoc/>
     public Uri SourceDocument { get; }
         
@@ -40,5 +43,6 @@ public class MacroSymbol : ISymbol
         _value = value;
         this.isGlobal = isGlobal;
         Documentation = documentation;
+        Type = SymbolType.Macro;
     }
 }
