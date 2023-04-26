@@ -1,4 +1,5 @@
-﻿using LanceServer.Core.Configuration;
+﻿using System.Diagnostics.CodeAnalysis;
+using LanceServer.Core.Configuration;
 using LanceServer.Parser;
 using LanceServer.Core.Symbol;
 using LanceServer.Preprocessor;
@@ -65,13 +66,24 @@ public class Workspace : IWorkspace
         }
 
         var localSymbols = symbolList.Except(globalSymbols);
-            
+       
         foreach (var symbol in globalSymbols)
         {
-            AddSymbol(symbol);
+            if (!AddSymbol(symbol))
+            {
+                //TODO create diagnostic
+            }
         }
 
-        var symbolTable = new SymbolTable(localSymbols);
+        var symbolTable = new SymbolTable();
+        foreach (var symbol in localSymbols)
+        {
+            if (!symbolTable.AddSymbol(symbol))
+            {
+                //TODO create diagnostic
+            }
+        }
+        
         var newSymbolisedDocument = new SymbolisedDocument(parsedDocument, symbolTable);
         _documents[uri] = newSymbolisedDocument;
         return newSymbolisedDocument;
@@ -157,10 +169,7 @@ public class Workspace : IWorkspace
         return document;
     }
 
-    /// <summary>
-    /// Returns true if this workspace has a document with that URI.
-    /// </summary>
-    /// <param name="uri">The URI of the document</param>
+    /// <inheritdoc />
     public bool HasDocument(Uri uri)
     {
         return _documents.ContainsKey(uri);
@@ -173,66 +182,60 @@ public class Workspace : IWorkspace
     }
     */
 
+    /// <inheritdoc />
     public void InitWorkspace()
     {
         var workspaceFolders = _configurationManager.WorkspaceFolders;
-        var symbolTableConfig = _configurationManager.SymbolTableConfiguration;
-        var fileEndingConfig = _configurationManager.FileEndingConfiguration;
-            
+        var fileExtensions = _configurationManager.FileExtensionConfiguration.FileExtensions;
+        
         var documentUris = new List<Uri>();
         foreach (var workspaceFolder in workspaceFolders)
         {
-            foreach (var fileEnding in fileEndingConfig.FileEndings)
+            foreach (var fileExtension in fileExtensions)
             {
-                documentUris.AddRange(FileUtil.GetFilesInDirectory(workspaceFolder, "*"+fileEnding));
+                documentUris.AddRange(FileUtil.GetFilesInDirectory(workspaceFolder, "*"+fileExtension));
             }
         }
             
         //todo convert uris to documents
-
+/*
         var defFiles = documentUris.Where(uri => symbolTableConfig.GlobalFileExtensions.Contains(FileUtil.FileExtensionFromUri(uri)));
         documentUris = documentUris.Except(defFiles).ToList();
-            
+        
         foreach (var defFile in defFiles)
         {
             GetSymbolisedDocument(defFile);
         }
-        /*
-        var globalFiles = documentUris.Where(uri => symbolTableConfig.GlobalDirectories.Intersect(Path.GetDirectoryName(uri.LocalPath)!.Split(Path.DirectorySeparatorChar)).Any());
-        documentUris = documentUris.Except(globalFiles).ToList();
-        
-        foreach (var globalFile in globalFiles)
-        {
-            GetDocumentWithUpdatedSymbolTable(globalFile);
-        }
-        
+*/      
         foreach (var documentUri in documentUris)
         {
-            GetDocumentWithUpdatedSymbolTable(documentUri);
+            GetSymbolisedDocument(documentUri);
         }
-        */
     }
 
-    /// <summary>
-    /// Returns the symbol.
-    /// </summary>
-    /// <param name="symbolName">The name of the symbol</param>
-    /// <param name="documentOfReference">The URI of the document where the symbol is used</param>
-    public ISymbol GetSymbol(string symbolName, Uri documentOfReference)
+    /// <inheritdoc />
+    public bool TryGetSymbol(string symbolName, Uri documentOfReference, [MaybeNullWhen(false)] out ISymbol symbol)
     {
-        if (GetSymbolisedDocument(documentOfReference).SymbolTable.TryGetSymbol(symbolName, out var symbol))
+        if (GetSymbolisedDocument(documentOfReference).SymbolTable.TryGetSymbol(symbolName, out symbol))
         {
-            return symbol;
+            return true;
         }
-            
+        
         if (_globalSymbols.TryGetValue(symbolName.ToLower(), out symbol))
         {
-            return symbol;
+            return true;
         }
 
-        return new ErrorSymbol($"Cannot resolve symbol '{symbolName}'");
+        return false;
     }
 
+    /// <inheritdoc />
+    public IEnumerable<ISymbol> GetGlobalSymbolsOfDocument(Uri uri)
+    {
+        return _globalSymbols.Where(pair => pair.Value.SourceDocument == uri).Select(pair => pair.Value);
+    }
+
+    /// <inheritdoc />
     public void UpdateDocumentContent(Uri uri, string newContent)
     {
         var document = GetDocument(uri);

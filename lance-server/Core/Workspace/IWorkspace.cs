@@ -66,13 +66,16 @@ public interface IWorkspace
     /// Loads all the files of a workspace to be able to provide project wide insights.
     /// </summary>
     public void InitWorkspace();
-
+    
     /// <summary>
-    /// Returns the symbol.
+    /// Returns true if a symbol is found, false otherwise.
     /// </summary>
-    /// <param name="symbolName">The name of the symbol</param>
-    /// <param name="documentOfReference">The URI of the document where the symbol is used</param>
-    public ISymbol GetSymbol(string symbolName, Uri documentOfReference);
+    /// <param name="symbolName">The name of the symbol to be found.</param>
+    /// <param name="documentOfReference">The URI of the document where the symbol is used.</param>
+    /// <param name="symbol">The requested symbol if true is returned.</param>
+    public bool TryGetSymbol(string symbolName, Uri documentOfReference, out ISymbol symbol);
+
+    public IEnumerable<ISymbol> GetGlobalSymbolsOfDocument(Uri uri);
 
     public void UpdateDocumentContent(Uri uri, string newContent);
 }

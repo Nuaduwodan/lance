@@ -19,19 +19,17 @@ public class ConfigurationManagerTest
         expectedCustomPreprocessorConfiguration.Placeholders = new []{ "proc <InstanceName>", "([^\"])<[a-zA-Z0-9\\.]+>" };
         var expectedSymbolTableConfiguration = new SymbolTableConfiguration() { GlobalDirectories = new[]{ "asdf" }, GlobalFileExtensions = new[]{ "asdf" } };
             
-        var configurationParams = new ConfigurationParameters();
-        configurationParams.Settings = new Settings();
-        configurationParams.Settings.Lance = new ServerConfiguration();
-        configurationParams.Settings.Lance.Trace = true;
-        configurationParams.Settings.Lance.MaxNumberOfProblems = 100;
-        configurationParams.Settings.Lance.Customization = new Customization();
-        configurationParams.Settings.Lance.Customization.SymbolTableConfiguration = expectedSymbolTableConfiguration;
-        configurationParams.Settings.Lance.Customization.PlaceholderPreprocessor = expectedCustomPreprocessorConfiguration;
+        var configuration = new ServerConfiguration();
+        configuration.Trace = true;
+        configuration.MaxNumberOfProblems = 100;
+        configuration.Customization = new Customization();
+        configuration.Customization.SymbolTableConfiguration = expectedSymbolTableConfiguration;
+        configuration.Customization.PlaceholderPreprocessor = expectedCustomPreprocessorConfiguration;
             
         var configurationManager = new ConfigurationManager();
             
         // Act
-        configurationManager.ExtractConfiguration(configurationParams);
+        configurationManager.ExtractConfiguration(configuration);
         var actualSymbolTableConfiguration = configurationManager.SymbolTableConfiguration;
         var actualCustomPreprocessorConfiguration = configurationManager.CustomPreprocessorConfiguration;
 
