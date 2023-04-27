@@ -20,14 +20,14 @@ public class SemanticTokenHandler : ISemanticTokenHandler
 
         foreach (var symbol in localSymbols)
         {
-            var startCharacter = symbol.SymbolRange.Start.Character;
-            semanticTokens.Add(new SemanticToken(symbol.SymbolRange.Start.Line, startCharacter, symbol.SymbolRange.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol)));
+            var startCharacter = symbol.IdentifierRange.Start.Character;
+            semanticTokens.Add(new SemanticToken(symbol.IdentifierRange.Start.Line, startCharacter, symbol.IdentifierRange.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol)));
         }
         
         foreach (var symbol in globalSymbols)
         {
-            var startCharacter = symbol.SymbolRange.Start.Character;
-            semanticTokens.Add(new SemanticToken(symbol.SymbolRange.Start.Line, startCharacter, symbol.SymbolRange.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol)));
+            var startCharacter = symbol.IdentifierRange.Start.Character;
+            semanticTokens.Add(new SemanticToken(symbol.IdentifierRange.Start.Line, startCharacter, symbol.IdentifierRange.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol)));
         }
         
         foreach (var symbolUse in symbolUses)
