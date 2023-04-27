@@ -19,12 +19,12 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
 
         var placeholders = new Dictionary<string, string>();
             
-        if(!preprocessorConfiguration.FileExtensions.Contains(document.Information.FileEnding))
+        if(!preprocessorConfiguration.FileExtensions.Contains(document.Information.FileExtension))
         {
-            return new PlaceholderPreprocessedDocument(document, document.Information.RawContent, new Placeholders(placeholders));
+            return new PlaceholderPreprocessedDocument(document, document.RawContent, new Placeholders(placeholders));
         }
 
-        var result = document.Information.RawContent;
+        var result = document.RawContent;
         foreach (var placeholder in preprocessorConfiguration.Placeholders)
         {
             var pattern = placeholder;
@@ -32,16 +32,32 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
             {
                 pattern = Regex.Escape(placeholder);
             }
-                
-            var matches = Regex.Matches(result, pattern).Select(match => match.Value);
+
+            pattern = "^(.*)("+pattern+")(.*)$";    
+            var matches = Regex.Matches(result, pattern, RegexOptions.Multiline).Select(match => match);
             foreach (var match in matches)
             {
-                var processedMatch = Regex.Replace(match, "[^a-zA-Z0-9_ ]", "_");
-                result = Regex.Replace(result, match, processedMatch);
-                placeholders.TryAdd(processedMatch, match);
+                var value = match.Groups[2].Value.Substring(1);
+                if (IsAloneOnLine(match))
+                {
+                    result = Regex.Replace(result, value, "");
+                }
+                else
+                {
+                    var processedMatch = Regex.Replace(value, "[^a-zA-Z0-9_]", "_");
+                    result = Regex.Replace(result, value, processedMatch);
+                    placeholders.TryAdd(processedMatch, value);
+                }
             }
         }
+
+        placeholders = placeholders.OrderByDescending(pair => pair.Key.Length).ToDictionary(pair => pair.Key, pair => pair.Value);
             
         return new PlaceholderPreprocessedDocument(document, result, new Placeholders(placeholders));
+    }
+
+    private bool IsAloneOnLine(Match match)
+    {
+        return String.IsNullOrEmpty(match.Groups[1].Value.Trim()) && String.IsNullOrEmpty(match.Groups[^2].Value.Trim());
     }
 }
