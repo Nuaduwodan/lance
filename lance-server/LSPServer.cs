@@ -25,9 +25,7 @@ class LSPServer : IDisposable
         
     private readonly ManualResetEvent _disconnectEvent = new(false);
     private bool _trace = true;
-        
-    private static readonly object Lock = new();
-        
+
     private bool _isDisposed;
 
     public event EventHandler Disconnected;
@@ -42,10 +40,13 @@ class LSPServer : IDisposable
     private readonly IGotoDefinitionHandler _gotoDefinitionHandler;
     private readonly IDiagnosticHandler _diagnosticHandler;
 
-    public LSPServer(Stream sender, Stream reader, IWorkspace workspace, IConfigurationManager configurationManager, ISemanticTokenHandler semanticTokenHandler, IHoverHandler hoverHandler, IGotoDefinitionHandler gotoDefinitionHandler, IDiagnosticHandler diagnosticHandler)
+    public LSPServer(JsonRpc jsonRpc, IWorkspace workspace, IConfigurationManager configurationManager, ISemanticTokenHandler semanticTokenHandler, IHoverHandler hoverHandler, IGotoDefinitionHandler gotoDefinitionHandler, IDiagnosticHandler diagnosticHandler)
     {
-        _rpc = JsonRpc.Attach(sender, reader, this);
+        _rpc = jsonRpc;
+        _rpc.AddLocalRpcTarget(this);
+        _rpc.StartListening();
         _rpc.Disconnected += OnRpcDisconnected;
+        
         _workspace = workspace;
         _configurationManager = configurationManager;
         _semanticTokenHandler = semanticTokenHandler;
@@ -114,73 +115,70 @@ class LSPServer : IDisposable
             
         try
         {
-            lock (Lock)
+            _configurationManager.Initialize(request);
+            ServerCapabilities capabilities = new ServerCapabilities
             {
-                _configurationManager.Initialize(request);
-                ServerCapabilities capabilities = new ServerCapabilities
+                TextDocumentSync = new TextDocumentSyncOptions
                 {
-                    TextDocumentSync = new TextDocumentSyncOptions
+                    OpenClose = true,
+                    Change = TextDocumentSyncKind.Full,
+                    Save = new SaveOptions
                     {
-                        OpenClose = true,
-                        Change = TextDocumentSyncKind.Full,
-                        Save = new SaveOptions
-                        {
-                            IncludeText = false
-                        }
-                    },
-
-                    CompletionProvider = null,
-
-                    HoverProvider = true,
-
-                    SignatureHelpProvider = null,
-
-                    DefinitionProvider = true,
-
-                    TypeDefinitionProvider = false,
-
-                    ImplementationProvider = false,
-
-                    ReferencesProvider = false,
-
-                    DocumentHighlightProvider = false,
-
-                    DocumentSymbolProvider = false,
-
-                    CodeLensProvider = null,
-
-                    DocumentLinkProvider = null,
-
-                    DocumentFormattingProvider = false,
-
-                    DocumentRangeFormattingProvider = false,
-
-                    RenameProvider = false,
-
-                    FoldingRangeProvider = false,
-
-                    ExecuteCommandProvider = null,
-
-                    WorkspaceSymbolProvider = false,
-
-                    SemanticTokensProvider = new SemanticTokensOptions()
-                    {
-                        Full = true,
-                        Range = false,
-                        Legend = new SemanticTokensLegend()
-                        {
-                            tokenTypes = SemanticTokenTypeHelper.GetTypes(),
-                            tokenModifiers = SemanticTokenModifierHelper.GetModifiers()
-                        }
-                    },
-                    DiagnosticProvider = new DiagnosticOptions{
-                        InterFileDependencies = true,
-                        WorkspaceDiagnostics = false
+                        IncludeText = false
                     }
-                };
+                },
 
-                result.Capabilities = capabilities;
-            }
+                CompletionProvider = null,
+
+                HoverProvider = true,
+
+                SignatureHelpProvider = null,
+
+                DefinitionProvider = true,
+
+                TypeDefinitionProvider = false,
+
+                ImplementationProvider = false,
+
+                ReferencesProvider = false,
+
+                DocumentHighlightProvider = false,
+
+                DocumentSymbolProvider = false,
+
+                CodeLensProvider = null,
+
+                DocumentLinkProvider = null,
+
+                DocumentFormattingProvider = false,
+
+                DocumentRangeFormattingProvider = false,
+
+                RenameProvider = false,
+
+                FoldingRangeProvider = false,
+
+                ExecuteCommandProvider = null,
+
+                WorkspaceSymbolProvider = false,
+
+                SemanticTokensProvider = new SemanticTokensOptions()
+                {
+                    Full = true,
+                    Range = false,
+                    Legend = new SemanticTokensLegend()
+                    {
+                        tokenTypes = SemanticTokenTypeHelper.GetTypes(),
+                        tokenModifiers = SemanticTokenModifierHelper.GetModifiers()
+                    }
+                },
+                DiagnosticProvider = new DiagnosticOptions{
+                    InterFileDependencies = true,
+                    WorkspaceDiagnostics = false
+                }
+            };
+
+            result.Capabilities = capabilities;
         }
         catch (Exception exception)
         {
@@ -208,10 +206,8 @@ class LSPServer : IDisposable
             
         try
         {
-            lock (Lock)
-            {
-                _configurationManager.ExtractConfiguration(RequestConfiguration());
-            }
+            _configurationManager.ExtractConfiguration(RequestConfiguration());
+            _workspace.InitWorkspaceAsync();
         }
         catch (Exception exception)
         {
@@ -235,10 +231,7 @@ class LSPServer : IDisposable
             
         try
         {
-            lock (Lock)
-            {
-                return new JObject();
-            }
+            return new JObject();
         }
         catch (Exception exception)
         {
@@ -257,10 +250,7 @@ class LSPServer : IDisposable
             
         try
         {
-            lock (Lock)
-            {
-                InternalExit();
-            }
+            InternalExit();
         }
         catch (Exception exception)
         {
@@ -282,11 +272,8 @@ class LSPServer : IDisposable
 
         try
         {
-            lock (Lock)
-            {
-                _configurationManager.ExtractConfiguration(request.Settings.Lance);
-                _trace = request.Settings.Lance.Trace;
-            }
+            _configurationManager.ExtractConfiguration(request.Settings.Lance);
+            _trace = request.Settings.Lance.Trace;
         }
         catch (Exception exception)
         {
@@ -307,24 +294,21 @@ class LSPServer : IDisposable
             Console.Error.WriteLine(TraceOut + nameof(RequestConfiguration));
         }
 
-        ServerConfiguration result = new ServerConfiguration();
+        ServerConfiguration result;
         
         try
         {
-            lock (Lock)
+            result = Task.Run(async delegate
             {
-                result = Task.Run(async delegate
+                var response = await _rpc.InvokeWithParameterObjectAsync<JArray>("workspace/configuration", new ConfigurationParams
                 {
-                    var response = await _rpc.InvokeWithParameterObjectAsync<JArray>("workspace/configuration", new ConfigurationParams
+                    Items = new []{new ConfigurationItem
                     {
-                        Items = new []{new ConfigurationItem
-                        {
-                            Section = "lance"
-                        }}
-                    });
-                    return DeserializeParams<ServerConfiguration>(response.First);
-                }).Result;
-            }
+                        Section = "lance"
+                    }}
+                });
+                return DeserializeParams<ServerConfiguration>(response.First);
+            }).Result;
         }
         catch (Exception exception)
         {
@@ -354,10 +338,7 @@ class LSPServer : IDisposable
             
         try
         {
-            lock (Lock)
-            {
-                _workspace.UpdateDocumentContent(uri, request.ContentChanges.Last().Text);
-            }
+            _workspace.UpdateDocumentContent(uri, request.ContentChanges.Last().Text);
         }
         catch (Exception exception)
         {
@@ -385,10 +366,7 @@ class LSPServer : IDisposable
             
         try
         {
-            lock (Lock)
-            {
-                _workspace.GetSymbolisedDocument(uri);
-            }
+            _workspace.GetSymbolisedDocument(uri);
         }
         catch (Exception exception)
         {
@@ -415,15 +393,12 @@ class LSPServer : IDisposable
             
         var request = DeserializeParams<DocumentDiagnosticParams>(parameter);
         var uri = FileUtil.UriStringToUri(request.TextDocument.Uri);
-        var result = new DocumentDiagnosticReport();
+        DocumentDiagnosticReport result;
             
         try
         {
-            lock (Lock)
-            {
-                var document = _workspace.GetSymbolUseExtractedDocument(uri);
-                result = _diagnosticHandler.HandleRequest(document, request, _workspace);
-            }
+            var document = _workspace.GetSymbolUseExtractedDocument(uri);
+            result = _diagnosticHandler.HandleRequest(document, request, _workspace);
         }
         catch (Exception exception)
         {
@@ -454,11 +429,8 @@ class LSPServer : IDisposable
             
         try
         {
-            lock (Lock)
-            {
-                var document = _workspace.GetSymbolUseExtractedDocument(uri);
-                result = _gotoDefinitionHandler.HandleRequest(document, request, _workspace);
-            }
+            var document = _workspace.GetSymbolUseExtractedDocument(uri);
+            result = _gotoDefinitionHandler.HandleRequest(document, request, _workspace);
         }
         catch (Exception exception)
         {
@@ -489,14 +461,9 @@ class LSPServer : IDisposable
             
         try
         {
-            lock (Lock)
-            {
-                _workspace.InitWorkspace();
-                    
-                var document = _workspace.GetSymbolUseExtractedDocument(uri);
+            var document = _workspace.GetSymbolUseExtractedDocument(uri);
 
-                result = _semanticTokenHandler.ProcessRequest(document, request, _workspace);
-            }
+            result = _semanticTokenHandler.ProcessRequest(document, request, _workspace);
         }
         catch (Exception exception)
         {
@@ -528,12 +495,9 @@ class LSPServer : IDisposable
             
         try
         {
-            lock (Lock)
-            {
-                var document = _workspace.GetSymbolUseExtractedDocument(uri);
+            var document = _workspace.GetSymbolUseExtractedDocument(uri);
 
-                result = _hoverHandler.HandleRequest(document, request, _workspace);
-            }
+            result = _hoverHandler.HandleRequest(document, request, _workspace);
         }
         catch (Exception exception)
         {

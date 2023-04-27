@@ -20,6 +20,9 @@ public class Workspace : IWorkspace
     private Dictionary<Uri, Document> _documents = new();
     private Dictionary<string, ISymbol> _globalSymbols = new();
 
+    private readonly object _documentsLock = new ();
+    private readonly object _globalSymbolsLock = new ();
+
     public Workspace(IParserManager parserManager, IPlaceholderPreprocessor placeholderPreprocessor, IConfigurationManager configurationManager)
     {
         _parserManager = parserManager;
@@ -40,7 +43,10 @@ public class Workspace : IWorkspace
 
         var symbolUseTable = new SymbolUseTable(symbolUseList);
         var newSymbolUseExtractedDocument = new SymbolUseExtractedDocument(symbolisedDocument, symbolUseTable);
-        _documents[uri] = newSymbolUseExtractedDocument;
+        lock (_documentsLock)
+        {
+            _documents[uri] = newSymbolUseExtractedDocument;
+        }
         return newSymbolUseExtractedDocument;
     }
         
@@ -60,7 +66,7 @@ public class Workspace : IWorkspace
 
         var globalSymbols = symbolList.Where(symbol => symbol is ProcedureSymbol).ToList();
 
-        if (parsedDocument.Information.IsGlobalFile)
+        if (parsedDocument.Information.DocumentType is DocumentType.Definition or DocumentType.MainProcedure)
         {
             globalSymbols.AddRange(symbolList.Where(symbol => symbol is VariableSymbol or MacroSymbol));
         }
@@ -85,7 +91,10 @@ public class Workspace : IWorkspace
         }
         
         var newSymbolisedDocument = new SymbolisedDocument(parsedDocument, symbolTable);
-        _documents[uri] = newSymbolisedDocument;
+        lock (_documentsLock)
+        {
+            _documents[uri] = newSymbolisedDocument;
+        }
         return newSymbolisedDocument;
     }
 
@@ -99,7 +108,10 @@ public class Workspace : IWorkspace
         }
 
         var newParsedDocument = new ParsedDocument(preprocessedDocument, _parserManager.Parse(preprocessedDocument));
-        _documents[uri] = newParsedDocument;
+        lock (_documentsLock)
+        {
+            _documents[uri] = newParsedDocument;
+        }
         return newParsedDocument;
     }
 
@@ -113,7 +125,10 @@ public class Workspace : IWorkspace
         }
             
         var newPreprocessedDocument = new PreprocessedDocument(document, document.Code);
-        _documents[uri] = newPreprocessedDocument;
+        lock (_documentsLock)
+        {
+            _documents[uri] = newPreprocessedDocument;
+        }
         return newPreprocessedDocument;
     }
 
@@ -127,7 +142,10 @@ public class Workspace : IWorkspace
         }
             
         var newMacroExtractedDocument = new MacroExtractedDocument(document, string.Empty);
-        _documents[uri] = newMacroExtractedDocument;
+        lock (_documentsLock)
+        {
+            _documents[uri] = newMacroExtractedDocument;
+        }
         return newMacroExtractedDocument;
     }
 
@@ -141,51 +159,55 @@ public class Workspace : IWorkspace
         }
             
         var newPlaceholderPreprocessedDocument = _placeholderPreprocessor.Filter(document);
-        _documents[uri] = newPlaceholderPreprocessedDocument;
+        lock (_documentsLock)
+        {
+            _documents[uri] = newPlaceholderPreprocessedDocument;
+        }
         return newPlaceholderPreprocessedDocument;
     }
 
     /// <inheritdoc/>
     public Document GetDocument(Uri uri)
     {
-        if (HasDocument(uri))
+        lock (_documentsLock)
         {
-            return _documents[uri];
+            if (_documents.TryGetValue(uri, out var document))
+            {
+                return document;
+            }
         }
 
-        var fileEnding = FileUtil.FileExtensionFromUri(uri);
         var config = _configurationManager.SymbolTableConfiguration;
-            
         var content = FileUtil.ReadContent(uri);
-        var isGlobalFile = config.GlobalFileExtensions.Contains(fileEnding);
-        var isSubProcedure = config.SubProcedureFileExtensions.Contains(fileEnding);
-            
-        var directories = Path.GetDirectoryName(uri.LocalPath)!.Split(Path.DirectorySeparatorChar);
-        var procedureNeedsDeclaration = config.GlobalDirectories.Intersect(directories).Any();
 
-        var documentInformation = new DocumentInformation(uri, fileEnding, content, isGlobalFile, isSubProcedure, procedureNeedsDeclaration);
-        var document = new Document(documentInformation);
-        _documents.Add(uri, document);
-        return document;
+        var documentInformation = new DocumentInformation(uri, config);
+        var newDocument = new Document(documentInformation, content);
+        lock (_documentsLock)
+        {
+            _documents.Add(uri, newDocument);
+        }
+        return newDocument;
     }
 
     /// <inheritdoc />
     public bool HasDocument(Uri uri)
     {
-        return _documents.ContainsKey(uri);
+        lock (_documentsLock)
+        {
+            return _documents.ContainsKey(uri);
+        }
     }
-
-    /*
+    
+    /// <inheritdoc />
     public async Task InitWorkspaceAsync()
     {
         await Task.Run(InitWorkspace);
     }
-    */
 
-    /// <inheritdoc />
     public void InitWorkspace()
     {
         var workspaceFolders = _configurationManager.WorkspaceFolders;
+        var symbolTableConfig = _configurationManager.SymbolTableConfiguration;
         var fileExtensions = _configurationManager.FileExtensionConfiguration.FileExtensions;
         
         var documentUris = new List<Uri>();
@@ -196,20 +218,18 @@ public class Workspace : IWorkspace
                 documentUris.AddRange(FileUtil.GetFilesInDirectory(workspaceFolder, "*"+fileExtension));
             }
         }
-            
-        //todo convert uris to documents
-/*
-        var defFiles = documentUris.Where(uri => symbolTableConfig.GlobalFileExtensions.Contains(FileUtil.FileExtensionFromUri(uri)));
-        documentUris = documentUris.Except(defFiles).ToList();
         
-        foreach (var defFile in defFiles)
-        {
-            GetSymbolisedDocument(defFile);
-        }
-*/      
+        documentUris = documentUris.OrderByDescending(uri => symbolTableConfig.DefinitionFileExtensions.Contains(FileUtil.FileExtensionFromUri(uri))).ToList();
+        
+        //todo convert uris to documents
+
+        var maxCount = documentUris.Count;
+        var currentCount = 0;
         foreach (var documentUri in documentUris)
         {
             GetSymbolisedDocument(documentUri);
+            currentCount++;
+            Console.Error.WriteLine($"Initialised Document {currentCount}/{maxCount} : {Path.GetFileName(documentUri.LocalPath)}");
         }
     }
 
@@ -220,10 +240,13 @@ public class Workspace : IWorkspace
         {
             return true;
         }
-        
-        if (_globalSymbols.TryGetValue(symbolName.ToLower(), out symbol))
+
+        lock (_globalSymbolsLock)
         {
-            return true;
+            if (_globalSymbols.TryGetValue(symbolName.ToLower(), out symbol))
+            {
+                return true;
+            }
         }
 
         return false;
@@ -232,17 +255,20 @@ public class Workspace : IWorkspace
     /// <inheritdoc />
     public IEnumerable<ISymbol> GetGlobalSymbolsOfDocument(Uri uri)
     {
-        return _globalSymbols.Where(pair => pair.Value.SourceDocument == uri).Select(pair => pair.Value);
+        lock (_globalSymbolsLock)
+        {
+            return _globalSymbols.Where(pair => pair.Value.SourceDocument == uri).Select(pair => pair.Value);
+        }
     }
 
     /// <inheritdoc />
     public void UpdateDocumentContent(Uri uri, string newContent)
     {
         var document = GetDocument(uri);
-        if (document.Information.RawContent != newContent)
+        if (document.RawContent != newContent)
         {
-            var documentInformation = new DocumentInformation(document.Information.Uri, document.Information.FileEnding, newContent, document.Information.IsGlobalFile, document.Information.IsSubProcedure, document.Information.ProcedureNeedsDeclaration, document.Information.Encoding);
-            _documents[uri] = new Document(documentInformation);
+            var documentInformation = new DocumentInformation(document.Information.Uri, document.Information.DocumentType, document.Information.Encoding);
+            _documents[uri] = new Document(documentInformation, newContent);
         }
 
         GetSymbolisedDocument(uri);
@@ -250,16 +276,22 @@ public class Workspace : IWorkspace
 
     private bool AddSymbol(ISymbol symbol)
     {
-        if (_globalSymbols.ContainsKey(symbol.Identifier.ToLower()))
+        lock (_globalSymbolsLock)
         {
-            return false;
+            if (_globalSymbols.ContainsKey(symbol.Identifier.ToLower()))
+            {
+                return false;
+            }
+            _globalSymbols.Add(symbol.Identifier.ToLower(), symbol);
+            return true;
         }
-        _globalSymbols.Add(symbol.Identifier.ToLower(), symbol);
-        return true;
     }
 
     private void DeleteGlobalSymbolsOfFile(Uri documentUri)
     {
-        _globalSymbols = _globalSymbols.Where(pair => pair.Value.SourceDocument != documentUri).ToDictionary(pair => pair.Key, pair => pair.Value);
+        lock (_globalSymbolsLock)
+        {
+            _globalSymbols = _globalSymbols.Where(pair => pair.Value.SourceDocument != documentUri).ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
     }
 }
