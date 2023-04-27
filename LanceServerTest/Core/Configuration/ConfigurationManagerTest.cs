@@ -17,14 +17,13 @@ public class ConfigurationManagerTest
         expectedCustomPreprocessorConfiguration.PlaceholderType = PlaceholderType.RegEx;
         expectedCustomPreprocessorConfiguration.FileExtensions = new[]{ ".tpl" };
         expectedCustomPreprocessorConfiguration.Placeholders = new []{ "proc <InstanceName>", "([^\"])<[a-zA-Z0-9\\.]+>" };
-        var expectedSymbolTableConfiguration = new SymbolTableConfiguration() { GlobalDirectories = new[]{ "asdf" }, GlobalFileExtensions = new[]{ "asdf" } };
+        var expectedSymbolTableConfiguration = new SymbolTableConfiguration() { ManufacturerCyclesDirectories = new[]{ "asdf" }, DefinitionFileExtensions = new[]{ "asdf" }, SubProcedureFileExtensions = new[]{ "asdf" }, MainProcedureFileExtensions = new[]{ "asdf" } };
             
         var configuration = new ServerConfiguration();
         configuration.Trace = true;
         configuration.MaxNumberOfProblems = 100;
-        configuration.Customization = new Customization();
-        configuration.Customization.SymbolTableConfiguration = expectedSymbolTableConfiguration;
-        configuration.Customization.PlaceholderPreprocessor = expectedCustomPreprocessorConfiguration;
+        configuration.SymbolTableConfiguration = expectedSymbolTableConfiguration;
+        configuration.PlaceholderPreprocessor = expectedCustomPreprocessorConfiguration;
             
         var configurationManager = new ConfigurationManager();
             
@@ -34,8 +33,8 @@ public class ConfigurationManagerTest
         var actualCustomPreprocessorConfiguration = configurationManager.CustomPreprocessorConfiguration;
 
         // Assert
-        CollectionAssert.AreEqual(expectedSymbolTableConfiguration.GlobalDirectories, actualSymbolTableConfiguration.GlobalDirectories);
-        CollectionAssert.AreEqual(expectedSymbolTableConfiguration.GlobalFileExtensions, actualSymbolTableConfiguration.GlobalFileExtensions);
+        CollectionAssert.AreEqual(expectedSymbolTableConfiguration.ManufacturerCyclesDirectories, actualSymbolTableConfiguration.ManufacturerCyclesDirectories);
+        CollectionAssert.AreEqual(expectedSymbolTableConfiguration.DefinitionFileExtensions, actualSymbolTableConfiguration.DefinitionFileExtensions);
         Assert.AreEqual(expectedCustomPreprocessorConfiguration.PlaceholderType, actualCustomPreprocessorConfiguration.PlaceholderType);
         CollectionAssert.AreEqual(expectedCustomPreprocessorConfiguration.FileExtensions, actualCustomPreprocessorConfiguration.FileExtensions);
         CollectionAssert.AreEqual(expectedCustomPreprocessorConfiguration.Placeholders, actualCustomPreprocessorConfiguration.Placeholders);

@@ -14,7 +14,11 @@ public class ServerConfiguration
     [JsonProperty(Required = Required.Always)]
     public bool Trace { get; set; }
         
-    [DataMember(Name = "customization")]
+    [DataMember(Name = "placeholderPreprocessor")]
     [JsonProperty(Required = Required.Always)]
-    public Customization Customization { get; set; }
+    public CustomPreprocessorConfiguration PlaceholderPreprocessor { get; set; }
+        
+    [DataMember(Name = "symbols")]
+    [JsonProperty(Required = Required.Always)]
+    public SymbolTableConfiguration SymbolTableConfiguration { get; set; }
 }

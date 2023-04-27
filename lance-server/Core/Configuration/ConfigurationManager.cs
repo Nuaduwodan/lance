@@ -12,19 +12,15 @@ public class ConfigurationManager : IConfigurationManager
     public CustomPreprocessorConfiguration? CustomPreprocessorConfiguration { get; private set; }
     public Uri[] WorkspaceFolders { get; private set; } = Array.Empty<Uri>();
 
-    public bool IsUpdated { get; private set; } = false;
-    
     public void ExtractConfiguration(ServerConfiguration configuration)
     {
-        SymbolTableConfiguration = configuration.Customization.SymbolTableConfiguration;
-        CustomPreprocessorConfiguration = configuration.Customization.PlaceholderPreprocessor;
+        SymbolTableConfiguration = configuration.SymbolTableConfiguration;
+        CustomPreprocessorConfiguration = configuration.PlaceholderPreprocessor;
         
-        var fileExtensions = SymbolTableConfiguration.GlobalFileExtensions.ToList();
+        var fileExtensions = SymbolTableConfiguration.DefinitionFileExtensions.ToList();
         fileExtensions.AddRange(SymbolTableConfiguration.SubProcedureFileExtensions);
-        fileExtensions.Add(".mpf");
+        fileExtensions.AddRange(SymbolTableConfiguration.MainProcedureFileExtensions);
         FileExtensionConfiguration = new FileExtensionConfiguration(fileExtensions.ToArray());
-        
-        IsUpdated = true;
     }
 
     public void Initialize(InitializeParams initializeParams)

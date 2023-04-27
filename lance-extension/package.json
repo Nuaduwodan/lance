@@ -52,33 +52,39 @@
                 "description": "Traces the communication between VSCode and the Lance server.",
                 "order": 3
               },
-              "lance.customization.globalSymbol.fileExtensions":{
+              "lance.symbols.definitionFileExtensions":{
                 "type": "array",
                 "default": [".def"],
-                "description": "Specifies the file extensions, with the leading dot, of files, of which containing symbols should be interpreted as global symbols.",
+                "description": "The file extensions of definition files. The format is a dot followed by the extension in lowercase.",
                 "order": 11
               },
-              "lance.customization.globalSymbol.subProcedureFileExtensions":{
+              "lance.symbols.subProcedureFileExtensions":{
                 "type": "array",
                 "default": [".spf"],
-                "description": "Specifies the file extensions, with the leading dot, of files, of which containing procedures should be interpreted as global symbols.",
+                "description": "The file extensions of sub procedure files. The format is a dot followed by the extension in lowercase.",
                 "order": 12
               },
-              "lance.customization.globalSymbol.folderNames":{
+              "lance.symbols.mainProcedureFileExtensions":{
                 "type": "array",
-                "default": ["cma.dir"],
-                "description": "Specifies the folder names, which containing files should be interpreted as global procedures.",
+                "default": [".mpf"],
+                "description": "The file extensions of main procedure files. The format is a dot followed by the extension in lowercase.",
                 "order": 13
               },
-              "lance.customization.placeholderPreprocessor.fileExtensions":{
+              "lance.symbols.manufacturerCyclesDirectories":{
+                "type": "array",
+                "default": ["cma.dir"],
+                "description": "The names of the folders in which the files contained are to be interpreted as global procedures.",
+                "order": 14
+              },
+              "lance.placeholderPreprocessor.fileExtensions":{
                 "type": "array",
                 "default": [],
-                "description": "Specifies the file extensions, of the files which should be processed by the placeholder preprocessor.",
+                "description": "The file extensions, of files processed by the placeholder preprocessor.",
                 "order": 21
               },
-              "lance.customization.placeholderPreprocessor.placeholderType":{
+              "lance.placeholderPreprocessor.placeholderType":{
                 "type": "string",
-                "default": "RegEx",
+                "default": "String",
                 "enum": [
                   "RegEx",
                   "String"
@@ -86,7 +92,7 @@
                 "description": "Specifies the type of the placeholders.",
                 "order": 22
               },
-              "lance.customization.placeholderPreprocessor.placeholders":{
+              "lance.placeholderPreprocessor.placeholders":{
                 "type": "array",
                 "default": [],
                 "description": "Specifies the placeholders which should get replaced by the preprocessor.",

@@ -6,15 +6,19 @@ namespace LanceServer.Core.Configuration.DataModel;
 [DataContract]
 public class SymbolTableConfiguration
 {
-    [DataMember(Name = "fileExtensions")]
+    [DataMember(Name = "definitionFileExtensions")]
     [JsonProperty(Required = Required.Always)]
-    public string[] GlobalFileExtensions { get; set; }
+    public string[] DefinitionFileExtensions { get; set; }
         
     [DataMember(Name = "subProcedureFileExtensions")]
     [JsonProperty(Required = Required.Always)]
     public string[] SubProcedureFileExtensions { get; set; }
         
-    [DataMember(Name = "folderNames")]
+    [DataMember(Name = "mainProcedureFileExtensions")]
     [JsonProperty(Required = Required.Always)]
-    public string[] GlobalDirectories { get; set; }
+    public string[] MainProcedureFileExtensions { get; set; }
+        
+    [DataMember(Name = "manufacturerCyclesDirectories")]
+    [JsonProperty(Required = Required.Always)]
+    public string[] ManufacturerCyclesDirectories { get; set; }
 }
