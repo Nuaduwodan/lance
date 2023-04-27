@@ -2,16 +2,16 @@
 
 public class Placeholders
 {
-    private Dictionary<string, string> _placeholders;
+    private IDictionary<string, string> _placeholders;
 
-    public Placeholders(Dictionary<string, string> placeholders)
+    public Placeholders(IDictionary<string, string> placeholders)
     {
         _placeholders = placeholders;
     }
     
-    public bool IsPlaceholder(string placeholder)
+    public bool ContainsPlaceholder(string text)
     {
-        return _placeholders.ContainsKey(placeholder);
+        return _placeholders.Any(placeholder => text.Contains(placeholder.Key));
     }
     
     public string ReplacePlaceholder(string placeholder)

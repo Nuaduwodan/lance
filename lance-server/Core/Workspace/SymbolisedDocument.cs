@@ -7,14 +7,14 @@ public class SymbolisedDocument : ParsedDocument
 {
     public SymbolTable SymbolTable { get; }
 
-    public SymbolisedDocument(DocumentInformation information, string code, Placeholders placeholders, string macroTable, IParseTree tree, SymbolTable symbolTable) 
-        : base(information, code, placeholders, macroTable, tree)
+    public SymbolisedDocument(IDocumentInformation information, string rawContent, string code, Placeholders placeholders, string macroTable, IParseTree tree, SymbolTable symbolTable) 
+        : base(information, rawContent, code, placeholders, macroTable, tree)
     {
         SymbolTable = symbolTable;
     }
 
     public SymbolisedDocument(ParsedDocument parsedDocument, SymbolTable symbolTable) 
-        : this(parsedDocument.Information, parsedDocument.Code, parsedDocument.Placeholders, parsedDocument.MacroTable, parsedDocument.Tree, symbolTable)
+        : this(parsedDocument.Information, parsedDocument.RawContent, parsedDocument.Code, parsedDocument.Placeholders, parsedDocument.MacroTable, parsedDocument.Tree, symbolTable)
     {
     }
 }

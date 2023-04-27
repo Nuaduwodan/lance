@@ -2,10 +2,12 @@
 
 public class Document
 {
-    public DocumentInformation Information { get; }
+    public IDocumentInformation Information { get; }
+    public string RawContent { get; }
     
-    public Document(DocumentInformation documentInformation)
+    public Document(IDocumentInformation documentInformation, string rawContent)
     {
         Information = documentInformation;
+        RawContent = rawContent;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime.Tree;
 using LanceServer.Core.Workspace;
 using LanceServer.Parser;
+using LanceServerTest.Core.Workspace;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LanceServerTest.Parser;
@@ -40,7 +41,7 @@ public class ParserManagerTest
         var expectedText = "<EOF>";
 
         var code ="";
-        var document = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.spf"), ".spf", code), code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
 
         // Act
@@ -67,7 +68,7 @@ public class ParserManagerTest
 
                 ret
                 endproc";
-        var document = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.spf"), ".spf", code), code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
 
         // Act
@@ -147,7 +148,7 @@ public class ParserManagerTest
 
                 ret
                 endproc";
-        var preprocessedDocument = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.spf"), ".spf", code), code, new Placeholders(new Dictionary<string, string>()), "");
+        var preprocessedDocument = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
         var document = new ParsedDocument(preprocessedDocument, parserManager.Parse(preprocessedDocument));
 
@@ -182,7 +183,7 @@ public class ParserManagerTest
                 ret
                 endproc
                 ";
-        var preprocessedDocument = new PreprocessedDocument(new DocumentInformation(new Uri("file:///testfile.spf"), ".spf", code), code, new Placeholders(new Dictionary<string, string>()), "");
+        var preprocessedDocument = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
         var document = new ParsedDocument(preprocessedDocument, parserManager.Parse(preprocessedDocument));
 

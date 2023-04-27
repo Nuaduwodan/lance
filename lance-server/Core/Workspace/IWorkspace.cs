@@ -65,7 +65,7 @@ public interface IWorkspace
     /// <summary>
     /// Loads all the files of a workspace to be able to provide project wide insights.
     /// </summary>
-    public void InitWorkspace();
+    public Task InitWorkspaceAsync();
     
     /// <summary>
     /// Returns true if a symbol is found, false otherwise.
