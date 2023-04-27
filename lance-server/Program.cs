@@ -7,6 +7,10 @@ using LanceServer.Hover;
 using LanceServer.Parser;
 using LanceServer.Preprocessor;
 using LanceServer.SemanticToken;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
+using StreamJsonRpc;
 
 namespace LanceServer;
 
@@ -16,8 +20,12 @@ class Program
 
     private static async Task MainAsync(string[] args)
     {
-        Stream stdin = new StreamSplitter(Console.OpenStandardInput(), new StreamLog("editor"), StreamSplitter.StreamOwnership.OwnNone);
-        Stream stdout = new StreamSplitter(Console.OpenStandardOutput(), new StreamLog("server"), StreamSplitter.StreamOwnership.OwnNone);
+        Stream receivingStream = new StreamSplitter(Console.OpenStandardInput(), new StreamLog("editor"), StreamSplitter.StreamOwnership.OwnNone);
+        Stream sendingStream = new StreamSplitter(Console.OpenStandardOutput(), new StreamLog("server"), StreamSplitter.StreamOwnership.OwnNone);
+        var formatter = new JsonMessageFormatter();
+        var rpcMessageHandler = new HeaderDelimitedMessageHandler(sendingStream, receivingStream, formatter);
+        var jsonRpc = new JsonRpc(rpcMessageHandler);
+        
         var config = new ConfigurationManager();
         var parser = new ParserManager();
         var customPreprocessor = new PlaceholderPreprocessor(config);
@@ -27,8 +35,7 @@ class Program
         var gotoDefinitionHandler = new GotoDefinitionHandler();
         var diagnosticHandler = new DiagnosticHandler();
         var lsp = new LSPServer(
-            stdout,
-            stdin,
+            jsonRpc,
             workspace,
             config,
             semanticTokenHandler,
