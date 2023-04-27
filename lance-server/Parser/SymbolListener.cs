@@ -8,10 +8,10 @@ namespace LanceServer.Parser;
 
 public class SymbolListener : SinumerikNCBaseListener
 {
-    public List<ISymbol> SymbolTable { get; } = new();
+    public IList<ISymbol> SymbolTable { get; } = new List<ISymbol>();
     private readonly PlaceholderPreprocessedDocument _document;
 
-    private List<ParameterSymbol> _parameters = new();
+    private IList<ParameterSymbol> _parameters = new List<ParameterSymbol>();
 
     public SymbolListener(PlaceholderPreprocessedDocument document)
     {
@@ -58,7 +58,7 @@ public class SymbolListener : SinumerikNCBaseListener
     public override void ExitProcedureDefinitionHeader(SinumerikNCParser.ProcedureDefinitionHeaderContext context)
     {
         base.ExitProcedureDefinitionHeader(context);
-        var identifier = context.NAME().GetText();
+        var identifier = ReplacePlaceholder(context.NAME().GetText());
         var uri = _document.Information.Uri;
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
         var identifierRange = GetIdentifierRange(context.NAME().Symbol);
@@ -75,7 +75,7 @@ public class SymbolListener : SinumerikNCBaseListener
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
         var identifierRange = GetIdentifierRange(context.NAME().Symbol);
         var value = ReplacePlaceholder(context.macroValue().GetText());
-        var isGlobal = _document.Information.IsGlobalFile;
+        var isGlobal = _document.Information.DocumentType is DocumentType.Definition or DocumentType.MainProcedure;
         var symbol = new MacroSymbol(identifier, uri, symbolRange, identifierRange, value, isGlobal);
         SymbolTable.Add(symbol);
     }
@@ -87,7 +87,7 @@ public class SymbolListener : SinumerikNCBaseListener
         var uri = _document.Information.Uri;
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
         var type = GetCompositeDataType(context.type());
-        var isGlobal = _document.Information.IsGlobalFile;
+        var isGlobal = _document.Information.DocumentType is DocumentType.Definition or DocumentType.MainProcedure;
         foreach (var variable in context.variableNameDeclaration())
         {
             var identifier = variable.NAME().GetText();
@@ -112,7 +112,7 @@ public class SymbolListener : SinumerikNCBaseListener
     private DataType GetDataType(SinumerikNCParser.TypeContext typeContext)
     {
         bool ignoreCase = true;
-        if(typeContext.GetText().StartsWith(DataType.String.ToString(),StringComparison.InvariantCultureIgnoreCase))
+        if(typeContext.GetText().StartsWith(DataType.String.ToString(),StringComparison.OrdinalIgnoreCase))
         {
             return DataType.String;
         }

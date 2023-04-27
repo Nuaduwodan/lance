@@ -21,12 +21,12 @@ public interface IParserManager
     /// </summary>
     /// <param name="document">The document to be visited</param>
     /// <returns>A list of all defined symbols</returns>
-    IEnumerable<ISymbol> GetSymbolTableForDocument(ParsedDocument document);
+    IList<ISymbol> GetSymbolTableForDocument(ParsedDocument document);
     
     /// <summary>
     /// Visits the parse tree of the provided document to generate a list of all symbol uses
     /// </summary>
     /// <param name="document">The document to be visited</param>
     /// <returns>A list of all symbol uses</returns>
-    IEnumerable<SymbolUse> GetSymbolUseForDocument(SymbolisedDocument document);
+    IList<SymbolUse> GetSymbolUseForDocument(SymbolisedDocument document);
 }

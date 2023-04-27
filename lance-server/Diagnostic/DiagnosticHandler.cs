@@ -1,4 +1,5 @@
-﻿using LanceServer.Core.Workspace;
+﻿using LanceServer.Core.Symbol;
+using LanceServer.Core.Workspace;
 using LanceServer.LanguageServerProtocol;
 using LspTypes;
 
@@ -10,7 +11,8 @@ public class DiagnosticHandler : IDiagnosticHandler
     {
         var diagnostics = new List<LspTypes.Diagnostic>();
         
-        foreach (var symbolUse in document.SymbolUseTable.GetAll())
+        var symbolUses = document.SymbolUseTable.GetAll();
+        foreach (var symbolUse in symbolUses)
         {
             if (workspace.TryGetSymbol(symbolUse.Identifier, document.Information.Uri, out var symbol))
             {
@@ -30,7 +32,7 @@ public class DiagnosticHandler : IDiagnosticHandler
                             },
                             Message = $"{symbol.Identifier} has not the same capitalisation as at least one of its uses."
                         }},
-                        Message = $"{symbolUse.Identifier} has not the same capitalisation as {symbol.Identifier}."
+                        Message = $"{symbolUse.Identifier} has not the same capitalisation as ```{symbol.Code}```."
                     });
                 }
             }
@@ -46,19 +48,28 @@ public class DiagnosticHandler : IDiagnosticHandler
             }
         }
 
-        var unusedSymbols = document.SymbolTable.GetAll().ExceptBy(document.SymbolUseTable.GetAll().Select(symbolUse => symbolUse.Identifier.ToLower()), symbol => symbol.Identifier);
+        var symbols = document.SymbolTable.GetAll().ExceptBy(document.SymbolUseTable.GetAll().Select(symbolUse => symbolUse.Identifier.ToLower()), symbol => symbol.Identifier);
 
-        foreach (var unusedSymbol in unusedSymbols)
+        foreach (var symbol in symbols)
         {
-            diagnostics.Add(new LspTypes.Diagnostic
+            if (!symbolUses.Any(use => use.Identifier.Equals(symbol.Identifier, StringComparison.OrdinalIgnoreCase)))
             {
-                Range = unusedSymbol.SymbolRange,
-                Severity = DiagnosticSeverity.Warning,
-                Source = "Lance",
-                Message = $"The symbol {unusedSymbol.Identifier} has currently no uses."
-            });
+                diagnostics.Add(new LspTypes.Diagnostic
+                {
+                    Range = symbol.IdentifierRange,
+                    Severity = DiagnosticSeverity.Information,
+                    Source = "Lance",
+                    Message = $"The symbol {symbol.Identifier} has currently no uses.",
+                    Tags = new [] { DiagnosticTag.Unnecessary }
+                });
+            }
         }
 
+        //todo file name length check
+        //todo symbol name length check
+        //todo check missing extern declaration and matching parameters
+        //todo check if all scopes are closed again
+        
         return new DocumentDiagnosticReport{Items = diagnostics.ToArray()};
     }
 }

@@ -9,9 +9,9 @@ namespace LanceServer.Core.Symbol;
 /// </summary>
 public class SymbolUseTable
 {
-    private IEnumerable<SymbolUse> _symbolUses;
+    private IList<SymbolUse> _symbolUses;
 
-    public SymbolUseTable(IEnumerable<SymbolUse> symbolUses)
+    public SymbolUseTable(IList<SymbolUse> symbolUses)
     {
         _symbolUses = symbolUses;
     }
@@ -42,7 +42,7 @@ public class SymbolUseTable
         return true;
     }
 
-    public IEnumerable<SymbolUse> GetAll()
+    public IList<SymbolUse> GetAll()
     {
         return _symbolUses;
     }

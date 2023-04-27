@@ -8,13 +8,9 @@ public class DocumentDiagnosticReport
 {
     [DataMember(Name = "kind")]
     [JsonProperty(Required = Required.Always)]
-    public DocumentDiagnosticReportKind Kind = DocumentDiagnosticReportKind.Full;
+    public string Kind = DocumentDiagnosticReportKind.Full;
 
-    [DataMember(Name = "resultId")]
-    [JsonProperty(Required = Required.Default)]
-    public string? ResultId { get; set; }
-
-    [DataMember(Name = "partialResultToken")]
+    [DataMember(Name = "items")]
     [JsonProperty(Required = Required.Always)]
     public LspTypes.Diagnostic[] Items { get; set; }
 }

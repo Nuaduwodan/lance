@@ -3,10 +3,8 @@
 namespace LanceServer.LanguageServerProtocol;
 
 [DataContract]
-public enum DocumentDiagnosticReportKind
+public class DocumentDiagnosticReportKind
 {
-    [EnumMember(Value = "full")]
-    Full,
-    [EnumMember(Value = "unchanged")]
-    Unchanged
+    public const string Full = "full";
+    public const string Unchanged = "unchanged";
 }

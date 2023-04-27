@@ -30,30 +30,36 @@ public class ParserManager : IParserManager
     }
 
     /// <inheritdoc/>
-    public IEnumerable<ISymbol> GetSymbolTableForDocument(ParsedDocument document)
+    public IList<ISymbol> GetSymbolTableForDocument(ParsedDocument document)
     {
         var walker = new ParseTreeWalker();
         var symbolListener = new SymbolListener(document);
         walker.Walk(symbolListener, document.Tree);
 
         var symbolTable = symbolListener.SymbolTable;
-        var fileName = Path.GetFileNameWithoutExtension(document.Information.Uri.LocalPath);
-        if (!symbolTable.Any(symbol => symbol.Identifier.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)) && document.Information.IsSubProcedure)
-        {
-            var emptyRange = new Range(){Start = new Position(0, 0), End = new Position(0, 0)};
-            symbolTable.Add(new ProcedureSymbol(fileName, document.Information.Uri, emptyRange, emptyRange, Array.Empty<ParameterSymbol>()));
-        }
-
-        return symbolTable;
+        return AddProcedureSymbolIfNeeded(document, symbolTable);
     }
 
     /// <inheritdoc/>
-    public IEnumerable<SymbolUse> GetSymbolUseForDocument(SymbolisedDocument document)
+    public IList<SymbolUse> GetSymbolUseForDocument(SymbolisedDocument document)
     {
         var walker = new ParseTreeWalker();
         var symbolUseListener = new SymbolUseListener(document);
         walker.Walk(symbolUseListener, document.Tree);
 
         return symbolUseListener.SymbolUseTable;
+    }
+
+    private IList<ISymbol> AddProcedureSymbolIfNeeded(ParsedDocument document, IList<ISymbol> symbolTable)
+    {
+        var fileName = Path.GetFileNameWithoutExtension(document.Information.Uri.LocalPath);
+        if (!symbolTable.Any(symbol => symbol.Identifier.Equals(fileName, StringComparison.OrdinalIgnoreCase)) 
+            && document.Information.DocumentType is DocumentType.SubProcedure or DocumentType.ManufacturerSubProcedure)
+        {
+            var emptyRange = new Range { Start = new Position(0, 0), End = new Position(0, 0) };
+            symbolTable.Add(new ProcedureSymbol(fileName, document.Information.Uri, emptyRange, emptyRange, Array.Empty<ParameterSymbol>()));
+        }
+
+        return symbolTable;
     }
 }
