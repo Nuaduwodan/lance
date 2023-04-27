@@ -19,19 +19,19 @@ public class SymbolUseListener : SinumerikNCBaseListener
     public override void ExitUserVariableAssignment(SinumerikNCParser.UserVariableAssignmentContext context)
     {
         base.ExitUserVariableAssignment(context);
-        AddTokenIfSymbol(context.NAME().Symbol);
+        AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
     public override void ExitArrayVariableAssignment(SinumerikNCParser.ArrayVariableAssignmentContext context)
     {
         base.ExitArrayVariableAssignment(context);
-        AddTokenIfSymbol(context.NAME().Symbol);
+        AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
     public override void ExitVariableUse(SinumerikNCParser.VariableUseContext context)
     {
         base.ExitVariableUse(context);
-        AddTokenIfSymbol(context.NAME().Symbol);
+        AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
     public override void ExitMacroUse(SinumerikNCParser.MacroUseContext context)
@@ -39,25 +39,25 @@ public class SymbolUseListener : SinumerikNCBaseListener
         base.ExitMacroUse(context);
         foreach (var name in context.NAME())
         {
-            AddTokenIfSymbol(name.Symbol);
+            AddTokenIfNotPlaceholder(name.Symbol);
         }
     }
 
     public override void ExitOwnProcedure(SinumerikNCParser.OwnProcedureContext context)
     {
         base.ExitOwnProcedure(context);
-        AddTokenIfSymbol(context.NAME().Symbol);
+        AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
     public override void ExitProcedureDeclaration(SinumerikNCParser.ProcedureDeclarationContext context)
     {
         base.ExitProcedureDeclaration(context);
-        AddTokenIfSymbol(context.NAME().Symbol);
+        AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
-    private void AddTokenIfSymbol(IToken token)
+    private void AddTokenIfNotPlaceholder(IToken token)
     {
-        if (_document.Placeholders.IsPlaceholder(token.Text))
+        if (_document.Placeholders.ContainsPlaceholder(token.Text))
         {
             return;
         }
