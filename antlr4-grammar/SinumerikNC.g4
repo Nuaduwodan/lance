@@ -19,6 +19,7 @@ COMMENT: ';' ~[\r\n]* -> skip;
 // numeric
 INT_UNSIGNED: [0-9]+;
 REAL_UNSIGNED: [0-9]* POINT [0-9]+;
+EX: 'ex';
 BIN: '\'B'[01]+'\'';
 HEX: '\'H'[0-9A-F]+'\'';
 
@@ -188,7 +189,6 @@ DIAMCHANA: 'diamchana';
 DIAMOFA: 'diamofa';
 DIAMONA: 'diamona';
 DIC: 'dic';
-EX: 'ex';
 FA: 'fa';
 FDA: 'fda';
 FGREF: 'fgref';
@@ -675,10 +675,10 @@ FRCM:'frcm';
 FTOCOF:'ftocof';
 FTOCON:'ftocon';
 GCODE:'g';
-GCODE_NUMBERED: GCODE INT_UNSIGNED;
+//GCODE_NUMBERED: GCODE INT_UNSIGNED;
 GFRAME:'gframe';
 HCODE:'h';
-HCODE_NUMBERED: HCODE INT_UNSIGNED;
+//HCODE_NUMBERED: HCODE INT_UNSIGNED;
 I:'i';
 I1:'i1';
 INVCCW:'invccw';
@@ -702,7 +702,7 @@ LFPOS:'lfpos';
 LFTXT:'lftxt';
 LFWP:'lfwp';
 MCODE:'m';
-MCODE_NUMBERED: MCODE INT_UNSIGNED;
+//MCODE_NUMBERED: MCODE INT_UNSIGNED;
 MEAC:'meac';
 MEAS:'meas';
 MEASA:'measa';
@@ -790,8 +790,6 @@ RP:'rp';
 RPL:'rpl';
 RTLIOF:'rtliof';
 RTLION:'rtlion';
-S_REAL:'s' REAL_UNSIGNED;
-S_NUMBERED:'s' INT_UNSIGNED;
 S:'s';
 SCALE:'scale';
 SD:'sd';
@@ -859,7 +857,7 @@ DOUBLE_COLON: ':';
 COMMA: ',';
 
 // other (operation types C, PA, empty)
-BLOCK_NUMBER: 'n' [0-9]?[0-9]?[0-9]?[0-9]?[0-9];
+BLOCK_NUMBER: 'n';
 CYCLE: 'cycle';
 GROUP_ADDEND:'group_addend';
 GROUP_BEGIN:'group_begin';
@@ -885,14 +883,20 @@ TU:'tu';
 RESERVED: 'con' | 'prn' | 'aux' | 'nul' | 'com'[1-9] | 'lpt'[1-9];
 
 // variables
-SYS_VAR: '$'[$acmnopstv]+[a-z0-9_]*; // could be improved
+SYS_VAR: (('$'[$acmnopstv]+)|'syg_')[a-z0-9_]*; // could be improved
 AXIS: [abcxyz];
-AXIS_NUMBERED: AXIS [0-9]?[0-9];
-R_PARAM: '$'?'r'[0-9]+;
+R_PARAM: 'r';
 SPINDLE_IDENTIFIER: 'spi';
 
 // names
-NAME: [a-z0-9_]+;
+// special rule to not match commands with nummeric parts such as axis, feed, gcode, hcode, mcode, blocknumber, rparam, spindle
+NAME: NAME_NON_COMMAND_CHAR NAME_PART+ | NAME_COMMAND_CHAR NAME_NON_NUMMERIC NAME_PART* | NAME_COMMAND_PART+ (NAME_NON_COMMAND_CHAR | NAME_COMMAND_CHAR NAME_NON_NUMMERIC) NAME_PART*;
+fragment NAME_COMMAND_CHAR: [abcfghmnrsxyz];
+fragment NAME_COMMAND_NUMMERIC: [0-9];
+fragment NAME_COMMAND_PART: NAME_COMMAND_CHAR NAME_COMMAND_NUMMERIC+;
+fragment NAME_NON_COMMAND_CHAR: [deijklopqtuvw_];
+fragment NAME_NON_NUMMERIC: [a-z_];
+fragment NAME_PART: [a-z0-9_];
 
 
 /*
@@ -906,7 +910,7 @@ declarationBlock: (lineStart? declaration | lineStart) NEWLINE+;
 block: (lineStart? labelDefinition? statement | lineStart? labelDefinition | lineStart) NEWLINE+;
 
 lineStart: SLASH? blockNumber | SLASH;
-blockNumber: BLOCK_NUMBER;
+blockNumber: BLOCK_NUMBER intUnsigned;
 labelDefinition: NAME DOUBLE_COLON;
 
 // procedure
@@ -939,10 +943,10 @@ variableDeclaration: DEFINE globalVariableModifiers type variableModifiers varia
 globalVariableModifiers: range? preprocessingStop? accessRights?;
 range: NCK | CHAN;
 preprocessingStop: SYNR | SYNW | SYNRW;
-accessRights: (accessDesignation INT_UNSIGNED)+;
+accessRights: (accessDesignation intUnsigned)+;
 accessDesignation: ACCESS_READ | ACCESS_WRITE | READ_PROGRAM | WRITE_PROGRAM | READ_OPI | WRITE_OPI;
 variableModifiers: physicalUnit? limitValues?;
-physicalUnit: PHYS_UNIT INT_UNSIGNED;
+physicalUnit: PHYS_UNIT intUnsigned;
 limitValues: ((LOWER_LIMIT | UPPER_LIMIT) numeric)+;
 
 variableNameDeclaration: NAME (variableAssignmentExpression | arrayDefinition arrayAssignmentExpression?)?;
@@ -951,15 +955,14 @@ arrayDefinition: OPEN_BRACKET expression (COMMA expression)? (COMMA expression)?
 variableAssignmentExpression: ASSIGNMENT expression;
 arrayAssignmentExpression: ASSIGNMENT (expression | SET? parameters | REP OPEN_PAREN expression (COMMA expression)? CLOSE_PAREN);
 
-variableRedecleration: REDEFINE (NAME | R_PARAM | SYS_VAR) globalVariableModifiers variableModifiers;
+variableRedecleration: REDEFINE (NAME | rParam | SYS_VAR) globalVariableModifiers variableModifiers;
 
 // assignment
 variableAssignment
     : NAME variableAssignmentExpression                 #userVariableAssignment
-    | R_PARAM variableAssignmentExpression              #RParamAssignment
+    | rParam variableAssignmentExpression              #RParamAssignment
     | SYS_VAR variableAssignmentExpression              #SysVarAssignment
     | NAME arrayDefinition arrayAssignmentExpression    #arrayVariableAssignment
-    | R_PARAM arrayDefinition arrayAssignmentExpression #arrayRParamAssignment
     | SYS_VAR arrayDefinition arrayAssignmentExpression #arraySysVarAssignment
     ;
 
@@ -1051,13 +1054,15 @@ expression
 primaryExpression
     : NAME arrayDefinition?                 #variableUse // technically #symbolUse
     | SYS_VAR arrayDefinition?              #systemVariableUse
-    | R_PARAM arrayDefinition?              #rParamUse
+    | rParam                                #rParamUse
     | constant                              #constantUse
     | function                              #functionUse
     | OPEN_PAREN expression CLOSE_PAREN     #nestedExpression
     | macroUse                              #macroUseLabel
     | axis_spindle_identifier               #axisUse
     ;
+
+rParam: DOLLAR? R_PARAM (intUnsigned | OPEN_BRACKET expression CLOSE_BRACKET);
 
 constant
     : numeric
@@ -1066,7 +1071,10 @@ constant
     | STRING
     | BOOL;
 
-numeric: REAL_UNSIGNED | INT_UNSIGNED;
+numeric: intUnsigned | realUnsigned;
+intUnsigned: INT_UNSIGNED;
+realUnsigned: REAL_UNSIGNED | realExponential;
+realExponential: (INT_UNSIGNED | REAL_UNSIGNED) EX SUB? (INT_UNSIGNED | REAL_UNSIGNED);
 
 macroUse: NAME+;
 
@@ -1156,7 +1164,7 @@ command
     | EAUTO parameters?
     | ENAT parameters?
     | ETAN parameters?
-    | F ASSIGNMENT expression
+    | F (realUnsigned | ASSIGNMENT expression)
     | FA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | FAD parameters?
     | FB parameters?
@@ -1354,20 +1362,20 @@ command
     | macroUse
     ;
 
-gCode: GCODE_NUMBERED | GCODE ASSIGNMENT codeAssignmentExpression;
-hCode: HCODE_NUMBERED | HCODE ASSIGNMENT codeAssignmentExpression;
-mCode: MCODE_NUMBERED | (MCODE_NUMBERED | MCODE) ASSIGNMENT codeAssignmentExpression;
-spindleSpeed: S_NUMBERED | S_REAL | (S_NUMBERED | S | expression) ASSIGNMENT expression;
+gCode: GCODE (intUnsigned | ASSIGNMENT codeAssignmentExpression);
+hCode: HCODE (intUnsigned | ASSIGNMENT codeAssignmentExpression);
+mCode: MCODE (intUnsigned | ASSIGNMENT codeAssignmentExpression | intUnsigned | ASSIGNMENT codeAssignmentExpression);
+spindleSpeed: S ( intUnsigned | realUnsigned | ASSIGNMENT expression);
 codeAssignmentExpression: expression | QU OPEN_PAREN expression CLOSE_PAREN;
 
-axisCode: AXIS_NUMBERED | expression ASSIGNMENT axisAssignmentExpression;
+axisCode: AXIS SUB? (intUnsigned realUnsigned) | expression ASSIGNMENT axisAssignmentExpression;
 axisAssignmentExpression: expression | (AC | IC | CAC | CACN | CACP | CDC | CIC) OPEN_PAREN expression CLOSE_PAREN;
 
 // axis
 // todo how about expressions that lead to an axis
 axis_spindle_identifier: axis_identifier | spindle_identifier;
-axis_identifier: AXIS | AXIS_NUMBERED;
-spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN INT_UNSIGNED CLOSE_PAREN;
+axis_identifier: AXIS intUnsigned?;
+spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN intUnsigned CLOSE_PAREN;
 
 // procedure
 procedure: predefinedProcedure | ownProcedure | function | otherKeywords;
@@ -1732,7 +1740,6 @@ otherKeywords
     | DIAMOFA
     | DIAMONA
     | DIC
-    | EX
     | FDA
     | FGREF
     | FI
