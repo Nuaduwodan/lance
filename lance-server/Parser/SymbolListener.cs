@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System.Diagnostics.CodeAnalysis;
+using Antlr4.Runtime;
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
 using Position = LspTypes.Position;
@@ -33,8 +34,14 @@ public class SymbolListener : SinumerikNCBaseListener
         var uri = _document.Information.Uri;
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
         var identifierRange = GetIdentifierRange(context.NAME().Symbol);
-        var dataType = GetCompositeDataType(context.type());
+        var success = GetCompositeDataType(context.type(), out var dataType);
         var arrayDeclaration = GetArrayDeclaration(context.arrayDeclaration());
+
+        if (!success || identifier.Length <= 2)
+        {
+            return;
+        }
+        
         var symbol = new ParameterSymbol(identifier, uri, symbolRange, identifierRange, dataType, arrayDeclaration,true);
         _parameters.Add(symbol);
         SymbolTable.Add(symbol);
@@ -48,7 +55,13 @@ public class SymbolListener : SinumerikNCBaseListener
         var uri = _document.Information.Uri;
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
         var identifierRange = GetIdentifierRange(context.NAME().Symbol);
-        var dataType = GetCompositeDataType(context.type());
+        var success = GetCompositeDataType(context.type(), out var dataType);
+        
+        if (!success || identifier.Length <= 2)
+        {
+            return;
+        }
+        
         var symbol = new ParameterSymbol(identifier, uri, symbolRange, identifierRange, dataType, Array.Empty<string>(), false);
         _parameters.Add(symbol);
         SymbolTable.Add(symbol);
@@ -86,38 +99,53 @@ public class SymbolListener : SinumerikNCBaseListener
         base.ExitVariableDeclaration(context);
         var uri = _document.Information.Uri;
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
-        var type = GetCompositeDataType(context.type());
+        var success = GetCompositeDataType(context.type(), out var dataType);
         var isGlobal = _document.Information.DocumentType is DocumentType.Definition or DocumentType.MainProcedure;
+        
+        if (!success)
+        {
+            return;
+        }
+        
         foreach (var variable in context.variableNameDeclaration())
         {
             var identifier = variable.NAME().GetText();
             var identifierRange = GetIdentifierRange(variable.NAME().Symbol);
             var arrayDefinition = GetArrayDefinition(variable.arrayDefinition());
-            var symbol = new VariableSymbol(identifier, uri, symbolRange, identifierRange, type, arrayDefinition, isGlobal);
+
+            if (identifier.Length <= 2)
+            {
+                continue;
+            }
+            
+            var symbol = new VariableSymbol(identifier, uri, symbolRange, identifierRange, dataType, arrayDefinition, isGlobal);
             SymbolTable.Add(symbol);
         }
     }
 
-    private CompositeDataType GetCompositeDataType(SinumerikNCParser.TypeContext typeContext)
+    private bool GetCompositeDataType(SinumerikNCParser.TypeContext typeContext, out CompositeDataType compositeDataType)
     {
-        var type = GetDataType(typeContext);
+        var success = GetDataType(typeContext, out var type);
+        
         string length = "";
         if (type == DataType.String)
         {
             length = typeContext.expression().GetText();
         }
-        return new CompositeDataType(type, length);
+        compositeDataType = new CompositeDataType(type, length);
+        return success;
     }
 
-    private DataType GetDataType(SinumerikNCParser.TypeContext typeContext)
+    private bool GetDataType(SinumerikNCParser.TypeContext typeContext, out DataType dataType)
     {
         bool ignoreCase = true;
         if(typeContext.GetText().StartsWith(DataType.String.ToString(),StringComparison.OrdinalIgnoreCase))
         {
-            return DataType.String;
+            dataType = DataType.String;
+            return true;
         }
 
-        return Enum.Parse<DataType>(typeContext.GetText(), ignoreCase);
+        return Enum.TryParse(typeContext.GetText(), ignoreCase, out dataType);
     }
 
     private string[] GetArrayDeclaration(SinumerikNCParser.ArrayDeclarationContext? arrayContext)
