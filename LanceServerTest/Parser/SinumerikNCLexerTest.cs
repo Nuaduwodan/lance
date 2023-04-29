@@ -352,7 +352,8 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
-        Assert.AreEqual(SinumerikNCLexer.GCODE_NUMBERED, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.GCODE, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.INT_UNSIGNED, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.FNORM, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
@@ -362,10 +363,12 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
-        Assert.AreEqual(SinumerikNCLexer.GCODE_NUMBERED, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.GCODE, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.INT_UNSIGNED, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
         Assert.AreEqual(SinumerikNCLexer.BLOCK_NUMBER, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.INT_UNSIGNED, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NAME, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.ASSIGNMENT, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.AC, actualTokenList[tokenPosition++].Type);
@@ -397,10 +400,12 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
-        Assert.AreEqual(SinumerikNCLexer.GCODE_NUMBERED, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.GCODE, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.INT_UNSIGNED, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
         Assert.AreEqual(SinumerikNCLexer.BLOCK_NUMBER, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.INT_UNSIGNED, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NAME, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.ASSIGNMENT, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.AC, actualTokenList[tokenPosition++].Type);
@@ -438,6 +443,7 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
         Assert.AreEqual(SinumerikNCLexer.BLOCK_NUMBER, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.INT_UNSIGNED, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NAME, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.ASSIGNMENT, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.AC, actualTokenList[tokenPosition++].Type);
@@ -470,10 +476,12 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
-        Assert.AreEqual(SinumerikNCLexer.GCODE_NUMBERED, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.GCODE, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.INT_UNSIGNED, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
         Assert.AreEqual(SinumerikNCLexer.BLOCK_NUMBER, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.INT_UNSIGNED, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NAME, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.ASSIGNMENT, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.AC, actualTokenList[tokenPosition++].Type);
@@ -506,7 +514,8 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
-        Assert.AreEqual(SinumerikNCLexer.GCODE_NUMBERED, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.GCODE, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.INT_UNSIGNED, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.FNORM, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
