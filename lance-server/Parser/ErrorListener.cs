@@ -11,6 +11,7 @@ public class ErrorListener : BaseErrorListener, IAntlrErrorListener<int>
 
     public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
     {
-        throw new NotImplementedException();
+        Console.Error.WriteLine($"line: {line}, char: {charPositionInLine}, msg: {msg}");
+        //throw new NotImplementedException();
     }
 }

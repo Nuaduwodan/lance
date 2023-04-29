@@ -23,6 +23,7 @@ public class DocumentInformation : IDocumentInformation
         FileExtension = FileUtil.FileExtensionFromUri(uri);
         Encoding = encoding;
         
+        // The use of the filename instead of just the extension is intentional to allow for filenames in the configuration.
         var fileName = Path.GetFileName(uri.LocalPath).ToLower();
         if (symbolTableConfiguration.DefinitionFileExtensions.Any(fileExtension => fileName.EndsWith(fileExtension)))
         {

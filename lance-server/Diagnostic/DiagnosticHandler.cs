@@ -32,7 +32,7 @@ public class DiagnosticHandler : IDiagnosticHandler
                             },
                             Message = $"{symbol.Identifier} has not the same capitalisation as at least one of its uses."
                         }},
-                        Message = $"{symbolUse.Identifier} has not the same capitalisation as ```{symbol.Code}```."
+                        Message = $"{symbolUse.Identifier} has not the same capitalisation as {symbol.Code}."
                     });
                 }
             }

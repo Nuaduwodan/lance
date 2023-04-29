@@ -21,7 +21,7 @@ public class CustomPreprocessorTest
         var customPreprocessorConfiguration = new CustomPreprocessorConfiguration();
         customPreprocessorConfiguration.PlaceholderType = PlaceholderType.RegEx;
         customPreprocessorConfiguration.FileExtensions = new[]{ ".tpl" };
-        customPreprocessorConfiguration.Placeholders = new []{ "([^\"])<[a-zA-Z0-9\\.]+>" };
+        customPreprocessorConfiguration.Placeholders = new []{ "<[a-zA-Z0-9\\.]+>" };
 
         configurationManagerMock.Setup(m => m.CustomPreprocessorConfiguration)
             .Returns(customPreprocessorConfiguration);
@@ -117,7 +117,7 @@ public class CustomPreprocessorTest
     }
         
     [TestMethod]
-    public void FilterTest_IdenticalInString()
+    public void FilterTest_ReplaceInString()
     {
         // Arrange
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
@@ -136,7 +136,19 @@ public class CustomPreprocessorTest
                 endproc";
         var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
 
-        var expectedResult = code;
+        var expectedResult = 
+            @"proc testProcedure(int testparam)
+
+                define definedMacro as ""_P_TheAnswer_""
+                def int declaredVariable
+                def real definedVariable = 2.3
+
+                if (definedMacro > definedVariable) or (testparam < 0)
+                    declaredVariable = 7
+                endif
+
+                ret
+                endproc";
 
         // Act
         var actualResult = preprocessor.Filter(document);
@@ -167,6 +179,47 @@ public class CustomPreprocessorTest
 
         var expectedResult = 
             @"proc _InstanceName_Procedure(int testparam)
+
+                define definedMacro as 42
+                def int declaredVariable
+                def real definedVariable = 2.3
+
+                if (definedMacro > definedVariable) or (testparam < 0)
+                    declaredVariable = 7
+                endif
+
+                ret
+                endproc";
+
+        // Act
+        var actualResult = preprocessor.Filter(document);
+            
+        // Assert
+        Assert.AreEqual(expectedResult, actualResult.Code);
+    }
+        
+    [TestMethod]
+    public void FilterTest_ReplaceMultipleInSymbolName()
+    {
+        // Arrange
+        var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
+        var code = 
+            @"proc First<InstanceName>Procedure<Second.Part>End(int testparam)
+
+                define definedMacro as 42
+                def int declaredVariable
+                def real definedVariable = 2.3
+
+                if (definedMacro > definedVariable) or (testparam < 0)
+                    declaredVariable = 7
+                endif
+
+                ret
+                endproc";
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+
+        var expectedResult = 
+            @"proc First_InstanceName_Procedure_Second_Part_End(int testparam)
 
                 define definedMacro as 42
                 def int declaredVariable

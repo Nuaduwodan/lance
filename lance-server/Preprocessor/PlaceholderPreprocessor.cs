@@ -32,21 +32,19 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
             {
                 pattern = Regex.Escape(placeholder);
             }
-
-            pattern = "^(.*)("+pattern+")(.*)$";    
-            var matches = Regex.Matches(result, pattern, RegexOptions.Multiline).Select(match => match);
+ 
+            var matches = Regex.Matches(result, pattern, RegexOptions.Multiline).Select(match => match.Value);
             foreach (var match in matches)
             {
-                var value = match.Groups[2].Value.Substring(1);
-                if (IsAloneOnLine(match))
+                if (IsAloneOnLine(result, match))
                 {
-                    result = Regex.Replace(result, value, "");
+                    result = Regex.Replace(result, match, "");
                 }
                 else
                 {
-                    var processedMatch = Regex.Replace(value, "[^a-zA-Z0-9_]", "_");
-                    result = Regex.Replace(result, value, processedMatch);
-                    placeholders.TryAdd(processedMatch, value);
+                    var processedMatch = Regex.Replace(match, "[^a-zA-Z0-9_]", "_");
+                    result = Regex.Replace(result, match, processedMatch);
+                    placeholders.TryAdd(processedMatch, match);
                 }
             }
         }
@@ -56,8 +54,8 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
         return new PlaceholderPreprocessedDocument(document, result, new Placeholders(placeholders));
     }
 
-    private bool IsAloneOnLine(Match match)
+    private bool IsAloneOnLine(string text, string match)
     {
-        return String.IsNullOrEmpty(match.Groups[1].Value.Trim()) && String.IsNullOrEmpty(match.Groups[^2].Value.Trim());
+        return Regex.Match(text, "^\\s*" + match + "\\s*$", RegexOptions.Multiline).Value.Trim() == match;
     }
 }
