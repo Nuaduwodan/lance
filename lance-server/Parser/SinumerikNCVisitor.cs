@@ -44,11 +44,23 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitContent([NotNull] SinumerikNCParser.ContentContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.declarationScope"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeclarationScope([NotNull] SinumerikNCParser.DeclarationScopeContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.declarationBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitDeclarationBlock([NotNull] SinumerikNCParser.DeclarationBlockContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.scope"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitScope([NotNull] SinumerikNCParser.ScopeContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.block"/>.
 	/// </summary>
@@ -61,6 +73,12 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLineStart([NotNull] SinumerikNCParser.LineStartContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.blockNumberDefinition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBlockNumberDefinition([NotNull] SinumerikNCParser.BlockNumberDefinitionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.blockNumber"/>.
 	/// </summary>
@@ -133,18 +151,6 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMacroValue([NotNull] SinumerikNCParser.MacroValueContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.path"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitPath([NotNull] SinumerikNCParser.PathContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.pathElements"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitPathElements([NotNull] SinumerikNCParser.PathElementsContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.procedureDeclaration"/>.
 	/// </summary>
@@ -290,6 +296,13 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitArrayVariableAssignment([NotNull] SinumerikNCParser.ArrayVariableAssignmentContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>arrayRParamAssignment</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArrayRParamAssignment([NotNull] SinumerikNCParser.ArrayRParamAssignmentContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>arraySysVarAssignment</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.variableAssignment"/>.
 	/// </summary>
@@ -314,6 +327,12 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIfStatement([NotNull] SinumerikNCParser.IfStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.ifStatementElse"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIfStatementElse([NotNull] SinumerikNCParser.IfStatementElseContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.caseStatement"/>.
 	/// </summary>
@@ -363,12 +382,6 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitGotoStatement([NotNull] SinumerikNCParser.GotoStatementContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.gotoCondition"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitGotoCondition([NotNull] SinumerikNCParser.GotoConditionContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>gotoLabel</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.gotoTarget"/>.
 	/// </summary>
@@ -388,6 +401,12 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCallStatement([NotNull] SinumerikNCParser.CallStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.returnStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitReturnStatement([NotNull] SinumerikNCParser.ReturnStatementContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.syncActionStatement"/>.
 	/// </summary>
@@ -553,19 +572,26 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitNestedExpression([NotNull] SinumerikNCParser.NestedExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>macroUseLabel</c>
-	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMacroUseLabel([NotNull] SinumerikNCParser.MacroUseLabelContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>axisUse</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitAxisUse([NotNull] SinumerikNCParser.AxisUseContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>pathUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPathUse([NotNull] SinumerikNCParser.PathUseContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>macroUseLabel</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMacroUseLabel([NotNull] SinumerikNCParser.MacroUseLabelContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.rParam"/>.
 	/// </summary>
@@ -597,17 +623,23 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitRealUnsigned([NotNull] SinumerikNCParser.RealUnsignedContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.realExponential"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRealExponential([NotNull] SinumerikNCParser.RealExponentialContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.macroUse"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMacroUse([NotNull] SinumerikNCParser.MacroUseContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.path"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPath([NotNull] SinumerikNCParser.PathContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.pathElements"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPathElements([NotNull] SinumerikNCParser.PathElementsContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.command"/>.
 	/// </summary>
@@ -633,17 +665,47 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMCode([NotNull] SinumerikNCParser.MCodeContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.spindleSpeed"/>.
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.codeAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitSpindleSpeed([NotNull] SinumerikNCParser.SpindleSpeedContext context);
+	Result VisitCodeAssignment([NotNull] SinumerikNCParser.CodeAssignmentContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.codeAssignmentExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCodeAssignmentExpression([NotNull] SinumerikNCParser.CodeAssignmentExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.codeAssignmentParameterized"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCodeAssignmentParameterized([NotNull] SinumerikNCParser.CodeAssignmentParameterizedContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.commandParameterAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCommandParameterAssignment([NotNull] SinumerikNCParser.CommandParameterAssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.spindleSpeed"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSpindleSpeed([NotNull] SinumerikNCParser.SpindleSpeedContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.speedAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSpeedAssignment([NotNull] SinumerikNCParser.SpeedAssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.speedAssignmentParameterized"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSpeedAssignmentParameterized([NotNull] SinumerikNCParser.SpeedAssignmentParameterizedContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.axisCode"/>.
 	/// </summary>
@@ -699,24 +761,6 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPredefinedProcedure([NotNull] SinumerikNCParser.PredefinedProcedureContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.acceleration_compensation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAcceleration_compensation([NotNull] SinumerikNCParser.Acceleration_compensationContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.feedrate_override_path_handwheel"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFeedrate_override_path_handwheel([NotNull] SinumerikNCParser.Feedrate_override_path_handwheelContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.feedrate_override_axial_handwheel"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFeedrate_override_axial_handwheel([NotNull] SinumerikNCParser.Feedrate_override_axial_handwheelContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.function"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -740,4 +784,28 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitOtherKeywords([NotNull] SinumerikNCParser.OtherKeywordsContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.cpon"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCpon([NotNull] SinumerikNCParser.CponContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.cpof"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCpof([NotNull] SinumerikNCParser.CpofContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.cplpos"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCplpos([NotNull] SinumerikNCParser.CplposContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.cpfpos"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCpfpos([NotNull] SinumerikNCParser.CpfposContext context);
 }

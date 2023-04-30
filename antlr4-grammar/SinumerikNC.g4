@@ -18,8 +18,9 @@ COMMENT: ';' ~[\r\n]* -> skip;
 ////
 // numeric
 INT_UNSIGNED: [0-9]+;
-REAL_UNSIGNED: [0-9]* POINT [0-9]+;
-EX: 'ex';
+REAL_UNSIGNED: REAL_DECIMAL | (INT_UNSIGNED | REAL_DECIMAL) EX SUB? (INT_UNSIGNED | REAL_DECIMAL);
+fragment REAL_DECIMAL: [0-9]* POINT [0-9]+;
+fragment EX: 'ex';
 BIN: '\'B'[01]+'\'';
 HEX: '\'H'[0-9A-F]+'\'';
 
@@ -889,14 +890,9 @@ R_PARAM: 'r';
 SPINDLE_IDENTIFIER: 'spi';
 
 // names
-// special rule to not match commands with nummeric parts such as axis, feed, gcode, hcode, mcode, blocknumber, rparam, spindle
-NAME: NAME_NON_COMMAND_CHAR NAME_PART+ | NAME_COMMAND_CHAR NAME_NON_NUMMERIC NAME_PART* | NAME_COMMAND_PART+ (NAME_NON_COMMAND_CHAR | NAME_COMMAND_CHAR NAME_NON_NUMMERIC) NAME_PART*;
-fragment NAME_COMMAND_CHAR: [abcfghmnrsxyz];
-fragment NAME_COMMAND_NUMMERIC: [0-9];
-fragment NAME_COMMAND_PART: NAME_COMMAND_CHAR NAME_COMMAND_NUMMERIC+;
-fragment NAME_NON_COMMAND_CHAR: [deijklopqtuvw_];
+NAME: NAME_NON_NUMMERIC NAME_NON_NUMMERIC NAME_ALL*;
 fragment NAME_NON_NUMMERIC: [a-z_];
-fragment NAME_PART: [a-z0-9_];
+fragment NAME_ALL: [a-z0-9_];
 
 
 /*
@@ -905,11 +901,17 @@ fragment NAME_PART: [a-z0-9_];
 
 file: NEWLINE* (content | procedureDefinition) NEWLINE* EOF;
 
-content: declarationBlock* block*;
+content: declarationScope scope;
+declarationScope: declarationBlock*;
 declarationBlock: (lineStart? declaration | lineStart) NEWLINE+;
-block: (lineStart? labelDefinition? statement | lineStart? labelDefinition | lineStart) NEWLINE+;
 
-lineStart: SLASH? blockNumber | SLASH;
+//scope: block* returnStatement?;
+scope: block*;
+block: (lineStart? labelDefinition? statement | lineStart? labelDefinition | lineStart) NEWLINE+;
+//returnStatement: RETURN (OPEN_PAREN expression (COMMA expression?)? (COMMA expression?)? (COMMA expression)? CLOSE_PAREN)? NEWLINE+;
+
+lineStart: SLASH? blockNumberDefinition | SLASH;
+blockNumberDefinition: blockNumber;
 blockNumber: BLOCK_NUMBER intUnsigned;
 labelDefinition: NAME DOUBLE_COLON;
 
@@ -927,9 +929,7 @@ parameterDefinitionByReference: VAR type NAME arrayDeclaration?;
 declaration: macroDeclaration | procedureDeclaration | variableDeclaration | variableRedecleration;
 
 macroDeclaration: MACRO_DEFINE NAME MACRO_AS macroValue;
-macroValue: expression | variableAssignment | command+ | procedure | gotoStatement | path | axis_spindle_identifier;
-path: pathElements+;
-pathElements: SLASH | NAME;
+macroValue: statement |;
 
 procedureDeclaration: EXTERN NAME parameterDeclarations?;
 parameterDeclarations: OPEN_PAREN parameterDeclaration? (COMMA parameterDeclaration)* CLOSE_PAREN;
@@ -959,11 +959,12 @@ variableRedecleration: REDEFINE (NAME | rParam | SYS_VAR) globalVariableModifier
 
 // assignment
 variableAssignment
-    : NAME variableAssignmentExpression                 #userVariableAssignment
-    | rParam variableAssignmentExpression              #RParamAssignment
-    | SYS_VAR variableAssignmentExpression              #SysVarAssignment
-    | NAME arrayDefinition arrayAssignmentExpression    #arrayVariableAssignment
-    | SYS_VAR arrayDefinition arrayAssignmentExpression #arraySysVarAssignment
+    : NAME variableAssignmentExpression                     #userVariableAssignment
+    | rParam variableAssignmentExpression                   #RParamAssignment
+    | SYS_VAR variableAssignmentExpression                  #SysVarAssignment
+    | NAME arrayDefinition? arrayAssignmentExpression       #arrayVariableAssignment
+    | rParam arrayAssignmentExpression                      #arrayRParamAssignment
+    | SYS_VAR arrayDefinition? arrayAssignmentExpression    #arraySysVarAssignment
     ;
 
 type
@@ -987,30 +988,23 @@ statement
     | command+
     | procedure;
 
-ifStatement: IF expression NEWLINE* block* (lineStart? ELSE NEWLINE* block*)? lineStart? IF_END;
+ifStatement: IF expression (NEWLINE* scope ifStatementElse? lineStart? IF_END | gotoStatement);
+ifStatementElse: lineStart? ELSE NEWLINE* scope;
 
-caseStatement: CASE expression CASE_OF NEWLINE* (lineStart? constant gotoStatement NEWLINE+)+ (lineStart? CASE_DEFAULT gotoStatement)?;
+caseStatement: CASE expression CASE_OF NEWLINE* (lineStart? primaryExpression gotoStatement NEWLINE*)+ (lineStart? CASE_DEFAULT gotoStatement)?;
 
 iterativeStatement: iterativeWhile | iterativeFor | iterativeRepeat | iterativeLoop;
-iterativeWhile: WHILE expression NEWLINE* block* lineStart? WHILE_END;
-iterativeFor: FOR variableAssignment TO expression NEWLINE* block* lineStart? FOR_END;
-iterativeRepeat: REPEAT NEWLINE* block* lineStart? REPEAT_END expression;
-iterativeLoop: LOOP NEWLINE* block* lineStart? LOOP_END;
+iterativeWhile: WHILE expression NEWLINE* scope lineStart? WHILE_END;
+iterativeFor: FOR variableAssignment TO expression NEWLINE* scope lineStart? FOR_END;
+iterativeRepeat: REPEAT NEWLINE* scope lineStart? REPEAT_END expression;
+iterativeLoop: LOOP NEWLINE* scope lineStart? LOOP_END;
 
 jumpStatement
     : gotoStatement
     | callStatement
-    | CALL NAME? CALL_BLOCK NAME TO NAME
-    | RETURN (OPEN_PAREN expression (COMMA expression)? (COMMA expression)? (COMMA expression)? CLOSE_PAREN)?;
+    | returnStatement;
 
-gotoStatement
-    : gotoCondition? GOTO gotoTarget
-    | gotoCondition? GOTO_B gotoTarget
-    | gotoCondition? GOTO_C gotoTarget
-    | gotoCondition? GOTO_F gotoTarget
-    | gotoCondition? GOTO_S;
-
-gotoCondition: IF expression;
+gotoStatement: (GOTO | GOTO_B | GOTO_C | GOTO_F) gotoTarget | GOTO_S;
 gotoTarget
     : NAME              #gotoLabel
     | blockNumber       #gotoBlock
@@ -1018,11 +1012,14 @@ gotoTarget
 
 callStatement
     : CALL (expression | primaryExpression? CALL_BLOCK NAME TO NAME)
-    | CALL_P primaryExpression (OPEN_PAREN expression (COMMA expression)* CLOSE_PAREN)?
+    | CALL_P primaryExpression ownProcedure?
     | CALL_EXT OPEN_PAREN expression CLOSE_PAREN
     | CALL_PATH OPEN_PAREN expression? CLOSE_PAREN
     | CALL_MODAL (NAME (OPEN_BRACKET expression (COMMA expression)* CLOSE_BRACKET)? )?
+    | CALL NAME? CALL_BLOCK NAME TO NAME
     ;
+
+returnStatement: RETURN (OPEN_PAREN expression (COMMA expression?)? (COMMA expression?)? (COMMA expression)? CLOSE_PAREN)?;
 
 syncActionStatement
     : syncActionId? syncActionCondition? SYNC_DO syncActionAction+ (ELSE syncActionAction+)?
@@ -1058,8 +1055,9 @@ primaryExpression
     | constant                              #constantUse
     | function                              #functionUse
     | OPEN_PAREN expression CLOSE_PAREN     #nestedExpression
-    | macroUse                              #macroUseLabel
     | axis_spindle_identifier               #axisUse
+    | path                                  #pathUse
+    | macroUse                              #macroUseLabel
     ;
 
 rParam: DOLLAR? R_PARAM (intUnsigned | OPEN_BRACKET expression CLOSE_BRACKET);
@@ -1073,17 +1071,21 @@ constant
 
 numeric: intUnsigned | realUnsigned;
 intUnsigned: INT_UNSIGNED;
-realUnsigned: REAL_UNSIGNED | realExponential;
-realExponential: (INT_UNSIGNED | REAL_UNSIGNED) EX SUB? (INT_UNSIGNED | REAL_UNSIGNED);
+realUnsigned: REAL_UNSIGNED;
 
 macroUse: NAME+;
 
+path: pathElements+;
+pathElements: SLASH | NAME;
+
 // command
 command
-    : expression ASSIGNMENT ACN OPEN_PAREN expression CLOSE_PAREN
+    : ACC OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
+    | ACCLIMA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
+    | expression ASSIGNMENT ACN OPEN_PAREN expression CLOSE_PAREN
     | expression ASSIGNMENT ACP OPEN_PAREN expression CLOSE_PAREN
-    | ADIS parameters?
-    | ADISPOS parameters?
+    | ADIS ASSIGNMENT expression
+    | ADISPOS ASSIGNMENT expression
     | ALF parameters?
     | AMIRROR parameters?
     | ANG parameters?
@@ -1097,7 +1099,8 @@ command
     | ATRANS parameters?
     | BAUTO parameters?
     | BNAT parameters?
-    | BRISK parameters?
+    | BRISK
+    | BRISKA parameters?
     | BSPLINE parameters?
     | BTAN parameters?
     | CDOF parameters?
@@ -1140,7 +1143,6 @@ command
     | CUTMODK parameters?
     | D parameters?
     | D0 parameters?
-    | expression ASSIGNMENT DC OPEN_PAREN expression CLOSE_PAREN
     | DIAM90 parameters?
     | DIAMCYCOF parameters?
     | DIAMOF parameters?
@@ -1154,7 +1156,8 @@ command
     | DITE parameters?
     | DITS parameters?
     | DL parameters?
-    | DRIVE parameters?
+    | DRIVE
+    | DRIVEA parameters?
     | DYNFINISH parameters?
     | DYNNORM parameters?
     | DYNPOS parameters?
@@ -1164,12 +1167,12 @@ command
     | EAUTO parameters?
     | ENAT parameters?
     | ETAN parameters?
-    | F (realUnsigned | ASSIGNMENT expression)
+    | F (numeric | ASSIGNMENT expression)
     | FA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | FAD parameters?
     | FB parameters?
     | FCUB parameters?
-    | FD parameters?
+    | FD ASSIGNMENT expression
     | FENDNORM parameters?
     | FFWOF parameters?
     | FFWON parameters?
@@ -1194,6 +1197,8 @@ command
     | ISD parameters?
     | J parameters?
     | J1 parameters?
+    | JERKLIM OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
+    | JERKLIMA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | JR parameters?
     | K parameters?
     | K1 parameters?
@@ -1293,7 +1298,7 @@ command
     | RMN parameters?
     | RMNBL parameters?
     | RND parameters?
-    | RNDM parameters?
+    | RNDM ASSIGNMENT expression
     | ROT parameters?
     | ROTS parameters?
     | RP parameters?
@@ -1303,7 +1308,8 @@ command
     | SCALE parameters?
     | SD parameters?
     | SF parameters?
-    | SOFT parameters?
+    | SOFT
+    | SOFTA parameters?
     | SON parameters?
     | SONS parameters?
     | SPATH parameters?
@@ -1311,6 +1317,7 @@ command
     | SPIF2 parameters?
     | SPN parameters?
     | SPOF parameters?
+    | SPOS (OPEN_BRACKET expression CLOSE_BRACKET)? ASSIGNMENT axisAssignmentExpression
     | SPP parameters?
     | SR parameters?
     | ST parameters?
@@ -1350,6 +1357,8 @@ command
     | TRANS parameters?
     | TURN parameters?
     | UPATH parameters?
+    | VELOLIM OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
+    | VELOLIMA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | WALCS parameters?
     | WALIMOF parameters?
     | WALIMON parameters?
@@ -1362,25 +1371,33 @@ command
     | macroUse
     ;
 
-gCode: GCODE (intUnsigned | ASSIGNMENT codeAssignmentExpression);
-hCode: HCODE (intUnsigned | ASSIGNMENT codeAssignmentExpression);
-mCode: MCODE (intUnsigned | ASSIGNMENT codeAssignmentExpression | intUnsigned | ASSIGNMENT codeAssignmentExpression);
-spindleSpeed: S ( intUnsigned | realUnsigned | ASSIGNMENT expression);
+gCode: GCODE codeAssignment;
+hCode: HCODE (codeAssignment | codeAssignmentParameterized);
+mCode: MCODE (codeAssignment | codeAssignmentParameterized);
+
+codeAssignment: intUnsigned | ASSIGNMENT codeAssignmentExpression; // m1 | m = 1
 codeAssignmentExpression: expression | QU OPEN_PAREN expression CLOSE_PAREN;
 
-axisCode: AXIS SUB? (intUnsigned realUnsigned) | expression ASSIGNMENT axisAssignmentExpression;
-axisAssignmentExpression: expression | (AC | IC | CAC | CACN | CACP | CDC | CIC) OPEN_PAREN expression CLOSE_PAREN;
+codeAssignmentParameterized: commandParameterAssignment ASSIGNMENT codeAssignmentExpression; //m1 = 3 | m[1] = 3
+commandParameterAssignment: intUnsigned | OPEN_BRACKET expression CLOSE_BRACKET;
+
+spindleSpeed: S (speedAssignment | speedAssignmentParameterized);
+speedAssignment:  numeric | ASSIGNMENT expression;
+speedAssignmentParameterized: commandParameterAssignment ASSIGNMENT expression;
+
+axisCode: AXIS SUB? numeric | expression ASSIGNMENT axisAssignmentExpression;
+axisAssignmentExpression: expression | (AC | IC | CAC | CACN | CACP | CDC | CIC | DC) OPEN_PAREN expression CLOSE_PAREN;
 
 // axis
 // todo how about expressions that lead to an axis
 axis_spindle_identifier: axis_identifier | spindle_identifier;
-axis_identifier: AXIS intUnsigned?;
+axis_identifier: AXIS intUnsigned? | AX OPEN_BRACKET expression CLOSE_BRACKET;
 spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN intUnsigned CLOSE_PAREN;
 
 // procedure
 procedure: predefinedProcedure | ownProcedure | function | otherKeywords;
 ownProcedure: NAME parameters?;
-parameters: OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN;
+parameters: OPEN_PAREN expression? (COMMA expression?)* CLOSE_PAREN;
 
 //// predefined procedure
 predefinedProcedure
@@ -1396,7 +1413,6 @@ predefinedProcedure
     | AXCTSWEC parameters?
     | AXCTSWED parameters?
     | AXTOCHAN parameters?
-    | BRISKA parameters?
     | CADAPTOF parameters?
     | CADAPTON parameters?
     | CALCFIR parameters?
@@ -1430,7 +1446,6 @@ predefinedProcedure
     | DELTC parameters?
     | DISABLE parameters?
     | DRFOF parameters?
-    | DRIVEA parameters?
     | DRVPRD parameters?
     | DRVPWR parameters?
     | DZERO parameters?
@@ -1520,7 +1535,6 @@ predefinedProcedure
     | SIRELIN parameters?
     | SIRELOUT parameters?
     | SIRELTIME parameters?
-    | SOFTA parameters?
     | SPCOF parameters?
     | SPCON parameters?
     | SPLINEPATH parameters?
@@ -1561,12 +1575,6 @@ predefinedProcedure
     | WRTPR parameters?
     ;
 
-// acceleration compensation
-acceleration_compensation: ACC OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression;
-
-// feedrate override handwheel
-feedrate_override_path_handwheel: FD ASSIGNMENT expression;
-feedrate_override_axial_handwheel: FDA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression;
 
 // function
 function
@@ -1688,10 +1696,7 @@ stringFunction // done
     ;
 
 otherKeywords
-    : ACC
-    | ACCLIMA
-    | APX
-    | AX
+    : APX
     | BLSYNC
     | COARSEA
     | CPBC OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
@@ -1700,7 +1705,7 @@ otherKeywords
     | CPFMOF OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | CPFMON OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | CPFMSON OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
-    | CPFPOS OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
+    | cpfpos
     | CPFRS OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | CPLA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT OPEN_PAREN expression CLOSE_PAREN
     | CPLCTID OPEN_BRACKET expression COMMA expression CLOSE_BRACKET ASSIGNMENT expression
@@ -1714,7 +1719,7 @@ otherKeywords
     | CPLON OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | CPLOUTSC OPEN_BRACKET expression COMMA expression CLOSE_BRACKET ASSIGNMENT expression
     | CPLOUTTR OPEN_BRACKET expression COMMA expression CLOSE_BRACKET ASSIGNMENT expression
-    | CPLPOS OPEN_BRACKET expression COMMA expression CLOSE_BRACKET ASSIGNMENT expression
+    | cplpos
     | CPLSETVAL OPEN_BRACKET expression COMMA expression CLOSE_BRACKET ASSIGNMENT expression
     | CPMALARM OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | CPMBRAKE OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
@@ -1722,8 +1727,8 @@ otherKeywords
     | CPMRESET OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | CPMSTART OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | CPMVDI OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
-    | CPOF ASSIGNMENT OPEN_PAREN expression CLOSE_PAREN
-    | CPON ASSIGNMENT OPEN_PAREN expression CLOSE_PAREN
+    | cpof cpfpos?
+    | cpon cpfpos? cplpos* cpfpos?
     | CPRES ASSIGNMENT OPEN_PAREN expression CLOSE_PAREN
     | CPSETTYPE OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | CPSYNCOP OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
@@ -1740,7 +1745,7 @@ otherKeywords
     | DIAMOFA
     | DIAMONA
     | DIC
-    | FDA
+    | FDA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | FGREF
     | FI
     | FINEA
@@ -1760,8 +1765,6 @@ otherKeywords
     | IP
     | IPOENDA
     | ISOCALL
-    | JERKLIM
-    | JERKLIMA
     | LIFTFAST
     | LIMS
     | MI
@@ -1788,19 +1791,20 @@ otherKeywords
     | PRLOC
     | PSISYNRW
     | RAC
-    | REP
     | RIC
     | RT
     | SC
     | SCC
     | SCPARA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | SETINT
-    | SPOS
     | SPOSA
     | SRA
     | STA
     | SVC
     | TR
-    | VELOLIM
-    | VELOLIMA
     ;
+
+cpon: CPON ASSIGNMENT OPEN_PAREN expression CLOSE_PAREN;
+cpof: CPOF ASSIGNMENT OPEN_PAREN expression CLOSE_PAREN;
+cplpos: CPLPOS OPEN_BRACKET expression COMMA expression CLOSE_BRACKET ASSIGNMENT expression;
+cpfpos: CPFPOS OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression;
