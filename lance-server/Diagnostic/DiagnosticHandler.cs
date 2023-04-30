@@ -9,6 +9,7 @@ namespace LanceServer.Diagnostic;
 public class DiagnosticHandler : IDiagnosticHandler
 {
     private const int MaxFileNameLength = 24;
+    private const int MaxAxisNameLength = 8;
     private const int MaxSymbolIdentifierLength = 31;
     public DocumentDiagnosticReport HandleRequest(SymbolUseExtractedDocument document, DocumentDiagnosticParams requestParams, IWorkspace workspace)
     {
@@ -57,37 +58,38 @@ public class DiagnosticHandler : IDiagnosticHandler
         {
             if (!symbolUses.Any(use => use.Identifier.Equals(symbol.Identifier, StringComparison.OrdinalIgnoreCase)))
             {
+                var severity = symbol.Type is SymbolType.Label or SymbolType.BlockNumber ? DiagnosticSeverity.Hint : DiagnosticSeverity.Warning;
                 diagnostics.Add(new LspTypes.Diagnostic
                 {
                     Range = symbol.IdentifierRange,
-                    Severity = DiagnosticSeverity.Information,
+                    Severity = severity,
                     Source = "Lance",
                     Message = $"The symbol {symbol.Identifier} has currently no uses.",
                     Tags = new [] { DiagnosticTag.Unnecessary }
                 });
             }
 
-            if (symbol.Identifier.Length >= MaxSymbolIdentifierLength)
+            if (symbol.Identifier.Length > MaxSymbolIdentifierLength)
             {
                 diagnostics.Add(new LspTypes.Diagnostic
                 {
                     Range = symbol.IdentifierRange,
                     Severity = DiagnosticSeverity.Error,
                     Source = "Lance",
-                    Message = $"The symbol {symbol.Identifier} is longer than the maximum allowed length of {MaxSymbolIdentifierLength}."
+                    Message = $"The symbol {symbol.Identifier} is {symbol.Identifier.Length - MaxSymbolIdentifierLength} characters longer than the maximum allowed length of {MaxSymbolIdentifierLength}."
                 });
             }
         }
 
-        var filename = Path.GetFileName(document.Information.Uri.LocalPath);
-        if (filename.Length >= MaxFileNameLength)
+        var filename = Path.GetFileNameWithoutExtension(document.Information.Uri.LocalPath);
+        if (filename.Length > MaxFileNameLength)
         {
             diagnostics.Add(new LspTypes.Diagnostic
             {
                 Range = new Range{Start = new Position(0, 0), End = new Position(0, 0)},
                 Severity = DiagnosticSeverity.Error,
                 Source = "Lance",
-                Message = $"The filename of the file {filename} is longer than the maximum allowed length of {MaxSymbolIdentifierLength}."
+                Message = $"The filename of the file {filename} is {filename.Length - MaxFileNameLength} characters longer than the maximum allowed length of {MaxFileNameLength}."
             });
         }
         
