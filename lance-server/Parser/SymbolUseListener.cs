@@ -18,25 +18,21 @@ public class SymbolUseListener : SinumerikNCBaseListener
     
     public override void ExitUserVariableAssignment(SinumerikNCParser.UserVariableAssignmentContext context)
     {
-        base.ExitUserVariableAssignment(context);
         AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
     public override void ExitArrayVariableAssignment(SinumerikNCParser.ArrayVariableAssignmentContext context)
     {
-        base.ExitArrayVariableAssignment(context);
         AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
     public override void ExitVariableUse(SinumerikNCParser.VariableUseContext context)
     {
-        base.ExitVariableUse(context);
         AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
     public override void ExitMacroUse(SinumerikNCParser.MacroUseContext context)
     {
-        base.ExitMacroUse(context);
         foreach (var name in context.NAME())
         {
             AddTokenIfNotPlaceholder(name.Symbol);
@@ -45,14 +41,26 @@ public class SymbolUseListener : SinumerikNCBaseListener
 
     public override void ExitOwnProcedure(SinumerikNCParser.OwnProcedureContext context)
     {
-        base.ExitOwnProcedure(context);
         AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
     public override void ExitProcedureDeclaration(SinumerikNCParser.ProcedureDeclarationContext context)
     {
-        base.ExitProcedureDeclaration(context);
         AddTokenIfNotPlaceholder(context.NAME().Symbol);
+    }
+
+    public override void ExitGotoLabel(SinumerikNCParser.GotoLabelContext context)
+    {
+        AddTokenIfNotPlaceholder(context.NAME().Symbol);
+    }
+
+    public override void ExitGotoBlock(SinumerikNCParser.GotoBlockContext context)
+    {
+        var text = context.GetText();
+        var line = (uint)context.Start.Line - 1;
+        var characterStart = (uint)context.Start.Column;
+        var characterEnd = characterStart + (uint)text.Length;
+        AddSymbolUse(text, line, characterStart, characterEnd);
     }
 
     private void AddTokenIfNotPlaceholder(IToken token)
@@ -65,6 +73,12 @@ public class SymbolUseListener : SinumerikNCBaseListener
         var line = (uint)token.Line - 1;
         var characterStart = (uint)token.Column;
         var characterEnd = characterStart + (uint)token.Text.Length;
-        SymbolUseTable.Add(new SymbolUse(token.Text, new Range{Start = new Position(line, characterStart), End = new Position(line, characterEnd)}, _document.Information.Uri));
+        AddSymbolUse(token.Text, line, characterStart, characterEnd);
+    }
+
+    private void AddSymbolUse(string text, uint line, uint characterStart, uint characterEnd)
+    {
+        IToken token;
+        SymbolUseTable.Add(new SymbolUse(text, new Range { Start = new Position(line, characterStart), End = new Position(line, characterEnd) }, _document.Information.Uri));
     }
 }

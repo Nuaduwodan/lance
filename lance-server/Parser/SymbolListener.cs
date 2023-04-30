@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
 using Position = LspTypes.Position;
@@ -22,14 +21,12 @@ public class SymbolListener : SinumerikNCBaseListener
     /// <inheritdoc/>
     public override void EnterProcedureDefinition(SinumerikNCParser.ProcedureDefinitionContext context)
     {
-        base.EnterProcedureDefinition(context);
         _parameters = new List<ParameterSymbol>();
     }
 
     /// <inheritdoc/>
     public override void ExitParameterDefinitionByReference(SinumerikNCParser.ParameterDefinitionByReferenceContext context)
     {
-        base.ExitParameterDefinitionByReference(context);
         var identifier = context.NAME().GetText();
         var uri = _document.Information.Uri;
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
@@ -37,7 +34,7 @@ public class SymbolListener : SinumerikNCBaseListener
         var success = GetCompositeDataType(context.type(), out var dataType);
         var arrayDeclaration = GetArrayDeclaration(context.arrayDeclaration());
 
-        if (!success || identifier.Length <= 2)
+        if (!success || identifier.Length < 2)
         {
             return;
         }
@@ -50,14 +47,13 @@ public class SymbolListener : SinumerikNCBaseListener
     /// <inheritdoc/>
     public override void ExitParameterDefinitionByValue(SinumerikNCParser.ParameterDefinitionByValueContext context)
     {
-        base.ExitParameterDefinitionByValue(context);
         var identifier = context.NAME().GetText();
         var uri = _document.Information.Uri;
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
         var identifierRange = GetIdentifierRange(context.NAME().Symbol);
         var success = GetCompositeDataType(context.type(), out var dataType);
         
-        if (!success || identifier.Length <= 2)
+        if (!success || identifier.Length < 2)
         {
             return;
         }
@@ -70,7 +66,6 @@ public class SymbolListener : SinumerikNCBaseListener
     /// <inheritdoc/>
     public override void ExitProcedureDefinitionHeader(SinumerikNCParser.ProcedureDefinitionHeaderContext context)
     {
-        base.ExitProcedureDefinitionHeader(context);
         var identifier = ReplacePlaceholder(context.NAME().GetText());
         var uri = _document.Information.Uri;
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
@@ -82,7 +77,6 @@ public class SymbolListener : SinumerikNCBaseListener
     /// <inheritdoc/>
     public override void ExitMacroDeclaration(SinumerikNCParser.MacroDeclarationContext context)
     {
-        base.ExitMacroDeclaration(context);
         var identifier = context.NAME().GetText();
         var uri = _document.Information.Uri;
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
@@ -96,7 +90,6 @@ public class SymbolListener : SinumerikNCBaseListener
     /// <inheritdoc/>
     public override void ExitVariableDeclaration(SinumerikNCParser.VariableDeclarationContext context)
     {
-        base.ExitVariableDeclaration(context);
         var uri = _document.Information.Uri;
         var symbolRange = GetSymbolRange(context.Start, context.Stop);
         var success = GetCompositeDataType(context.type(), out var dataType);
@@ -113,7 +106,7 @@ public class SymbolListener : SinumerikNCBaseListener
             var identifierRange = GetIdentifierRange(variable.NAME().Symbol);
             var arrayDefinition = GetArrayDefinition(variable.arrayDefinition());
 
-            if (identifier.Length <= 2)
+            if (identifier.Length < 2)
             {
                 continue;
             }
@@ -121,6 +114,25 @@ public class SymbolListener : SinumerikNCBaseListener
             var symbol = new VariableSymbol(identifier, uri, symbolRange, identifierRange, dataType, arrayDefinition, isGlobal);
             SymbolTable.Add(symbol);
         }
+    }
+
+    public override void ExitLabelDefinition(SinumerikNCParser.LabelDefinitionContext context)
+    {
+        var identifier = context.NAME().GetText();
+        var uri = _document.Information.Uri;
+        var symbolRange = GetSymbolRange(context.Start, context.Stop);
+        var identifierRange = GetIdentifierRange(context.NAME().Symbol);
+        var symbol = new LabelSymbol(identifier, uri, symbolRange, identifierRange);
+        SymbolTable.Add(symbol);
+    }
+
+    public override void ExitBlockNumberDefinition(SinumerikNCParser.BlockNumberDefinitionContext context)
+    {
+        var identifier = context.GetText();
+        var uri = _document.Information.Uri;
+        var symbolRange = GetSymbolRange(context.Start, context.Stop);
+        var symbol = new BlockNumberSymbol(identifier, uri, symbolRange);
+        SymbolTable.Add(symbol);
     }
 
     private bool GetCompositeDataType(SinumerikNCParser.TypeContext typeContext, out CompositeDataType compositeDataType)
