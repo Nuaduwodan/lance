@@ -219,9 +219,10 @@ public class Workspace : IWorkspace
             }
         }
         
-        documentUris = documentUris.OrderByDescending(uri => symbolTableConfig.DefinitionFileExtensions.Contains(FileUtil.FileExtensionFromUri(uri))).ToList();
-        
         //todo convert uris to documents
+
+        documentUris = documentUris.OrderByDescending(uri => symbolTableConfig.DefinitionFileExtensions.Contains(FileUtil.FileExtensionFromUri(uri)))
+            .ThenByDescending(uri => symbolTableConfig.MainProcedureFileExtensions.Any(main =>Path.GetFileName(uri.LocalPath).ToLower().EndsWith(main))).ToList();
 
         var maxCount = documentUris.Count;
         var currentCount = 0;
