@@ -172,10 +172,12 @@ class LSPServer : IDisposable
                         tokenModifiers = SemanticTokenModifierHelper.GetModifiers()
                     }
                 },
+                /* DEACTIVATED FOR INTERMEDIATE RELEASE
                 DiagnosticProvider = new DiagnosticOptions{
                     InterFileDependencies = true,
                     WorkspaceDiagnostics = false
                 }
+                */
             };
 
             result.Capabilities = capabilities;
