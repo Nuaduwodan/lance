@@ -16,7 +16,6 @@ public class HoverListener : SinumerikNCBaseListener
 
     public override void ExitVariableNameDeclaration(SinumerikNCParser.VariableNameDeclarationContext context)
     {
-        base.ExitVariableNameDeclaration(context);
         if (Token != null)
         {
             return;
@@ -27,7 +26,6 @@ public class HoverListener : SinumerikNCBaseListener
     
     public override void ExitUserVariableAssignment(SinumerikNCParser.UserVariableAssignmentContext context)
     {
-        base.ExitUserVariableAssignment(context);
         if (Token != null)
         {
             return;
@@ -38,7 +36,6 @@ public class HoverListener : SinumerikNCBaseListener
 
     public override void ExitArrayVariableAssignment(SinumerikNCParser.ArrayVariableAssignmentContext context)
     {
-        base.ExitArrayVariableAssignment(context);
         if (Token != null)
         {
             return;
@@ -49,7 +46,6 @@ public class HoverListener : SinumerikNCBaseListener
 
     public override void ExitVariableUse(SinumerikNCParser.VariableUseContext context)
     {
-        base.ExitVariableUse(context);
         if (Token != null)
         {
             return;
@@ -60,7 +56,6 @@ public class HoverListener : SinumerikNCBaseListener
 
     public override void ExitMacroDeclaration(SinumerikNCParser.MacroDeclarationContext context)
     {
-        base.ExitMacroDeclaration(context);
         if (Token != null)
         {
             return;
@@ -72,7 +67,6 @@ public class HoverListener : SinumerikNCBaseListener
 
     public override void ExitMacroUse(SinumerikNCParser.MacroUseContext context)
     {
-        base.ExitMacroUse(context);
         if (Token != null)
         {
             return;
@@ -86,7 +80,6 @@ public class HoverListener : SinumerikNCBaseListener
 
     public override void ExitOwnProcedure(SinumerikNCParser.OwnProcedureContext context)
     {
-        base.ExitOwnProcedure(context);
         if (Token != null)
         {
             return;
