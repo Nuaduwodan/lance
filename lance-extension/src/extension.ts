@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     const server: Executable =
     {
         command: fn,
-        args: [],
+        args: ["language-server"],
         options: { shell: false, detached: false }
     };
 
@@ -42,7 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
     };
 
     // Create the language client and start the client.
-    client = new LanguageClient("lance", "lance", serverOptions, clientOptions);
+    client = new LanguageClient("lance", "Lance", serverOptions, clientOptions);
     client.registerProposedFeatures();
     client.start();
 }

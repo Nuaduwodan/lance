@@ -1,4 +1,5 @@
-﻿using LanceServer.Core.Workspace;
+﻿using LanceServer.Core.Document;
+using LanceServer.Core.Workspace;
 
 namespace LanceServerTest.Core.Workspace;
 

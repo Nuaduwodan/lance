@@ -6,9 +6,9 @@
   &lt;Assembly Path="C:\Users\YBigler\.nuget\packages\streamjsonrpc\2.6.121\lib\netcoreapp2.1\StreamJsonRpc.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8bfb1b0e_002Dafdc_002D490a_002Dafc5_002D790fce28753c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="EmptyData" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8bfb1b0e_002Dafdc_002D490a_002Dafc5_002D790fce28753c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="EmptyData" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Project Location="C:\Users\YBigler\workspace\lance\LanceServerTest" Presentation="&amp;lt;LanceServerTest&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f5d6b17e_002Ddb78_002D4c66_002D9f88_002D3701b33bb1c5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SemanticTokenDataTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f5d6b17e_002Ddb78_002D4c66_002D9f88_002D3701b33bb1c5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SemanticTokenDataTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Project Location="C:\Users\YBigler\workspace\lance\LanceServerTest" Presentation="&amp;lt;LanceServerTest&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

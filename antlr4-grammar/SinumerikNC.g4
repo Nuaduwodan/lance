@@ -86,6 +86,8 @@ GREATER: '>';
 LESS_EQUAL: '<=';
 GREATER_EQUAL: '>=';
 
+CONCAT: '<<';
+
 NOT: 'not';
 AND: 'and';
 OR: 'or';
@@ -95,8 +97,6 @@ NOT_B: 'b_not';
 AND_B: 'b_and';
 OR_B: 'b_or';
 XOR_B: 'b_xor';
-
-CONCAT: '<<';
 
 // modifier
 NCK: 'nck'; // there seems to be an error in the documentation. its 'nck' not 'nc'
@@ -395,6 +395,7 @@ PROTD: 'protd';
 SETDNO: 'setdno';
 SETTCOR: 'settcor';
 SIRELAY: 'sirelay';
+SPINDLE_IDENTIFIER: 'spi';
 TOOLENV: 'toolenv';
 TOOLGNT: 'toolgnt';
 TOOLGT: 'toolgt';
@@ -577,6 +578,8 @@ WRITE: 'write';
 WRTPR: 'wrtpr';
 
 // commands (operation types A, G and M code)
+GCODE:'g';
+MCODE:'m';
 ADIS:'adis';
 ADISPOS:'adispos';
 ALF:'alf';
@@ -675,7 +678,6 @@ FRC:'frc';
 FRCM:'frcm';
 FTOCOF:'ftocof';
 FTOCON:'ftocon';
-GCODE:'g';
 //GCODE_NUMBERED: GCODE INT_UNSIGNED;
 GFRAME:'gframe';
 HCODE:'h';
@@ -702,7 +704,6 @@ LFON:'lfon';
 LFPOS:'lfpos';
 LFTXT:'lftxt';
 LFWP:'lfwp';
-MCODE:'m';
 //MCODE_NUMBERED: MCODE INT_UNSIGNED;
 MEAC:'meac';
 MEAS:'meas';
@@ -887,7 +888,6 @@ RESERVED: 'con' | 'prn' | 'aux' | 'nul' | 'com'[1-9] | 'lpt'[1-9];
 SYS_VAR: (('$'[$acmnopstv]+)|'syg_')[a-z0-9_]*; // could be improved
 AXIS: [abcxyz];
 R_PARAM: 'r';
-SPINDLE_IDENTIFIER: 'spi';
 
 // names
 NAME: NAME_NON_NUMMERIC NAME_NON_NUMMERIC NAME_ALL*;

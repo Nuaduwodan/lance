@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\lance-server\LanceServer.csproj" />
+      <ProjectReference Include="..\LanceServer\LanceServer.csproj" />
     </ItemGroup>
 
 </Project>

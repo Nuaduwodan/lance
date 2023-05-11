@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime.Tree;
+using LanceServer.Core.Document;
 using LanceServer.Core.Workspace;
 using LanceServer.Parser;
 using LanceServerTest.Core.Workspace;

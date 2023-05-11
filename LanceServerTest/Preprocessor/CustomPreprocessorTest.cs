@@ -1,5 +1,6 @@
 ﻿using LanceServer.Core.Configuration;
 using LanceServer.Core.Configuration.DataModel;
+using LanceServer.Core.Document;
 using LanceServer.Core.Workspace;
 using LanceServer.Preprocessor;
 using LanceServerTest.Core.Workspace;

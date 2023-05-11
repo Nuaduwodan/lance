@@ -1,4 +1,4 @@
-using LanceServer.SemanticToken;
+using LanceServer.RequestHandler.SemanticToken;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LanceServerTest.SemanticToken;
