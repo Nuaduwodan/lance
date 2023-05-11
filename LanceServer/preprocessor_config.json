@@ -1,0 +1,27 @@
+{
+  "maxNumberOfProblems": 1000,
+  "trace": false,
+  "placeholderPreprocessor": {
+    "placeholderType": "RegEx",
+    "fileExtensions": [
+      ".tpl"
+    ],
+    "placeholders": [
+      "<#?[a-zA-Z0-9_.]+?>"
+    ]
+  },
+  "symbols": {
+    "definitionFileExtensions": [
+      ".def"
+    ],
+    "subProcedureFileExtensions": [
+      ".spf", ".tpl"
+    ],
+    "mainProcedureFileExtensions": [
+      ".mpf", "start.tpl"
+    ],
+    "manufacturerCyclesDirectories": [
+      "cma.dir"
+    ]
+  }
+}
