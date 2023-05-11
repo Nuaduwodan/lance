@@ -1,0 +1,23 @@
+{
+  "maxNumberOfProblems": 1000,
+  "trace": false,
+  "placeholderPreprocessor": {
+    "placeholderType": "String",
+    "fileExtensions": [],
+    "placeholders": []
+  },
+  "symbols": {
+    "definitionFileExtensions": [
+      ".def"
+    ],
+    "subProcedureFileExtensions": [
+      ".spf"
+    ],
+    "mainProcedureFileExtensions": [
+      ".mpf"
+    ],
+    "manufacturerCyclesDirectories": [
+      "cma.dir"
+    ]
+  }
+}
