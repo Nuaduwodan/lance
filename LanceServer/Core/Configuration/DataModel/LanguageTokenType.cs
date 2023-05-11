@@ -2,7 +2,15 @@ namespace LanceServer.Core.Configuration.DataModel;
 
 public enum LanguageTokenType
 {
-    A,
-    K,
+    Address,
+    CycleAst,
+    CycleMeasuring,
+    CycleTechnology,
+    Function,
+    GCommand,
+    Keyword,
+    Operator,
+    Procedure,
+    ProgramAttribute,
     None
 }
