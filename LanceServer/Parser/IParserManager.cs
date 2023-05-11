@@ -15,7 +15,7 @@ public interface IParserManager
     /// </summary>
     /// <param name="document">The document to be parsed</param>
     /// <returns>The parse tree</returns>
-    IParseTree Parse(PreprocessedDocument document);
+    ParserResult Parse(PreprocessedDocument document);
     
     /// <summary>
     /// Visits the parse tree of the provided document to generate a list of all defined symbols

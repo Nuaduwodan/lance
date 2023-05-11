@@ -11,23 +11,24 @@ namespace LanceServer.Parser;
 /// <inheritdoc cref="IParserManager"/>
 public class ParserManager : IParserManager
 {
-    private CommonTokenStream Tokenize(PreprocessedDocument document)
+    private CommonTokenStream Tokenize(PreprocessedDocument document, ErrorListener errorListener)
     {
         ICharStream stream = CharStreams.fromString(document.Code);
         SinumerikNCLexer lexer = new SinumerikNCLexer(stream);
         lexer.RemoveErrorListeners();
-        lexer.AddErrorListener(new ErrorListener());
+        lexer.AddErrorListener(errorListener);
         return new CommonTokenStream(lexer);
     }
 
     /// <inheritdoc/>
-    public IParseTree Parse(PreprocessedDocument document)
+    public ParserResult Parse(PreprocessedDocument document)
     {
-        var parser = new SinumerikNCParser(Tokenize(document));
+        var errorListener = new ErrorListener();
+        var parser = new SinumerikNCParser(Tokenize(document, errorListener));
         parser.RemoveErrorListeners();
-        parser.AddErrorListener(new ErrorListener());
+        parser.AddErrorListener(errorListener);
         IParseTree tree = parser.file();
-        return tree;
+        return new ParserResult(tree, errorListener.Diagnostics);
     }
 
     /// <inheritdoc/>

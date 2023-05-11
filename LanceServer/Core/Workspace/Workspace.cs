@@ -18,8 +18,6 @@ public class Workspace : IWorkspace
     private IPlaceholderPreprocessor _placeholderPreprocessor;
     private readonly IConfigurationManager _configurationManager;
 
-    private IEnumerable<Uri> _workspaceFolders;
-        
     private Dictionary<Uri, Document.Document> _documents = new();
     private Dictionary<string, ISymbol> _globalSymbols = new();
 
@@ -112,7 +110,8 @@ public class Workspace : IWorkspace
             return parsedDocument;
         }
 
-        var newParsedDocument = new ParsedDocument(preprocessedDocument, _parserManager.Parse(preprocessedDocument));
+        var parserResult = _parserManager.Parse(preprocessedDocument);
+        var newParsedDocument = new ParsedDocument(preprocessedDocument, parserResult.ParseTree, parserResult.Diagnostics);
         lock (_documentsLock)
         {
             _documents[uri] = newParsedDocument;

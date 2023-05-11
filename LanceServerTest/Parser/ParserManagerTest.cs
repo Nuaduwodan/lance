@@ -46,7 +46,7 @@ public class ParserManagerTest
         var parserManager = new ParserManager();
 
         // Act
-        var actualParseTree = parserManager.Parse(document);
+        var actualParseTree = parserManager.Parse(document).ParseTree;
 
         // Assert
         Assert.AreEqual(expectedText, actualParseTree.GetText());
@@ -73,7 +73,7 @@ public class ParserManagerTest
         var parserManager = new ParserManager();
 
         // Act
-        var actualParseTree = parserManager.Parse(document);
+        var actualParseTree = parserManager.Parse(document).ParseTree;
 
         // Assert
         var treeWalker = new SimpleParseTreeWalker(actualParseTree);
@@ -151,7 +151,8 @@ public class ParserManagerTest
                 endproc";
         var preprocessedDocument = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
-        var document = new ParsedDocument(preprocessedDocument, parserManager.Parse(preprocessedDocument));
+        var parserResult = parserManager.Parse(preprocessedDocument);
+        var document = new ParsedDocument(preprocessedDocument, parserResult.ParseTree, parserResult.Diagnostics);
 
         // Act
         var actualSymbols = parserManager.GetSymbolTableForDocument(document).ToList();
@@ -186,7 +187,8 @@ public class ParserManagerTest
                 ";
         var preprocessedDocument = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
-        var document = new ParsedDocument(preprocessedDocument, parserManager.Parse(preprocessedDocument));
+        var parserResult = parserManager.Parse(preprocessedDocument);
+        var document = new ParsedDocument(preprocessedDocument, parserResult.ParseTree, parserResult.Diagnostics);
 
         // Act
         var actualSymbols = parserManager.GetSymbolTableForDocument(document).ToList();

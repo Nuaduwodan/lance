@@ -16,6 +16,8 @@ public class DiagnosticHandler : IDiagnosticHandler
     {
         var diagnostics = new List<LspTypes.Diagnostic>();
         
+        diagnostics.AddRange(document.Diagnostics);
+        
         var symbolUses = document.SymbolUseTable.GetAll();
         foreach (var symbolUse in symbolUses)
         {
