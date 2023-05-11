@@ -10,7 +10,7 @@ public class ErrorListener : BaseErrorListener, IAntlrErrorListener<int>
     
     public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
     {
-        Console.Error.WriteLine($"SyntaxError line: {line}, char: {charPositionInLine}, msg: {msg}, symbol: {offendingSymbol}, exception: {e}");
+        // Console.Error.WriteLine($"SyntaxError line: {line}, char: {charPositionInLine}, msg: {msg}, symbol: {offendingSymbol}, exception: {e}");
         Diagnostics.Add(new Diagnostic
         {
             Range = ParserHelper.GetRangeForToken(offendingSymbol),
@@ -22,7 +22,7 @@ public class ErrorListener : BaseErrorListener, IAntlrErrorListener<int>
 
     public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
     {
-        Console.Error.WriteLine($"SyntaxError line: {line}, char: {charPositionInLine}, msg: {msg}, symbol: {offendingSymbol}, exception: {e}");
+        // Console.Error.WriteLine($"SyntaxError line: {line}, char: {charPositionInLine}, msg: {msg}, symbol: {offendingSymbol}, exception: {e}");
         var characterEnd = charPositionInLine + (uint)e.Message.Length;
         var range = new Range { Start = new Position((uint)line, (uint)charPositionInLine), End = new Position((uint)line, (uint)characterEnd)};
         Diagnostics.Add(new Diagnostic
