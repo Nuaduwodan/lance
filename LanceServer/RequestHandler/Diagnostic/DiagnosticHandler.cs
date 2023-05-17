@@ -16,7 +16,7 @@ public class DiagnosticHandler : IDiagnosticHandler
     {
         var diagnostics = new List<LspTypes.Diagnostic>();
         
-        diagnostics.AddRange(document.Diagnostics);
+        diagnostics.AddRange(document.ParserDiagnostics);
         
         var symbolUses = document.SymbolUseTable.GetAll();
         foreach (var symbolUse in symbolUses)
@@ -45,7 +45,7 @@ public class DiagnosticHandler : IDiagnosticHandler
 
                 if (symbol is ProcedureSymbol procedureSymbol)
                 {
-                    if (procedureSymbol.NeedsExternDeclaration && symbolUse is ProcedureDeclarationSymbolUse )
+                    if (procedureSymbol.NeedsExternDeclaration && symbolUse is not ProcedureDeclarationSymbolUse )
                     {
                         if (!symbolUses.Any(symbolUse2 => symbolUse2 is ProcedureDeclarationSymbolUse 
                                                      && symbolUse2.Identifier.Equals(symbolUse.Identifier, StringComparison.OrdinalIgnoreCase)))
@@ -58,8 +58,17 @@ public class DiagnosticHandler : IDiagnosticHandler
                                 Message = $"Missing extern declaration for procedure {symbolUse.Identifier}."
                             });
                         }
+                    } else if (!procedureSymbol.NeedsExternDeclaration && symbolUse is ProcedureDeclarationSymbolUse)
+                    {
+                        diagnostics.Add(new LspTypes.Diagnostic
+                        {
+                            Range = symbolUse.Range,
+                            Severity = DiagnosticSeverity.Error,
+                            Source = "Lance",
+                            Message = $"Unnecessary extern declaration for procedure {symbolUse.Identifier}."
+                        });
                     }
-                    // check argument count
+                    //todo check argument count
                 }
             }
             else
@@ -114,10 +123,8 @@ public class DiagnosticHandler : IDiagnosticHandler
                 Message = $"The filename of the file {filename} is {filename.Length - MaxFileNameLength} characters longer than the maximum allowed length of {MaxFileNameLength}."
             });
         }
-        
-        
-        
-        //todo check missing extern declaration and matching parameters
+
+        //todo check matching parameters
         //todo check if all scopes are closed again
         
         return new DocumentDiagnosticReport{Items = diagnostics.ToArray()};
