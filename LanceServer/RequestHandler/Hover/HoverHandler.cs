@@ -12,13 +12,13 @@ namespace LanceServer.RequestHandler.Hover;
 /// <inheritdoc cref="IHoverHandler"/>
 public class HoverHandler : IHoverHandler
 {
-    private ConfigurationManager _configurationManager;
+    private IConfigurationManager _configurationManager;
     private readonly ParseTreeWalker _walker = new();
 
     /// <summary>
     /// Instantiates a new <see cref="HoverHandler"/>
     /// </summary>
-    public HoverHandler(ConfigurationManager configurationManager)
+    public HoverHandler(IConfigurationManager configurationManager)
     {
         _configurationManager = configurationManager;
     }

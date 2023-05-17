@@ -29,7 +29,7 @@ public interface IParserManager
     /// </summary>
     /// <param name="document">The document to be visited</param>
     /// <returns>A list of all symbol uses</returns>
-    IList<SymbolUse> GetSymbolUseForDocument(SymbolisedDocument document);
+    IList<ISymbolUse> GetSymbolUseForDocument(SymbolisedDocument document);
 
     IList<LanguageToken> GetLanguageTokensForDocument(SymbolisedDocument document);
 }
