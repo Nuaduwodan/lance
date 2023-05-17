@@ -13,11 +13,6 @@ public interface ISymbol
     public string Identifier { get; }
     
     /// <summary>
-    /// The type of the symbol.
-    /// </summary>
-    public SymbolType Type { get; }
-    
-    /// <summary>
     /// The URI of the document where the symbol is defined.
     /// </summary>
     public Uri SourceDocument { get; }

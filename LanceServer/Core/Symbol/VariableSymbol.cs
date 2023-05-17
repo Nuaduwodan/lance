@@ -8,9 +8,6 @@ public class VariableSymbol : ISymbol
     public string Identifier { get; }
 
     /// <inheritdoc/>
-    public SymbolType Type { get; }
-
-    /// <inheritdoc/>
     public Uri SourceDocument { get; }
         
     /// <inheritdoc/>
@@ -45,8 +42,6 @@ public class VariableSymbol : ISymbol
         _arraySize = arraySize;
         _isGlobal = isGlobal;
         Documentation = documentation;
-
-        Type = SymbolType.Variable;
     }
 
     private string GetCode()

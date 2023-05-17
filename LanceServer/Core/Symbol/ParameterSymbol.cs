@@ -11,9 +11,6 @@ public class ParameterSymbol : ISymbol
     public string Identifier { get; }
 
     /// <inheritdoc/>
-    public SymbolType Type { get; }
-
-    /// <inheritdoc/>
     public Uri SourceDocument { get; }
         
     /// <inheritdoc/>
@@ -21,9 +18,8 @@ public class ParameterSymbol : ISymbol
         
     /// <inheritdoc/>
     public Range IdentifierRange { get; }
-        
+
     /// <inheritdoc/>
-        
     public string Description => $"parameter by {(_outVar?"reference":"value")}";
         
     /// <inheritdoc/>
@@ -48,8 +44,6 @@ public class ParameterSymbol : ISymbol
         _arraySize = arraySize;
         _outVar = outVar;
         Documentation = documentation;
-
-        Type = SymbolType.Parameter;
     }
 
     private string GetCode()

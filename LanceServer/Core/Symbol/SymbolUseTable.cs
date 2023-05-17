@@ -9,14 +9,14 @@ namespace LanceServer.Core.Symbol;
 /// </summary>
 public class SymbolUseTable
 {
-    private IList<SymbolUse> _symbolUses;
+    private IList<ISymbolUse> _symbolUses;
 
-    public SymbolUseTable(IList<SymbolUse> symbolUses)
+    public SymbolUseTable(IList<ISymbolUse> symbolUses)
     {
         _symbolUses = symbolUses;
     }
 
-    public bool TryGetSymbol(Position position, [MaybeNullWhen(false)] out SymbolUse symbol)
+    public bool TryGetSymbol(Position position, [MaybeNullWhen(false)] out ISymbolUse symbol)
     {
         symbol = null;
         if (_symbolUses.Any(symbolUse => IsInRange(symbolUse.Range, position)))
@@ -42,7 +42,7 @@ public class SymbolUseTable
         return true;
     }
 
-    public IList<SymbolUse> GetAll()
+    public IList<ISymbolUse> GetAll()
     {
         return _symbolUses;
     }

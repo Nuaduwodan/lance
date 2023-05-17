@@ -78,23 +78,22 @@ public class SemanticTokenHandler : ISemanticTokenHandler
     /// </summary>
     private uint TransformType(ISymbol symbol)
     {
-        switch (symbol.Type)
+        switch (symbol)
         {
-            case SymbolType.Variable:
-                return (uint) SemanticTokenTypeHelper.SemanticTokenType.Variable;
-            case SymbolType.Macro:
+            case MacroSymbol:
                 return (uint)SemanticTokenTypeHelper.SemanticTokenType.Macro;
-            case SymbolType.Procedure:
+            case ProcedureSymbol:
                 return (uint)SemanticTokenTypeHelper.SemanticTokenType.Function;
-            case SymbolType.Parameter:
+            case ParameterSymbol:
                 return (uint)SemanticTokenTypeHelper.SemanticTokenType.Parameter;
-            case SymbolType.Label:
+            case LabelSymbol:
+            case BlockNumberSymbol:
                 return (uint)SemanticTokenTypeHelper.SemanticTokenType.Decorator;
-            case SymbolType.BlockNumber:
-                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Decorator;
-            case SymbolType.Error:
-            default:
+            case VariableSymbol:
+            case ErrorSymbol:
                 return (uint)SemanticTokenTypeHelper.SemanticTokenType.Variable;
+            default:
+                throw new NotImplementedException();
         }
     }
 }

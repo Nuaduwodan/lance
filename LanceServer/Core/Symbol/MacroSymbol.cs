@@ -11,9 +11,6 @@ public class MacroSymbol : ISymbol
     public string Identifier { get; }
 
     /// <inheritdoc/>
-    public SymbolType Type { get; }
-
-    /// <inheritdoc/>
     public Uri SourceDocument { get; }
         
     /// <inheritdoc/>
@@ -21,9 +18,9 @@ public class MacroSymbol : ISymbol
         
     /// <inheritdoc/>
     public Range IdentifierRange { get; }
-        
+
     /// <inheritdoc/>
-    public string Description => $"{(isGlobal?"global":"local")} macro{(isGlobal?" in "+Path.GetFileName(SourceDocument.LocalPath):"")}";
+    public string Description => $"{(_isGlobal?"global":"local")} macro{(_isGlobal?" in "+Path.GetFileName(SourceDocument.LocalPath):"")}";
         
     /// <inheritdoc/>
     public string Code => $"define {Identifier} as {_value}";
@@ -32,7 +29,7 @@ public class MacroSymbol : ISymbol
     public string Documentation { get; }
         
     private readonly string _value;
-    private readonly bool isGlobal;
+    private readonly bool _isGlobal;
         
     public MacroSymbol(string identifier, Uri sourceDocument, Range symbolRange, Range identifierRange, string value, bool isGlobal, string documentation = "")
     {
@@ -41,8 +38,7 @@ public class MacroSymbol : ISymbol
         SymbolRange = symbolRange;
         IdentifierRange = identifierRange;
         _value = value;
-        this.isGlobal = isGlobal;
+        _isGlobal = isGlobal;
         Documentation = documentation;
-        Type = SymbolType.Macro;
     }
 }

@@ -8,20 +8,17 @@ namespace LanceServer.Core.Symbol;
 public class ErrorSymbol : ISymbol
 {
     /// <inheritdoc/>
-    public string Identifier { get; } = string.Empty;
+    public string Identifier => string.Empty;
 
     /// <inheritdoc/>
-    public SymbolType Type { get; }
+    public Uri SourceDocument => null;
 
     /// <inheritdoc/>
-    public Uri SourceDocument { get; } = null;
+    public Range SymbolRange => null;
 
     /// <inheritdoc/>
-    public Range SymbolRange { get; } = null;
-    
-    /// <inheritdoc/>
-    public Range IdentifierRange { get; } = null;
-    
+    public Range IdentifierRange => null;
+
     /// <inheritdoc/>
     public string Description => string.Empty;
     
@@ -38,6 +35,5 @@ public class ErrorSymbol : ISymbol
     public ErrorSymbol(string documentation)
     {
         Documentation = documentation;
-        Type = SymbolType.Error;
     }
 }

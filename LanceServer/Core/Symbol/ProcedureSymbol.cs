@@ -11,9 +11,6 @@ public class ProcedureSymbol : ISymbol
     public string Identifier { get; }
 
     /// <inheritdoc/>
-    public SymbolType Type { get; }
-
-    /// <inheritdoc/>
     public Uri SourceDocument { get; }
         
     /// <inheritdoc/>
@@ -26,24 +23,28 @@ public class ProcedureSymbol : ISymbol
     public string Description => $"procedure in {Path.GetFileName(SourceDocument.LocalPath)}";
         
     /// <inheritdoc/>
-    public string Code => $"proc {Identifier}({string.Join(ParameterDelimiter, _parameters.Select(p => p.Code))})";
+    public string Code => $"proc {Identifier}({string.Join(ParameterDelimiter, Parameters.Select(p => p.Code))})";
         
     /// <inheritdoc/>
     public string Documentation { get; }
+    
+    /// <summary>
+    /// True if the procedure needs an extern declaration, False otherwise.
+    /// </summary>
+    public bool NeedsExternDeclaration { get; }
 
-    private readonly ParameterSymbol[] _parameters;
+    public readonly ParameterSymbol[] Parameters;
     private const string ParameterDelimiter = ", ";
 
-    public ProcedureSymbol(string identifier, Uri sourceDocument, Range symbolRange, Range identifierRange, ParameterSymbol[] parameters, string documentation = "")
+    public ProcedureSymbol(string identifier, Uri sourceDocument, Range symbolRange, Range identifierRange, ParameterSymbol[] parameters, bool needsExternDeclaration = true, string documentation = "")
     {
         Identifier = identifier;
         SourceDocument = sourceDocument;
         SymbolRange = symbolRange;
         IdentifierRange = identifierRange;
-        _parameters = parameters;
+        Parameters = parameters;
+        NeedsExternDeclaration = needsExternDeclaration;
         Documentation = documentation;
-
-        Type = SymbolType.Procedure;
     }
 
 }

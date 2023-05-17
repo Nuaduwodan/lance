@@ -2,15 +2,16 @@
 
 namespace LanceServer.Core.Symbol;
 
-/// <summary>
-/// Represents a use of a symbol
-/// </summary>
-public class SymbolUse
+/// <inheritdoc />
+public class SymbolUse : ISymbolUse
 {
+    /// <inheritdoc />
     public string Identifier { get; }
 
+    /// <inheritdoc />
     public Range Range { get; }
 
+    /// <inheritdoc />
     public Uri SourceDocument { get; }
 
     /// <summary>

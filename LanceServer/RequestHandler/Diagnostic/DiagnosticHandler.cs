@@ -42,6 +42,25 @@ public class DiagnosticHandler : IDiagnosticHandler
                         Message = $"{symbolUse.Identifier} has not the same capitalisation as its definition: {symbol.Identifier}."
                     });
                 }
+
+                if (symbol is ProcedureSymbol procedureSymbol)
+                {
+                    if (procedureSymbol.NeedsExternDeclaration && symbolUse is ProcedureDeclarationSymbolUse )
+                    {
+                        if (!symbolUses.Any(symbolUse2 => symbolUse2 is ProcedureDeclarationSymbolUse 
+                                                     && symbolUse2.Identifier.Equals(symbolUse.Identifier, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            diagnostics.Add(new LspTypes.Diagnostic
+                            {
+                                Range = symbolUse.Range,
+                                Severity = DiagnosticSeverity.Error,
+                                Source = "Lance",
+                                Message = $"Missing extern declaration for procedure {symbolUse.Identifier}."
+                            });
+                        }
+                    }
+                    // check argument count
+                }
             }
             else
             {
@@ -59,9 +78,9 @@ public class DiagnosticHandler : IDiagnosticHandler
 
         foreach (var symbol in symbols)
         {
-            if (!symbolUses.Any(use => use.Identifier.Equals(symbol.Identifier, StringComparison.OrdinalIgnoreCase)))
+            if (symbol is BlockNumberSymbol && !symbolUses.Any(use => use.Identifier.Equals(symbol.Identifier, StringComparison.OrdinalIgnoreCase)))
             {
-                var severity = symbol.Type is SymbolType.Label or SymbolType.BlockNumber ? DiagnosticSeverity.Hint : DiagnosticSeverity.Warning;
+                var severity = symbol is LabelSymbol or BlockNumberSymbol ? DiagnosticSeverity.Hint : DiagnosticSeverity.Warning;
                 diagnostics.Add(new LspTypes.Diagnostic
                 {
                     Range = symbol.IdentifierRange,
@@ -95,6 +114,8 @@ public class DiagnosticHandler : IDiagnosticHandler
                 Message = $"The filename of the file {filename} is {filename.Length - MaxFileNameLength} characters longer than the maximum allowed length of {MaxFileNameLength}."
             });
         }
+        
+        
         
         //todo check missing extern declaration and matching parameters
         //todo check if all scopes are closed again

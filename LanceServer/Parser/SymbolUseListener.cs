@@ -9,7 +9,7 @@ namespace LanceServer.Parser;
 
 public class SymbolUseListener : SinumerikNCBaseListener
 {
-    public List<SymbolUse> SymbolUseTable { get; } = new();
+    public List<ISymbolUse> SymbolUseTable { get; } = new();
     private readonly PlaceholderPreprocessedDocument _document;
     
     public SymbolUseListener(SymbolisedDocument document)
@@ -47,7 +47,13 @@ public class SymbolUseListener : SinumerikNCBaseListener
 
     public override void ExitProcedureDeclaration(SinumerikNCParser.ProcedureDeclarationContext context)
     {
-        AddTokenIfNotPlaceholder(context.NAME().Symbol);
+        var token = context.NAME().Symbol;
+        if (_document.Placeholders.ContainsPlaceholder(token.Text))
+        {
+            return;
+        }
+
+        SymbolUseTable.Add(new ProcedureDeclarationSymbolUse(token.Text, ParserHelper.GetRangeForToken(token), _document.Information.Uri));
     }
 
     public override void ExitGotoLabel(SinumerikNCParser.GotoLabelContext context)
