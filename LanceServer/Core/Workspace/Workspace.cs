@@ -21,6 +21,7 @@ public class Workspace : IWorkspace
 
     private ConcurrentDictionary<Uri, Document.Document> _documents = new();
     private ConcurrentDictionary<string, ISymbol> _globalSymbols = new();
+    private ConcurrentBag<ISymbolUse> _globalSymbolUses = new();
 
     public Workspace(IParserManager parserManager, IPlaceholderPreprocessor placeholderPreprocessor, IConfigurationManager configurationManager)
     {
@@ -70,23 +71,32 @@ public class Workspace : IWorkspace
             globalSymbols.AddRange(symbolList.Where(symbol => symbol is VariableSymbol or MacroSymbol));
         }
 
-        var localSymbols = symbolList.Except(globalSymbols);
+        // todo remove when not needed
+        symbolList = symbolList.Except(globalSymbols).ToList();
        
-        foreach (var symbol in globalSymbols)
+        foreach (var symbol in globalSymbols.Where(symbol => !_globalSymbols.TryAdd(symbol.Identifier.ToLower(), symbol)))
         {
-            if (!_globalSymbols.TryAdd(symbol.Identifier.ToLower(), symbol))
+            _globalSymbols.TryGetValue(symbol.Identifier.ToLower(), out var existingSymbol);
+            parsedDocument.ParserDiagnostics.Add(new Diagnostic
             {
-                //TODO create diagnostic
-            }
+                Code = symbol.Identifier,
+                Range = symbol.IdentifierRange,
+                Message = $"A global symbol with the name {existingSymbol!.Identifier} is already defined.",
+                Severity = DiagnosticSeverity.Warning
+            });
         }
 
         var symbolTable = new SymbolTable();
-        foreach (var symbol in localSymbols)
+        foreach (var symbol in symbolList.Where(symbol => !symbolTable.AddSymbol(symbol)))
         {
-            if (!symbolTable.AddSymbol(symbol))
+            symbolTable.TryGetSymbol(symbol.Identifier.ToLower(), out var existingSymbol);
+            parsedDocument.ParserDiagnostics.Add(new Diagnostic
             {
-                //TODO create diagnostic
-            }
+                Code = symbol.Identifier,
+                Range = symbol.IdentifierRange,
+                Message = $"A local symbol with the name {existingSymbol!.Identifier} is already defined.",
+                Severity = DiagnosticSeverity.Warning
+            });
         }
         
         var newSymbolisedDocument = new SymbolisedDocument(parsedDocument, symbolTable);
@@ -261,21 +271,6 @@ public class Workspace : IWorkspace
 
         GetSymbolisedDocument(uri);
     }
-
-    /*
-    private bool AddSymbol(ISymbol symbol)
-    {
-        lock (_globalSymbolsLock)
-        {
-            if (_globalSymbols.ContainsKey(symbol.Identifier.ToLower()))
-            {
-                return false;
-            }
-            _globalSymbols.Add(symbol.Identifier.ToLower(), symbol);
-            return true;
-        }
-    }
-    */
 
     private void DeleteGlobalSymbolsOfFile(Uri documentUri)
     {
