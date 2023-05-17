@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime;
 using LanceServer.Core.Configuration;
 using LanceServer.Core.Document;
 using LanceServer.Parser;
@@ -18,11 +20,8 @@ public class Workspace : IWorkspace
     private IPlaceholderPreprocessor _placeholderPreprocessor;
     private readonly IConfigurationManager _configurationManager;
 
-    private Dictionary<Uri, Document.Document> _documents = new();
-    private Dictionary<string, ISymbol> _globalSymbols = new();
-
-    private readonly object _documentsLock = new ();
-    private readonly object _globalSymbolsLock = new ();
+    private ConcurrentDictionary<Uri, Document.Document> _documents = new();
+    private ConcurrentDictionary<string, ISymbol> _globalSymbols = new();
 
     public Workspace(IParserManager parserManager, IPlaceholderPreprocessor placeholderPreprocessor, IConfigurationManager configurationManager)
     {
@@ -46,10 +45,8 @@ public class Workspace : IWorkspace
         var symbolUseTable = new SymbolUseTable(symbolUseList);
         var languageTokenTable = new LanguageTokenTable(languageTokens);
         var newSymbolUseExtractedDocument = new LanguageTokenExtractedDocument(symbolisedDocument, symbolUseTable, languageTokenTable);
-        lock (_documentsLock)
-        {
-            _documents[uri] = newSymbolUseExtractedDocument;
-        }
+        _documents[uri] = newSymbolUseExtractedDocument;
+        
         return newSymbolUseExtractedDocument;
     }
         
@@ -78,7 +75,7 @@ public class Workspace : IWorkspace
        
         foreach (var symbol in globalSymbols)
         {
-            if (!AddSymbol(symbol))
+            if (!_globalSymbols.TryAdd(symbol.Identifier.ToLower(), symbol))
             {
                 //TODO create diagnostic
             }
@@ -94,10 +91,8 @@ public class Workspace : IWorkspace
         }
         
         var newSymbolisedDocument = new SymbolisedDocument(parsedDocument, symbolTable);
-        lock (_documentsLock)
-        {
-            _documents[uri] = newSymbolisedDocument;
-        }
+        _documents[uri] = newSymbolisedDocument;
+        
         return newSymbolisedDocument;
     }
 
@@ -112,10 +107,8 @@ public class Workspace : IWorkspace
 
         var parserResult = _parserManager.Parse(preprocessedDocument);
         var newParsedDocument = new ParsedDocument(preprocessedDocument, parserResult.ParseTree, parserResult.Diagnostics);
-        lock (_documentsLock)
-        {
-            _documents[uri] = newParsedDocument;
-        }
+        _documents[uri] = newParsedDocument;
+        
         return newParsedDocument;
     }
 
@@ -129,10 +122,8 @@ public class Workspace : IWorkspace
         }
             
         var newPreprocessedDocument = new PreprocessedDocument(document, document.Code);
-        lock (_documentsLock)
-        {
-            _documents[uri] = newPreprocessedDocument;
-        }
+        _documents[uri] = newPreprocessedDocument;
+        
         return newPreprocessedDocument;
     }
 
@@ -146,10 +137,8 @@ public class Workspace : IWorkspace
         }
             
         var newMacroExtractedDocument = new MacroExtractedDocument(document, string.Empty);
-        lock (_documentsLock)
-        {
-            _documents[uri] = newMacroExtractedDocument;
-        }
+        _documents[uri] = newMacroExtractedDocument;
+        
         return newMacroExtractedDocument;
     }
 
@@ -163,10 +152,8 @@ public class Workspace : IWorkspace
         }
             
         var newPlaceholderPreprocessedDocument = _placeholderPreprocessor.Filter(readDocument);
-        lock (_documentsLock)
-        {
-            _documents[uri] = newPlaceholderPreprocessedDocument;
-        }
+        _documents[uri] = newPlaceholderPreprocessedDocument;
+        
         return newPlaceholderPreprocessedDocument;
     }
 
@@ -180,32 +167,25 @@ public class Workspace : IWorkspace
         
         var content = FileUtil.ReadContent(uri);
         var newReadDocument = new ReadDocument(document, content);
-        lock (_documentsLock)
-        {
-            _documents[uri] = newReadDocument;
-        }
+        _documents[uri] = newReadDocument;
+        
         return newReadDocument;
     }
 
     /// <inheritdoc/>
     public Document.Document GetDocument(Uri uri)
     {
-        lock (_documentsLock)
+        if (_documents.TryGetValue(uri, out var document))
         {
-            if (_documents.TryGetValue(uri, out var document))
-            {
-                return document;
-            }
+            return document;
         }
 
         var config = _configurationManager.SymbolTableConfiguration;
 
         var documentInformation = new DocumentInformation(uri, config);
         var newDocument = new Document.Document(documentInformation);
-        lock (_documentsLock)
-        {
-            _documents.Add(uri, newDocument);
-        }
+        _documents.TryAdd(uri, newDocument);
+        
         return newDocument;
     }
     
@@ -229,12 +209,17 @@ public class Workspace : IWorkspace
             }
         }
 
+        if (_documents.IsEmpty)
+        {
+            _documents = new ConcurrentDictionary<Uri, Document.Document>(20, documentUris.Count);
+        }
+
         documentUris = documentUris.Select(GetDocument).OrderBy(document => document.Information.DocumentType).Select(document => document.Information.Uri).ToList();
 
         var maxCount = documentUris.Count;
         double currentCount = 0;
-        foreach (var uri in documentUris)
-        {
+        
+        Parallel.ForEach(documentUris, uri => {
             GetSymbolisedDocument(uri);
             currentCount++;
             
@@ -244,37 +229,22 @@ public class Workspace : IWorkspace
                 Message = $"{currentCount}/{maxCount} {uri.LocalPath}",
                 Percentage = (uint)Math.Floor(currentCount / maxCount * 100)
             });
-        }
-
+        });
+        
         IsWorkspaceInitialised = true;
     }
 
     /// <inheritdoc />
     public bool TryGetSymbol(string symbolName, Uri documentOfReference, [MaybeNullWhen(false)] out ISymbol symbol)
     {
-        if (GetSymbolisedDocument(documentOfReference).SymbolTable.TryGetSymbol(symbolName, out symbol))
-        {
-            return true;
-        }
-
-        lock (_globalSymbolsLock)
-        {
-            if (_globalSymbols.TryGetValue(symbolName.ToLower(), out symbol))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return GetSymbolisedDocument(documentOfReference).SymbolTable.TryGetSymbol(symbolName, out symbol) 
+               || _globalSymbols.TryGetValue(symbolName.ToLower(), out symbol);
     }
 
     /// <inheritdoc />
     public IEnumerable<ISymbol> GetGlobalSymbolsOfDocument(Uri uri)
     {
-        lock (_globalSymbolsLock)
-        {
-            return _globalSymbols.Where(pair => pair.Value.SourceDocument == uri).Select(pair => pair.Value);
-        }
+        return _globalSymbols.Where(pair => pair.Value.SourceDocument == uri).Select(pair => pair.Value);
     }
 
     /// <inheritdoc />
@@ -287,14 +257,12 @@ public class Workspace : IWorkspace
             readDocument = new ReadDocument(documentInformation, newContent);
         }
         
-        lock (_documentsLock)
-        {
-            _documents[uri] = readDocument;
-        }
+        _documents[uri] = readDocument;
 
         GetSymbolisedDocument(uri);
     }
 
+    /*
     private bool AddSymbol(ISymbol symbol)
     {
         lock (_globalSymbolsLock)
@@ -307,20 +275,18 @@ public class Workspace : IWorkspace
             return true;
         }
     }
+    */
 
     private void DeleteGlobalSymbolsOfFile(Uri documentUri)
     {
-        lock (_globalSymbolsLock)
+        foreach (var pair in _globalSymbols.Where(pair => pair.Value.SourceDocument == documentUri))
         {
-            _globalSymbols = _globalSymbols.Where(pair => pair.Value.SourceDocument != documentUri).ToDictionary(pair => pair.Key, pair => pair.Value);
+            _globalSymbols.TryRemove(pair);
         }
     }
 
     public IEnumerable<Uri> GetAllDocumentUris()
     {
-        lock (_documentsLock)
-        {
-            return _documents.Select(pair => pair.Key);
-        }
+        return _documents.Select(pair => pair.Key);
     }
 }
