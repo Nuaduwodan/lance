@@ -1,7 +1,7 @@
 ﻿namespace LanceServer.Core.Document;
 
 /// <summary>
-/// Represents a document that has been read
+/// A document that has been read
 /// </summary>
 public class ReadDocument : Document
 {
@@ -18,6 +18,9 @@ public class ReadDocument : Document
         RawContent = rawContent;
     }
     
+    /// <summary>
+    /// Creates a new instance of <see cref="ReadDocument"/>
+    /// </summary>
     public ReadDocument(Document document, string code) 
         : this(document.Information, code)
     {

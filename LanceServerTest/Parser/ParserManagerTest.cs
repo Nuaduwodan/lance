@@ -41,7 +41,7 @@ public class ParserManagerTest
         var expectedText = "<EOF>";
 
         var code = string.Empty;
-        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
 
         // Act
@@ -68,7 +68,7 @@ public class ParserManagerTest
 
                 ret
                 endproc";
-        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
 
         // Act
@@ -148,7 +148,7 @@ public class ParserManagerTest
 
                 ret
                 endproc";
-        var preprocessedDocument = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var preprocessedDocument = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
         var parserResult = parserManager.Parse(preprocessedDocument);
         var document = new ParsedDocument(preprocessedDocument, parserResult.ParseTree, parserResult.Diagnostics);
@@ -184,7 +184,7 @@ public class ParserManagerTest
                 ret
                 endproc
                 ";
-        var preprocessedDocument = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var preprocessedDocument = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
         var parserResult = parserManager.Parse(preprocessedDocument);
         var document = new ParsedDocument(preprocessedDocument, parserResult.ParseTree, parserResult.Diagnostics);

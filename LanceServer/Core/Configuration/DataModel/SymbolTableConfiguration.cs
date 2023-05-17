@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace LanceServer.Core.Configuration.DataModel;
 
+/// <summary>
+/// The configuration for the scopes of symbols of different files
+/// </summary>
 [DataContract]
 public class SymbolTableConfiguration
 {

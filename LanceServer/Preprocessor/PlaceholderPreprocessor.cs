@@ -21,7 +21,7 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
             
         if (!preprocessorConfiguration.FileExtensions.Contains(document.Information.FileExtension))
         {
-            return new PlaceholderPreprocessedDocument(document, document.RawContent, new Placeholders(placeholders));
+            return new PlaceholderPreprocessedDocument(document, document.RawContent, new PlaceholderTable(placeholders));
         }
 
         var result = document.RawContent;
@@ -51,7 +51,7 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
 
         placeholders = placeholders.OrderByDescending(pair => pair.Key.Length).ToDictionary(pair => pair.Key, pair => pair.Value);
             
-        return new PlaceholderPreprocessedDocument(document, result, new Placeholders(placeholders));
+        return new PlaceholderPreprocessedDocument(document, result, new PlaceholderTable(placeholders));
     }
 
     private bool IsAloneOnLine(string text, string match)

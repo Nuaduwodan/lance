@@ -1,10 +1,10 @@
 ﻿namespace LanceServer.Core.Document;
 
-public class Placeholders
+public class PlaceholderTable
 {
     private IDictionary<string, string> _placeholders;
 
-    public Placeholders(IDictionary<string, string> placeholders)
+    public PlaceholderTable(IDictionary<string, string> placeholders)
     {
         _placeholders = placeholders;
     }

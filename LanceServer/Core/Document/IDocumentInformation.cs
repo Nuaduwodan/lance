@@ -1,7 +1,7 @@
 ﻿namespace LanceServer.Core.Document;
 
 /// <summary>
-/// Represents some general information about the location and its type
+/// Represents some general information about the location and the type of a document
 /// </summary>
 public interface IDocumentInformation
 {

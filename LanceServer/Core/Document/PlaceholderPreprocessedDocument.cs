@@ -1,19 +1,35 @@
 ﻿namespace LanceServer.Core.Document;
 
+/// <summary>
+/// A document with processed placeholders if applicable.
+/// </summary>
 public class PlaceholderPreprocessedDocument : ReadDocument
 {
+    /// <summary>
+    /// The code with the processed placeholders
+    /// </summary>
     public string Code { get; }
-    public Placeholders Placeholders { get; }
+    
+    /// <summary>
+    /// The table with all placeholder processed in this document
+    /// </summary>
+    public PlaceholderTable PlaceholderTable { get; }
 
-    public PlaceholderPreprocessedDocument(IDocumentInformation information, string rawContent, string code, Placeholders placeholders) 
+    /// <summary>
+    /// Creates a new instance of <see cref="PlaceholderPreprocessedDocument"/>
+    /// </summary>
+    public PlaceholderPreprocessedDocument(IDocumentInformation information, string rawContent, string code, PlaceholderTable placeholderTable) 
         : base(information, rawContent)
     {
         Code = code;
-        Placeholders = placeholders;
+        PlaceholderTable = placeholderTable;
     }
     
-    public PlaceholderPreprocessedDocument(ReadDocument readDocument, string code, Placeholders placeholders) 
-        : this(readDocument.Information, readDocument.RawContent, code, placeholders)
+    /// <summary>
+    /// Creates a new instance of <see cref="PlaceholderPreprocessedDocument"/>
+    /// </summary>
+    public PlaceholderPreprocessedDocument(ReadDocument readDocument, string code, PlaceholderTable placeholderTable) 
+        : this(readDocument.Information, readDocument.RawContent, code, placeholderTable)
     {
     }
 }

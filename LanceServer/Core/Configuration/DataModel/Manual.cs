@@ -1,9 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace LanceServer.Core.Configuration.DataModel;
 
-namespace LanceServer.Core.Configuration.DataModel;
-
-[SuppressMessage("ReSharper", "InconsistentNaming")]
-[SuppressMessage("ReSharper", "IdentifierTypo")]
+/// <summary>
+/// The siemens sinumerik one nc manual
+/// </summary>
 public enum Manual
 {
     FMA,

@@ -4,6 +4,9 @@
 
 namespace LanceServer.Core.Configuration.DataModel;
 
+/// <summary>
+/// A documentation item for a language token
+/// </summary>
 public class TokenDocumentation
 {
     [JsonRequired]

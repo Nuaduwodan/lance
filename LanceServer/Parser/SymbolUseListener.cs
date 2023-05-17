@@ -45,7 +45,7 @@ public class SymbolUseListener : SinumerikNCBaseListener
     public override void ExitProcedureDeclaration(SinumerikNCParser.ProcedureDeclarationContext context)
     {
         var token = context.NAME().Symbol;
-        if (_document.Placeholders.ContainsPlaceholder(token.Text))
+        if (_document.PlaceholderTable.ContainsPlaceholder(token.Text))
         {
             return;
         }
@@ -65,7 +65,7 @@ public class SymbolUseListener : SinumerikNCBaseListener
 
     private void AddTokenIfNotPlaceholder(IToken token)
     {
-        if (_document.Placeholders.ContainsPlaceholder(token.Text))
+        if (_document.PlaceholderTable.ContainsPlaceholder(token.Text))
         {
             return;
         }

@@ -35,7 +35,7 @@ public class ParserManager : IParserManager
     {
         var walker = new ParseTreeWalker();
         var symbolListener = new SymbolListener(document);
-        walker.Walk(symbolListener, document.Tree);
+        walker.Walk(symbolListener, document.ParseTree);
 
         var symbolTable = symbolListener.SymbolTable;
         return AddProcedureSymbolIfNeeded(document, symbolTable);
@@ -46,7 +46,7 @@ public class ParserManager : IParserManager
     {
         var walker = new ParseTreeWalker();
         var symbolUseListener = new SymbolUseListener(document);
-        walker.Walk(symbolUseListener, document.Tree);
+        walker.Walk(symbolUseListener, document.ParseTree);
 
         return symbolUseListener.SymbolUseTable;
     }
@@ -56,7 +56,7 @@ public class ParserManager : IParserManager
     {
         var walker = new ParseTreeWalker();
         var languageTokenListener = new LanguageTokenListener();
-        walker.Walk(languageTokenListener, document.Tree);
+        walker.Walk(languageTokenListener, document.ParseTree);
 
         return languageTokenListener.LanguageTokens;
     }

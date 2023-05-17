@@ -3,20 +3,36 @@ using LspTypes;
 
 namespace LanceServer.Core.Document;
 
+/// <summary>
+/// A parsed document with a parse tree
+/// </summary>
 public class ParsedDocument : PreprocessedDocument
 {
-    public IParseTree Tree { get; }
+    /// <summary>
+    /// The parse tree
+    /// </summary>
+    public IParseTree ParseTree { get; }
+    
+    /// <summary>
+    /// The diagnostics generated while parsing the code
+    /// </summary>
     public IList<Diagnostic> ParserDiagnostics { get; }
     
-    public ParsedDocument(IDocumentInformation information, string rawContent, string code, Placeholders placeholders, string macroTable, IParseTree tree, IList<Diagnostic> parserDiagnostics) 
-        : base(information, rawContent, code, placeholders, macroTable)
+    /// <summary>
+    /// Instantiates a new <see cref="ParsedDocument"/>
+    /// </summary>
+    public ParsedDocument(IDocumentInformation information, string rawContent, string code, PlaceholderTable placeholderTable, string macroTable, IParseTree parseTree, IList<Diagnostic> parserDiagnostics) 
+        : base(information, rawContent, code, placeholderTable, macroTable)
     {
-        Tree = tree;
+        ParseTree = parseTree;
         ParserDiagnostics = parserDiagnostics;
     }
     
-    public ParsedDocument(PreprocessedDocument preprocessedDocument, IParseTree tree, IList<Diagnostic> diagnostics) 
-        : this(preprocessedDocument.Information, preprocessedDocument.RawContent, preprocessedDocument.Code, preprocessedDocument.Placeholders, preprocessedDocument.MacroTable, tree, diagnostics)
+    /// <summary>
+    /// Instantiates a new <see cref="ParsedDocument"/>
+    /// </summary>
+    public ParsedDocument(PreprocessedDocument preprocessedDocument, IParseTree parseTree, IList<Diagnostic> diagnostics) 
+        : this(preprocessedDocument.Information, preprocessedDocument.RawContent, preprocessedDocument.Code, preprocessedDocument.PlaceholderTable, preprocessedDocument.MacroTable, parseTree, diagnostics)
     {
     }
 }

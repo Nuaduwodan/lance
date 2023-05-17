@@ -4,6 +4,7 @@ using LspTypes;
 
 namespace LanceServer.Core.Configuration;
 
+/// <inheritdoc />
 public class ConfigurationManager : IConfigurationManager
 {
     public SymbolTableConfiguration SymbolTableConfiguration { get; } = new();
@@ -32,6 +33,7 @@ public class ConfigurationManager : IConfigurationManager
         WorkspaceFolders = uris;
     }
 
+    /// <inheritdoc />
     public void ExtractConfiguration(ServerConfiguration configuration)
     {
         SymbolTableConfiguration.DefinitionFileExtensions = configuration.SymbolTableConfiguration.DefinitionFileExtensions.Select(str => str.ToLower()).ToArray();
@@ -49,6 +51,7 @@ public class ConfigurationManager : IConfigurationManager
         FileExtensionConfiguration = new FileExtensionConfiguration(fileExtensions.ToArray());
     }
 
+    /// <inheritdoc />
     public void SetWorkspaceFolders(WorkspaceFolder[]? workspaceFolders)
     {
         workspaceFolders ??= Array.Empty<WorkspaceFolder>();

@@ -3,13 +3,24 @@ using LanceServer.Core.Workspace;
 
 namespace LanceServer.Core.Document;
 
+/// <inheritdoc />
 public class DocumentInformation : IDocumentInformation
 {
+    /// <inheritdoc />
     public Uri Uri { get; }
+    
+    /// <inheritdoc />
     public string FileExtension { get; }
+    
+    /// <inheritdoc />
     public DocumentType DocumentType { get; }
+    
+    /// <inheritdoc />
     public string Encoding { get; }
 
+    /// <summary>
+    /// Instantiates a new <see cref="DocumentInformation"/>
+    /// </summary>
     public DocumentInformation(Uri uri, DocumentType documentType, string encoding)
     {
         Uri = uri;
@@ -18,6 +29,9 @@ public class DocumentInformation : IDocumentInformation
         Encoding = encoding;
     }
     
+    /// <summary>
+    /// Instantiates a new <see cref="DocumentInformation"/>
+    /// </summary>
     public DocumentInformation(Uri uri, SymbolTableConfiguration symbolTableConfiguration, string encoding = "utf8")
     {
         Uri = uri;

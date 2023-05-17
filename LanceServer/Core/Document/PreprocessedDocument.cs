@@ -6,13 +6,19 @@
 /// </summary>
 public class PreprocessedDocument : MacroExtractedDocument
 {
-    public PreprocessedDocument(IDocumentInformation information, string rawContent, string code, Placeholders placeholders, string macroTable) 
-        : base(information, rawContent, code, placeholders, macroTable)
+    /// <summary>
+    /// Instantiates a new <see cref="PreprocessedDocument"/>
+    /// </summary>
+    public PreprocessedDocument(IDocumentInformation information, string rawContent, string code, PlaceholderTable placeholderTable, string macroTable) 
+        : base(information, rawContent, code, placeholderTable, macroTable)
     {
     }
     
+    /// <summary>
+    /// Instantiates a new <see cref="PreprocessedDocument"/>
+    /// </summary>
     public PreprocessedDocument(MacroExtractedDocument macroExtractedDocument, string code) 
-        : this(macroExtractedDocument.Information, macroExtractedDocument.RawContent, code, macroExtractedDocument.Placeholders, macroExtractedDocument.MacroTable)
+        : this(macroExtractedDocument.Information, macroExtractedDocument.RawContent, code, macroExtractedDocument.PlaceholderTable, macroExtractedDocument.MacroTable)
     {
     } 
 }

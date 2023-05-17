@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace LanceServer.Core.Configuration.DataModel;
 
+/// <summary>
+/// The configuration object
+/// </summary>
 [DataContract]
 public class Settings
 {

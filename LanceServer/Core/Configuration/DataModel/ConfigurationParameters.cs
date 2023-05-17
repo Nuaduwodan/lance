@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace LanceServer.Core.Configuration.DataModel;
 
+/// <summary>
+/// The parameters for a configuration changed request
+/// </summary>
 [DataContract]
 public class ConfigurationParameters
 {

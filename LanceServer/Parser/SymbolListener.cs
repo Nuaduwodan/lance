@@ -214,6 +214,6 @@ public class SymbolListener : SinumerikNCBaseListener
 
     private string ReplacePlaceholder(string textWithPlaceholder)
     {
-        return _document.Placeholders.ReplacePlaceholder(textWithPlaceholder);
+        return _document.PlaceholderTable.ReplacePlaceholder(textWithPlaceholder);
     }
 }

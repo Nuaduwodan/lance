@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 
 namespace LanceServer.Core.Configuration.DataModel;
 
+/// <summary>
+/// The placeholder preprocessor configuration
+/// </summary>
 [DataContract]
 public class CustomPreprocessorConfiguration
 {

@@ -93,7 +93,7 @@ public class DiagnosticHandler : IDiagnosticHandler
 
         foreach (var symbol in symbols)
         {
-            if (symbol is BlockNumberSymbol && !symbolUses.Any(use => use.Identifier.Equals(symbol.Identifier, StringComparison.OrdinalIgnoreCase)))
+            if (symbol is not BlockNumberSymbol && !symbolUses.Any(use => use.Identifier.Equals(symbol.Identifier, StringComparison.OrdinalIgnoreCase)))
             {
                 var severity = symbol is LabelSymbol or BlockNumberSymbol ? DiagnosticSeverity.Hint : DiagnosticSeverity.Warning;
                 diagnostics.Add(new LspTypes.Diagnostic

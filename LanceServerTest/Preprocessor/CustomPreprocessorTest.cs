@@ -35,7 +35,7 @@ public class CustomPreprocessorTest
         // Arrange
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = "";
-        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
 
         var expectedResult = code;
 
@@ -64,7 +64,7 @@ public class CustomPreprocessorTest
 
                 ret
                 endproc";
-        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
 
         var expectedResult = code;
 
@@ -93,7 +93,7 @@ public class CustomPreprocessorTest
 
                 ret
                 endproc";
-        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
 
         var expectedResult = 
             @"proc testProcedure(int testparam)
@@ -134,7 +134,7 @@ public class CustomPreprocessorTest
 
                 ret
                 endproc";
-        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
 
         var expectedResult = 
             @"proc testProcedure(int testparam)
@@ -175,7 +175,7 @@ public class CustomPreprocessorTest
 
                 ret
                 endproc";
-        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
 
         var expectedResult = 
             @"proc _InstanceName_Procedure(int testparam)
@@ -216,7 +216,7 @@ public class CustomPreprocessorTest
 
                 ret
                 endproc";
-        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
 
         var expectedResult = 
             @"proc First_InstanceName_Procedure_Second_Part_End(int testparam)
@@ -259,7 +259,7 @@ public class CustomPreprocessorTest
 
                 ret
                 endproc";
-        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
 
         var expectedResult = 
             @"proc Procedure(int testparam)
@@ -302,7 +302,7 @@ public class CustomPreprocessorTest
 
                 ret
                 endproc";
-        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
 
         var expectedResult = code;
 

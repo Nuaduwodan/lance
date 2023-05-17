@@ -1,4 +1,5 @@
-﻿using LanceServer.Core.Configuration;
+﻿using System.Diagnostics.CodeAnalysis;
+using LanceServer.Core.Configuration;
 using LanceServer.Core.Configuration.DataModel;
 using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
@@ -309,6 +310,7 @@ class LSPServer : IDisposable
         }
     }
 
+    [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits")]
     public ServerConfiguration RequestConfiguration()
     {
         if (_trace)
@@ -413,6 +415,7 @@ class LSPServer : IDisposable
         return result;
     }
 
+    [SuppressMessage("Usage", "VSTHRD110:Observe result of async calls")]
     public void NotifyProgress<T>(T workDoneProgress, SumType<string, int> workDoneToken)
     {
         if (_trace)
