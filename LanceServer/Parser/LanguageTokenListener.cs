@@ -30,7 +30,8 @@ public class LanguageTokenListener : SinumerikNCBaseListener
         
         var code = context.GCODE().GetText();
         var codeAssignment = context.codeAssignment();
-        code += codeAssignment.intUnsigned() != null ? codeAssignment.intUnsigned().GetText(): codeAssignment.codeAssignmentExpression().expression().GetText();
+        var number = codeAssignment.intUnsigned() != null ? codeAssignment.intUnsigned().GetText(): codeAssignment.codeAssignmentExpression().expression().GetText();
+        code += number.TrimStart('0').PadLeft(1, '0');
         var range = ParserHelper.GetRangeForToken(context.Start);
         LanguageTokens.Add(new LanguageToken(code, range));
     }
@@ -42,25 +43,26 @@ public class LanguageTokenListener : SinumerikNCBaseListener
         var code = context.MCODE().GetText();
         var range = ParserHelper.GetRangeForToken(context.Start);
         var codeAssignment = context.codeAssignment();
+        string number;
         
         if (codeAssignment != null)
         {
             if (codeAssignment.intUnsigned() != null) // M3
             {
-                code += codeAssignment.intUnsigned().GetText();
+                number = codeAssignment.intUnsigned().GetText();
                 range = ParserHelper.GetRangeBetweenTokens(context.Start, codeAssignment.intUnsigned().Stop);
             }
             else // M = 3
             {
-                code += codeAssignment.codeAssignmentExpression().expression().GetText();
+                number = codeAssignment.codeAssignmentExpression().expression().GetText();
             }
         }
         else // M1 = 3
         {
             var codeAssignmentExpression = context.codeAssignmentParameterized().codeAssignmentExpression();
-            code += codeAssignmentExpression.expression().GetText();
+            number = codeAssignmentExpression.expression().GetText();
         }
-        
+        code += number.TrimStart('0').PadLeft(1, '0');
         LanguageTokens.Add(new LanguageToken(code, range));
     }
 }

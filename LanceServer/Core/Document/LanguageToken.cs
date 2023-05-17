@@ -8,7 +8,7 @@ public class LanguageToken
     
     public LanguageToken(string code, LspTypes.Range range)
     {
-        Code = code;
+        Code = code.ToLower();
         Range = range;
     }
 }
