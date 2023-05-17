@@ -2,7 +2,7 @@
 using LspTypes;
 using Newtonsoft.Json;
 
-namespace LanceServer.LanguageServerProtocol;
+namespace LanceServer.Protocol;
 
 [DataContract]
 public class ServerCapabilities
@@ -114,7 +114,9 @@ public class ServerCapabilities
     [JsonProperty(Required = Required.Default, DefaultValueHandling = DefaultValueHandling.Ignore)]
     public SumType<bool, WorkspaceSymbolOptions> WorkspaceSymbolProvider { get; set; }
 
-    [DataMember(Name = "workspace")] public _ServerCapabilities_Workspace Workspace { get; set; }
+    [DataMember(Name = "workspace")] 
+    public _ServerCapabilities_Workspace? Workspace { get; set; }
 
-    [DataMember(Name = "experimental")] public object Experimental { get; set; }
+    [DataMember(Name = "experimental")] 
+    public object? Experimental { get; set; }
 }

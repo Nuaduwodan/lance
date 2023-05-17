@@ -1,9 +1,5 @@
-﻿using Antlr4.Runtime;
-using LanceServer.Core.Document;
+﻿using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
-using LanceServer.Core.Workspace;
-using Position = LspTypes.Position;
-using Range = LspTypes.Range;
 
 namespace LanceServer.Parser;
 
@@ -40,7 +36,7 @@ public class SymbolListener : SinumerikNCBaseListener
             return;
         }
         
-        var symbol = new ParameterSymbol(identifier, uri, symbolRange, identifierRange, dataType, arrayDeclaration,true);
+        var symbol = new ParameterSymbol(identifier, uri, symbolRange, identifierRange, dataType, arrayDeclaration, true);
         _parameters.Add(symbol);
         SymbolTable.Add(symbol);
     }
@@ -163,20 +159,21 @@ public class SymbolListener : SinumerikNCBaseListener
         {
             length = typeContext.expression().GetText();
         }
+        
         compositeDataType = new CompositeDataType(type, length);
         return success;
     }
 
     private bool GetDataType(SinumerikNCParser.TypeContext typeContext, out DataType dataType)
     {
-        bool ignoreCase = true;
-        if(typeContext.GetText().StartsWith(DataType.String.ToString(),StringComparison.OrdinalIgnoreCase))
+        const bool IGNORE_CASE = true;
+        if (typeContext.GetText().StartsWith(DataType.String.ToString(), StringComparison.OrdinalIgnoreCase))
         {
             dataType = DataType.String;
             return true;
         }
 
-        return Enum.TryParse(typeContext.GetText(), ignoreCase, out dataType);
+        return Enum.TryParse(typeContext.GetText(), IGNORE_CASE, out dataType);
     }
 
     private string[] GetArrayDeclaration(SinumerikNCParser.ArrayDeclarationContext? arrayContext)
@@ -191,10 +188,12 @@ public class SymbolListener : SinumerikNCBaseListener
         {
             dimensions[0] = arrayContext.first.GetText();
         }
+        
         if (arrayContext.second != null)
         {
             dimensions[1] = arrayContext.second.GetText();
         }
+        
         if (arrayContext.third != null)
         {
             dimensions[2] = arrayContext.third.GetText();

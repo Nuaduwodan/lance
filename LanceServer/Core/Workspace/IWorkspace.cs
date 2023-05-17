@@ -1,4 +1,5 @@
-﻿using LanceServer.Core.Document;
+﻿using System.Diagnostics.CodeAnalysis;
+using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
 using LspTypes;
 
@@ -76,7 +77,7 @@ public interface IWorkspace
     /// <param name="symbolName">The name of the symbol to be found.</param>
     /// <param name="documentOfReference">The URI of the document where the symbol is used.</param>
     /// <param name="symbol">The requested symbol if true is returned.</param>
-    public bool TryGetSymbol(string symbolName, Uri documentOfReference, out ISymbol symbol);
+    public bool TryGetSymbol(string symbolName, Uri documentOfReference, [MaybeNullWhen(false)] out ISymbol symbol);
 
     /// <summary>
     /// Returns all the global symbols that are defined in the document referenced by the uri.

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime;
 using LanceServer.Core.Configuration;
 using LanceServer.Core.Document;
 using LanceServer.Parser;
@@ -205,7 +204,7 @@ public class Workspace : IWorkspace
         {
             foreach (var fileExtension in fileExtensions)
             {
-                documentUris.AddRange(FileUtil.GetFilesInDirectory(workspaceFolder, "*"+fileExtension));
+                documentUris.AddRange(FileUtil.GetFilesInDirectory(workspaceFolder, "*" + fileExtension));
             }
         }
 
@@ -219,7 +218,8 @@ public class Workspace : IWorkspace
         var maxCount = documentUris.Count;
         double currentCount = 0;
         
-        Parallel.ForEach(documentUris, uri => {
+        Parallel.ForEach(documentUris, uri => 
+        {
             GetSymbolisedDocument(uri);
             currentCount++;
             

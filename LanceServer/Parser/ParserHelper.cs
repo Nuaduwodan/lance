@@ -20,6 +20,6 @@ public static class ParserHelper
         var line = (uint)identifierToken.Line - 1;
         var characterStart = (uint)identifierToken.Column;
         var characterEnd = characterStart + (uint)identifierToken.Text.Length;
-        return new Range { Start = new Position(line, characterStart), End = new Position(line, characterEnd)};
+        return new Range { Start = new Position(line, characterStart), End = new Position(line, characterEnd) };
     }
 }

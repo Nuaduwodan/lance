@@ -35,7 +35,7 @@ internal static class Program
         config.AddValidator(result =>
         {
             var fileInfo = result.GetValueForOption(config);
-            if (!fileInfo.Exists)
+            if (!fileInfo!.Exists)
             {
                 result.ErrorMessage = $"The file {fileInfo.FullName} does not exist.";
             }
@@ -45,18 +45,15 @@ internal static class Program
             name: "--workspace-folders",
             description: "provide a list of folders which will be processed");
         folders.AddAlias("-w");
-        folders.Arity = ArgumentArity.ZeroOrMore;
+        folders.Arity = ArgumentArity.OneOrMore;
         folders.AllowMultipleArgumentsPerToken = true;
         folders.IsRequired = true;
         folders.AddValidator(result =>
         {
-            foreach (var folder in result.GetValueForOption(folders))
+            foreach (var folder in result.GetValueForOption(folders)!.Where(folder => !folder.Exists))
             {
-                if (!folder.Exists)
-                {
-                    result.ErrorMessage = $"The folder {folder.FullName} does not exist.";
-                    return;
-                }
+                result.ErrorMessage = $"The folder {folder.FullName} does not exist.";
+                return;
             }
         });
 
@@ -90,7 +87,7 @@ internal static class Program
 
         var docConfig = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "documentation.json");
         var documentation = JsonConvert.DeserializeObject<DocumentationConfiguration>(FileUtil.ReadFileContent(docConfig)) 
-                    ?? throw new FileNotFoundException(docConfig + " not found");
+                            ?? throw new FileNotFoundException(docConfig + " not found");
         var config = new ConfigurationManager(documentation);
         var parser = new ParserManager();
         var customPreprocessor = new PlaceholderPreprocessor(config);
@@ -125,10 +122,10 @@ internal static class Program
         var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         var docConfigPath = Path.Join(basePath, "documentation.json");
         var docConfig = JsonConvert.DeserializeObject<DocumentationConfiguration>(FileUtil.ReadFileContent(docConfigPath)) 
-                ?? throw new FileNotFoundException(docConfigPath + " not found");
+                        ?? throw new FileNotFoundException(docConfigPath + " not found");
         var serverConfigPath = configFileInfo.Name;
         var serverConfig = JsonConvert.DeserializeObject<ServerConfiguration>(FileUtil.ReadFileContent(serverConfigPath)) 
-                ?? throw new FileNotFoundException(serverConfigPath + " not found");
+                           ?? throw new FileNotFoundException(serverConfigPath + " not found");
 
         var uris = directories.Select(directory => new Uri(directory.FullName)).ToArray();
         var config = new ConfigurationManager(docConfig, uris, serverConfig);

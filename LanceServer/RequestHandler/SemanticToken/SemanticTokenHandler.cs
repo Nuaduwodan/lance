@@ -10,7 +10,6 @@ namespace LanceServer.RequestHandler.SemanticToken;
 /// </summary>
 public class SemanticTokenHandler : ISemanticTokenHandler
 {
-
     public SemanticTokens ProcessRequest(LanguageTokenExtractedDocument document, IWorkspace workspace)
     {
         var localSymbols = document.SymbolTable.GetAll();

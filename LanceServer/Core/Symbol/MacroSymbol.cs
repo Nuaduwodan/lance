@@ -20,7 +20,7 @@ public class MacroSymbol : ISymbol
     public Range IdentifierRange { get; }
 
     /// <inheritdoc/>
-    public string Description => $"{(_isGlobal?"global":"local")} macro{(_isGlobal?" in "+Path.GetFileName(SourceDocument.LocalPath):"")}";
+    public string Description => $"{(_isGlobal ? "global" : "local")} macro{(_isGlobal ? " in " + Path.GetFileName(SourceDocument.LocalPath) : "")}";
         
     /// <inheritdoc/>
     public string Code => $"define {Identifier} as {_value}";

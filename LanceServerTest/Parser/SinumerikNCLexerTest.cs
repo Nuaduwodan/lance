@@ -22,6 +22,7 @@ public class SinumerikNCLexerTest
         {
             tokens.Consume();
         }
+
         var actualTokenList = tokens.GetTokens();
 
         // Assert
@@ -45,6 +46,7 @@ public class SinumerikNCLexerTest
         {
             tokens.Consume();
         }
+
         var actualTokenList = tokens.GetTokens();
 
         // Assert
@@ -56,18 +58,17 @@ public class SinumerikNCLexerTest
     public void Procedure()
     {
         // Arrange
-        int expectedTokenCount = 6;
-
-        String code = "proc procedure()\n\nendproc";
-        ICharStream stream = CharStreams.fromString(code);
-        ITokenSource lexer = new SinumerikNCLexer(stream);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        var code = "proc procedure()\n\nendproc";
+        var stream = CharStreams.fromString(code);
+        var lexer = new SinumerikNCLexer(stream);
+        var tokens = new CommonTokenStream(lexer);
 
         // Act
         while (tokens.LA(1) != IntStreamConstants.EOF)
         {
             tokens.Consume();
         }
+        
         var actualTokenList = tokens.GetTokens();
 
         // Assert
@@ -79,7 +80,7 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.PROC_END, actualTokenList[tokenPosition++].Type);
-        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition].Type);
     }
     
     [TestMethod]
@@ -108,6 +109,7 @@ public class SinumerikNCLexerTest
         {
             tokens.Consume();
         }
+        
         var actualTokenList = tokens.GetTokens();
 
         // Assert
@@ -167,7 +169,7 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.PROC_END, actualTokenList[tokenPosition++].Type);
         
-        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition].Type);
     }
     
     [TestMethod]
@@ -186,6 +188,7 @@ public class SinumerikNCLexerTest
         {
             tokens.Consume();
         }
+        
         var actualTokenList = tokens.GetTokens();
 
         // Assert
@@ -211,7 +214,7 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.CONCAT, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.STRING, actualTokenList[tokenPosition++].Type);
         
-        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition].Type);
     }
     
     [TestMethod]
@@ -230,6 +233,7 @@ public class SinumerikNCLexerTest
         {
             tokens.Consume();
         }
+        
         var actualTokenList = tokens.GetTokens();
 
         // Assert
@@ -253,7 +257,7 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.MACRO_AS, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NAME, actualTokenList[tokenPosition++].Type);
         
-        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition].Type);
     }
     
     [TestMethod]
@@ -272,6 +276,7 @@ public class SinumerikNCLexerTest
         {
             tokens.Consume();
         }
+        
         var actualTokenList = tokens.GetTokens();
 
         // Assert
@@ -303,7 +308,7 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.OR_B, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.BIN, actualTokenList[tokenPosition++].Type);
         
-        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition].Type);
     }
     
     [TestMethod]
@@ -343,6 +348,7 @@ public class SinumerikNCLexerTest
         {
             tokens.Consume();
         }
+        
         var actualTokenList = tokens.GetTokens();
 
         // Assert
@@ -527,6 +533,6 @@ public class SinumerikNCLexerTest
         Assert.AreEqual(SinumerikNCLexer.PROC_END, actualTokenList[tokenPosition++].Type);
         Assert.AreEqual(SinumerikNCLexer.NEWLINE, actualTokenList[tokenPosition++].Type);
         
-        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition++].Type);
+        Assert.AreEqual(SinumerikNCLexer.Eof, actualTokenList[tokenPosition].Type);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
-using LanceServer.LanguageServerProtocol;
+using LanceServer.Protocol;
 using LspTypes;
 using Range = LspTypes.Range;
 
@@ -12,6 +12,7 @@ public class DiagnosticHandler : IDiagnosticHandler
     private const int MaxFileNameLength = 24;
     private const int MaxAxisNameLength = 8;
     private const int MaxSymbolIdentifierLength = 31;
+    
     public DocumentDiagnosticReport HandleRequest(LanguageTokenExtractedDocument document, IWorkspace workspace)
     {
         var diagnostics = new List<LspTypes.Diagnostic>();
@@ -30,25 +31,28 @@ public class DiagnosticHandler : IDiagnosticHandler
                         Range = symbolUse.Range,
                         Severity = DiagnosticSeverity.Warning,
                         Source = "Lance",
-                        RelatedInformation = new[]{new DiagnosticRelatedInformation
+                        RelatedInformation = new[]
                         {
-                            Location = new Location
+                            new DiagnosticRelatedInformation
                             {
-                                Range = symbol.IdentifierRange,
-                                Uri = symbol.SourceDocument.LocalPath
-                            },
-                            Message = $"{symbol.Identifier} has not the same capitalisation as at least one of its uses."
-                        }},
+                                Location = new Location
+                                {
+                                    Range = symbol.IdentifierRange,
+                                    Uri = symbol.SourceDocument.LocalPath
+                                },
+                                Message = $"{symbol.Identifier} has not the same capitalisation as at least one of its uses."
+                            }
+                        },
                         Message = $"{symbolUse.Identifier} has not the same capitalisation as its definition: {symbol.Identifier}."
                     });
                 }
 
                 if (symbol is ProcedureSymbol procedureSymbol)
                 {
-                    if (procedureSymbol.NeedsExternDeclaration && symbolUse is not ProcedureDeclarationSymbolUse )
+                    if (procedureSymbol.NeedsExternDeclaration && symbolUse is not ProcedureDeclarationSymbolUse)
                     {
                         if (!symbolUses.Any(symbolUse2 => symbolUse2 is ProcedureDeclarationSymbolUse 
-                                                     && symbolUse2.Identifier.Equals(symbolUse.Identifier, StringComparison.OrdinalIgnoreCase)))
+                                                          && symbolUse2.Identifier.Equals(symbolUse.Identifier, StringComparison.OrdinalIgnoreCase)))
                         {
                             diagnostics.Add(new LspTypes.Diagnostic
                             {
@@ -58,7 +62,8 @@ public class DiagnosticHandler : IDiagnosticHandler
                                 Message = $"Missing extern declaration for procedure {symbolUse.Identifier}."
                             });
                         }
-                    } else if (!procedureSymbol.NeedsExternDeclaration && symbolUse is ProcedureDeclarationSymbolUse)
+                    }
+                    else if (!procedureSymbol.NeedsExternDeclaration && symbolUse is ProcedureDeclarationSymbolUse)
                     {
                         diagnostics.Add(new LspTypes.Diagnostic
                         {
@@ -68,6 +73,7 @@ public class DiagnosticHandler : IDiagnosticHandler
                             Message = $"Unnecessary extern declaration for procedure {symbolUse.Identifier}."
                         });
                     }
+
                     //todo check argument count
                 }
             }
@@ -96,7 +102,7 @@ public class DiagnosticHandler : IDiagnosticHandler
                     Severity = severity,
                     Source = "Lance",
                     Message = $"The symbol {symbol.Identifier} has currently no uses.",
-                    Tags = new [] { DiagnosticTag.Unnecessary }
+                    Tags = new[] { DiagnosticTag.Unnecessary }
                 });
             }
 
@@ -117,7 +123,7 @@ public class DiagnosticHandler : IDiagnosticHandler
         {
             diagnostics.Add(new LspTypes.Diagnostic
             {
-                Range = new Range{Start = new Position(0, 0), End = new Position(0, 0)},
+                Range = new Range { Start = new Position(0, 0), End = new Position(0, 0) },
                 Severity = DiagnosticSeverity.Error,
                 Source = "Lance",
                 Message = $"The filename of the file {filename} is {filename.Length - MaxFileNameLength} characters longer than the maximum allowed length of {MaxFileNameLength}."
@@ -127,6 +133,6 @@ public class DiagnosticHandler : IDiagnosticHandler
         //todo check matching parameters
         //todo check if all scopes are closed again
         
-        return new DocumentDiagnosticReport{Items = diagnostics.ToArray()};
+        return new DocumentDiagnosticReport { Items = diagnostics.ToArray() };
     }
 }

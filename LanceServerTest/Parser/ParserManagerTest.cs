@@ -1,6 +1,5 @@
 ﻿using Antlr4.Runtime.Tree;
 using LanceServer.Core.Document;
-using LanceServer.Core.Workspace;
 using LanceServer.Parser;
 using LanceServerTest.Core.Workspace;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -27,7 +26,7 @@ public class ParserManagerTest
             }
             else
             {
-                for (var i = 0;i < currentPosition.ChildCount;i++)
+                for (var i = 0; i < currentPosition.ChildCount; i++)
                 {
                     InitializeRecursive(currentPosition.GetChild(i));
                 }
@@ -41,7 +40,7 @@ public class ParserManagerTest
         // Arrange
         var expectedText = "<EOF>";
 
-        var code ="";
+        var code = string.Empty;
         var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.spf"), ".spf", DocumentType.SubProcedure), code, code, new Placeholders(new Dictionary<string, string>()), "");
         var parserManager = new ParserManager();
 
@@ -129,7 +128,7 @@ public class ParserManagerTest
         elementPosition++; //newline
         Assert.AreEqual("ret", treeWalker.Elements[elementPosition++]);
         elementPosition++; //newline
-        Assert.AreEqual("endproc", treeWalker.Elements[elementPosition++]);
+        Assert.AreEqual("endproc", treeWalker.Elements[elementPosition]);
     }
 
     [TestMethod]
@@ -164,7 +163,7 @@ public class ParserManagerTest
         Assert.AreEqual("testProcedure", actualSymbols[symbolPosition++].Identifier);
         Assert.AreEqual("definedMacro", actualSymbols[symbolPosition++].Identifier);
         Assert.AreEqual("declaredVariable", actualSymbols[symbolPosition++].Identifier);
-        Assert.AreEqual("definedVariable", actualSymbols[symbolPosition++].Identifier);
+        Assert.AreEqual("definedVariable", actualSymbols[symbolPosition].Identifier);
     }
 
     [TestMethod]
@@ -200,6 +199,6 @@ public class ParserManagerTest
         Assert.AreEqual("testProcedure", actualSymbols[symbolPosition++].Identifier);
         Assert.AreEqual("definedMacro", actualSymbols[symbolPosition++].Identifier);
         Assert.AreEqual("declaredVariable", actualSymbols[symbolPosition++].Identifier);
-        Assert.AreEqual("definedVariable", actualSymbols[symbolPosition++].Identifier);
+        Assert.AreEqual("definedVariable", actualSymbols[symbolPosition].Identifier);
     }
 }

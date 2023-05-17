@@ -1,9 +1,9 @@
 ﻿using System.Runtime.Serialization;
 
-namespace LanceServer.LanguageServerProtocol;
+namespace LanceServer.Protocol;
 
 [DataContract]
-public class DocumentDiagnosticReportKind
+public static class DocumentDiagnosticReportKind
 {
     public const string Full = "full";
     public const string Unchanged = "unchanged";

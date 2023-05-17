@@ -62,7 +62,6 @@ public class HoverListener : SinumerikNCBaseListener
         }
         
         SetTokenIfPositionMatches(context.NAME().Symbol);
-        
     }
 
     public override void ExitMacroUse(SinumerikNCParser.MacroUseContext context)

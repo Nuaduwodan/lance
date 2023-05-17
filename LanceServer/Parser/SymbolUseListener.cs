@@ -1,9 +1,6 @@
 ﻿using Antlr4.Runtime;
 using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
-using LanceServer.Core.Workspace;
-using LspTypes;
-using Range = LspTypes.Range;
 
 namespace LanceServer.Parser;
 

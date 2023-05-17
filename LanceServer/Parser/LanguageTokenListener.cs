@@ -1,7 +1,5 @@
 ﻿using Antlr4.Runtime.Tree;
 using LanceServer.Core.Document;
-using LspTypes;
-using Range = LspTypes.Range;
 
 namespace LanceServer.Parser;
 
@@ -30,7 +28,7 @@ public class LanguageTokenListener : SinumerikNCBaseListener
         
         var code = context.GCODE().GetText();
         var codeAssignment = context.codeAssignment();
-        var number = codeAssignment.intUnsigned() != null ? codeAssignment.intUnsigned().GetText(): codeAssignment.codeAssignmentExpression().expression().GetText();
+        var number = codeAssignment.intUnsigned() != null ? codeAssignment.intUnsigned().GetText() : codeAssignment.codeAssignmentExpression().expression().GetText();
         code += number.TrimStart('0').PadLeft(1, '0');
         var range = ParserHelper.GetRangeForToken(context.Start);
         LanguageTokens.Add(new LanguageToken(code, range));
@@ -62,6 +60,7 @@ public class LanguageTokenListener : SinumerikNCBaseListener
             var codeAssignmentExpression = context.codeAssignmentParameterized().codeAssignmentExpression();
             number = codeAssignmentExpression.expression().GetText();
         }
+        
         code += number.TrimStart('0').PadLeft(1, '0');
         LanguageTokens.Add(new LanguageToken(code, range));
     }

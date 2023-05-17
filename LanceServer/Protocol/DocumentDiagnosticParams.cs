@@ -2,7 +2,9 @@
 using LspTypes;
 using Newtonsoft.Json;
 
-namespace LanceServer.LanguageServerProtocol;
+#pragma warning disable CS8618
+
+namespace LanceServer.Protocol;
 
 [DataContract]
 public class DocumentDiagnosticParams : WorkDoneProgressParams, IPartialResultParams

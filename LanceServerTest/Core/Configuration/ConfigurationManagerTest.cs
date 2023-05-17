@@ -8,16 +8,15 @@ namespace LanceServerTest.Core.Configuration;
 [TestClass]
 public class ConfigurationManagerTest
 {
-
     [TestMethod]
     public void ExtractConfigurationTest()
     {
         // Arrange
         var expectedCustomPreprocessorConfiguration = new CustomPreprocessorConfiguration();
         expectedCustomPreprocessorConfiguration.PlaceholderType = PlaceholderType.RegEx;
-        expectedCustomPreprocessorConfiguration.FileExtensions = new[]{ ".tpl" };
-        expectedCustomPreprocessorConfiguration.Placeholders = new []{ "proc <InstanceName>", "([^\"])<[a-zA-Z0-9\\.]+>" };
-        var expectedSymbolTableConfiguration = new SymbolTableConfiguration() { ManufacturerCyclesDirectories = new[]{ "asdf" }, DefinitionFileExtensions = new[]{ "asdf" }, SubProcedureFileExtensions = new[]{ "asdf" }, MainProcedureFileExtensions = new[]{ "asdf" } };
+        expectedCustomPreprocessorConfiguration.FileExtensions = new[] { ".tpl" };
+        expectedCustomPreprocessorConfiguration.Placeholders = new[] { "proc <InstanceName>", "([^\"])<[a-zA-Z0-9\\.]+>" };
+        var expectedSymbolTableConfiguration = new SymbolTableConfiguration() { ManufacturerCyclesDirectories = new[] { "asdf" }, DefinitionFileExtensions = new[] { "asdf" }, SubProcedureFileExtensions = new[] { "asdf" }, MainProcedureFileExtensions = new[] { "asdf" } };
             
         var configuration = new ServerConfiguration();
         configuration.Trace = true;
@@ -39,5 +38,4 @@ public class ConfigurationManagerTest
         CollectionAssert.AreEqual(expectedCustomPreprocessorConfiguration.FileExtensions, actualCustomPreprocessorConfiguration.FileExtensions);
         CollectionAssert.AreEqual(expectedCustomPreprocessorConfiguration.Placeholders, actualCustomPreprocessorConfiguration.Placeholders);
     }
-        
 }

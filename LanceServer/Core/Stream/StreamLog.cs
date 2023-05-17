@@ -6,17 +6,24 @@ class StreamLog : System.IO.Stream
 {
     string _name;
 
-    public StreamLog(string name) { _name = name; }
+    public StreamLog(string name)
+    {
+        _name = name;
+    }
 
-    public override bool CanRead { get { return false; } }
+    public override bool CanRead => false;
 
-    public override bool CanSeek { get { return false; } }
+    public override bool CanSeek => false;
 
-    public override bool CanWrite { get { return true; } }
+    public override bool CanWrite => true;
 
     public override long Length => throw new NotImplementedException();
 
-    public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public override long Position
+    {
+        get => throw new NotImplementedException();
+        set => throw new NotImplementedException();
+    }
 
     public override void Flush()
     {

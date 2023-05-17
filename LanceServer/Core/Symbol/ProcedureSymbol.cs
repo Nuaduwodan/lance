@@ -46,5 +46,4 @@ public class ProcedureSymbol : ISymbol
         NeedsExternDeclaration = needsExternDeclaration;
         Documentation = documentation;
     }
-
 }

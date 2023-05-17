@@ -13,7 +13,7 @@ public class ReadDocument : Document
     /// <summary>
     /// Creates a new instance of <see cref="ReadDocument"/>
     /// </summary>
-    public ReadDocument(IDocumentInformation documentInformation, string rawContent): base(documentInformation)
+    public ReadDocument(IDocumentInformation documentInformation, string rawContent) : base(documentInformation)
     {
         RawContent = rawContent;
     }

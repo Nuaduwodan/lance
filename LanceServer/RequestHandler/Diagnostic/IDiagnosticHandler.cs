@@ -1,6 +1,6 @@
 ﻿using LanceServer.Core.Document;
 using LanceServer.Core.Workspace;
-using LanceServer.LanguageServerProtocol;
+using LanceServer.Protocol;
 
 namespace LanceServer.RequestHandler.Diagnostic;
 

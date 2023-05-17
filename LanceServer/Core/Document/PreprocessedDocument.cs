@@ -2,7 +2,7 @@
 
 /// <summary>
 /// NOT IMPLEMENTED
-/// Same as <see cref="PlaceholderPreprocessedDocument"/>
+/// Same as <see cref="T:LanceServer.Core.Document.PlaceholderPreprocessedDocument" />
 /// </summary>
 public class PreprocessedDocument : MacroExtractedDocument
 {

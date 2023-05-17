@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+#pragma warning disable CS8618
+
 namespace LanceServer.Core.Configuration.DataModel;
 
 public class TokenDocumentation

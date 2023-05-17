@@ -1,7 +1,6 @@
 ﻿using LanceServer.Core.Configuration;
 using LanceServer.Core.Configuration.DataModel;
 using LanceServer.Core.Document;
-using LanceServer.Core.Workspace;
 using LanceServer.Preprocessor;
 using LanceServerTest.Core.Workspace;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,7 +11,7 @@ namespace LanceServerTest.Preprocessor;
 [TestClass]
 public class CustomPreprocessorTest
 {
-    private IConfigurationManager _configurationManagerMock;
+    private IConfigurationManager _configurationManagerMock = null!;
         
     [TestInitialize]
     public void Init()
@@ -21,8 +20,8 @@ public class CustomPreprocessorTest
             
         var customPreprocessorConfiguration = new CustomPreprocessorConfiguration();
         customPreprocessorConfiguration.PlaceholderType = PlaceholderType.RegEx;
-        customPreprocessorConfiguration.FileExtensions = new[]{ ".tpl" };
-        customPreprocessorConfiguration.Placeholders = new []{ "<[a-zA-Z0-9\\.]+>" };
+        customPreprocessorConfiguration.FileExtensions = new[] { ".tpl" };
+        customPreprocessorConfiguration.Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" };
 
         configurationManagerMock.Setup(m => m.CustomPreprocessorConfiguration)
             .Returns(customPreprocessorConfiguration);

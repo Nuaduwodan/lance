@@ -1,4 +1,3 @@
-using LanceServer.Core.Configuration;
 using LanceServer.Core.Workspace;
 using LanceServer.RequestHandler.Diagnostic;
 using LspTypes;
@@ -46,7 +45,8 @@ public class CommandLine
             {
                 errors++;
             }
-            Console.Out.WriteLine($"{diagnostic.Value.Severity} {diagnostic.Key.LocalPath} {diagnostic.Value.Range.Start.Line+1}:{diagnostic.Value.Range.Start.Character+1} {diagnostic.Value.Message}");
+            
+            Console.Out.WriteLine($"{diagnostic.Value.Severity} {diagnostic.Key.LocalPath} {diagnostic.Value.Range.Start.Line + 1}:{diagnostic.Value.Range.Start.Character + 1} {diagnostic.Value.Message}");
         }
 
         return errors;

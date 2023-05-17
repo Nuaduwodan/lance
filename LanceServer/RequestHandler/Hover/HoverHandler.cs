@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Antlr4.Runtime.Tree;
 using LanceServer.Core.Configuration;
 using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
@@ -13,7 +12,6 @@ namespace LanceServer.RequestHandler.Hover;
 public class HoverHandler : IHoverHandler
 {
     private IConfigurationManager _configurationManager;
-    private readonly ParseTreeWalker _walker = new();
 
     /// <summary>
     /// Instantiates a new <see cref="HoverHandler"/>
@@ -31,8 +29,8 @@ public class HoverHandler : IHoverHandler
         if (document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))
         {
             var value = workspace.TryGetSymbol(symbolUse.Identifier.ToLower(), document.Information.Uri, out var symbol)
-                        ? CreateMarkdownString(symbol)
-                        : EscapeMarkdown($"Cannot resolve symbol '{symbolUse.Identifier}'");
+                ? CreateMarkdownString(symbol)
+                : EscapeMarkdown($"Cannot resolve symbol '{symbolUse.Identifier}'");
             hover = CreateHover(value, symbolUse.Range);
         }
 

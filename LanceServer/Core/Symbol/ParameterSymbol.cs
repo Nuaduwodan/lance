@@ -20,7 +20,7 @@ public class ParameterSymbol : ISymbol
     public Range IdentifierRange { get; }
 
     /// <inheritdoc/>
-    public string Description => $"parameter by {(_outVar?"reference":"value")}";
+    public string Description => $"parameter by {(_outVar ? "reference" : "value")}";
         
     /// <inheritdoc/>
     public string Code => GetCode();

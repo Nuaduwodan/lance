@@ -34,6 +34,7 @@ public class SymbolUseTable
         {
             return false;
         }
+        
         if (position.Character < range.Start.Character || range.End.Character < position.Character)
         {
             return false;

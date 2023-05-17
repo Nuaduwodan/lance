@@ -1,4 +1,4 @@
-﻿namespace LanceServer.LanguageServerProtocol;
+﻿namespace LanceServer.Protocol;
 
 public static class Method
 {

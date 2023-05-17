@@ -13,8 +13,8 @@ public interface IHoverHandler
     /// Handles the hover request.
     /// </summary>
     /// <param name="document">The document with the necessary symbol information</param>
-    /// <param name="requestParams">The hover request parameters</param>
+    /// <param name="position">The hover position</param>
     /// <param name="workspace">The workspace</param>
     /// <returns>The hover response <see cref="LspTypes.Hover"/></returns>
-    LspTypes.Hover HandleRequest(LanguageTokenExtractedDocument document, Position position, IWorkspace workspace);
+    public LspTypes.Hover HandleRequest(LanguageTokenExtractedDocument document, Position position, IWorkspace workspace);
 }

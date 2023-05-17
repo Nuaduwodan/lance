@@ -2,7 +2,7 @@
 using LspTypes;
 using Newtonsoft.Json;
 
-namespace LanceServer.LanguageServerProtocol;
+namespace LanceServer.Protocol;
 
 [DataContract]
 public class DiagnosticRegistrationOptions : DiagnosticOptions, ITextDocumentRegistrationOptions, IStaticRegistrationOptions

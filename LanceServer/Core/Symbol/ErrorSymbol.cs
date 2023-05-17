@@ -11,13 +11,13 @@ public class ErrorSymbol : ISymbol
     public string Identifier => string.Empty;
 
     /// <inheritdoc/>
-    public Uri SourceDocument => null;
+    public Uri SourceDocument => null!;
 
     /// <inheritdoc/>
-    public Range SymbolRange => null;
+    public Range SymbolRange => null!;
 
     /// <inheritdoc/>
-    public Range IdentifierRange => null;
+    public Range IdentifierRange => null!;
 
     /// <inheritdoc/>
     public string Description => string.Empty;

@@ -22,6 +22,6 @@ public class GotoDefinitionHandler : IGotoDefinitionHandler
             return new[] { locationLink };
         }
 
-        return new LocationLink[]{};
+        return new LocationLink[] { };
     }
 }

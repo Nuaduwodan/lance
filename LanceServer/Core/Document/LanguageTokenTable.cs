@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using LspTypes;
-using Range = System.Range;
 
 namespace LanceServer.Core.Document;
 
@@ -31,6 +30,7 @@ public class LanguageTokenTable
         {
             return false;
         }
+        
         if (position.Character < range.Start.Character || range.End.Character < position.Character)
         {
             return false;

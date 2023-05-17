@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using LanceServer.Core.Configuration;
 using LanceServer.Core.Document;
-using LanceServer.Core.Workspace;
 
 namespace LanceServer.Preprocessor;
 
@@ -20,7 +19,7 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
 
         var placeholders = new Dictionary<string, string>();
             
-        if(!preprocessorConfiguration.FileExtensions.Contains(document.Information.FileExtension))
+        if (!preprocessorConfiguration.FileExtensions.Contains(document.Information.FileExtension))
         {
             return new PlaceholderPreprocessedDocument(document, document.RawContent, new Placeholders(placeholders));
         }

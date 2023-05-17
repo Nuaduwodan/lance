@@ -12,6 +12,7 @@ class StreamSplitter : System.IO.Stream
         OwnSlaveStream = 0x2,
         OwnBoth = OwnPrimaryStream | OwnSlaveStream
     }
+
     public enum SlaveFailAction
     {
         Propagate,
@@ -43,6 +44,7 @@ class StreamSplitter : System.IO.Stream
     private SlaveFailHandler? _slaveSeekFailFilter;
 
     private int _lastReadResult;
+
     public StreamSplitter(
         System.IO.Stream primaryStream, System.IO.Stream slaveStream,
         StreamOwnership streamsOwned)
@@ -51,6 +53,7 @@ class StreamSplitter : System.IO.Stream
         _slaveStream = slaveStream;
         _streamsOwned = streamsOwned;
     }
+    
     public override void Close()
     {
         Flush();
@@ -63,8 +66,10 @@ class StreamSplitter : System.IO.Stream
         {
             _slaveStream.Close();
         }
+        
         base.Close();
     }
+    
     public StreamOwnership StreamsOwned
     {
         get => _streamsOwned;
@@ -72,8 +77,11 @@ class StreamSplitter : System.IO.Stream
     }
 
     public System.IO.Stream PrimaryStream => _primaryStream;
+    
     public System.IO.Stream SlaveStream => _slaveStream;
+    
     public int LastReadResult => _lastReadResult;
+    
     public SlaveFailAction SlaveFailActions
     {
         set
@@ -376,23 +384,22 @@ class StreamSplitter : System.IO.Stream
 
     private void FilterException(Exception exc, SlaveFailMethod method)
     {
-        SlaveFailAction action = SlaveFailAction.Filter;
+        var action = SlaveFailAction.Filter;
 
-        if (method == SlaveFailMethod.Read)
+        switch (method)
         {
-            action = _slaveReadFailFilter(this, method, exc);
-        }
-        else if (method == SlaveFailMethod.Write)
-        {
-            action = _slaveWriteFailFilter(this, method, exc);
-        }
-        else if (method == SlaveFailMethod.Seek)
-        {
-            action = _slaveSeekFailFilter(this, method, exc);
-        }
-        else
-        {
-            Debug.Assert(false, "Unhandled SlaveFailMethod.");
+            case SlaveFailMethod.Read:
+                action = _slaveReadFailFilter!(this, method, exc);
+                break;
+            case SlaveFailMethod.Write:
+                action = _slaveWriteFailFilter!(this, method, exc);
+                break;
+            case SlaveFailMethod.Seek:
+                action = _slaveSeekFailFilter!(this, method, exc);
+                break;
+            default:
+                Debug.Assert(false, "Unhandled SlaveFailMethod.");
+                break;
         }
 
         if (action == SlaveFailAction.Filter)
@@ -403,6 +410,7 @@ class StreamSplitter : System.IO.Stream
                 exc
             );
         }
+        
         HandleSlaveException(exc, method, action);
     }
 

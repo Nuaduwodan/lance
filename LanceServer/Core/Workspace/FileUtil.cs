@@ -5,8 +5,6 @@
 /// </summary>
 public class FileUtil
 {
-    private static Dictionary<string, string> _cache = new();
-
     public static IEnumerable<Uri> GetFilesInDirectory(Uri path, string filter)
     {
         var dir = new DirectoryInfo(path.LocalPath);

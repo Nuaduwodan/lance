@@ -1,18 +1,17 @@
 ﻿using LanceServer.Core.Configuration.DataModel;
 using LanceServer.Core.Workspace;
 using LspTypes;
-using Newtonsoft.Json;
 
 namespace LanceServer.Core.Configuration;
 
 public class ConfigurationManager : IConfigurationManager
 {
-    public SymbolTableConfiguration SymbolTableConfiguration { get; private set; } = new();
+    public SymbolTableConfiguration SymbolTableConfiguration { get; } = new();
     public FileExtensionConfiguration FileExtensionConfiguration { get; private set; } = new(Array.Empty<string>());
-    public DocumentationConfiguration DocumentationConfiguration { get; private set; }
-    public CustomPreprocessorConfiguration CustomPreprocessorConfiguration { get; private set; } = new();
+    public DocumentationConfiguration DocumentationConfiguration { get; }
+    public CustomPreprocessorConfiguration CustomPreprocessorConfiguration { get; } = new();
     public Uri[] WorkspaceFolders { get; private set; } = Array.Empty<Uri>();
-    public ClientCapabilities ClientCapabilities { get; set; }
+    public ClientCapabilities ClientCapabilities { get; set; } = new();
 
     /// <summary>
     /// Instantiates a new <see cref="ConfigurationManager"/>
@@ -27,9 +26,9 @@ public class ConfigurationManager : IConfigurationManager
     /// Instantiates a new <see cref="ConfigurationManager"/>
     /// This constructor is used for the <see cref="CommandLine"/>
     /// </summary>
-    public ConfigurationManager(DocumentationConfiguration documentationConfiguration, Uri[] uris, ServerConfiguration configFile) : this(documentationConfiguration)
+    public ConfigurationManager(DocumentationConfiguration documentationConfiguration, Uri[] uris, ServerConfiguration serverConfiguration) : this(documentationConfiguration)
     {
-        ExtractConfiguration(configFile);
+        ExtractConfiguration(serverConfiguration);
         WorkspaceFolders = uris;
     }
 

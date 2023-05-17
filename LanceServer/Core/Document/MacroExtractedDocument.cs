@@ -8,6 +8,7 @@ public class MacroExtractedDocument : PlaceholderPreprocessedDocument
 {
     //todo macrotable
     public string MacroTable;
+    
     public MacroExtractedDocument(IDocumentInformation information, string rawContent, string code, Placeholders placeholders, string macroTable) 
         : base(information, rawContent, code, placeholders)
     {

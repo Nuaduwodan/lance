@@ -1,7 +1,5 @@
-﻿using Antlr4.Runtime.Tree;
-using LanceServer.Core.Document;
+﻿using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
-using LanceServer.Core.Workspace;
 
 namespace LanceServer.Parser;
 

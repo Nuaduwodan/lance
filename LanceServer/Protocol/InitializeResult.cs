@@ -2,7 +2,9 @@
 using LspTypes;
 using Newtonsoft.Json;
 
-namespace LanceServer.LanguageServerProtocol;
+#pragma warning disable CS8618
+
+namespace LanceServer.Protocol;
 
 [DataContract]
 public class InitializeResult
@@ -13,5 +15,5 @@ public class InitializeResult
 
     [DataMember(Name = "serverInfo")]
     [JsonProperty(Required = Required.Default)]
-    public _InitializeResults_ServerInfo ServerInfo { get; set; }
+    public _InitializeResults_ServerInfo? ServerInfo { get; set; }
 }

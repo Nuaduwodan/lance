@@ -21,6 +21,6 @@ public static class SemanticTokenTypeHelper
 
     public static string[] GetTypes()
     {
-        return Enum.GetNames<SemanticTokenType>().Select(t =>Char.ToLowerInvariant(t[0]) + t.Substring(1)).ToArray();
+        return Enum.GetNames<SemanticTokenType>().Select(t => char.ToLowerInvariant(t[0]) + t.Substring(1)).ToArray();
     }
 }

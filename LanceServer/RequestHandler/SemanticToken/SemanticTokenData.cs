@@ -5,7 +5,7 @@
 /// </summary>
 public class SemanticTokenData
 {
-    private List<SemanticTokenDataElement> data = new();
+    private List<SemanticTokenDataElement> _data = new();
     
     /// <summary>
     /// Adds a new <see cref="SemanticTokenDataElement"/> to this list.
@@ -13,7 +13,7 @@ public class SemanticTokenData
     /// <param name="element">The new <see cref="SemanticTokenDataElement"/>.</param>
     public void AddElement(SemanticTokenDataElement element)
     {
-        data.Add(element);
+        _data.Add(element);
     }
     
     /// <summary>
@@ -22,7 +22,14 @@ public class SemanticTokenData
     /// </summary>
     public uint[] ToDataFormat()
     {
-        var intData = data.Select(element => new uint[]{ Convert.ToUInt32(element.DeltaLine), Convert.ToUInt32(element.DeltaChar), Convert.ToUInt32(element.Length), Convert.ToUInt32(element.TokenType), Convert.ToUInt32(element.TokenModifiers) }).SelectMany(e => e).ToArray();
+        var intData = _data.Select(element => new[]
+        {
+            Convert.ToUInt32(element.DeltaLine), 
+            Convert.ToUInt32(element.DeltaChar), 
+            Convert.ToUInt32(element.Length), 
+            Convert.ToUInt32(element.TokenType),
+            Convert.ToUInt32(element.TokenModifiers)
+        }).SelectMany(e => e).ToArray();
         return intData;
     }
 }
