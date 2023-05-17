@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System.Runtime;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
@@ -43,7 +44,7 @@ public class ParserManager : IParserManager
     }
 
     /// <inheritdoc/>
-    public IList<SymbolUse> GetSymbolUseForDocument(SymbolisedDocument document)
+    public IList<ISymbolUse> GetSymbolUseForDocument(SymbolisedDocument document)
     {
         var walker = new ParseTreeWalker();
         var symbolUseListener = new SymbolUseListener(document);
