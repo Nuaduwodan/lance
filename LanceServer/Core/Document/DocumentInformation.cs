@@ -50,7 +50,7 @@ public class DocumentInformation : IDocumentInformation
         } 
         else if (symbolTableConfiguration.SubProcedureFileExtensions.Any(fileExtension => FileExtension.EndsWith(fileExtension)))
         {
-            var directories = Path.GetDirectoryName(uri.LocalPath)!.Split(Path.DirectorySeparatorChar);
+            var directories = Path.GetDirectoryName(uri.LocalPath)!.ToLower().Split(Path.DirectorySeparatorChar);
             var isInManufacturerCyclesDirectory = symbolTableConfiguration.ManufacturerCyclesDirectories.Intersect(directories).Any();
             DocumentType = isInManufacturerCyclesDirectory ? DocumentType.ManufacturerSubProcedure : DocumentType.SubProcedure;
         }

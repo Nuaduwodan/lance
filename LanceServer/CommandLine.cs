@@ -38,6 +38,7 @@ public class CommandLine
         diagnostics = diagnostics.Where(diagnostic => diagnostic.Value.Severity <= DiagnosticSeverity.Warning)
             .OrderBy(diagnostic => diagnostic.Value.Severity).ToList();
         
+        Console.Out.WriteLine();
         var errors = 0;
         foreach (var diagnostic in diagnostics)
         {
@@ -48,7 +49,8 @@ public class CommandLine
             
             Console.Out.WriteLine($"{diagnostic.Value.Severity} {diagnostic.Key.LocalPath} {diagnostic.Value.Range.Start.Line + 1}:{diagnostic.Value.Range.Start.Character + 1} {diagnostic.Value.Message}");
         }
-
+        
+        Console.Out.WriteLine($"Total number of errors is {errors}");
         return errors;
     }
 
