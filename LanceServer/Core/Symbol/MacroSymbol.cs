@@ -3,7 +3,7 @@
 namespace LanceServer.Core.Symbol;
 
 /// <summary>
-/// Represents a macro symbol
+/// A macro symbol
 /// </summary>
 public class MacroSymbol : ISymbol
 {

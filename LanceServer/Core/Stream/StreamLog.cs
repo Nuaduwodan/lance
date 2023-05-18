@@ -2,6 +2,9 @@
 
 namespace LanceServer.Core.Stream;
 
+/// <summary>
+/// Logs everything that is written to this stream
+/// </summary>
 class StreamLog : System.IO.Stream
 {
     string _name;

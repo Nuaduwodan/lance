@@ -2,6 +2,9 @@
 
 namespace LanceServer.Core.Symbol;
 
+/// <summary>
+/// The symbol table containing all local symbols
+/// </summary>
 public class SymbolTable
 {
     private Dictionary<string, ISymbol> _symbols = new();

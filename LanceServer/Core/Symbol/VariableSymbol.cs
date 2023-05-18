@@ -2,6 +2,9 @@
 
 namespace LanceServer.Core.Symbol;
 
+/// <summary>
+/// The variable symbol
+/// </summary>
 public class VariableSymbol : ISymbol
 {
     /// <inheritdoc/>

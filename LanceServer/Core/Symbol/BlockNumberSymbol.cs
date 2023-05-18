@@ -2,6 +2,9 @@
 
 namespace LanceServer.Core.Symbol;
 
+/// <summary>
+/// A block number symbol
+/// </summary>
 public class BlockNumberSymbol : ISymbol
 {
     /// <inheritdoc/>

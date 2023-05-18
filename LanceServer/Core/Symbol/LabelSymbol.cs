@@ -3,7 +3,7 @@
 namespace LanceServer.Core.Symbol;
 
 /// <summary>
-/// Represents a label symbol which can be used as target by goto commands
+/// A label symbol which can be used as target by goto commands
 /// </summary>
 public class LabelSymbol : ISymbol
 {

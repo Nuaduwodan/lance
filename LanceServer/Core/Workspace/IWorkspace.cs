@@ -92,5 +92,5 @@ public interface IWorkspace
     /// <param name="newContent"></param>
     public void UpdateDocumentContent(Uri uri, string newContent);
 
-    bool IsWorkspaceInitialised { get; }
+    public bool IsWorkspaceInitialised { get; }
 }

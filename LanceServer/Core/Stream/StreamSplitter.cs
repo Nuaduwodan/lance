@@ -2,6 +2,9 @@
 
 namespace LanceServer.Core.Stream;
 
+/// <summary>
+/// Attaches a slave stream to a stream that can be reused
+/// </summary>
 class StreamSplitter : System.IO.Stream
 {
     [Flags]

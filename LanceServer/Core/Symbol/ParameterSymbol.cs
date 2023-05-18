@@ -3,7 +3,7 @@
 namespace LanceServer.Core.Symbol;
 
 /// <summary>
-/// Represents a parameter symbol
+/// A parameter symbol
 /// </summary>
 public class ParameterSymbol : ISymbol
 {        
