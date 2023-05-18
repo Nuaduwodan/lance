@@ -26,52 +26,22 @@ public class DiagnosticHandler : IDiagnosticHandler
             {
                 if (symbolUse.Identifier != symbol.Identifier)
                 {
-                    diagnostics.Add(new LspTypes.Diagnostic
-                    {
-                        Range = symbolUse.Range,
-                        Severity = DiagnosticSeverity.Warning,
-                        Source = "Lance",
-                        RelatedInformation = new[]
-                        {
-                            new DiagnosticRelatedInformation
-                            {
-                                Location = new Location
-                                {
-                                    Range = symbol.IdentifierRange,
-                                    Uri = symbol.SourceDocument.LocalPath
-                                },
-                                Message = $"{symbol.Identifier} has not the same capitalisation as at least one of its uses."
-                            }
-                        },
-                        Message = $"{symbolUse.Identifier} has not the same capitalisation as its definition: {symbol.Identifier}."
-                    });
+                    diagnostics.Add(SymbolHasDifferentCapitalisation(symbolUse, symbol));
                 }
 
                 if (symbol is ProcedureSymbol procedureSymbol)
                 {
-                    if (procedureSymbol.NeedsExternDeclaration && symbolUse is not ProcedureDeclarationSymbolUse)
+                    if (procedureSymbol.NeedsExternDeclaration && symbolUse is ProcedureUse { NeedsExternDeclaration: true } procedureUse)
                     {
-                        if (!symbolUses.Any(symbolUse2 => symbolUse2 is ProcedureDeclarationSymbolUse 
+                        if (!symbolUses.Any(symbolUse2 => symbolUse2 is DeclarationProcedureUse 
                                                           && symbolUse2.Identifier.Equals(symbolUse.Identifier, StringComparison.OrdinalIgnoreCase)))
                         {
-                            diagnostics.Add(new LspTypes.Diagnostic
-                            {
-                                Range = symbolUse.Range,
-                                Severity = DiagnosticSeverity.Error,
-                                Source = "Lance",
-                                Message = $"Missing extern declaration for procedure {symbolUse.Identifier}."
-                            });
+                            diagnostics.Add(MissingExtern(procedureUse));
                         }
                     }
-                    else if (!procedureSymbol.NeedsExternDeclaration && symbolUse is ProcedureDeclarationSymbolUse)
+                    else if (!procedureSymbol.NeedsExternDeclaration && symbolUse is DeclarationProcedureUse)
                     {
-                        diagnostics.Add(new LspTypes.Diagnostic
-                        {
-                            Range = symbolUse.Range,
-                            Severity = DiagnosticSeverity.Error,
-                            Source = "Lance",
-                            Message = $"Unnecessary extern declaration for procedure {symbolUse.Identifier}."
-                        });
+                        diagnostics.Add(UnnecessaryExtern(symbolUse));
                     }
 
                     //todo check argument count
@@ -79,13 +49,7 @@ public class DiagnosticHandler : IDiagnosticHandler
             }
             else
             {
-                diagnostics.Add(new LspTypes.Diagnostic
-                {
-                    Range = symbolUse.Range,
-                    Severity = DiagnosticSeverity.Error,
-                    Source = "Lance",
-                    Message = $"Cannot resolve symbol {symbolUse.Identifier}."
-                });
+                diagnostics.Add(CannotResolveSymbol(symbolUse));
             }
         }
 
@@ -95,44 +59,115 @@ public class DiagnosticHandler : IDiagnosticHandler
         {
             if (symbol is not BlockNumberSymbol && !symbolUses.Any(use => use.Identifier.Equals(symbol.Identifier, StringComparison.OrdinalIgnoreCase)))
             {
-                var severity = symbol is LabelSymbol or BlockNumberSymbol ? DiagnosticSeverity.Hint : DiagnosticSeverity.Warning;
-                diagnostics.Add(new LspTypes.Diagnostic
-                {
-                    Range = symbol.IdentifierRange,
-                    Severity = severity,
-                    Source = "Lance",
-                    Message = $"The symbol {symbol.Identifier} has currently no uses.",
-                    Tags = new[] { DiagnosticTag.Unnecessary }
-                });
+                diagnostics.Add(SymbolHasNoUse(symbol));
             }
 
             if (symbol.Identifier.Length > MaxSymbolIdentifierLength)
             {
-                diagnostics.Add(new LspTypes.Diagnostic
-                {
-                    Range = symbol.IdentifierRange,
-                    Severity = DiagnosticSeverity.Error,
-                    Source = "Lance",
-                    Message = $"The symbol {symbol.Identifier} is {symbol.Identifier.Length - MaxSymbolIdentifierLength} characters longer than the maximum allowed length of {MaxSymbolIdentifierLength}."
-                });
+                diagnostics.Add(SymbolTooLong(symbol));
             }
         }
 
         var filename = Path.GetFileNameWithoutExtension(document.Information.Uri.LocalPath);
         if (filename.Length > MaxFileNameLength)
         {
-            diagnostics.Add(new LspTypes.Diagnostic
-            {
-                Range = new Range { Start = new Position(0, 0), End = new Position(0, 0) },
-                Severity = DiagnosticSeverity.Error,
-                Source = "Lance",
-                Message = $"The filename of the file {filename} is {filename.Length - MaxFileNameLength} characters longer than the maximum allowed length of {MaxFileNameLength}."
-            });
+            diagnostics.Add(FilenameTooLong(filename));
         }
 
         //todo check matching parameters
         //todo check if all scopes are closed again
         
         return new DocumentDiagnosticReport { Items = diagnostics.ToArray() };
+    }
+
+    private static LspTypes.Diagnostic SymbolHasDifferentCapitalisation(ISymbolUse symbolUse, ISymbol symbol)
+    {
+        return new LspTypes.Diagnostic
+        {
+            Range = symbolUse.Range,
+            Severity = DiagnosticSeverity.Warning,
+            Source = "Lance",
+            RelatedInformation = new[]
+            {
+                new DiagnosticRelatedInformation
+                {
+                    Location = new Location
+                    {
+                        Range = symbol.IdentifierRange,
+                        Uri = symbol.SourceDocument.LocalPath
+                    },
+                    Message = $"{symbol.Identifier} has not the same capitalisation as at least one of its uses."
+                }
+            },
+            Message = $"{symbolUse.Identifier} has not the same capitalisation as its definition: {symbol.Identifier}."
+        };
+    }
+
+    private static LspTypes.Diagnostic UnnecessaryExtern(ISymbolUse symbolUse)
+    {
+        return new LspTypes.Diagnostic
+        {
+            Range = symbolUse.Range,
+            Severity = DiagnosticSeverity.Error,
+            Source = "Lance",
+            Message = $"Unnecessary extern declaration for procedure {symbolUse.Identifier}."
+        };
+    }
+
+    private static LspTypes.Diagnostic CannotResolveSymbol(ISymbolUse symbolUse)
+    {
+        return new LspTypes.Diagnostic
+        {
+            Range = symbolUse.Range,
+            Severity = DiagnosticSeverity.Error,
+            Source = "Lance",
+            Message = $"Cannot resolve symbol {symbolUse.Identifier}."
+        };
+    }
+
+    private static LspTypes.Diagnostic SymbolHasNoUse(ISymbol symbol)
+    {
+        var severity = symbol is LabelSymbol or BlockNumberSymbol ? DiagnosticSeverity.Hint : DiagnosticSeverity.Warning;
+        return new LspTypes.Diagnostic
+        {
+            Range = symbol.IdentifierRange,
+            Severity = severity,
+            Source = "Lance",
+            Message = $"The symbol {symbol.Identifier} has currently no uses.",
+            Tags = new[] { DiagnosticTag.Unnecessary }
+        };
+    }
+
+    private static LspTypes.Diagnostic SymbolTooLong(ISymbol symbol)
+    {
+        return new LspTypes.Diagnostic
+        {
+            Range = symbol.IdentifierRange,
+            Severity = DiagnosticSeverity.Error,
+            Source = "Lance",
+            Message = $"The symbol {symbol.Identifier} is {symbol.Identifier.Length - MaxSymbolIdentifierLength} characters longer than the maximum allowed length of {MaxSymbolIdentifierLength}."
+        };
+    }
+
+    private static LspTypes.Diagnostic FilenameTooLong(string filename)
+    {
+        return new LspTypes.Diagnostic
+        {
+            Range = new Range { Start = new Position(0, 0), End = new Position(0, 0) },
+            Severity = DiagnosticSeverity.Error,
+            Source = "Lance",
+            Message = $"The filename of the file {filename} is {filename.Length - MaxFileNameLength} characters longer than the maximum allowed length of {MaxFileNameLength}."
+        };
+    }
+
+    private static LspTypes.Diagnostic MissingExtern(ISymbolUse symbolUse)
+    {
+        return new LspTypes.Diagnostic
+        {
+            Range = symbolUse.Range,
+            Severity = DiagnosticSeverity.Error,
+            Source = "Lance",
+            Message = $"Missing extern declaration for procedure {symbolUse.Identifier}."
+        };
     }
 }
