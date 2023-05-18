@@ -641,15 +641,65 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitGotoBlock([NotNull] SinumerikNCParser.GotoBlockContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.callStatement"/>.
+	/// Enter a parse tree produced by the <c>call</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterCallStatement([NotNull] SinumerikNCParser.CallStatementContext context);
+	void EnterCall([NotNull] SinumerikNCParser.CallContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.callStatement"/>.
+	/// Exit a parse tree produced by the <c>call</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitCallStatement([NotNull] SinumerikNCParser.CallStatementContext context);
+	void ExitCall([NotNull] SinumerikNCParser.CallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>procedureCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterProcedureCall([NotNull] SinumerikNCParser.ProcedureCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>procedureCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitProcedureCall([NotNull] SinumerikNCParser.ProcedureCallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>externalCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExternalCall([NotNull] SinumerikNCParser.ExternalCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>externalCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExternalCall([NotNull] SinumerikNCParser.ExternalCallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>callPath</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCallPath([NotNull] SinumerikNCParser.CallPathContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>callPath</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCallPath([NotNull] SinumerikNCParser.CallPathContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>modalCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterModalCall([NotNull] SinumerikNCParser.ModalCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>modalCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitModalCall([NotNull] SinumerikNCParser.ModalCallContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.returnStatement"/>.
 	/// </summary>
@@ -1217,15 +1267,29 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitSpindle_identifier([NotNull] SinumerikNCParser.Spindle_identifierContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.procedure"/>.
+	/// Enter a parse tree produced by the <c>predefinedProcedureUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.procedure"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterProcedure([NotNull] SinumerikNCParser.ProcedureContext context);
+	void EnterPredefinedProcedureUse([NotNull] SinumerikNCParser.PredefinedProcedureUseContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.procedure"/>.
+	/// Exit a parse tree produced by the <c>predefinedProcedureUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.procedure"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitProcedure([NotNull] SinumerikNCParser.ProcedureContext context);
+	void ExitPredefinedProcedureUse([NotNull] SinumerikNCParser.PredefinedProcedureUseContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ownProcedureUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.procedure"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterOwnProcedureUse([NotNull] SinumerikNCParser.OwnProcedureUseContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ownProcedureUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.procedure"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitOwnProcedureUse([NotNull] SinumerikNCParser.OwnProcedureUseContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.ownProcedure"/>.
 	/// </summary>
@@ -1287,15 +1351,15 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStringFunction([NotNull] SinumerikNCParser.StringFunctionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.otherKeywords"/>.
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.keyword"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterOtherKeywords([NotNull] SinumerikNCParser.OtherKeywordsContext context);
+	void EnterKeyword([NotNull] SinumerikNCParser.KeywordContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.otherKeywords"/>.
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.keyword"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitOtherKeywords([NotNull] SinumerikNCParser.OtherKeywordsContext context);
+	void ExitKeyword([NotNull] SinumerikNCParser.KeywordContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.cpon"/>.
 	/// </summary>

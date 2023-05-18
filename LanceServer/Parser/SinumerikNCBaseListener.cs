@@ -764,17 +764,75 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitGotoBlock([NotNull] SinumerikNCParser.GotoBlockContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.callStatement"/>.
+	/// Enter a parse tree produced by the <c>call</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCallStatement([NotNull] SinumerikNCParser.CallStatementContext context) { }
+	public virtual void EnterCall([NotNull] SinumerikNCParser.CallContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.callStatement"/>.
+	/// Exit a parse tree produced by the <c>call</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCallStatement([NotNull] SinumerikNCParser.CallStatementContext context) { }
+	public virtual void ExitCall([NotNull] SinumerikNCParser.CallContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>procedureCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterProcedureCall([NotNull] SinumerikNCParser.ProcedureCallContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>procedureCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitProcedureCall([NotNull] SinumerikNCParser.ProcedureCallContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>externalCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterExternalCall([NotNull] SinumerikNCParser.ExternalCallContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>externalCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitExternalCall([NotNull] SinumerikNCParser.ExternalCallContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>callPath</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCallPath([NotNull] SinumerikNCParser.CallPathContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>callPath</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCallPath([NotNull] SinumerikNCParser.CallPathContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>modalCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterModalCall([NotNull] SinumerikNCParser.ModalCallContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>modalCall</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.callStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitModalCall([NotNull] SinumerikNCParser.ModalCallContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.returnStatement"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -1446,17 +1504,33 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitSpindle_identifier([NotNull] SinumerikNCParser.Spindle_identifierContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.procedure"/>.
+	/// Enter a parse tree produced by the <c>predefinedProcedureUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.procedure"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterProcedure([NotNull] SinumerikNCParser.ProcedureContext context) { }
+	public virtual void EnterPredefinedProcedureUse([NotNull] SinumerikNCParser.PredefinedProcedureUseContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.procedure"/>.
+	/// Exit a parse tree produced by the <c>predefinedProcedureUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.procedure"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitProcedure([NotNull] SinumerikNCParser.ProcedureContext context) { }
+	public virtual void ExitPredefinedProcedureUse([NotNull] SinumerikNCParser.PredefinedProcedureUseContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ownProcedureUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.procedure"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterOwnProcedureUse([NotNull] SinumerikNCParser.OwnProcedureUseContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ownProcedureUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.procedure"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitOwnProcedureUse([NotNull] SinumerikNCParser.OwnProcedureUseContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.ownProcedure"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -1530,17 +1604,17 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStringFunction([NotNull] SinumerikNCParser.StringFunctionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.otherKeywords"/>.
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.keyword"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterOtherKeywords([NotNull] SinumerikNCParser.OtherKeywordsContext context) { }
+	public virtual void EnterKeyword([NotNull] SinumerikNCParser.KeywordContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.otherKeywords"/>.
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.keyword"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitOtherKeywords([NotNull] SinumerikNCParser.OtherKeywordsContext context) { }
+	public virtual void ExitKeyword([NotNull] SinumerikNCParser.KeywordContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.cpon"/>.
 	/// <para>The default implementation does nothing.</para>

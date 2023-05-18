@@ -986,7 +986,8 @@ statement
     | expression
     | variableAssignment
     | command+
-    | procedure;
+    | procedure
+    | keyword;
 
 ifStatement: IF expression (NEWLINE* scope ifStatementElse? lineStart? IF_END | gotoStatement);
 ifStatementElse: lineStart? ELSE NEWLINE* scope;
@@ -1011,12 +1012,11 @@ gotoTarget
     ;
 
 callStatement
-    : CALL (expression | primaryExpression? CALL_BLOCK NAME TO NAME)
-    | CALL_P primaryExpression ownProcedure?
-    | CALL_EXT OPEN_PAREN expression CLOSE_PAREN
-    | CALL_PATH OPEN_PAREN expression? CLOSE_PAREN
-    | CALL_MODAL (NAME (OPEN_BRACKET expression (COMMA expression)* CLOSE_BRACKET)? )?
-    | CALL NAME? CALL_BLOCK NAME TO NAME
+    : CALL (expression | primaryExpression? CALL_BLOCK NAME TO NAME)                    #call
+    | CALL_P primaryExpression ownProcedure?                                            #procedureCall
+    | CALL_EXT OPEN_PAREN expression CLOSE_PAREN                                        #externalCall
+    | CALL_PATH OPEN_PAREN expression? CLOSE_PAREN                                      #callPath
+    | CALL_MODAL (NAME (OPEN_BRACKET expression (COMMA expression)* CLOSE_BRACKET)? )?  #modalCall
     ;
 
 returnStatement: RETURN (OPEN_PAREN expression (COMMA expression?)? (COMMA expression?)? (COMMA expression)? CLOSE_PAREN)?;
@@ -1057,7 +1057,7 @@ primaryExpression
     | OPEN_PAREN expression CLOSE_PAREN     #nestedExpression
     | axis_spindle_identifier               #axisUse
     | path                                  #pathUse
-    | macroUse                              #macroUseLabel
+    | macroUse+                             #macroUseLabel
     ;
 
 rParam: DOLLAR? R_PARAM (intUnsigned | OPEN_BRACKET expression CLOSE_BRACKET);
@@ -1073,7 +1073,7 @@ numeric: intUnsigned | realUnsigned;
 intUnsigned: INT_UNSIGNED;
 realUnsigned: REAL_UNSIGNED;
 
-macroUse: NAME+;
+macroUse: NAME;
 
 path: pathElements+;
 pathElements: SLASH | NAME;
@@ -1395,7 +1395,11 @@ axis_identifier: AXIS intUnsigned? | AX OPEN_BRACKET expression CLOSE_BRACKET;
 spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN intUnsigned CLOSE_PAREN;
 
 // procedure
-procedure: predefinedProcedure | ownProcedure | function | otherKeywords;
+procedure
+    : predefinedProcedure   #predefinedProcedureUse
+    | ownProcedure          #ownProcedureUse
+    ;
+
 ownProcedure: NAME parameters?;
 parameters: OPEN_PAREN expression? (COMMA expression?)* CLOSE_PAREN;
 
@@ -1695,7 +1699,7 @@ stringFunction // done
     | TOUPPER OPEN_PAREN expression CLOSE_PAREN
     ;
 
-otherKeywords
+keyword
     : APX
     | BLSYNC
     | COARSEA

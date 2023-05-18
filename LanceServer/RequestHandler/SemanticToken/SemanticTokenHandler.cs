@@ -89,7 +89,6 @@ public class SemanticTokenHandler : ISemanticTokenHandler
             case BlockNumberSymbol:
                 return (uint)SemanticTokenTypeHelper.SemanticTokenType.Decorator;
             case VariableSymbol:
-            case ErrorSymbol:
                 return (uint)SemanticTokenTypeHelper.SemanticTokenType.Variable;
             default:
                 throw new NotImplementedException();

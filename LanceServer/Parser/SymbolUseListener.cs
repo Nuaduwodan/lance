@@ -31,15 +31,34 @@ public class SymbolUseListener : SinumerikNCBaseListener
 
     public override void ExitMacroUse(SinumerikNCParser.MacroUseContext context)
     {
-        foreach (var name in context.NAME())
-        {
-            AddTokenIfNotPlaceholder(name.Symbol);
-        }
+        AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
-    public override void ExitOwnProcedure(SinumerikNCParser.OwnProcedureContext context)
+    public override void ExitProcedureCall(SinumerikNCParser.ProcedureCallContext context)
     {
-        AddTokenIfNotPlaceholder(context.NAME().Symbol);
+        if (context.ownProcedure() == null)
+        {
+            return;
+        }
+        
+        var token = context.ownProcedure().NAME().Symbol;
+        if (_document.PlaceholderTable.ContainsPlaceholder(token.Text))
+        {
+            return;
+        }
+        
+        SymbolUseTable.Add(new ProcedureUse(token.Text, ParserHelper.GetRangeForToken(token), _document.Information.Uri, false));
+    }
+
+    public override void ExitOwnProcedureUse(SinumerikNCParser.OwnProcedureUseContext context)
+    {
+        var token = context.ownProcedure().NAME().Symbol;
+        if (_document.PlaceholderTable.ContainsPlaceholder(token.Text))
+        {
+            return;
+        }
+        
+        SymbolUseTable.Add(new ProcedureUse(token.Text, ParserHelper.GetRangeForToken(token), _document.Information.Uri));
     }
 
     public override void ExitProcedureDeclaration(SinumerikNCParser.ProcedureDeclarationContext context)
@@ -50,7 +69,7 @@ public class SymbolUseListener : SinumerikNCBaseListener
             return;
         }
 
-        SymbolUseTable.Add(new ProcedureDeclarationSymbolUse(token.Text, ParserHelper.GetRangeForToken(token), _document.Information.Uri));
+        SymbolUseTable.Add(new DeclarationProcedureUse(token.Text, ParserHelper.GetRangeForToken(token), _document.Information.Uri));
     }
 
     public override void ExitGotoLabel(SinumerikNCParser.GotoLabelContext context)

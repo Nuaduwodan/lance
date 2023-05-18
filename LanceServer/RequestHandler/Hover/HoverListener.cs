@@ -71,10 +71,7 @@ public class HoverListener : SinumerikNCBaseListener
             return;
         }
 
-        foreach (var name in context.NAME())
-        {
-            SetTokenIfPositionMatches(name.Symbol);
-        }
+        SetTokenIfPositionMatches(context.NAME().Symbol);
     }
 
     public override void ExitOwnProcedure(SinumerikNCParser.OwnProcedureContext context)
