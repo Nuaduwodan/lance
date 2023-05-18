@@ -5,28 +5,28 @@ namespace LanceServer.Core.Symbol;
 /// <summary>
 /// A macro symbol
 /// </summary>
-public class MacroSymbol : ISymbol
+public class MacroSymbol : AbstractSymbol
 {
     /// <inheritdoc/>
-    public string Identifier { get; }
+    public override string Identifier { get; }
 
     /// <inheritdoc/>
-    public Uri SourceDocument { get; }
+    public override Uri SourceDocument { get; }
         
     /// <inheritdoc/>
-    public Range SymbolRange { get; }
+    public override Range SymbolRange { get; }
         
     /// <inheritdoc/>
-    public Range IdentifierRange { get; }
+    public override Range IdentifierRange { get; }
 
     /// <inheritdoc/>
-    public string Description => $"{(_isGlobal ? "global" : "local")} macro{(_isGlobal ? " in " + Path.GetFileName(SourceDocument.LocalPath) : "")}";
+    public override string Description => $"{(_isGlobal ? "global" : "local")} macro{(_isGlobal ? " in " + Path.GetFileName(SourceDocument.LocalPath) : "")}";
         
     /// <inheritdoc/>
-    public string Code => $"define {Identifier} as {_value}";
+    public override string Code => $"define {Identifier} as {_value}";
         
     /// <inheritdoc/>
-    public string Documentation { get; }
+    public override string Documentation { get; }
         
     private readonly string _value;
     private readonly bool _isGlobal;

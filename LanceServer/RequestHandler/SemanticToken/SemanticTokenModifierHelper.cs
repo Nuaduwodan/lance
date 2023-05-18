@@ -11,6 +11,6 @@ public static class SemanticTokenModifierHelper
 
     public static string[] GetModifiers()
     {
-        return Enum.GetNames<SemanticTokenModifier>().Select(t => char.ToLowerInvariant(t[0]) + t.Substring(1)).ToArray();
+        return Enum.GetNames<SemanticTokenModifier>().Select(t => char.ToLower(t[0]) + t[1..]).ToArray();
     }
 }

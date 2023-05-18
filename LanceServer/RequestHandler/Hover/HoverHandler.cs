@@ -28,8 +28,9 @@ public class HoverHandler : IHoverHandler
         
         if (document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))
         {
-            var value = workspace.TryGetSymbol(symbolUse.Identifier.ToLower(), document.Information.Uri, out var symbol)
-                ? CreateMarkdownString(symbol)
+            var symbols = workspace.GetSymbols(symbolUse.Identifier, document.Information.Uri).ToList();
+            var value = symbols.Any()
+                ? CreateMarkdownString(symbols.First())
                 : EscapeMarkdown($"Cannot resolve symbol '{symbolUse.Identifier}'");
             hover = CreateHover(value, symbolUse.Range);
         }
@@ -58,7 +59,7 @@ public class HoverHandler : IHoverHandler
         };
     }
 
-    private string CreateMarkdownString(ISymbol symbol)
+    private string CreateMarkdownString(AbstractSymbol symbol)
     {
         var markdownString = new StringBuilder();
         var description = symbol.Description;

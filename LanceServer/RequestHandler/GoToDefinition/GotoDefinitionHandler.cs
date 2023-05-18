@@ -8,20 +8,19 @@ public class GotoDefinitionHandler : IGotoDefinitionHandler
 {
     public LocationLink[] HandleRequest(LanguageTokenExtractedDocument document, Position position, IWorkspace workspace)
     {
-        if (document.SymbolUseTable.TryGetSymbol(position, out var symbolUse) &&
-            workspace.TryGetSymbol(symbolUse.Identifier.ToLower(), document.Information.Uri, out var symbol))
+        if (!document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))
         {
-            var locationLink = new LocationLink()
-            {
-                OriginSelectionRange = symbolUse.Range,
-                TargetUri = FileUtil.UriToUriString(symbol.SourceDocument),
-                TargetRange = symbol.SymbolRange,
-                TargetSelectionRange = symbol.IdentifierRange
-            };
-
-            return new[] { locationLink };
+            return Array.Empty<LocationLink>();
         }
 
-        return new LocationLink[] { };
+        var locationLinks = workspace.GetSymbols(symbolUse.Identifier, document.Information.Uri).Select(symbol => new LocationLink
+        {
+            OriginSelectionRange = symbolUse.Range,
+            TargetUri = FileUtil.UriToUriString(symbol.SourceDocument),
+            TargetRange = symbol.SymbolRange,
+            TargetSelectionRange = symbol.IdentifierRange
+        }).ToArray();
+
+        return locationLinks;
     }
 }

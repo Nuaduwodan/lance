@@ -5,28 +5,28 @@ namespace LanceServer.Core.Symbol;
 /// <summary>
 /// A parameter symbol
 /// </summary>
-public class ParameterSymbol : ISymbol
+public class ParameterSymbol : AbstractSymbol
 {        
     /// <inheritdoc/>
-    public string Identifier { get; }
+    public override string Identifier { get; }
 
     /// <inheritdoc/>
-    public Uri SourceDocument { get; }
+    public override Uri SourceDocument { get; }
         
     /// <inheritdoc/>
-    public Range SymbolRange { get; }
+    public override Range SymbolRange { get; }
         
     /// <inheritdoc/>
-    public Range IdentifierRange { get; }
+    public override Range IdentifierRange { get; }
 
     /// <inheritdoc/>
-    public string Description => $"parameter by {(_outVar ? "reference" : "value")}";
+    public override string Description => $"parameter by {(_outVar ? "reference" : "value")}";
         
     /// <inheritdoc/>
-    public string Code => GetCode();
+    public override string Code => GetCode();
         
     /// <inheritdoc/>
-    public string Documentation { get; }
+    public override string Documentation { get; }
 
     private const string ArraySizeDelimiter = ", ";
     private readonly CompositeDataType _compositeDataType;

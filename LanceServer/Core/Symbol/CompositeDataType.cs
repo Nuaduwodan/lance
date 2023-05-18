@@ -23,6 +23,6 @@ public class CompositeDataType
             length = $"[{_length}]";
         }
             
-        return $"{_dataType.ToString().ToLowerInvariant()}{length}";
+        return $"{_dataType.ToString().ToLower()}{length}";
     }
 }

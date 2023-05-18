@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using LanceServer.Core.Configuration;
 using LanceServer.Core.Document;
 using LanceServer.Parser;
@@ -20,7 +19,7 @@ public class Workspace : IWorkspace
     private readonly IConfigurationManager _configurationManager;
 
     private ConcurrentDictionary<Uri, Document.Document> _documents = new();
-    private ConcurrentDictionary<string, ISymbol> _globalSymbols = new();
+    private SynchronizedCollection<AbstractSymbol> _globalSymbols = new();
 
     public Workspace(IParserManager parserManager, IPlaceholderPreprocessor placeholderPreprocessor, IConfigurationManager configurationManager)
     {
@@ -38,8 +37,8 @@ public class Workspace : IWorkspace
             return symbolUseExtractedDocument;
         }
             
-        var symbolUseList = _parserManager.GetSymbolUseForDocument(symbolisedDocument);
-        var languageTokens = _parserManager.GetLanguageTokensForDocument(symbolisedDocument);
+        var symbolUseList = _parserManager.GetSymbolUseForDocument(symbolisedDocument).ToList();
+        var languageTokens = _parserManager.GetLanguageTokensForDocument(symbolisedDocument).ToList();
 
         var symbolUseTable = new SymbolUseTable(symbolUseList);
         var languageTokenTable = new LanguageTokenTable(languageTokens);
@@ -58,37 +57,35 @@ public class Workspace : IWorkspace
             return symbolisedDocument;
         }
             
-        var symbolList = _parserManager.GetSymbolTableForDocument(parsedDocument);
+        var symbolList = _parserManager.GetSymbolTableForDocument(parsedDocument).ToList();
             
         //update symbol table
-        DeleteGlobalSymbolsOfFile(uri);
+        DeleteGlobalSymbolsOfDocument(uri);
 
-        var globalSymbols = symbolList.Where(symbol => symbol is ProcedureSymbol).ToList();
+        var newGlobalSymbols = symbolList.Where(symbol => symbol is ProcedureSymbol).ToList();
 
         if (parsedDocument.Information.DocumentType is DocumentType.Definition or DocumentType.MainProcedure)
         {
-            globalSymbols.AddRange(symbolList.Where(symbol => symbol is VariableSymbol or MacroSymbol));
+            newGlobalSymbols.AddRange(symbolList.Where(symbol => symbol is VariableSymbol or MacroSymbol));
         }
 
-        // todo remove when not needed
-        symbolList = symbolList.Except(globalSymbols).ToList();
+        symbolList = symbolList.Except(newGlobalSymbols).ToList();
        
-        foreach (var symbol in globalSymbols.Where(symbol => !_globalSymbols.TryAdd(symbol.Identifier.ToLower(), symbol)))
+        foreach (var newSymbol in newGlobalSymbols)
         {
-            _globalSymbols.TryGetValue(symbol.Identifier.ToLower(), out var existingSymbol);
-            parsedDocument.ParserDiagnostics.Add(new Diagnostic
+            var existingSymbols = _globalSymbols.Where(symbol => symbol.ReferencesSymbol(newSymbol.Identifier)).ToArray();
+            if (existingSymbols.Any())
             {
-                Code = symbol.Identifier,
-                Range = symbol.IdentifierRange,
-                Message = $"A global symbol with the name {existingSymbol!.Identifier} is already defined.",
-                Severity = DiagnosticSeverity.Warning
-            });
+                parsedDocument.ParserDiagnostics.Add(GlobalSymbolAlreadyExists(newSymbol, existingSymbols));
+            }
+            
+            _globalSymbols.Add(newSymbol);
         }
 
         var symbolTable = new SymbolTable();
         foreach (var symbol in symbolList.Where(symbol => !symbolTable.AddSymbol(symbol)))
         {
-            symbolTable.TryGetSymbol(symbol.Identifier.ToLower(), out var existingSymbol);
+            symbolTable.TryGetSymbol(symbol.Identifier, out var existingSymbol);
             parsedDocument.ParserDiagnostics.Add(new Diagnostic
             {
                 Code = symbol.Identifier,
@@ -247,16 +244,23 @@ public class Workspace : IWorkspace
     }
 
     /// <inheritdoc />
-    public bool TryGetSymbol(string symbolName, Uri documentOfReference, [MaybeNullWhen(false)] out ISymbol symbol)
+    public IEnumerable<AbstractSymbol> GetSymbols(string symbolName, Uri documentOfReference)
     {
-        return GetSymbolisedDocument(documentOfReference).SymbolTable.TryGetSymbol(symbolName, out symbol) 
-               || _globalSymbols.TryGetValue(symbolName.ToLower(), out symbol);
+        var symbols = new List<AbstractSymbol>();
+        
+        if (GetSymbolisedDocument(documentOfReference).SymbolTable.TryGetSymbol(symbolName, out var symbol))
+        {
+            symbols.Add(symbol);
+        }
+
+        symbols.AddRange(GetGlobalSymbols(symbolName));
+        return symbols;
     }
 
     /// <inheritdoc />
-    public IEnumerable<ISymbol> GetGlobalSymbolsOfDocument(Uri uri)
+    public IEnumerable<AbstractSymbol> GetGlobalSymbolsOfDocument(Uri uri)
     {
-        return _globalSymbols.Where(pair => pair.Value.SourceDocument == uri).Select(pair => pair.Value);
+        return _globalSymbols.Where(symbol => symbol.SourceDocument == uri);
     }
 
     /// <inheritdoc />
@@ -274,16 +278,32 @@ public class Workspace : IWorkspace
         GetSymbolisedDocument(uri);
     }
 
-    private void DeleteGlobalSymbolsOfFile(Uri documentUri)
-    {
-        foreach (var pair in _globalSymbols.Where(pair => pair.Value.SourceDocument == documentUri))
-        {
-            _globalSymbols.TryRemove(pair);
-        }
-    }
-
     public IEnumerable<Uri> GetAllDocumentUris()
     {
         return _documents.Select(pair => pair.Key);
+    }
+
+    private IEnumerable<AbstractSymbol> GetGlobalSymbols(string symbolName)
+    {
+        return _globalSymbols.Where(symbol => symbol.ReferencesSymbol(symbolName));
+    }
+
+    private void DeleteGlobalSymbolsOfDocument(Uri documentUri)
+    {
+        foreach (var symbol in GetGlobalSymbolsOfDocument(documentUri))
+        {
+            _globalSymbols.Remove(symbol);
+        }
+    }
+
+    private static Diagnostic GlobalSymbolAlreadyExists(AbstractSymbol newSymbol, AbstractSymbol[] existingSymbols)
+    {
+        return new Diagnostic
+        {
+            Code = newSymbol.Identifier,
+            Range = newSymbol.IdentifierRange,
+            Message = $"{(existingSymbols.Length > 1 ? existingSymbols.Length : "A")} global symbol{(existingSymbols.Length > 1 ? "s" : "")} with the name {existingSymbols.First().Identifier} is already defined.",
+            Severity = DiagnosticSeverity.Information
+        };
     }
 }

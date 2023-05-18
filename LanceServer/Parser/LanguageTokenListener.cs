@@ -5,7 +5,7 @@ namespace LanceServer.Parser;
 
 public class LanguageTokenListener : SinumerikNCBaseListener
 {
-    public List<LanguageToken> LanguageTokens { get; } = new();
+    public IList<LanguageToken> LanguageTokens { get; } = new List<LanguageToken>();
 
     public override void VisitTerminal(ITerminalNode node)
     {

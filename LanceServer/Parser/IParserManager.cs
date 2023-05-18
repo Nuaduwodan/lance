@@ -20,14 +20,14 @@ public interface IParserManager
     /// </summary>
     /// <param name="document">The document to be visited</param>
     /// <returns>A list of all defined symbols</returns>
-    IList<ISymbol> GetSymbolTableForDocument(ParsedDocument document);
+    IEnumerable<AbstractSymbol> GetSymbolTableForDocument(ParsedDocument document);
     
     /// <summary>
     /// Visits the parse tree of the provided document to generate a list of all symbol uses
     /// </summary>
     /// <param name="document">The document to be visited</param>
     /// <returns>A list of all symbol uses</returns>
-    IList<ISymbolUse> GetSymbolUseForDocument(SymbolisedDocument document);
+    IEnumerable<ISymbolUse> GetSymbolUseForDocument(SymbolisedDocument document);
 
-    IList<LanguageToken> GetLanguageTokensForDocument(SymbolisedDocument document);
+    IEnumerable<LanguageToken> GetLanguageTokensForDocument(SymbolisedDocument document);
 }

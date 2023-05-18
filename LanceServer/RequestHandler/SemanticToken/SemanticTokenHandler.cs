@@ -16,27 +16,13 @@ public class SemanticTokenHandler : ISemanticTokenHandler
         var globalSymbols = workspace.GetGlobalSymbolsOfDocument(document.Information.Uri);
         var symbolUses = document.SymbolUseTable.GetAll();
 
-        var semanticTokens = new List<SemanticToken>();
+        var semanticTokens = localSymbols.Select(CreateSemanticToken).ToList();
 
-        foreach (var symbol in localSymbols)
-        {
-            var startCharacter = symbol.IdentifierRange.Start.Character;
-            semanticTokens.Add(new SemanticToken(symbol.IdentifierRange.Start.Line, startCharacter, symbol.IdentifierRange.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol)));
-        }
-        
-        foreach (var symbol in globalSymbols)
-        {
-            var startCharacter = symbol.IdentifierRange.Start.Character;
-            semanticTokens.Add(new SemanticToken(symbol.IdentifierRange.Start.Line, startCharacter, symbol.IdentifierRange.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol)));
-        }
+        semanticTokens.AddRange(globalSymbols.Select(CreateSemanticToken));
         
         foreach (var symbolUse in symbolUses)
         {
-            if (workspace.TryGetSymbol(symbolUse.Identifier, document.Information.Uri, out var symbol))
-            {
-                var startCharacter = symbolUse.Range.Start.Character;
-                semanticTokens.Add(new SemanticToken(symbolUse.Range.Start.Line, startCharacter, symbolUse.Range.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol)));
-            }
+            semanticTokens.AddRange(workspace.GetSymbols(symbolUse.Identifier, document.Information.Uri).Select(CreateSemanticToken));
         }
 
         var orderedSemanticTokens = semanticTokens.OrderBy(symbolUse => symbolUse.Line).ThenBy(symbolUse => symbolUse.StartCharacter);
@@ -67,7 +53,13 @@ public class SemanticTokenHandler : ISemanticTokenHandler
         };
     }
 
-    private uint GetModifiers(ISymbol symbol)
+    private SemanticToken CreateSemanticToken(AbstractSymbol symbol)
+    {
+        var startCharacter = symbol.IdentifierRange.Start.Character;
+        return new SemanticToken(symbol.IdentifierRange.Start.Line, startCharacter, symbol.IdentifierRange.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol));
+    }
+
+    private uint GetModifiers(AbstractSymbol symbol)
     {
         return 0;
     }
@@ -75,7 +67,7 @@ public class SemanticTokenHandler : ISemanticTokenHandler
     /// <summary>
     /// Maps the symbol type to a type as defined by the LSP.
     /// </summary>
-    private uint TransformType(ISymbol symbol)
+    private uint TransformType(AbstractSymbol symbol)
     {
         switch (symbol)
         {

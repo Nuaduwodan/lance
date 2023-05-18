@@ -5,7 +5,7 @@ namespace LanceServer.Parser;
 
 public class SymbolListener : SinumerikNCBaseListener
 {
-    public IList<ISymbol> SymbolTable { get; } = new List<ISymbol>();
+    public IList<AbstractSymbol> SymbolTable { get; } = new List<AbstractSymbol>();
     private readonly PlaceholderPreprocessedDocument _document;
 
     private IList<ParameterSymbol> _parameters = new List<ParameterSymbol>();
@@ -72,8 +72,9 @@ public class SymbolListener : SinumerikNCBaseListener
         {
             return;
         }
-        
-        var symbol = new ProcedureSymbol(identifier, uri, symbolRange, identifierRange, _parameters.ToArray());
+
+        var needsExternDeclaration = _document.Information.DocumentType is not DocumentType.ManufacturerSubProcedure && _parameters.Any();
+        var symbol = new ProcedureSymbol(identifier, uri, symbolRange, identifierRange, _parameters.ToArray(), needsExternDeclaration);
         SymbolTable.Add(symbol);
     }
 

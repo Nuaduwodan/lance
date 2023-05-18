@@ -5,28 +5,28 @@ namespace LanceServer.Core.Symbol;
 /// <summary>
 /// A block number symbol
 /// </summary>
-public class BlockNumberSymbol : ISymbol
+public class BlockNumberSymbol : AbstractSymbol
 {
     /// <inheritdoc/>
-    public string Identifier { get; }
+    public override string Identifier { get; }
     
     /// <inheritdoc/>
-    public Uri SourceDocument { get; }
+    public override Uri SourceDocument { get; }
     
     /// <inheritdoc/>
-    public Range SymbolRange { get; }
+    public override Range SymbolRange { get; }
     
     /// <inheritdoc/>
-    public Range IdentifierRange => SymbolRange;
+    public override Range IdentifierRange => SymbolRange;
 
     /// <inheritdoc/>
-    public string Description => $"block number on line {SymbolRange.Start.Line + 1}";
+    public override string Description => $"block number on line {SymbolRange.Start.Line + 1}";
     
     /// <inheritdoc/>
-    public string Code => Identifier;
+    public override string Code => Identifier;
     
     /// <inheritdoc/>
-    public string Documentation { get; }
+    public override string Documentation { get; }
     
     public BlockNumberSymbol(string identifier, Uri sourceDocument, Range symbolRange, string documentation = "")
     {

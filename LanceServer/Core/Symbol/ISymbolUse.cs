@@ -3,7 +3,7 @@ using Range = LspTypes.Range;
 namespace LanceServer.Core.Symbol;
 
 /// <summary>
-/// Represents a use of a symbol.
+/// A use of a symbol.
 /// </summary>
 public interface ISymbolUse
 {
@@ -21,4 +21,10 @@ public interface ISymbolUse
     /// The uri of the file where the symbol is used.
     /// </summary>
     Uri SourceDocument { get; }
+
+    /// <summary>
+    /// Whether or not the given reference references this symbol use.
+    /// </summary>
+    /// <returns>True if the reference references this symbol use, False otherwise.</returns>
+    public bool ReferencesSymbol(string reference);
 }

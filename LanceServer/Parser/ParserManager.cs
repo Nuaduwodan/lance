@@ -31,7 +31,7 @@ public class ParserManager : IParserManager
     }
 
     /// <inheritdoc/>
-    public IList<ISymbol> GetSymbolTableForDocument(ParsedDocument document)
+    public IEnumerable<AbstractSymbol> GetSymbolTableForDocument(ParsedDocument document)
     {
         var walker = new ParseTreeWalker();
         var symbolListener = new SymbolListener(document);
@@ -42,7 +42,7 @@ public class ParserManager : IParserManager
     }
 
     /// <inheritdoc/>
-    public IList<ISymbolUse> GetSymbolUseForDocument(SymbolisedDocument document)
+    public IEnumerable<ISymbolUse> GetSymbolUseForDocument(SymbolisedDocument document)
     {
         var walker = new ParseTreeWalker();
         var symbolUseListener = new SymbolUseListener(document);
@@ -52,7 +52,7 @@ public class ParserManager : IParserManager
     }
 
     /// <inheritdoc/>
-    public IList<LanguageToken> GetLanguageTokensForDocument(SymbolisedDocument document)
+    public IEnumerable<LanguageToken> GetLanguageTokensForDocument(SymbolisedDocument document)
     {
         var walker = new ParseTreeWalker();
         var languageTokenListener = new LanguageTokenListener();
@@ -61,7 +61,7 @@ public class ParserManager : IParserManager
         return languageTokenListener.LanguageTokens;
     }
 
-    private IList<ISymbol> AddProcedureSymbolIfNeeded(ParsedDocument document, IList<ISymbol> symbolTable)
+    private IList<AbstractSymbol> AddProcedureSymbolIfNeeded(ParsedDocument document, IList<AbstractSymbol> symbolTable)
     {
         var fileName = Path.GetFileNameWithoutExtension(document.Information.Uri.LocalPath);
         if (!symbolTable.Any(symbol => symbol.Identifier.Equals(fileName, StringComparison.OrdinalIgnoreCase)) 

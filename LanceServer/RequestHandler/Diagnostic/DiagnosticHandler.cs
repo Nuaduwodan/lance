@@ -22,16 +22,19 @@ public class DiagnosticHandler : IDiagnosticHandler
         var symbolUses = document.SymbolUseTable.GetAll();
         foreach (var symbolUse in symbolUses)
         {
-            if (workspace.TryGetSymbol(symbolUse.Identifier, document.Information.Uri, out var symbol))
+            var referencedSymbols = workspace.GetSymbols(symbolUse.Identifier, document.Information.Uri).ToList();
+            if (referencedSymbols.Any())
             {
-                if (symbolUse.Identifier != symbol.Identifier)
+                if (symbolUse.Identifier != referencedSymbols.First().Identifier)
                 {
-                    diagnostics.Add(SymbolHasDifferentCapitalisation(symbolUse, symbol));
+                    diagnostics.Add(SymbolHasDifferentCapitalisation(symbolUse, referencedSymbols.First()));
                 }
 
-                if (symbol is ProcedureSymbol procedureSymbol)
+                if (referencedSymbols.First() is ProcedureSymbol procedureSymbol)
                 {
-                    if (procedureSymbol.NeedsExternDeclaration && symbolUse is ProcedureUse { NeedsExternDeclaration: true } procedureUse)
+                    if (procedureSymbol.NeedsExternDeclaration 
+                        && symbolUse is ProcedureUse procedureUse 
+                        && !symbolUses.Any(symbolUse2 => symbolUse2 is DeclarationProcedureUse && symbolUse2.ReferencesSymbol(symbolUse.Identifier)))
                     {
                         if (!symbolUses.Any(symbolUse2 => symbolUse2 is DeclarationProcedureUse 
                                                           && symbolUse2.Identifier.Equals(symbolUse.Identifier, StringComparison.OrdinalIgnoreCase)))
@@ -53,9 +56,9 @@ public class DiagnosticHandler : IDiagnosticHandler
             }
         }
 
-        var symbols = document.SymbolTable.GetAll();
+        var localSymbols = document.SymbolTable.GetAll();
 
-        foreach (var symbol in symbols)
+        foreach (var symbol in localSymbols)
         {
             if (symbol is not BlockNumberSymbol && !symbolUses.Any(use => use.Identifier.Equals(symbol.Identifier, StringComparison.OrdinalIgnoreCase)))
             {
@@ -80,7 +83,7 @@ public class DiagnosticHandler : IDiagnosticHandler
         return new DocumentDiagnosticReport { Items = diagnostics.ToArray() };
     }
 
-    private static LspTypes.Diagnostic SymbolHasDifferentCapitalisation(ISymbolUse symbolUse, ISymbol symbol)
+    private static LspTypes.Diagnostic SymbolHasDifferentCapitalisation(ISymbolUse symbolUse, AbstractSymbol symbol)
     {
         return new LspTypes.Diagnostic
         {
@@ -108,7 +111,7 @@ public class DiagnosticHandler : IDiagnosticHandler
         return new LspTypes.Diagnostic
         {
             Range = symbolUse.Range,
-            Severity = DiagnosticSeverity.Error,
+            Severity = DiagnosticSeverity.Warning,
             Source = "Lance",
             Message = $"Unnecessary extern declaration for procedure {symbolUse.Identifier}."
         };
@@ -125,7 +128,7 @@ public class DiagnosticHandler : IDiagnosticHandler
         };
     }
 
-    private static LspTypes.Diagnostic SymbolHasNoUse(ISymbol symbol)
+    private static LspTypes.Diagnostic SymbolHasNoUse(AbstractSymbol symbol)
     {
         var severity = symbol is LabelSymbol or BlockNumberSymbol ? DiagnosticSeverity.Hint : DiagnosticSeverity.Warning;
         return new LspTypes.Diagnostic
@@ -138,7 +141,7 @@ public class DiagnosticHandler : IDiagnosticHandler
         };
     }
 
-    private static LspTypes.Diagnostic SymbolTooLong(ISymbol symbol)
+    private static LspTypes.Diagnostic SymbolTooLong(AbstractSymbol symbol)
     {
         return new LspTypes.Diagnostic
         {

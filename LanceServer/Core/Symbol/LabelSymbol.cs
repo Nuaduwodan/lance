@@ -5,28 +5,28 @@ namespace LanceServer.Core.Symbol;
 /// <summary>
 /// A label symbol which can be used as target by goto commands
 /// </summary>
-public class LabelSymbol : ISymbol
+public class LabelSymbol : AbstractSymbol
 {
     /// <inheritdoc/>
-    public string Identifier { get; }
+    public override string Identifier { get; }
     
     /// <inheritdoc/>
-    public Uri SourceDocument { get; }
+    public override Uri SourceDocument { get; }
     
     /// <inheritdoc/>
-    public Range SymbolRange { get; }
+    public override Range SymbolRange { get; }
     
     /// <inheritdoc/>
-    public Range IdentifierRange { get; }
+    public override Range IdentifierRange { get; }
     
     /// <inheritdoc/>
-    public string Description => $"label";
+    public override string Description => $"label";
     
     /// <inheritdoc/>
-    public string Code => $"{Identifier}:";
+    public override string Code => $"{Identifier}:";
     
     /// <inheritdoc/>
-    public string Documentation { get; }
+    public override string Documentation { get; }
 
     /// <summary>
     /// Instantiates a new <see cref="LabelSymbol"/>

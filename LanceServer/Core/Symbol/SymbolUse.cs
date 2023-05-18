@@ -14,6 +14,12 @@ public class SymbolUse : ISymbolUse
     /// <inheritdoc />
     public Uri SourceDocument { get; }
 
+    /// <inheritdoc />
+    public bool ReferencesSymbol(string reference)
+    {
+        return Identifier.Equals(reference, StringComparison.OrdinalIgnoreCase);
+    }
+
     /// <summary>
     /// Creates a new symbol use
     /// </summary>

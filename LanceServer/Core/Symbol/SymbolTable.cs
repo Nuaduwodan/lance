@@ -7,19 +7,19 @@ namespace LanceServer.Core.Symbol;
 /// </summary>
 public class SymbolTable
 {
-    private Dictionary<string, ISymbol> _symbols = new();
+    private Dictionary<string, AbstractSymbol> _symbols = new();
 
-    public bool AddSymbol(ISymbol symbol)
+    public bool AddSymbol(AbstractSymbol symbol)
     {
         return _symbols.TryAdd(symbol.Identifier.ToLower(), symbol);
     }
 
-    public bool TryGetSymbol(string symbolName, [MaybeNullWhen(false)] out ISymbol symbol)
+    public bool TryGetSymbol(string symbolName, [MaybeNullWhen(false)] out AbstractSymbol symbol)
     {
         return _symbols.TryGetValue(symbolName.ToLower(), out symbol);
     }
 
-    public IEnumerable<ISymbol> GetAll()
+    public IEnumerable<AbstractSymbol> GetAll()
     {
         return _symbols.Select(pair => pair.Value);
     }

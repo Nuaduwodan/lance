@@ -16,6 +16,12 @@ public class DeclarationProcedureUse : ISymbolUse
     /// <inheritdoc />
     public Uri SourceDocument { get; }
 
+    /// <inheritdoc />
+    public bool ReferencesSymbol(string reference)
+    {
+        return Identifier.Equals(reference, StringComparison.OrdinalIgnoreCase);
+    }
+
     public DeclarationProcedureUse(string identifier, Range range, Uri sourceDocument)
     {
         Identifier = identifier;

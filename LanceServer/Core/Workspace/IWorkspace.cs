@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using LanceServer.Core.Document;
+﻿using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
 using LspTypes;
 
@@ -70,20 +69,19 @@ public interface IWorkspace
     /// Loads all the files of a workspace to be able to provide project wide insights.
     /// </summary>
     public Task InitWorkspaceAsync(Progress<WorkDoneProgressReport> progress);
-    
+
     /// <summary>
-    /// Returns true if a symbol is found, false otherwise.
+    /// Returns a list of found symbols
     /// </summary>
     /// <param name="symbolName">The name of the symbol to be found.</param>
     /// <param name="documentOfReference">The URI of the document where the symbol is used.</param>
-    /// <param name="symbol">The requested symbol if true is returned.</param>
-    public bool TryGetSymbol(string symbolName, Uri documentOfReference, [MaybeNullWhen(false)] out ISymbol symbol);
+    public IEnumerable<AbstractSymbol> GetSymbols(string symbolName, Uri documentOfReference);
 
     /// <summary>
     /// Returns all the global symbols that are defined in the document referenced by the uri.
     /// </summary>
     /// <param name="uri">The URI of the document</param>
-    public IEnumerable<ISymbol> GetGlobalSymbolsOfDocument(Uri uri);
+    public IEnumerable<AbstractSymbol> GetGlobalSymbolsOfDocument(Uri uri);
 
     /// <summary>
     /// Updates the raw content of the specified document.

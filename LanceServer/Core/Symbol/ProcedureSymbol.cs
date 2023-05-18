@@ -5,38 +5,43 @@ namespace LanceServer.Core.Symbol;
 /// <summary>
 /// A symbol representing a function, having zero or more <see cref="ParameterSymbol"/>s
 /// </summary>
-public class ProcedureSymbol : ISymbol
+public class ProcedureSymbol : AbstractSymbol
 {
     /// <inheritdoc/>
-    public string Identifier { get; }
+    public override string Identifier { get; }
 
     /// <inheritdoc/>
-    public Uri SourceDocument { get; }
+    public override Uri SourceDocument { get; }
         
     /// <inheritdoc/>
-    public Range SymbolRange { get; }
+    public override Range SymbolRange { get; }
         
     /// <inheritdoc/>
-    public Range IdentifierRange { get; }
+    public override Range IdentifierRange { get; }
         
     /// <inheritdoc/>
-    public string Description => $"procedure in {Path.GetFileName(SourceDocument.LocalPath)}";
+    public override string Description => $"procedure in {Path.GetFileName(SourceDocument.LocalPath)}";
         
     /// <inheritdoc/>
-    public string Code => $"proc {Identifier}({string.Join(ParameterDelimiter, Parameters.Select(p => p.Code))})";
+    public override string Code => $"proc {Identifier}({string.Join(ParameterDelimiter, Parameters.Select(p => p.Code))})";
         
     /// <inheritdoc/>
-    public string Documentation { get; }
+    public override string Documentation { get; }
     
     /// <summary>
     /// True if the procedure needs an extern declaration, False otherwise.
     /// </summary>
     public bool NeedsExternDeclaration { get; }
 
+    /// <summary>
+    /// The parameters of this procedure
+    /// </summary>
+    /// <seealso cref="ProcedureSymbol"/>
     public readonly ParameterSymbol[] Parameters;
+    
     private const string ParameterDelimiter = ", ";
 
-    public ProcedureSymbol(string identifier, Uri sourceDocument, Range symbolRange, Range identifierRange, ParameterSymbol[] parameters, bool needsExternDeclaration = true, string documentation = "")
+    public ProcedureSymbol(string identifier, Uri sourceDocument, Range symbolRange, Range identifierRange, ParameterSymbol[] parameters, bool needsExternDeclaration = false, string documentation = "")
     {
         Identifier = identifier;
         SourceDocument = sourceDocument;
