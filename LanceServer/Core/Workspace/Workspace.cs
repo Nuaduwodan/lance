@@ -21,7 +21,6 @@ public class Workspace : IWorkspace
 
     private ConcurrentDictionary<Uri, Document.Document> _documents = new();
     private ConcurrentDictionary<string, ISymbol> _globalSymbols = new();
-    private ConcurrentBag<ISymbolUse> _globalSymbolUses = new();
 
     public Workspace(IParserManager parserManager, IPlaceholderPreprocessor placeholderPreprocessor, IConfigurationManager configurationManager)
     {
@@ -206,6 +205,8 @@ public class Workspace : IWorkspace
 
     public void InitWorkspace(IProgress<WorkDoneProgressReport> progress)
     {
+        const int MAX_PARALLEL = 10;
+        
         var workspaceFolders = _configurationManager.WorkspaceFolders;
         var fileExtensions = _configurationManager.FileExtensionConfiguration.FileExtensions;
         
@@ -220,15 +221,16 @@ public class Workspace : IWorkspace
 
         if (_documents.IsEmpty)
         {
-            _documents = new ConcurrentDictionary<Uri, Document.Document>(20, documentUris.Count);
+            _documents = new ConcurrentDictionary<Uri, Document.Document>(MAX_PARALLEL, documentUris.Count);
         }
 
         documentUris = documentUris.Select(GetDocument).OrderBy(document => document.Information.DocumentType).Select(document => document.Information.Uri).ToList();
 
         var maxCount = documentUris.Count;
         double currentCount = 0;
-        
-        Parallel.ForEach(documentUris, uri => 
+
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = MAX_PARALLEL };
+        Parallel.ForEach(documentUris, parallelOptions, uri => 
         {
             GetSymbolisedDocument(uri);
             currentCount++;
