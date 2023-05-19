@@ -2,6 +2,7 @@
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
 using LspTypes;
+using Range = LspTypes.Range;
 
 namespace LanceServer.RequestHandler.SemanticToken;
 
@@ -22,10 +23,10 @@ public class SemanticTokenHandler : ISemanticTokenHandler
         
         foreach (var symbolUse in symbolUses)
         {
-            semanticTokens.AddRange(workspace.GetSymbols(symbolUse.Identifier, document.Information.Uri).Select(CreateSemanticToken));
+            semanticTokens.AddRange(workspace.GetSymbols(symbolUse.Identifier, document.Information.Uri).Select(symbol => CreateSemanticToken(symbolUse.Range, symbol)));
         }
 
-        var orderedSemanticTokens = semanticTokens.OrderBy(symbolUse => symbolUse.Line).ThenBy(symbolUse => symbolUse.StartCharacter);
+        var orderedSemanticTokens = semanticTokens.Distinct().OrderBy(symbolUse => symbolUse.Line).ThenBy(symbolUse => symbolUse.StartCharacter);
         
         var tokenData = new SemanticTokenData();
         uint previousLine = 0;
@@ -55,8 +56,13 @@ public class SemanticTokenHandler : ISemanticTokenHandler
 
     private SemanticToken CreateSemanticToken(AbstractSymbol symbol)
     {
-        var startCharacter = symbol.IdentifierRange.Start.Character;
-        return new SemanticToken(symbol.IdentifierRange.Start.Line, startCharacter, symbol.IdentifierRange.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol));
+        return CreateSemanticToken(symbol.IdentifierRange, symbol);
+    }
+
+    private SemanticToken CreateSemanticToken(Range range, AbstractSymbol symbol)
+    {
+        var startCharacter = range.Start.Character;
+        return new SemanticToken(range.Start.Line, startCharacter, range.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol));
     }
 
     private uint GetModifiers(AbstractSymbol symbol)
