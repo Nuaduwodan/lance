@@ -85,7 +85,7 @@ internal static class Program
         var rpcMessageHandler = new HeaderDelimitedMessageHandler(sendingStream, receivingStream, formatter);
         var jsonRpc = new JsonRpc(rpcMessageHandler);
 
-        var docConfig = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "documentation.json");
+        var docConfig = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "language_token_documentation.json");
         var documentation = JsonConvert.DeserializeObject<DocumentationConfiguration>(FileUtil.ReadFileContent(docConfig)) 
                             ?? throw new FileNotFoundException(docConfig + " not found");
         var config = new ConfigurationManager(documentation);
@@ -120,7 +120,7 @@ internal static class Program
         }
 
         var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var docConfigPath = Path.Join(basePath, "documentation.json");
+        var docConfigPath = Path.Join(basePath, "language_token_documentation.json");
         var docConfig = JsonConvert.DeserializeObject<DocumentationConfiguration>(FileUtil.ReadFileContent(docConfigPath)) 
                         ?? throw new FileNotFoundException(docConfigPath + " not found");
         var serverConfigPath = configFileInfo.Name;
