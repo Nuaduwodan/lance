@@ -1,19 +1,10 @@
 ﻿namespace LanceServer.RequestHandler.SemanticToken;
 
-public class SemanticToken
+public record SemanticToken(uint Line, uint StartCharacter, uint Length, uint Type, uint Modifiers)
 {
-    public uint Line;
-    public uint StartCharacter;
-    public uint Length;
-    public uint Type;
-    public uint Modifiers;
-
-    public SemanticToken(uint line, uint startCharacter, uint length, uint type, uint modifiers)
-    {
-        Line = line;
-        StartCharacter = startCharacter;
-        Length = length;
-        Type = type;
-        Modifiers = modifiers;
-    }
+    public readonly uint Line = Line;
+    public readonly uint StartCharacter = StartCharacter;
+    public readonly uint Length = Length;
+    public readonly uint Type = Type;
+    public readonly uint Modifiers = Modifiers;
 }
