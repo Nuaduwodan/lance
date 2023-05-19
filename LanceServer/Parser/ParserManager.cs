@@ -64,8 +64,7 @@ public class ParserManager : IParserManager
     private IList<AbstractSymbol> AddProcedureSymbolIfNeeded(ParsedDocument document, IList<AbstractSymbol> symbolTable)
     {
         var fileName = Path.GetFileNameWithoutExtension(document.Information.Uri.LocalPath);
-        if (!symbolTable.Any(symbol => symbol.Identifier.Equals(fileName, StringComparison.OrdinalIgnoreCase)) 
-            && document.Information.DocumentType is DocumentType.SubProcedure or DocumentType.ManufacturerSubProcedure)
+        if (!symbolTable.Any(symbol => symbol is ProcedureSymbol) && document.Information.DocumentType is DocumentType.SubProcedure or DocumentType.ManufacturerSubProcedure)
         {
             var emptyRange = new Range { Start = new Position(0, 0), End = new Position(0, 0) };
             symbolTable.Add(new ProcedureSymbol(fileName, document.Information.Uri, emptyRange, emptyRange, Array.Empty<ParameterSymbol>()));
