@@ -7,7 +7,6 @@ Lance is an extension that provides common language features for the g-code base
 This extension is in no way associated with Siemens, nor does Siemens endorse it.
 
 ## Features
-
 Semantic syntax highlighting with theme support.
 
 ![Syntax highlighting](images/syntax_highlight_feature.gif)
@@ -20,8 +19,10 @@ Depending on your hotkey configuration you can ctrl + click on a symbol to jump 
 
 ![Goto definition](images/goto_feature.gif)
 
-## Extension Settings
+## Getting started
+Make sure you have a .NET runtime with version 6.0 or newer. if not, you can get it from the official [microsoft download page](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
+## Extension Settings
 To change the colors of the syntax highlighting you can [change the theme](https://code.visualstudio.com/docs/getstarted/themes) or [configure some color customizations](https://code.visualstudio.com/docs/getstarted/themes#_customizing-a-color-theme).
 
 There are settings to set the file extensions of the different file types of the language. Per default .def, .mpf and .spf files are configured. These files are loaded on startup to provide the respective insights. 
@@ -29,5 +30,7 @@ There are settings to set the file extensions of the different file types of the
 There are also some settings for a customizable preprocessor. It can be used to replace project specific placeholders before the file is parsed.
 
 ## Known Issues
+
+
 
 If you have any problems, see if there is a related issue or write me one on [github](https://github.com/Nuaduwodan/lance/issues).
