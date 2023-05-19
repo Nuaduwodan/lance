@@ -60,7 +60,7 @@ public class DiagnosticHandler : IDiagnosticHandler
 
         foreach (var symbol in localSymbols)
         {
-            if (symbol is not BlockNumberSymbol && !symbolUses.Any(use => use.Identifier.Equals(symbol.Identifier, StringComparison.OrdinalIgnoreCase)))
+            if (!symbolUses.Any(use => use.ReferencesSymbol(symbol.Identifier)))
             {
                 diagnostics.Add(SymbolHasNoUse(symbol));
             }
@@ -83,10 +83,11 @@ public class DiagnosticHandler : IDiagnosticHandler
         return new DocumentDiagnosticReport { Items = diagnostics.ToArray() };
     }
 
-    private static LspTypes.Diagnostic SymbolHasDifferentCapitalisation(ISymbolUse symbolUse, AbstractSymbol symbol)
+    private static LspTypes.Diagnostic SymbolHasDifferentCapitalisation(AbstractSymbolUse symbolUse, AbstractSymbol symbol)
     {
         return new LspTypes.Diagnostic
         {
+            Code = symbolUse.Identifier,
             Range = symbolUse.Range,
             Severity = DiagnosticSeverity.Warning,
             Source = "Lance",
@@ -97,7 +98,7 @@ public class DiagnosticHandler : IDiagnosticHandler
                     Location = new Location
                     {
                         Range = symbol.IdentifierRange,
-                        Uri = symbol.SourceDocument.LocalPath
+                        Uri = symbol.SourceDocument.AbsolutePath
                     },
                     Message = $"{symbol.Identifier} has not the same capitalisation as at least one of its uses."
                 }
@@ -106,7 +107,7 @@ public class DiagnosticHandler : IDiagnosticHandler
         };
     }
 
-    private static LspTypes.Diagnostic UnnecessaryExtern(ISymbolUse symbolUse)
+    private static LspTypes.Diagnostic UnnecessaryExtern(AbstractSymbolUse symbolUse)
     {
         return new LspTypes.Diagnostic
         {
@@ -117,7 +118,7 @@ public class DiagnosticHandler : IDiagnosticHandler
         };
     }
 
-    private static LspTypes.Diagnostic CannotResolveSymbol(ISymbolUse symbolUse)
+    private static LspTypes.Diagnostic CannotResolveSymbol(AbstractSymbolUse symbolUse)
     {
         return new LspTypes.Diagnostic
         {
@@ -163,7 +164,7 @@ public class DiagnosticHandler : IDiagnosticHandler
         };
     }
 
-    private static LspTypes.Diagnostic MissingExtern(ISymbolUse symbolUse)
+    private static LspTypes.Diagnostic MissingExtern(AbstractSymbolUse symbolUse)
     {
         return new LspTypes.Diagnostic
         {

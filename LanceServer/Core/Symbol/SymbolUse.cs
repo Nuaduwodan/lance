@@ -3,22 +3,16 @@
 namespace LanceServer.Core.Symbol;
 
 /// <inheritdoc />
-public class SymbolUse : ISymbolUse
+public class SymbolUse : AbstractSymbolUse
 {
     /// <inheritdoc />
-    public string Identifier { get; }
+    public override string Identifier { get; }
 
     /// <inheritdoc />
-    public Range Range { get; }
+    public override Range Range { get; }
 
     /// <inheritdoc />
-    public Uri SourceDocument { get; }
-
-    /// <inheritdoc />
-    public bool ReferencesSymbol(string reference)
-    {
-        return Identifier.Equals(reference, StringComparison.OrdinalIgnoreCase);
-    }
+    public override Uri SourceDocument { get; }
 
     /// <summary>
     /// Creates a new symbol use

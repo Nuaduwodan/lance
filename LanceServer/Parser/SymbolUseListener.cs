@@ -6,7 +6,7 @@ namespace LanceServer.Parser;
 
 public class SymbolUseListener : SinumerikNCBaseListener
 {
-    public IList<ISymbolUse> SymbolUseTable { get; } = new List<ISymbolUse>();
+    public IList<AbstractSymbolUse> SymbolUseTable { get; } = new List<AbstractSymbolUse>();
     private readonly PlaceholderPreprocessedDocument _document;
     
     public SymbolUseListener(SymbolisedDocument document)

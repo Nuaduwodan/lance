@@ -5,22 +5,16 @@ namespace LanceServer.Core.Symbol;
 /// <summary>
 /// A procedure declaration for a procedure symbol
 /// </summary>
-public class DeclarationProcedureUse : ISymbolUse
+public class DeclarationProcedureUse : AbstractSymbolUse
 {
     /// <inheritdoc />
-    public string Identifier { get; }
+    public override string Identifier { get; }
     
     /// <inheritdoc />
-    public Range Range { get; }
+    public override Range Range { get; }
     
     /// <inheritdoc />
-    public Uri SourceDocument { get; }
-
-    /// <inheritdoc />
-    public bool ReferencesSymbol(string reference)
-    {
-        return Identifier.Equals(reference, StringComparison.OrdinalIgnoreCase);
-    }
+    public override Uri SourceDocument { get; }
 
     public DeclarationProcedureUse(string identifier, Range range, Uri sourceDocument)
     {

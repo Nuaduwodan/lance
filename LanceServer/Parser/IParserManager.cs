@@ -27,7 +27,7 @@ public interface IParserManager
     /// </summary>
     /// <param name="document">The document to be visited</param>
     /// <returns>A list of all symbol uses</returns>
-    IEnumerable<ISymbolUse> GetSymbolUseForDocument(SymbolisedDocument document);
+    IEnumerable<AbstractSymbolUse> GetSymbolUseForDocument(SymbolisedDocument document);
 
     IEnumerable<LanguageToken> GetLanguageTokensForDocument(SymbolisedDocument document);
 }

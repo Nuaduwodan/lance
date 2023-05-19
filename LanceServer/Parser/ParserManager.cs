@@ -42,7 +42,7 @@ public class ParserManager : IParserManager
     }
 
     /// <inheritdoc/>
-    public IEnumerable<ISymbolUse> GetSymbolUseForDocument(SymbolisedDocument document)
+    public IEnumerable<AbstractSymbolUse> GetSymbolUseForDocument(SymbolisedDocument document)
     {
         var walker = new ParseTreeWalker();
         var symbolUseListener = new SymbolUseListener(document);
