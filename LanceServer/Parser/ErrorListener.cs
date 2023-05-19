@@ -18,6 +18,6 @@ public class ErrorListener : BaseErrorListener, IAntlrErrorListener<int>
     {
         var characterEnd = charPositionInLine + (uint)e.Message.Length;
         var range = new Range { Start = new Position((uint)line, (uint)charPositionInLine), End = new Position((uint)line, (uint)characterEnd) };
-        Diagnostics.Add(DiagnosticMessage.ParsingError(range, e.Message));
+        Diagnostics.Add(DiagnosticMessage.LexingError(range, e.Message));
     }
 }
