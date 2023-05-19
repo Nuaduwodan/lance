@@ -29,10 +29,10 @@ public class HoverHandler : IHoverHandler
         if (document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))
         {
             var symbols = workspace.GetSymbols(symbolUse.Identifier, document.Information.Uri).ToList();
-            var value = symbols.Any()
-                ? CreateMarkdownString(symbols.First())
-                : EscapeMarkdown($"Cannot resolve symbol '{symbolUse.Identifier}'");
-            hover = CreateHover(value, symbolUse.Range);
+            if (symbols.Any())
+            {
+                hover = CreateHover(CreateMarkdownString(symbols.First()), symbolUse.Range);
+            }
         }
 
         if (document.LanguageTokenTable.TryGetToken(position, out var languageToken))
