@@ -10,6 +10,7 @@ using LanceServer.RequestHandler.Diagnostic;
 using LanceServer.RequestHandler.GoToDefinition;
 using LanceServer.RequestHandler.Hover;
 using LanceServer.RequestHandler.SemanticToken;
+using LspTypes;
 using Newtonsoft.Json;
 using StreamJsonRpc;
 using Command = System.CommandLine.Command;
@@ -56,16 +57,30 @@ internal static class Program
                 return;
             }
         });
+        
+        var printLevel = new Option<DiagnosticSeverity>(
+            name: "--print-level",
+            description: "the minimum severity level to be printed to standard out. ",
+            getDefaultValue: () => DiagnosticSeverity.Warning);
+        printLevel.AddAlias("-p");
+        
+        var reportLevel = new Option<DiagnosticSeverity>(
+            name: "--print-level",
+            description: "the minimum severity level to be printed to standard out. ",
+            getDefaultValue: () => DiagnosticSeverity.Error);
+        printLevel.AddAlias("-p");
 
         rootCommand.AddCommand(languageServerCommand);
         rootCommand.AddCommand(commandLineCommand);
         commandLineCommand.AddOption(config);
         commandLineCommand.AddOption(folders);
+        commandLineCommand.AddOption(printLevel);
+        commandLineCommand.AddOption(reportLevel);
 
 #pragma warning disable VSTHRD002
         languageServerCommand.SetHandler(() => StartLanguageServerAsync().Wait());
 #pragma warning restore VSTHRD002
-        commandLineCommand.SetHandler(StartCommandLine, folders, config);
+        commandLineCommand.SetHandler(StartCommandLine, folders, config, printLevel, reportLevel);
 
         rootCommand.Invoke(args);
     }
@@ -111,7 +126,7 @@ internal static class Program
         await Task.Delay(-1);
     }
 
-    private static void StartCommandLine(DirectoryInfo[] directories, FileInfo configFileInfo)
+    private static void StartCommandLine(DirectoryInfo[] directories, FileInfo configFileInfo, DiagnosticSeverity printLevel, DiagnosticSeverity reportLevel)
     {
         if (directories.Length == 0)
         {
@@ -136,6 +151,6 @@ internal static class Program
 
         var commandLine = new CommandLine(workspace, diagnosticHandler);
 
-        Environment.ExitCode = commandLine.ProcessFiles();
+        Environment.ExitCode = commandLine.ProcessFiles(printLevel, reportLevel);
     }
 }

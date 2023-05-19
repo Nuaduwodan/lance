@@ -15,7 +15,7 @@ public class CommandLine
         _diagnosticHandler = diagnosticHandler;
     }
 
-    public int ProcessFiles()
+    public int ProcessFiles(DiagnosticSeverity printLevel, DiagnosticSeverity reportLevel)
     {
         var progressToken = new Progress<WorkDoneProgressReport>();
         progressToken.ProgressChanged += ReportProgress();
@@ -35,19 +35,21 @@ public class CommandLine
             }
         }
 
-        diagnostics = diagnostics.Where(diagnostic => diagnostic.Value.Severity <= DiagnosticSeverity.Warning)
-            .OrderBy(diagnostic => diagnostic.Value.Severity).ToList();
+        diagnostics = diagnostics.OrderBy(diagnostic => diagnostic.Value.Severity).ThenBy(diagnostic => diagnostic.Key.LocalPath).ToList();
         
         Console.Out.WriteLine();
         var errors = 0;
         foreach (var diagnostic in diagnostics)
         {
-            if (diagnostic.Value.Severity == DiagnosticSeverity.Error)
+            if (diagnostic.Value.Severity <= reportLevel)
             {
                 errors++;
             }
             
-            Console.Out.WriteLine($"{diagnostic.Value.Severity} {diagnostic.Key.LocalPath} {diagnostic.Value.Range.Start.Line + 1}:{diagnostic.Value.Range.Start.Character + 1} {diagnostic.Value.Message}");
+            if (diagnostic.Value.Severity <= printLevel)
+            {
+                Console.Out.WriteLine($"{diagnostic.Value.Severity} {diagnostic.Key.LocalPath} {diagnostic.Value.Range.Start.Line + 1}:{diagnostic.Value.Range.Start.Character + 1} {diagnostic.Value.Message}");
+            }
         }
         
         Console.Out.WriteLine($"Total number of errors is {errors}");
