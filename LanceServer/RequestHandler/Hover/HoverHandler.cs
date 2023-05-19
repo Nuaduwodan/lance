@@ -31,7 +31,14 @@ public class HoverHandler : IHoverHandler
             var symbols = workspace.GetSymbols(symbolUse.Identifier, document.Information.Uri).ToList();
             if (symbols.Any())
             {
-                hover = CreateHover(CreateMarkdownString(symbols.First()), symbolUse.Range);
+                var hoverSymbol = symbols.First();
+                if (symbolUse is ProcedureUse procedureUse && hoverSymbol is ProcedureSymbol)
+                {
+                    var betterHoverSymbol = symbols.Select(symbol => symbol as ProcedureSymbol).FirstOrDefault(symbol => symbol!.ArgumentsMatchParameters(procedureUse.Arguments));
+                    hoverSymbol = betterHoverSymbol ?? hoverSymbol;
+                }
+                
+                hover = CreateHover(CreateMarkdownString(hoverSymbol), symbolUse.Range);
             }
         }
 
