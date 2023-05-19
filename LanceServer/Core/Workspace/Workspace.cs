@@ -4,6 +4,7 @@ using LanceServer.Core.Document;
 using LanceServer.Parser;
 using LanceServer.Core.Symbol;
 using LanceServer.Preprocessor;
+using LanceServer.RequestHandler.Diagnostic;
 using LspTypes;
 
 namespace LanceServer.Core.Workspace;
@@ -76,21 +77,15 @@ public class Workspace : IWorkspace
             var existingSymbols = GlobalSymbolTable.AddSymbol(newSymbol).ToList();
             if (existingSymbols.Any())
             {
-                parsedDocument.ParserDiagnostics.Add(GlobalSymbolAlreadyExists(newSymbol, existingSymbols));
+                parsedDocument.ParserDiagnostics.Add(DiagnosticMessage.GlobalSymbolAlreadyExists(newSymbol, existingSymbols));
             }
         }
 
         var symbolTable = new SymbolTable();
-        foreach (var symbol in symbolList.Where(symbol => !symbolTable.AddSymbol(symbol)))
+        foreach (var symbol in symbolList.Where(symbol => !symbolTable.TryAddSymbol(symbol)))
         {
             symbolTable.TryGetSymbol(symbol.Identifier, out var existingSymbol);
-            parsedDocument.ParserDiagnostics.Add(new Diagnostic
-            {
-                Code = symbol.Identifier,
-                Range = symbol.IdentifierRange,
-                Message = $"A local symbol with the name {existingSymbol!.Identifier} is already defined.",
-                Severity = DiagnosticSeverity.Warning
-            });
+            parsedDocument.ParserDiagnostics.Add(DiagnosticMessage.LocalSymbolAlreadyExists(symbol, existingSymbol!));
         }
         
         var newSymbolisedDocument = new SymbolisedDocument(parsedDocument, symbolTable);
@@ -273,16 +268,5 @@ public class Workspace : IWorkspace
     public IEnumerable<Uri> GetAllDocumentUris()
     {
         return _documents.Select(pair => pair.Key);
-    }
-
-    private static Diagnostic GlobalSymbolAlreadyExists(AbstractSymbol newSymbol, IList<AbstractSymbol> existingSymbols)
-    {
-        return new Diagnostic
-        {
-            Code = newSymbol.Identifier,
-            Range = newSymbol.IdentifierRange,
-            Message = $"{(existingSymbols.Count > 1 ? existingSymbols.Count : "A")} global symbol{(existingSymbols.Count > 1 ? "s" : "")} with the name {existingSymbols.First().Identifier} is already defined.",
-            Severity = DiagnosticSeverity.Information
-        };
     }
 }
