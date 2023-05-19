@@ -234,6 +234,7 @@ class LSPServer : IDisposable
             }
 
             await RequestDiagnosticRefreshAsync();
+            await RequestSemanticTokensRefreshAsync();
         }
         catch (Exception exception)
         {
@@ -376,6 +377,36 @@ class LSPServer : IDisposable
         if (_trace)
         {
             await Console.Error.WriteLineAsync(TraceIn + nameof(RequestDiagnosticRefreshAsync));
+        }
+
+        return result;
+    }
+    
+    public async Task<bool> RequestSemanticTokensRefreshAsync()
+    {
+        if (_trace)
+        {
+            await Console.Error.WriteLineAsync(TraceOut + nameof(RequestSemanticTokensRefreshAsync));
+        }
+
+        var result = false;
+        try
+        {
+            var task = Task.Run(async delegate
+            {
+                await _rpc.InvokeAsync("workspace/semanticTokens/refresh");
+            });
+            await task;
+            result = task.IsCompletedSuccessfully;
+        }
+        catch (Exception exception)
+        {
+            await Console.Error.WriteLineAsync(exception.ToString());
+        }
+
+        if (_trace)
+        {
+            await Console.Error.WriteLineAsync(TraceIn + nameof(RequestSemanticTokensRefreshAsync));
         }
 
         return result;
