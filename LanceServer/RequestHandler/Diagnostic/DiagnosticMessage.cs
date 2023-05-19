@@ -72,7 +72,13 @@ public static class DiagnosticMessage
 
     public static LspTypes.Diagnostic SymbolHasNoUse(AbstractSymbol symbol)
     {
-        var severity = symbol is LabelSymbol or BlockNumberSymbol ? DiagnosticSeverity.Hint : DiagnosticSeverity.Warning;
+        var severity = symbol switch
+        {
+            BlockNumberSymbol => DiagnosticSeverity.Hint,
+            LabelSymbol => DiagnosticSeverity.Information,
+            _ => DiagnosticSeverity.Warning
+        };
+
         return new LspTypes.Diagnostic
         {
             Range = symbol.IdentifierRange,
@@ -134,7 +140,29 @@ public static class DiagnosticMessage
             Range = range,
             Severity = DiagnosticSeverity.Error,
             Source = DiagnosticSource,
+            Message = message
+        };
+    }
+
+    public static LspTypes.Diagnostic LexingError(Range range, string message)
+    {
+        return new LspTypes.Diagnostic
+        {
+            Range = range,
+            Severity = DiagnosticSeverity.Error,
+            Source = DiagnosticSource,
             Message = $"'{message}' is not recognized as an element of the sinumerik one nc language"
+        };
+    }
+
+    public static LspTypes.Diagnostic ParameterMismatch(AbstractSymbolUse declarationUse, ProcedureSymbol procedureSymbol)
+    {
+        return new LspTypes.Diagnostic
+        {
+            Range = declarationUse.Range,
+            Severity = DiagnosticSeverity.Warning,
+            Source = DiagnosticSource,
+            Message = $"Number of parameters does not match the number of expected parameters."
         };
     }
 

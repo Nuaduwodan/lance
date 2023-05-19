@@ -26,22 +26,39 @@ public class DiagnosticHandler : IDiagnosticHandler
 
                 if (referencedSymbols.First() is ProcedureSymbol procedureSymbol)
                 {
-                    if (procedureSymbol.MayNeedExternDeclaration 
-                        && symbolUse is ProcedureUse procedureUse 
-                        && !symbolUses.Any(symbolUse2 => symbolUse2 is DeclarationProcedureUse && symbolUse2.ReferencesSymbol(symbolUse.Identifier)))
+                    if (symbolUse is ProcedureUse procedureUse)
                     {
-                        if (!symbolUses.Any(symbolUse2 => symbolUse2 is DeclarationProcedureUse 
-                                                          && symbolUse2.Identifier.Equals(symbolUse.Identifier, StringComparison.OrdinalIgnoreCase)))
+                        if (procedureSymbol.MayNeedExternDeclaration
+                            && procedureUse.Arguments.Any()
+                            && !symbolUses.Any(symbolUse2 => symbolUse2 is DeclarationProcedureUse && symbolUse2.IsReferencedBy(symbolUse.Identifier)))
                         {
                             diagnostics.Add(DiagnosticMessage.MissingExtern(procedureUse));
                         }
-                    }
-                    else if (!procedureSymbol.MayNeedExternDeclaration && symbolUse is DeclarationProcedureUse)
-                    {
-                        diagnostics.Add(DiagnosticMessage.UnnecessaryExtern(symbolUse));
-                    }
 
-                    //todo check argument count
+                        if (!procedureSymbol.ArgumentsMatchParameters(procedureUse.Arguments))
+                        {
+                            diagnostics.Add(DiagnosticMessage.ParameterMismatch(procedureUse, procedureSymbol));
+                        }
+                    }
+                    else if (symbolUse is DeclarationProcedureUse declarationUse)
+                    {
+                        if (!procedureSymbol.MayNeedExternDeclaration)
+                        {
+                            diagnostics.Add(DiagnosticMessage.UnnecessaryExtern(symbolUse));
+                        }
+
+                        if (!procedureSymbol.ArgumentsMatchParameters(declarationUse.Arguments))
+                        {
+                            diagnostics.Add(DiagnosticMessage.ParameterMismatch(declarationUse, procedureSymbol));
+                        }
+                    }
+                    else
+                    {
+                        if (!procedureSymbol.ArgumentsMatchParameters(Array.Empty<ProcedureUseArgument>()))
+                        {
+                            diagnostics.Add(DiagnosticMessage.ParameterMismatch(symbolUse, procedureSymbol));
+                        }
+                    }
                 }
             }
             else
@@ -54,7 +71,7 @@ public class DiagnosticHandler : IDiagnosticHandler
 
         foreach (var symbol in localSymbols)
         {
-            if (!symbolUses.Any(use => use.ReferencesSymbol(symbol.Identifier)))
+            if (!symbolUses.Any(use => use.IsReferencedBy(symbol.Identifier)))
             {
                 diagnostics.Add(DiagnosticMessage.SymbolHasNoUse(symbol));
             }

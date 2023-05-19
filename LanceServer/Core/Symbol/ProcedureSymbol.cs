@@ -29,26 +29,37 @@ public class ProcedureSymbol : AbstractSymbol
     public override string Documentation { get; }
     
     /// <summary>
-    /// True if the procedure needs an extern declaration, False otherwise.
+    /// True if the procedure could need an extern declaration, False otherwise.
+    /// This is also dependent on whether or not the caller submits arguments.
     /// </summary>
-    public bool NeedsExternDeclaration { get; }
+    public bool MayNeedExternDeclaration { get; }
 
     /// <summary>
     /// The parameters of this procedure
     /// </summary>
     /// <seealso cref="ProcedureSymbol"/>
     public readonly ParameterSymbol[] Parameters;
+
+    /// <summary>
+    /// Checks if the arguments match the parameters.
+    /// </summary>
+    /// <param name="arguments">The arguments given to the procedure.</param>
+    /// <returns>True if the number of arguments matches the parameters required, false otherwise.</returns>
+    public bool ArgumentsMatchParameters(ProcedureUseArgument[] arguments)
+    {
+        return Parameters.Count(parameter => !parameter.IsOptional) <= arguments.Length && arguments.Length <= Parameters.Length;
+    }
     
     private const string ParameterDelimiter = ", ";
 
-    public ProcedureSymbol(string identifier, Uri sourceDocument, Range symbolRange, Range identifierRange, ParameterSymbol[] parameters, bool needsExternDeclaration = false, string documentation = "")
+    public ProcedureSymbol(string identifier, Uri sourceDocument, Range symbolRange, Range identifierRange, ParameterSymbol[] parameters, bool mayNeedExternDeclaration = false, string documentation = "")
     {
         Identifier = identifier;
         SourceDocument = sourceDocument;
         SymbolRange = symbolRange;
         IdentifierRange = identifierRange;
         Parameters = parameters;
-        NeedsExternDeclaration = needsExternDeclaration;
+        MayNeedExternDeclaration = mayNeedExternDeclaration;
         Documentation = documentation;
     }
 }

@@ -26,7 +26,7 @@ public abstract class AbstractSymbolUse
     /// Whether or not the given reference references this symbol use.
     /// </summary>
     /// <returns>True if the reference references this symbol use, False otherwise.</returns>
-    public bool ReferencesSymbol(string reference)
+    public bool IsReferencedBy(string reference)
     {
         return Identifier.Equals(reference, StringComparison.OrdinalIgnoreCase);
     }

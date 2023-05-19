@@ -24,7 +24,7 @@ public class SymbolListener : SinumerikNCBaseListener
     /// <inheritdoc/>
     public override void ExitParameterDefinitionByReference(SinumerikNCParser.ParameterDefinitionByReferenceContext context)
     {
-        var identifier = context.NAME()?.GetText() ?? String.Empty;
+        var identifier = context.NAME()?.GetText() ?? string.Empty;
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
         var identifierRange = ParserHelper.GetRangeForToken(context.NAME().Symbol);
@@ -44,10 +44,13 @@ public class SymbolListener : SinumerikNCBaseListener
     /// <inheritdoc/>
     public override void ExitParameterDefinitionByValue(SinumerikNCParser.ParameterDefinitionByValueContext context)
     {
-        var identifier = context.NAME()?.GetText() ?? String.Empty;
+        var identifier = context.NAME()?.GetText() ?? string.Empty;
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
         var identifierRange = ParserHelper.GetRangeForToken(context.NAME().Symbol);
+        const bool IS_REFERENCE_VALUE = false;
+        var isOptional = context.defaultValue != null;
+        
         var success = GetCompositeDataType(context.type(), out var dataType);
         
         if (!success || identifier.Length < 2)
@@ -55,7 +58,7 @@ public class SymbolListener : SinumerikNCBaseListener
             return;
         }
         
-        var symbol = new ParameterSymbol(identifier, uri, symbolRange, identifierRange, dataType, Array.Empty<string>(), false);
+        var symbol = new ParameterSymbol(identifier, uri, symbolRange, identifierRange, dataType, Array.Empty<string>(), IS_REFERENCE_VALUE, isOptional);
         _parameters.Add(symbol);
         SymbolTable.Add(symbol);
     }
@@ -63,7 +66,7 @@ public class SymbolListener : SinumerikNCBaseListener
     /// <inheritdoc/>
     public override void ExitProcedureDefinitionHeader(SinumerikNCParser.ProcedureDefinitionHeaderContext context)
     {
-        var identifier = ReplacePlaceholder(context.NAME()?.GetText() ?? String.Empty);
+        var identifier = ReplacePlaceholder(context.NAME()?.GetText() ?? string.Empty);
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
         var identifierRange = ParserHelper.GetRangeForToken(context.NAME().Symbol);
@@ -73,15 +76,15 @@ public class SymbolListener : SinumerikNCBaseListener
             return;
         }
 
-        var needsExternDeclaration = _document.Information.DocumentType is not DocumentType.ManufacturerSubProcedure && _parameters.Any();
-        var symbol = new ProcedureSymbol(identifier, uri, symbolRange, identifierRange, _parameters.ToArray(), needsExternDeclaration);
+        var mayNeedExternDeclaration = _document.Information.DocumentType is not DocumentType.ManufacturerSubProcedure && _parameters.Any();
+        var symbol = new ProcedureSymbol(identifier, uri, symbolRange, identifierRange, _parameters.ToArray(), mayNeedExternDeclaration);
         SymbolTable.Add(symbol);
     }
 
     /// <inheritdoc/>
     public override void ExitMacroDeclaration(SinumerikNCParser.MacroDeclarationContext context)
     {
-        var identifier = context.NAME()?.GetText() ?? String.Empty;
+        var identifier = context.NAME()?.GetText() ?? string.Empty;
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
         var identifierRange = ParserHelper.GetRangeForToken(context.NAME().Symbol);
@@ -155,7 +158,7 @@ public class SymbolListener : SinumerikNCBaseListener
     {
         var success = GetDataType(typeContext, out var type);
         
-        string length = "";
+        var length = "";
         if (type == DataType.String)
         {
             length = typeContext.expression().GetText();

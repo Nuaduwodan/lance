@@ -786,11 +786,17 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitOwnProcedure([NotNull] SinumerikNCParser.OwnProcedureContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.parameters"/>.
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.arguments"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitParameters([NotNull] SinumerikNCParser.ParametersContext context);
+	Result VisitArguments([NotNull] SinumerikNCParser.ArgumentsContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.freeArguments"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFreeArguments([NotNull] SinumerikNCParser.FreeArgumentsContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.predefinedProcedure"/>.
 	/// </summary>

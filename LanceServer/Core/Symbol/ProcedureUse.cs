@@ -16,10 +16,13 @@ public class ProcedureUse : AbstractSymbolUse
     /// <inheritdoc />
     public override Uri SourceDocument { get; }
     
-    public ProcedureUse(string identifier, Range range, Uri sourceDocument)
+    public ProcedureUseArgument[] Arguments { get; }
+    
+    public ProcedureUse(string identifier, Range range, Uri sourceDocument, ProcedureUseArgument[] arguments)
     {
         Identifier = identifier;
         Range = range;
         SourceDocument = sourceDocument;
+        Arguments = arguments;
     }
 }

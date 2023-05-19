@@ -18,7 +18,7 @@ public class GlobalSymbolTable
         lock (SymbolTableLock)
         {
             var existingSymbols = _globalSymbols.Where(symbol => symbol.ReferencesSymbol(newSymbol.Identifier)).ToList();
-            
+
             _globalSymbols.Add(newSymbol);
             return existingSymbols;
         }

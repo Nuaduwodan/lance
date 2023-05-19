@@ -1301,15 +1301,25 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitOwnProcedure([NotNull] SinumerikNCParser.OwnProcedureContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.parameters"/>.
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.arguments"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterParameters([NotNull] SinumerikNCParser.ParametersContext context);
+	void EnterArguments([NotNull] SinumerikNCParser.ArgumentsContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.parameters"/>.
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.arguments"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitParameters([NotNull] SinumerikNCParser.ParametersContext context);
+	void ExitArguments([NotNull] SinumerikNCParser.ArgumentsContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.freeArguments"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFreeArguments([NotNull] SinumerikNCParser.FreeArgumentsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.freeArguments"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFreeArguments([NotNull] SinumerikNCParser.FreeArgumentsContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.predefinedProcedure"/>.
 	/// </summary>

@@ -34,31 +34,17 @@ public class SymbolUseListener : SinumerikNCBaseListener
         AddTokenIfNotPlaceholder(context.NAME().Symbol);
     }
 
-    public override void ExitProcedureCall(SinumerikNCParser.ProcedureCallContext context)
+    public override void ExitOwnProcedure(SinumerikNCParser.OwnProcedureContext context)
     {
-        if (context.ownProcedure() == null)
-        {
-            return;
-        }
-        
-        var token = context.ownProcedure().NAME().Symbol;
+        var token = context.NAME().Symbol;
         if (_document.PlaceholderTable.ContainsPlaceholder(token.Text))
         {
             return;
         }
-        
-        SymbolUseTable.Add(new ProcedureUse(token.Text, ParserHelper.GetRangeForToken(token), _document.Information.Uri));
-    }
 
-    public override void ExitOwnProcedureUse(SinumerikNCParser.OwnProcedureUseContext context)
-    {
-        var token = context.ownProcedure().NAME().Symbol;
-        if (_document.PlaceholderTable.ContainsPlaceholder(token.Text))
-        {
-            return;
-        }
-        
-        SymbolUseTable.Add(new ProcedureUse(token.Text, ParserHelper.GetRangeForToken(token), _document.Information.Uri));
+        var arguments = context.arguments() != null ? context.arguments().expression().Select(_ => new ProcedureUseArgument()).ToArray() : Array.Empty<ProcedureUseArgument>();
+
+        SymbolUseTable.Add(new ProcedureUse(token.Text, ParserHelper.GetRangeForToken(token), _document.Information.Uri, arguments));
     }
 
     public override void ExitProcedureDeclaration(SinumerikNCParser.ProcedureDeclarationContext context)
@@ -69,7 +55,9 @@ public class SymbolUseListener : SinumerikNCBaseListener
             return;
         }
 
-        SymbolUseTable.Add(new DeclarationProcedureUse(token.Text, ParserHelper.GetRangeForToken(token), _document.Information.Uri));
+        var arguments = context.parameterDeclarations() != null ? context.parameterDeclarations().parameterDeclaration().Select(_ => new ProcedureUseArgument()).ToArray() : Array.Empty<ProcedureUseArgument>();
+        
+        SymbolUseTable.Add(new DeclarationProcedureUse(token.Text, ParserHelper.GetRangeForToken(token), _document.Information.Uri, arguments));
     }
 
     public override void ExitGotoLabel(SinumerikNCParser.GotoLabelContext context)

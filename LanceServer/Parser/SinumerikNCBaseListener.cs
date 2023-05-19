@@ -1544,17 +1544,29 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitOwnProcedure([NotNull] SinumerikNCParser.OwnProcedureContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.parameters"/>.
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.arguments"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterParameters([NotNull] SinumerikNCParser.ParametersContext context) { }
+	public virtual void EnterArguments([NotNull] SinumerikNCParser.ArgumentsContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.parameters"/>.
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.arguments"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitParameters([NotNull] SinumerikNCParser.ParametersContext context) { }
+	public virtual void ExitArguments([NotNull] SinumerikNCParser.ArgumentsContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.freeArguments"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFreeArguments([NotNull] SinumerikNCParser.FreeArgumentsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.freeArguments"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFreeArguments([NotNull] SinumerikNCParser.FreeArgumentsContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.predefinedProcedure"/>.
 	/// <para>The default implementation does nothing.</para>
