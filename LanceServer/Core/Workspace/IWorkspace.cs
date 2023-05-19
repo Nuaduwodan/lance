@@ -78,12 +78,6 @@ public interface IWorkspace
     public IEnumerable<AbstractSymbol> GetSymbols(string symbolName, Uri documentOfReference);
 
     /// <summary>
-    /// Returns all the global symbols that are defined in the document referenced by the uri.
-    /// </summary>
-    /// <param name="uri">The URI of the document</param>
-    public IEnumerable<AbstractSymbol> GetGlobalSymbolsOfDocument(Uri uri);
-
-    /// <summary>
     /// Updates the raw content of the specified document.
     /// </summary>
     /// <param name="uri"></param>
@@ -91,4 +85,6 @@ public interface IWorkspace
     public void UpdateDocumentContent(Uri uri, string newContent);
 
     public bool IsWorkspaceInitialised { get; }
+
+    public GlobalSymbolTable GlobalSymbolTable { get; }
 }

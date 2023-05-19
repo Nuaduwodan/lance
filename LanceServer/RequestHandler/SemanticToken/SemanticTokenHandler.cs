@@ -13,7 +13,7 @@ public class SemanticTokenHandler : ISemanticTokenHandler
     public SemanticTokens ProcessRequest(LanguageTokenExtractedDocument document, IWorkspace workspace)
     {
         var localSymbols = document.SymbolTable.GetAll();
-        var globalSymbols = workspace.GetGlobalSymbolsOfDocument(document.Information.Uri);
+        var globalSymbols = workspace.GlobalSymbolTable.GetGlobalSymbolsOfDocument(document.Information.Uri);
         var symbolUses = document.SymbolUseTable.GetAll();
 
         var semanticTokens = localSymbols.Select(CreateSemanticToken).ToList();

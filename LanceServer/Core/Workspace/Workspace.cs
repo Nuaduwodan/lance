@@ -12,6 +12,7 @@ namespace LanceServer.Core.Workspace;
 public class Workspace : IWorkspace
 {
     public bool IsWorkspaceInitialised { get; private set; }
+    public GlobalSymbolTable GlobalSymbolTable { get; } = new();
         
     private IParserManager _parserManager;
 
@@ -19,7 +20,6 @@ public class Workspace : IWorkspace
     private readonly IConfigurationManager _configurationManager;
 
     private ConcurrentDictionary<Uri, Document.Document> _documents = new();
-    private SynchronizedCollection<AbstractSymbol> _globalSymbols = new();
 
     public Workspace(IParserManager parserManager, IPlaceholderPreprocessor placeholderPreprocessor, IConfigurationManager configurationManager)
     {
@@ -60,7 +60,7 @@ public class Workspace : IWorkspace
         var symbolList = _parserManager.GetSymbolTableForDocument(parsedDocument).ToList();
             
         //update symbol table
-        DeleteGlobalSymbolsOfDocument(uri);
+        GlobalSymbolTable.DeleteGlobalSymbolsOfDocument(uri);
 
         var newGlobalSymbols = symbolList.Where(symbol => symbol is ProcedureSymbol).ToList();
 
@@ -73,13 +73,11 @@ public class Workspace : IWorkspace
        
         foreach (var newSymbol in newGlobalSymbols)
         {
-            var existingSymbols = _globalSymbols.Where(symbol => symbol.ReferencesSymbol(newSymbol.Identifier)).ToArray();
+            var existingSymbols = GlobalSymbolTable.AddSymbol(newSymbol).ToList();
             if (existingSymbols.Any())
             {
                 parsedDocument.ParserDiagnostics.Add(GlobalSymbolAlreadyExists(newSymbol, existingSymbols));
             }
-            
-            _globalSymbols.Add(newSymbol);
         }
 
         var symbolTable = new SymbolTable();
@@ -253,14 +251,8 @@ public class Workspace : IWorkspace
             symbols.Add(symbol);
         }
 
-        symbols.AddRange(GetGlobalSymbols(symbolName));
+        symbols.AddRange(GlobalSymbolTable.GetGlobalSymbols(symbolName));
         return symbols;
-    }
-
-    /// <inheritdoc />
-    public IEnumerable<AbstractSymbol> GetGlobalSymbolsOfDocument(Uri uri)
-    {
-        return _globalSymbols.Where(symbol => symbol.SourceDocument == uri);
     }
 
     /// <inheritdoc />
@@ -283,26 +275,13 @@ public class Workspace : IWorkspace
         return _documents.Select(pair => pair.Key);
     }
 
-    private IEnumerable<AbstractSymbol> GetGlobalSymbols(string symbolName)
-    {
-        return _globalSymbols.Where(symbol => symbol.ReferencesSymbol(symbolName));
-    }
-
-    private void DeleteGlobalSymbolsOfDocument(Uri documentUri)
-    {
-        foreach (var symbol in GetGlobalSymbolsOfDocument(documentUri))
-        {
-            _globalSymbols.Remove(symbol);
-        }
-    }
-
-    private static Diagnostic GlobalSymbolAlreadyExists(AbstractSymbol newSymbol, AbstractSymbol[] existingSymbols)
+    private static Diagnostic GlobalSymbolAlreadyExists(AbstractSymbol newSymbol, IList<AbstractSymbol> existingSymbols)
     {
         return new Diagnostic
         {
             Code = newSymbol.Identifier,
             Range = newSymbol.IdentifierRange,
-            Message = $"{(existingSymbols.Length > 1 ? existingSymbols.Length : "A")} global symbol{(existingSymbols.Length > 1 ? "s" : "")} with the name {existingSymbols.First().Identifier} is already defined.",
+            Message = $"{(existingSymbols.Count > 1 ? existingSymbols.Count : "A")} global symbol{(existingSymbols.Count > 1 ? "s" : "")} with the name {existingSymbols.First().Identifier} is already defined.",
             Severity = DiagnosticSeverity.Information
         };
     }
