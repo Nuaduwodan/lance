@@ -42,7 +42,7 @@ public class DiagnosticHandler : IDiagnosticHandler
                     }
                     else if (symbolUse is DeclarationProcedureUse declarationUse)
                     {
-                        if (!procedureSymbol.MayNeedExternDeclaration)
+                        if (!procedureSymbol.MayNeedExternDeclaration || !symbolUses.Any(symbolUse2 => symbolUse2.IsReferencedBy(declarationUse.Identifier)))
                         {
                             diagnostics.Add(DiagnosticMessage.UnnecessaryExtern(symbolUse));
                         }
@@ -90,9 +90,12 @@ public class DiagnosticHandler : IDiagnosticHandler
         
         var globalSymbols = workspace.GlobalSymbolTable.GetGlobalSymbolsOfDocument(document.Information.Uri);
 
-        foreach (var symbol in globalSymbols)
+        foreach (var globalSymbol in globalSymbols)
         {
-            if (symbol is ProcedureSymbol procedureSymbol && filename != procedureSymbol.Identifier)
+            var duplicateSymbols = workspace.GlobalSymbolTable.GetGlobalSymbols(globalSymbol.Identifier).Where(duplicate => duplicate != globalSymbol).ToList();
+            diagnostics.Add(DiagnosticMessage.GlobalSymbolHasDuplicates(globalSymbol, duplicateSymbols));
+            
+            if (globalSymbol is ProcedureSymbol procedureSymbol && filename != procedureSymbol.Identifier)
             {
                 diagnostics.Add(DiagnosticMessage.ProcedureFileNameMismatch(procedureSymbol, filename));
             }

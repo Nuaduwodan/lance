@@ -16,8 +16,9 @@ public class ErrorListener : BaseErrorListener, IAntlrErrorListener<int>
 
     public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
     {
-        var characterEnd = charPositionInLine + (uint)e.Message.Length;
+        var token = msg.Split('\'')[1];
+        var characterEnd = charPositionInLine + token.Length;
         var range = new Range { Start = new Position((uint)line, (uint)charPositionInLine), End = new Position((uint)line, (uint)characterEnd) };
-        Diagnostics.Add(DiagnosticMessage.LexingError(range, e.Message));
+        Diagnostics.Add(DiagnosticMessage.LexingError(range, token));
     }
 }

@@ -74,11 +74,7 @@ public class Workspace : IWorkspace
        
         foreach (var newSymbol in newGlobalSymbols)
         {
-            var existingSymbols = GlobalSymbolTable.AddSymbol(newSymbol).ToList();
-            if (existingSymbols.Any())
-            {
-                parsedDocument.ParserDiagnostics.Add(DiagnosticMessage.GlobalSymbolAlreadyExists(newSymbol, existingSymbols));
-            }
+            GlobalSymbolTable.AddSymbol(newSymbol);
         }
 
         var symbolTable = new SymbolTable();

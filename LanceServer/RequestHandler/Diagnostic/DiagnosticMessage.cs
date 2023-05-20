@@ -144,14 +144,14 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic LexingError(Range range, string message)
+    public static LspTypes.Diagnostic LexingError(Range range, string token)
     {
         return new LspTypes.Diagnostic
         {
             Range = range,
             Severity = DiagnosticSeverity.Error,
             Source = DiagnosticSource,
-            Message = $"'{message}' is not recognized as an element of the sinumerik one nc language"
+            Message = $"'{token}' is not recognized as an element of the sinumerik one nc language"
         };
     }
 
@@ -178,7 +178,7 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic GlobalSymbolAlreadyExists(AbstractSymbol newSymbol, IList<AbstractSymbol> existingSymbols)
+    public static LspTypes.Diagnostic GlobalSymbolHasDuplicates(AbstractSymbol newSymbol, IList<AbstractSymbol> existingSymbols)
     {
         var relatedInformation = existingSymbols.Select(RelatedDuplicate).ToArray();
 
@@ -188,7 +188,7 @@ public static class DiagnosticMessage
         {
             Code = newSymbol.Identifier,
             Range = newSymbol.IdentifierRange,
-            Message = $"{(multiple ? existingSymbols.Count : "A")} global symbol{(multiple ? "s" : "")} with the name {existingSymbols.First().Identifier} {(multiple ? "are" : "is")} already defined.",
+            Message = $"The global symbol {newSymbol.Identifier} has {(multiple ? existingSymbols.Count : "one")} global duplicate{(multiple ? "s" : "")}.",
             RelatedInformation = relatedInformation,
             Severity = DiagnosticSeverity.Information
         };
