@@ -69,7 +69,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: server
-        path: .\lance-server\bin\Release\
+        path: .\LanceServer\bin\Release\
       
   build_extension:
     needs: build_server
