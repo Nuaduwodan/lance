@@ -30,7 +30,7 @@ internal static class Program
         
         var config = new Option<FileInfo>(
             name: "--config-file",
-            description: "specify the path to the json config file", 
+            description: "Specify the path to the json config file.", 
             getDefaultValue: GetDefaultConfig);
         config.AddAlias("-c");
         config.AddValidator(result =>
@@ -44,7 +44,7 @@ internal static class Program
         
         var folders = new Option<DirectoryInfo[]>(
             name: "--workspace-folders",
-            description: "provide a list of folders which will be processed");
+            description: "Provide a list of folders which will be processed.");
         folders.AddAlias("-w");
         folders.Arity = ArgumentArity.OneOrMore;
         folders.AllowMultipleArgumentsPerToken = true;
@@ -60,15 +60,15 @@ internal static class Program
         
         var printLevel = new Option<DiagnosticSeverity>(
             name: "--print-level",
-            description: "the minimum severity level to be printed to standard out. ",
+            description: "The minimum severity level to be printed to standard out.",
             getDefaultValue: () => DiagnosticSeverity.Warning);
         printLevel.AddAlias("-p");
         
         var reportLevel = new Option<DiagnosticSeverity>(
-            name: "--print-level",
-            description: "the minimum severity level to be printed to standard out. ",
+            name: "--report-level",
+            description: "The minimum severity level to be reported with the return code.",
             getDefaultValue: () => DiagnosticSeverity.Error);
-        printLevel.AddAlias("-p");
+        reportLevel.AddAlias("-r");
 
         rootCommand.AddCommand(languageServerCommand);
         rootCommand.AddCommand(commandLineCommand);

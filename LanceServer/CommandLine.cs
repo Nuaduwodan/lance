@@ -52,7 +52,7 @@ public class CommandLine
             }
         }
         
-        Console.Out.WriteLine($"Total number of errors is {errors}");
+        Console.Out.WriteLine($"Total number of problems with a severity of {reportLevel} or higher is {errors}");
         return errors;
     }
 
