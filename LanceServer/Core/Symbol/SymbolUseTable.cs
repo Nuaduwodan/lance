@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using LanceServer.Protocol;
 using LspTypes;
-using Range = LspTypes.Range;
 
 namespace LanceServer.Core.Symbol;
 
