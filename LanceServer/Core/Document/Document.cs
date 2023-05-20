@@ -11,7 +11,7 @@ public class Document
     public IDocumentInformation Information { get; }
     
     /// <summary>
-    /// Creates a new instance of <see cref="Document"/>
+    /// Instantiates a new instance of <see cref="Document"/>
     /// </summary>
     public Document(IDocumentInformation documentInformation)
     {

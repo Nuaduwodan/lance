@@ -5,8 +5,10 @@ using LanceServer.Protocol;
 
 namespace LanceServer.RequestHandler.Diagnostic;
 
+/// <inheritdoc />
 public class DiagnosticHandler : IDiagnosticHandler
 {
+    /// <inheritdoc />
     public DocumentDiagnosticReport HandleRequest(LanguageTokenExtractedDocument document, IWorkspace workspace)
     {
         var diagnostics = new List<LspTypes.Diagnostic>();
@@ -100,9 +102,6 @@ public class DiagnosticHandler : IDiagnosticHandler
                 diagnostics.Add(DiagnosticMessage.ProcedureFileNameMismatch(procedureSymbol, filename));
             }
         }
-
-        //todo check matching parameters
-        //todo check if all scopes are closed again
         
         return new DocumentDiagnosticReport { Items = diagnostics.ToArray() };
     }

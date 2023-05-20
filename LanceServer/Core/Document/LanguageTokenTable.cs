@@ -1,8 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using LanceServer.Protocol;
 using LspTypes;
 
 namespace LanceServer.Core.Document;
 
+/// <summary>
+/// The table with the language tokens
+/// </summary>
 public class LanguageTokenTable
 {
     private IList<LanguageToken> _languageTokens;
@@ -12,30 +16,21 @@ public class LanguageTokenTable
         _languageTokens = languageTokens;
     }
 
-    public bool TryGetToken(Position position, [MaybeNullWhen(false)] out LanguageToken symbol)
+    /// <summary>
+    /// Tries to get a language token at a specific position.
+    /// </summary>
+    /// <param name="position">The position in the code.</param>
+    /// <param name="languageToken">The requested language token if found.</param>
+    /// <returns>True if a language token was found, false otherwise.</returns>
+    public bool TryGetToken(Position position, [MaybeNullWhen(false)] out LanguageToken languageToken)
     {
-        symbol = null;
-        if (_languageTokens.Any(languageToken => IsInRange(languageToken.Range, position)))
+        languageToken = null;
+        if (_languageTokens.Any(token => position.IsInRange(token.Range)))
         {
-            symbol = _languageTokens.First(languageToken => IsInRange(languageToken.Range, position));
+            languageToken = _languageTokens.First(languageToken => position.IsInRange(languageToken.Range));
             return true;
         }
 
         return false;
-    }
-
-    private bool IsInRange(LspTypes.Range range, Position position)
-    {
-        if (position.Line < range.Start.Line || range.End.Line < position.Line)
-        {
-            return false;
-        }
-        
-        if (position.Character < range.Start.Character || range.End.Character < position.Character)
-        {
-            return false;
-        }
-
-        return true;
     }
 }

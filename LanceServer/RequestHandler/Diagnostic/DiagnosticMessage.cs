@@ -5,6 +5,9 @@ using Range = LspTypes.Range;
 
 namespace LanceServer.RequestHandler.Diagnostic;
 
+/// <summary>
+/// Contains the functions to create meaningful diagnostic messages.
+/// </summary>
 public static class DiagnosticMessage
 {
     /// <summary>

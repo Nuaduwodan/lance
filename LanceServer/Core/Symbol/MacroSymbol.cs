@@ -28,7 +28,14 @@ public class MacroSymbol : AbstractSymbol
     /// <inheritdoc/>
     public override string Documentation { get; }
         
+    /// <summary>
+    /// The value the macro resolves to.
+    /// </summary>
     private readonly string _value;
+    
+    /// <summary>
+    /// Whether or not the macro is global
+    /// </summary>
     private readonly bool _isGlobal;
         
     public MacroSymbol(string identifier, Uri sourceDocument, Range symbolRange, Range identifierRange, string value, bool isGlobal, string documentation = "")

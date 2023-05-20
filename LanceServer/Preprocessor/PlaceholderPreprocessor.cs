@@ -5,6 +5,7 @@ using LanceServer.Core.Document;
 
 namespace LanceServer.Preprocessor;
 
+/// <inheritdoc />
 public class PlaceholderPreprocessor : IPlaceholderPreprocessor
 {
     private readonly IConfigurationManager _configurationManager;
@@ -13,7 +14,8 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
     {
         _configurationManager = configurationManager;
     }
-        
+    
+    /// <inheritdoc />
     public PlaceholderPreprocessedDocument Filter(ReadDocument document)
     {
         var preprocessorConfiguration = _configurationManager.CustomPreprocessorConfiguration;

@@ -10,15 +10,6 @@ namespace LanceServer.Parser;
 /// <inheritdoc cref="IParserManager"/>
 public class ParserManager : IParserManager
 {
-    private CommonTokenStream Tokenize(PreprocessedDocument document, ErrorListener errorListener)
-    {
-        ICharStream stream = CharStreams.fromString(document.Code);
-        SinumerikNCLexer lexer = new SinumerikNCLexer(stream);
-        lexer.RemoveErrorListeners();
-        lexer.AddErrorListener(errorListener);
-        return new CommonTokenStream(lexer);
-    }
-
     /// <inheritdoc/>
     public ParserResult Parse(PreprocessedDocument document)
     {
@@ -59,6 +50,15 @@ public class ParserManager : IParserManager
         walker.Walk(languageTokenListener, document.ParseTree);
 
         return languageTokenListener.LanguageTokens;
+    }
+    
+    private CommonTokenStream Tokenize(PreprocessedDocument document, ErrorListener errorListener)
+    {
+        ICharStream stream = CharStreams.fromString(document.Code);
+        SinumerikNCLexer lexer = new SinumerikNCLexer(stream);
+        lexer.RemoveErrorListeners();
+        lexer.AddErrorListener(errorListener);
+        return new CommonTokenStream(lexer);
     }
 
     private IList<AbstractSymbol> AddProcedureSymbolIfNeeded(ParsedDocument document, IList<AbstractSymbol> symbolTable)

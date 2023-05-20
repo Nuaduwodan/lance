@@ -327,7 +327,7 @@ public class CustomPreprocessorTest
             
         // Assert
         Assert.AreEqual(expectedResult, actualResult.Code);
-        Assert.IsTrue(actualResult.PlaceholderTable.ContainsPlaceholder(expectedResult));
+        Assert.IsTrue(actualResult.PlaceholderTable.ContainedPlaceholder(expectedResult));
     }
         
     [TestMethod]

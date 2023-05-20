@@ -9,10 +9,9 @@ namespace LanceServer.Parser;
 public interface IParserManager
 {
     /// <summary>
-    /// Parses the provided document and returns the parse tree.
+    /// Parses the provided document and returns the parser result.
     /// </summary>
     /// <param name="document">The document to be parsed</param>
-    /// <returns>The parse tree</returns>
     ParserResult Parse(PreprocessedDocument document);
     
     /// <summary>
@@ -29,5 +28,10 @@ public interface IParserManager
     /// <returns>A list of all symbol uses</returns>
     IEnumerable<AbstractSymbolUse> GetSymbolUseForDocument(SymbolisedDocument document);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="document"></param>
+    /// <returns></returns>
     IEnumerable<LanguageToken> GetLanguageTokensForDocument(SymbolisedDocument document);
 }

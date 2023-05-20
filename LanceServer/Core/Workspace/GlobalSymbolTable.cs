@@ -2,6 +2,9 @@ using LanceServer.Core.Symbol;
 
 namespace LanceServer.Core.Workspace;
 
+/// <summary>
+/// The thread save symbol table for global symbols.
+/// </summary>
 public class GlobalSymbolTable
 {
     private List<AbstractSymbol> _globalSymbols;
@@ -13,17 +16,20 @@ public class GlobalSymbolTable
         _globalSymbols = new List<AbstractSymbol>();
     }
 
-    public IEnumerable<AbstractSymbol> AddSymbol(AbstractSymbol newSymbol)
+    /// <summary>
+    /// Adds a new global symbol to the table.
+    /// </summary>
+    public void AddSymbol(AbstractSymbol newSymbol)
     {
         lock (SymbolTableLock)
         {
-            var existingSymbols = _globalSymbols.Where(symbol => symbol.ReferencesSymbol(newSymbol.Identifier)).ToList();
-
             _globalSymbols.Add(newSymbol);
-            return existingSymbols;
         }
     }
 
+    /// <summary>
+    /// Returns all global symbols defined in the referenced document.
+    /// </summary>
     public IEnumerable<AbstractSymbol> GetGlobalSymbolsOfDocument(Uri uri)
     {
         lock (SymbolTableLock)
@@ -32,6 +38,9 @@ public class GlobalSymbolTable
         }
     }
 
+    /// <summary>
+    /// Returns all global symbols.
+    /// </summary>
     public IList<AbstractSymbol> GetGlobalSymbols(string symbolName)
     {
         lock (SymbolTableLock)
@@ -40,6 +49,10 @@ public class GlobalSymbolTable
         }
     }
 
+    /// <summary>
+    /// Deletes all global symbols defined in the referenced document.
+    /// </summary>
+    /// <param name="documentUri"></param>
     public void DeleteGlobalSymbolsOfDocument(Uri documentUri)
     {
         lock (SymbolTableLock)

@@ -28,7 +28,10 @@ public class ParameterSymbol : AbstractSymbol
     /// <inheritdoc/>
     public override string Documentation { get; }
     
-    public bool IsOptional { get; }
+    /// <summary>
+    /// Whether or not this parameter has an explicitly defined default value
+    /// </summary>
+    public bool HasDefaultValue { get; }
 
     private const string ArraySizeDelimiter = ", ";
     private readonly CompositeDataType _compositeDataType;
@@ -42,10 +45,10 @@ public class ParameterSymbol : AbstractSymbol
         CompositeDataType compositeDataType,
         string[] arraySize,
         bool isReferenceValue = false,
-        bool isOptional = false,
+        bool hasDefaultValue = false,
         string documentation = "")
     {
-        if (isReferenceValue && isOptional)
+        if (isReferenceValue && hasDefaultValue)
         {
             throw new ArgumentException("parameter by reference can not be optional");
         }
@@ -57,7 +60,7 @@ public class ParameterSymbol : AbstractSymbol
         _compositeDataType = compositeDataType;
         _arraySize = arraySize;
         _isReferenceValue = isReferenceValue;
-        IsOptional = isOptional;
+        HasDefaultValue = hasDefaultValue;
         Documentation = documentation;
     }
 

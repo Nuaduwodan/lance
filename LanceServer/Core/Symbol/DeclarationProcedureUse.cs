@@ -16,6 +16,9 @@ public class DeclarationProcedureUse : AbstractSymbolUse
     /// <inheritdoc />
     public override Uri SourceDocument { get; }
     
+    /// <summary>
+    /// The arguments for the procedure
+    /// </summary>
     public ProcedureUseArgument[] Arguments { get; }
     
     public DeclarationProcedureUse(string identifier, Range range, Uri sourceDocument, ProcedureUseArgument[] arguments)

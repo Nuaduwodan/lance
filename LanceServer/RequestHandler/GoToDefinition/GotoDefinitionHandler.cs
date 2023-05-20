@@ -4,8 +4,10 @@ using LspTypes;
 
 namespace LanceServer.RequestHandler.GoToDefinition;
 
+/// <inheritdoc />
 public class GotoDefinitionHandler : IGotoDefinitionHandler
 {
+    /// <inheritdoc />
     public LocationLink[] HandleRequest(LanguageTokenExtractedDocument document, Position position, IWorkspace workspace)
     {
         if (!document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))

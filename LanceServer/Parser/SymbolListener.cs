@@ -3,9 +3,16 @@ using LanceServer.Core.Symbol;
 
 namespace LanceServer.Parser;
 
+/// <summary>
+/// The listener looking for symbols in the code.
+/// </summary>
 public class SymbolListener : SinumerikNCBaseListener
 {
+    /// <summary>
+    /// The list of all found symbols.
+    /// </summary>
     public IList<AbstractSymbol> SymbolTable { get; } = new List<AbstractSymbol>();
+    
     private readonly PlaceholderPreprocessedDocument _document;
 
     private IList<ParameterSymbol> _parameters = new List<ParameterSymbol>();
@@ -15,18 +22,24 @@ public class SymbolListener : SinumerikNCBaseListener
         _document = document;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Is called at the beginning of a procedure definition.
+    /// Creates a new empty parameter list.
+    /// </summary>
     public override void EnterProcedureDefinition(SinumerikNCParser.ProcedureDefinitionContext context)
     {
         _parameters = new List<ParameterSymbol>();
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Is called at the end of a reference parameter definition.
+    /// Creates a new <see cref="ParameterSymbol"/> and adds it to the symbol table and the parameter list.
+    /// </summary>
     public override void ExitParameterDefinitionByReference(SinumerikNCParser.ParameterDefinitionByReferenceContext context)
     {
         var identifier = context.NAME()?.GetText() ?? string.Empty;
         var uri = _document.Information.Uri;
-        var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
+        var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
         var identifierRange = ParserHelper.GetRangeForToken(context.NAME().Symbol);
         var success = GetCompositeDataType(context.type(), out var dataType);
         var arrayDeclaration = GetArrayDeclaration(context.arrayDeclaration());
@@ -41,12 +54,15 @@ public class SymbolListener : SinumerikNCBaseListener
         SymbolTable.Add(symbol);
     }
         
-    /// <inheritdoc/>
+    /// <summary>
+    /// Is called at the end of a value parameter definition.
+    /// Creates a new <see cref="ParameterSymbol"/> and adds it to the symbol table and the parameter list.
+    /// </summary>
     public override void ExitParameterDefinitionByValue(SinumerikNCParser.ParameterDefinitionByValueContext context)
     {
         var identifier = context.NAME()?.GetText() ?? string.Empty;
         var uri = _document.Information.Uri;
-        var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
+        var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
         var identifierRange = ParserHelper.GetRangeForToken(context.NAME().Symbol);
         const bool IS_REFERENCE_VALUE = false;
         var isOptional = context.defaultValue != null;
@@ -63,12 +79,15 @@ public class SymbolListener : SinumerikNCBaseListener
         SymbolTable.Add(symbol);
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Is called at the end of a procedure definition.
+    /// Creates a new <see cref="ProcedureSymbol"/> and adds it to the symbol table.
+    /// </summary>
     public override void ExitProcedureDefinitionHeader(SinumerikNCParser.ProcedureDefinitionHeaderContext context)
     {
         var identifier = ReplacePlaceholder(context.NAME()?.GetText() ?? string.Empty);
         var uri = _document.Information.Uri;
-        var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
+        var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
         var identifierRange = ParserHelper.GetRangeForToken(context.NAME().Symbol);
         
         if (identifier.Length < 2)
@@ -81,12 +100,15 @@ public class SymbolListener : SinumerikNCBaseListener
         SymbolTable.Add(symbol);
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Is called at the end of a macro definition.
+    /// Creates a new <see cref="MacroSymbol"/> and adds it to the symbol table.
+    /// </summary>
     public override void ExitMacroDeclaration(SinumerikNCParser.MacroDeclarationContext context)
     {
         var identifier = context.NAME()?.GetText() ?? string.Empty;
         var uri = _document.Information.Uri;
-        var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
+        var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
         var identifierRange = ParserHelper.GetRangeForToken(context.NAME().Symbol);
         var value = ReplacePlaceholder(context.macroValue().GetText());
         var isGlobal = _document.Information.DocumentType is DocumentType.Definition or DocumentType.MainProcedure;
@@ -100,11 +122,14 @@ public class SymbolListener : SinumerikNCBaseListener
         SymbolTable.Add(symbol);
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Is called at the end of a variable declaration.
+    /// Creates a new <see cref="VariableSymbol"/> for every variable and adds them to the symbol table.
+    /// </summary>
     public override void ExitVariableDeclaration(SinumerikNCParser.VariableDeclarationContext context)
     {
         var uri = _document.Information.Uri;
-        var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
+        var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
         var success = GetCompositeDataType(context.type(), out var dataType);
         var isGlobal = _document.Information.DocumentType is DocumentType.Definition or DocumentType.MainProcedure;
         
@@ -129,21 +154,29 @@ public class SymbolListener : SinumerikNCBaseListener
         }
     }
 
+    /// <summary>
+    /// Is called at the end of a label definition.
+    /// Creates a new <see cref="LabelSymbol"/> and adds it to the symbol table.
+    /// </summary>
     public override void ExitLabelDefinition(SinumerikNCParser.LabelDefinitionContext context)
     {
         var identifier = context.NAME().GetText();
         var uri = _document.Information.Uri;
-        var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
+        var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
         var identifierRange = ParserHelper.GetRangeForToken(context.NAME().Symbol);
         var symbol = new LabelSymbol(identifier, uri, symbolRange, identifierRange);
         SymbolTable.Add(symbol);
     }
 
+    /// <summary>
+    /// Is called at the end of a label definition.
+    /// Creates a new <see cref="BlockNumberSymbol"/> and adds it to the symbol table.
+    /// </summary>
     public override void ExitBlockNumberDefinition(SinumerikNCParser.BlockNumberDefinitionContext context)
     {
         var identifier = context.GetText();
         var uri = _document.Information.Uri;
-        var symbolRange = ParserHelper.GetRangeBetweenTokens(context.Start, context.Stop);
+        var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
         
         if (identifier.Length < 2)
         {

@@ -6,7 +6,7 @@
 /// </summary>
 public class MacroExtractedDocument : PlaceholderPreprocessedDocument
 {
-    //todo macrotable
+    //todo macro table
     /// <summary>
     /// The table containing all macros defined in this document.
     /// </summary>

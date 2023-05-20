@@ -6,11 +6,10 @@ using Range = LspTypes.Range;
 
 namespace LanceServer.RequestHandler.SemanticToken;
 
-/// <summary>
-/// Class responsible for handling semantic token requests
-/// </summary>
+/// <inheritdoc />
 public class SemanticTokenHandler : ISemanticTokenHandler
 {
+    /// <inheritdoc />
     public SemanticTokens ProcessRequest(LanguageTokenExtractedDocument document, IWorkspace workspace)
     {
         var localSymbols = document.SymbolTable.GetAll();
@@ -28,13 +27,18 @@ public class SemanticTokenHandler : ISemanticTokenHandler
 
         var orderedSemanticTokens = semanticTokens.Distinct().OrderBy(symbolUse => symbolUse.Line).ThenBy(symbolUse => symbolUse.StartCharacter);
         
+        return ConvertToRelativeDataStructure(orderedSemanticTokens);
+    }
+
+    private static SemanticTokens ConvertToRelativeDataStructure(IOrderedEnumerable<SemanticToken> orderedSemanticTokens)
+    {
         var tokenData = new SemanticTokenData();
         uint previousLine = 0;
         uint previousCharacter = 0;
         foreach (var semanticToken in orderedSemanticTokens)
         {
             var deltaLine = semanticToken.Line - previousLine;
-            
+
             if (deltaLine > 0)
             {
                 previousLine = semanticToken.Line;
@@ -42,12 +46,12 @@ public class SemanticTokenHandler : ISemanticTokenHandler
             }
 
             var deltaCharacter = semanticToken.StartCharacter - previousCharacter;
-            
+
             previousCharacter = semanticToken.StartCharacter;
-            
+
             tokenData.AddElement(new SemanticTokenDataElement(deltaLine, deltaCharacter, semanticToken.Length, semanticToken.Type, semanticToken.Modifiers));
         }
-                    
+
         return new SemanticTokens
         {
             Data = tokenData.ToDataFormat()

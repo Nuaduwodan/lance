@@ -12,10 +12,14 @@ using LanceServer.RequestHandler.SemanticToken;
 using LspTypes;
 using StreamJsonRpc.Protocol;
 using InitializeResult = LanceServer.Protocol.InitializeResult;
+using SemanticTokenModifiers = LanceServer.RequestHandler.SemanticToken.SemanticTokenModifiers;
 using ServerCapabilities = LanceServer.Protocol.ServerCapabilities;
 
 namespace LanceServer;
 
+/// <summary>
+/// The remote procedure call interface to work as a language server as defined by the language server protocol.
+/// </summary>
 class LSPServer : IDisposable
 {
     private const string TraceIn = "<-- ";
@@ -93,7 +97,9 @@ class LSPServer : IDisposable
         Disconnected?.Invoke(this, EventArgs.Empty);
         Environment.Exit(0);
     }
-
+    
+    //// Base protocol interface
+    
     /// <summary>
     /// Handles the initialize request
     /// </summary>
@@ -167,7 +173,7 @@ class LSPServer : IDisposable
                     Legend = new SemanticTokensLegend()
                     {
                         tokenTypes = SemanticTokenTypeHelper.GetTypes(),
-                        tokenModifiers = SemanticTokenModifierHelper.GetModifiers()
+                        tokenModifiers = SemanticTokenModifiers.GetModifiers()
                     }
                 },
                 DiagnosticProvider = new DiagnosticOptions
@@ -193,6 +199,10 @@ class LSPServer : IDisposable
         return result;
     }
 
+    /// <summary>
+    /// Handles the initialized notification.
+    /// Triggers the processing of the whole workspace to provide more functionality afterwards.
+    /// </summary>
     [JsonRpcMethod(Methods.InitializedName)]
     public async Task InitializedAsync()
     {
@@ -248,6 +258,9 @@ class LSPServer : IDisposable
         }
     }
 
+    /// <summary>
+    /// Handles the shutdown request.
+    /// </summary>
     [JsonRpcMethod(Methods.ShutdownName)]
     public JToken Shutdown()
     {
@@ -267,6 +280,9 @@ class LSPServer : IDisposable
         }
     }
 
+    /// <summary>
+    /// Handles the exit request.
+    /// </summary>
     [JsonRpcMethod(Methods.ExitName)]
     public void Exit()
     {
@@ -285,32 +301,12 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
     }
-
-    [JsonRpcMethod(Methods.WorkspaceDidChangeConfigurationName)]
-    public void WorkspaceDidChangeConfiguration(Settings settings)
-    {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(WorkspaceDidChangeConfiguration));
-        }
-
-        try
-        {
-            _configurationManager.ExtractConfiguration(settings.Lance);
-            _trace = settings.Lance.Trace;
-        }
-        catch (Exception exception)
-        {
-            Console.Error.WriteLine(exception.ToString());
-            throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
-        }
-
-        if (_trace)
-        {
-            Console.Error.Write(TraceOut + nameof(WorkspaceDidChangeConfiguration));
-        }
-    }
-
+    
+    //// Server to client requests and notifications
+    
+    /// <summary>
+    /// Requests the configuration from the client.
+    /// </summary>
     [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits")]
     public ServerConfiguration RequestConfiguration()
     {
@@ -325,7 +321,7 @@ class LSPServer : IDisposable
         {
             result = Task.Run(async delegate
             {
-                var response = await _rpc.InvokeWithParameterObjectAsync<ServerConfiguration[]>("workspace/configuration", new ConfigurationParams
+                var response = await _rpc.InvokeWithParameterObjectAsync<ServerConfiguration[]>(Method.WorkspaceConfiguration, new ConfigurationParams
                 {
                     Items = new[]
                     {
@@ -352,6 +348,9 @@ class LSPServer : IDisposable
         return result;
     }
     
+    /// <summary>
+    /// Requests a diagnostic refresh on all documents the client is interested.
+    /// </summary>
     public async Task<bool> RequestDiagnosticRefreshAsync()
     {
         if (_trace)
@@ -364,7 +363,7 @@ class LSPServer : IDisposable
         {
             var task = Task.Run(async delegate
             {
-                await _rpc.InvokeAsync("workspace/diagnostic/refresh");
+                await _rpc.InvokeAsync(Method.WorkspaceDiagnosticRefresh);
             });
             await task;
             result = task.IsCompletedSuccessfully;
@@ -382,6 +381,9 @@ class LSPServer : IDisposable
         return result;
     }
     
+    /// <summary>
+    /// Requests a semantic token refresh on all documents the client is interested.
+    /// </summary>
     public async Task<bool> RequestSemanticTokensRefreshAsync()
     {
         if (_trace)
@@ -394,7 +396,7 @@ class LSPServer : IDisposable
         {
             var task = Task.Run(async delegate
             {
-                await _rpc.InvokeAsync("workspace/semanticTokens/refresh");
+                await _rpc.InvokeAsync(Method.WorkspaceSemanticTokensRefresh);
             });
             await task;
             result = task.IsCompletedSuccessfully;
@@ -412,6 +414,10 @@ class LSPServer : IDisposable
         return result;
     }
     
+    /// <summary>
+    /// Requests a progress token from the client to be able to report progress to it.
+    /// </summary>
+    /// <param name="token">The token which will be used.</param>
     public async Task<bool> RequestWorkDoneProgressTokenAsync(string token)
     {
         if (_trace)
@@ -425,7 +431,7 @@ class LSPServer : IDisposable
         {
             var task = Task.Run(async delegate
             {
-                await _rpc.InvokeWithParameterObjectAsync("window/workDoneProgress/create", new WorkDoneProgressCreateParams
+                await _rpc.InvokeWithParameterObjectAsync(Method.WindowWorkDoneProgressCreate, new WorkDoneProgressCreateParams
                 {
                     Token = token
                 });
@@ -446,6 +452,10 @@ class LSPServer : IDisposable
         return result;
     }
 
+    /// <summary>
+    /// Notifies the client of the progress using a work done token.
+    /// </summary>
+    /// <typeparam name="T">The type of progress reported.</typeparam>
     [SuppressMessage("Usage", "VSTHRD110:Observe result of async calls")]
     public void NotifyProgress<T>(T workDoneProgress, SumType<string, int> workDoneToken)
     {
@@ -472,7 +482,42 @@ class LSPServer : IDisposable
             Console.Error.Write(TraceIn + nameof(NotifyProgress));
         }
     }
-        
+    
+    //// Client to server auxiliary requests and notifications
+
+    /// <summary>
+    /// Handles the did change configuration request.
+    /// Updates the configuration.
+    /// </summary>
+    [JsonRpcMethod(Methods.WorkspaceDidChangeConfigurationName)]
+    public void WorkspaceDidChangeConfiguration(Settings settings)
+    {
+        if (_trace)
+        {
+            Console.Error.WriteLine(TraceIn + nameof(WorkspaceDidChangeConfiguration));
+        }
+
+        try
+        {
+            _configurationManager.ExtractConfiguration(settings.Lance);
+            _trace = settings.Lance.Trace;
+        }
+        catch (Exception exception)
+        {
+            Console.Error.WriteLine(exception.ToString());
+            throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
+        }
+
+        if (_trace)
+        {
+            Console.Error.Write(TraceOut + nameof(WorkspaceDidChangeConfiguration));
+        }
+    }
+    
+    /// <summary>
+    /// Handles the text document did change request.
+    /// Updates the content of the respective document.
+    /// </summary>
     [JsonRpcMethod(Methods.TextDocumentDidChangeName)]
     public void TextDocumentDidChange(VersionedTextDocumentIdentifier textDocument, TextDocumentContentChangeEvent[] contentChanges)
     {
@@ -498,7 +543,11 @@ class LSPServer : IDisposable
             Console.Error.Write(TraceOut + nameof(TextDocumentDidChange));
         }
     }
-        
+    
+    /// <summary>
+    /// Handles the text document did open request.
+    /// Requests the respective document from the workspace to reduce wait times on future requests for that document.
+    /// </summary>
     [JsonRpcMethod(Methods.TextDocumentDidOpenName)]
     public void TextDocumentDidOpen(TextDocumentItem textDocument)
     {
@@ -511,7 +560,7 @@ class LSPServer : IDisposable
             
         try
         {
-            _workspace.GetSymbolisedDocument(uri);
+            _workspace.GetSymbolUseExtractedDocument(uri);
         }
         catch (Exception exception)
         {
@@ -525,8 +574,12 @@ class LSPServer : IDisposable
         }
     }
         
-    // Language Features
+    //// Client to server language feature requests
     
+    /// <summary>
+    /// Handles the text document diagnostic request.
+    /// Generates the diagnostic report for the respective document and returns it.
+    /// </summary>
     [JsonRpcMethod(Method.TextDocumentDiagnostic)]
     public DocumentDiagnosticReport TextDocumentDiagnostic(TextDocumentIdentifier textDocument, string identifier = "", string previousResultId = "", SumType<string, int>? workDoneToken = null, SumType<string, int>? partialResultToken = null)
     {
@@ -566,6 +619,10 @@ class LSPServer : IDisposable
         return result;
     }
     
+    /// <summary>
+    /// Handles the text document definition request.
+    /// Identifies the referenced symbol(s) and returns their locations.
+    /// </summary>
     [JsonRpcMethod(Methods.TextDocumentDefinitionName)]
     public LocationLink[] TextDocumentDefinition(TextDocumentIdentifier textDocument, Position position, SumType<string, int>? workDoneToken = null, SumType<string, int>? partialResultToken = null)
     {
@@ -596,6 +653,10 @@ class LSPServer : IDisposable
         return result;
     }
 
+    /// <summary>
+    /// Handles the text document semantic token request.
+    /// Generates the relative list of tokens with their types and returns it.
+    /// </summary>
     [JsonRpcMethod(Methods.TextDocumentSemanticTokensFull)]
     public SemanticTokens SemanticTokens(TextDocumentIdentifier textDocument, SumType<string, int>? workDoneToken = null, SumType<string, int>? partialResultToken = null)
     {
@@ -628,6 +689,10 @@ class LSPServer : IDisposable
         return result;
     }
 
+    /// <summary>
+    /// Handles the text document hover request.
+    /// Identifies the referenced symbol and returns some (hopefully) relevant information about it.
+    /// </summary>
     [JsonRpcMethod(Methods.TextDocumentHoverName)]
     public Hover Hover(TextDocumentIdentifier textDocument, Position position, SumType<string, int>? workDoneToken = null)
     {

@@ -84,7 +84,13 @@ public interface IWorkspace
     /// <param name="newContent"></param>
     public void UpdateDocumentContent(Uri uri, string newContent);
 
+    /// <summary>
+    /// Returns true if the workspace is initialised.
+    /// </summary>
     public bool IsWorkspaceInitialised { get; }
 
+    /// <summary>
+    /// Returns the global symbol table.
+    /// </summary>
     public GlobalSymbolTable GlobalSymbolTable { get; }
 }

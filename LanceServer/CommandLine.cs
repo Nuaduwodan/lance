@@ -4,6 +4,9 @@ using LspTypes;
 
 namespace LanceServer;
 
+/// <summary>
+/// Provides the interface and defines the workflow for a command line use of the language server.
+/// </summary>
 public class CommandLine
 {
     private readonly Workspace _workspace;
@@ -15,6 +18,12 @@ public class CommandLine
         _diagnosticHandler = diagnosticHandler;
     }
 
+    /// <summary>
+    /// Processes all files in the workspace and prints a report for the requested severity levels.
+    /// </summary>
+    /// <param name="printLevel">The minimum severity of problems to be printed.</param>
+    /// <param name="reportLevel">The minimum severity of problems to be counted as problem.</param>
+    /// <returns>The number of problems to report.</returns>
     public int ProcessFiles(DiagnosticSeverity printLevel, DiagnosticSeverity reportLevel)
     {
         var progressToken = new Progress<WorkDoneProgressReport>();

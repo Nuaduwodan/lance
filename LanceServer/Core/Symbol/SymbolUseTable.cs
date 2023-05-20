@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using LanceServer.Protocol;
 using LspTypes;
 using Range = LspTypes.Range;
 
@@ -16,31 +17,22 @@ public class SymbolUseTable
         _symbolUses = symbolUses;
     }
 
+    /// <summary>
+    /// Tries to get a symbol.
+    /// </summary>
+    /// <param name="position">The position of the symbol to be found.</param>
+    /// <param name="symbol">The symbol if one was found.</param>
+    /// <returns>True if a symbol was found, false otherwise.</returns>
     public bool TryGetSymbol(Position position, [MaybeNullWhen(false)] out AbstractSymbolUse symbol)
     {
         symbol = null;
-        if (_symbolUses.Any(symbolUse => IsInRange(symbolUse.Range, position)))
+        if (_symbolUses.Any(symbolUse => position.IsInRange(symbolUse.Range)))
         {
-            symbol = _symbolUses.First(symbolUse => IsInRange(symbolUse.Range, position));
+            symbol = _symbolUses.First(symbolUse => position.IsInRange(symbolUse.Range));
             return true;
         }
 
         return false;
-    }
-
-    private bool IsInRange(Range range, Position position)
-    {
-        if (position.Line < range.Start.Line || range.End.Line < position.Line)
-        {
-            return false;
-        }
-        
-        if (position.Character < range.Start.Character || range.End.Character < position.Character)
-        {
-            return false;
-        }
-
-        return true;
     }
 
     public IList<AbstractSymbolUse> GetAll()

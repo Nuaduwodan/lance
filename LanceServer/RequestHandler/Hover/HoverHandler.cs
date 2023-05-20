@@ -8,10 +8,10 @@ using Range = LspTypes.Range;
 
 namespace LanceServer.RequestHandler.Hover;
 
-/// <inheritdoc cref="IHoverHandler"/>
+/// <inheritdoc />
 public class HoverHandler : IHoverHandler
 {
-    private IConfigurationManager _configurationManager;
+    private readonly IConfigurationManager _configurationManager;
 
     /// <summary>
     /// Instantiates a new <see cref="HoverHandler"/>

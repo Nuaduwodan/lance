@@ -3,10 +3,20 @@ using LanceServer.Core.Document;
 
 namespace LanceServer.Parser;
 
+/// <summary>
+/// The listener to look for tokens that belong to the sinumerik one nc language.
+/// </summary>
 public class LanguageTokenListener : SinumerikNCBaseListener
 {
+    /// <summary>
+    /// The list with all found language tokens.
+    /// </summary>
     public IList<LanguageToken> LanguageTokens { get; } = new List<LanguageToken>();
-
+    
+    /// <summary>
+    /// Is called for every terminal in the code.
+    /// If it is a "relevant" terminal it gets added to the language token list.
+    /// </summary>
     public override void VisitTerminal(ITerminalNode node)
     {
         var type = node.Symbol.Type;
@@ -22,6 +32,10 @@ public class LanguageTokenListener : SinumerikNCBaseListener
         }
     }
 
+    /// <summary>
+    /// Is called for every g code occurrence in the code.
+    /// If the number of the g code can be determined here, it gets added to the language token list.
+    /// </summary>
     public override void ExitGCode(SinumerikNCParser.GCodeContext context)
     {
         if (context.exception != null) return;
@@ -34,6 +48,10 @@ public class LanguageTokenListener : SinumerikNCBaseListener
         LanguageTokens.Add(new LanguageToken(code, range));
     }
 
+    /// <summary>
+    /// Is called for every m code occurrence in the code.
+    /// If the number of the m code can be determined here, it gets added to the language token list.
+    /// </summary>
     public override void ExitMCode(SinumerikNCParser.MCodeContext context)
     {
         if (context.exception != null) return;
@@ -48,7 +66,7 @@ public class LanguageTokenListener : SinumerikNCBaseListener
             if (codeAssignment.intUnsigned() != null) // M3
             {
                 number = codeAssignment.intUnsigned().GetText();
-                range = ParserHelper.GetRangeBetweenTokens(context.Start, codeAssignment.intUnsigned().Stop);
+                range = ParserHelper.GetRangeFromStartToEndToken(context.Start, codeAssignment.intUnsigned().Stop);
             }
             else // M = 3
             {

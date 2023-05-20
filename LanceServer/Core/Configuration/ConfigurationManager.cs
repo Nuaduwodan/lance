@@ -7,11 +7,22 @@ namespace LanceServer.Core.Configuration;
 /// <inheritdoc />
 public class ConfigurationManager : IConfigurationManager
 {
+    /// <inheritdoc />
     public SymbolTableConfiguration SymbolTableConfiguration { get; } = new();
+    
+    /// <inheritdoc />
     public FileExtensionConfiguration FileExtensionConfiguration { get; private set; } = new(Array.Empty<string>());
+    
+    /// <inheritdoc />
     public DocumentationConfiguration DocumentationConfiguration { get; }
+    
+    /// <inheritdoc />
     public CustomPreprocessorConfiguration CustomPreprocessorConfiguration { get; } = new();
+    
+    /// <inheritdoc />
     public Uri[] WorkspaceFolders { get; private set; } = Array.Empty<Uri>();
+    
+    /// <inheritdoc />
     public ClientCapabilities ClientCapabilities { get; set; } = new();
 
     /// <summary>

@@ -17,8 +17,15 @@ using Command = System.CommandLine.Command;
 
 namespace LanceServer;
 
+/// <summary>
+/// The program class with the main method.
+/// It decides in which mode the server should be started and starts it.
+/// </summary>
 internal static class Program
 {
+    /// <summary>
+    /// Provides a robust command line interface to start the server in either the language server mode or the command line mode.
+    /// </summary>
     private static void Main(string[] args)
     {
         var rootCommand = new RootCommand("Lance Server: Language appliance for numerical control code. There is an extension mode and a command line mode.");

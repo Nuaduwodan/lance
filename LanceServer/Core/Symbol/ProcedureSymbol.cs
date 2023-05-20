@@ -47,7 +47,7 @@ public class ProcedureSymbol : AbstractSymbol
     /// <returns>True if the number of arguments matches the parameters required, false otherwise.</returns>
     public bool ArgumentsMatchParameters(ProcedureUseArgument[] arguments)
     {
-        return Parameters.Count(parameter => !parameter.IsOptional) <= arguments.Length && arguments.Length <= Parameters.Length;
+        return Parameters.Count(parameter => !parameter.HasDefaultValue) <= arguments.Length && arguments.Length <= Parameters.Length;
     }
     
     private const string ParameterDelimiter = ", ";

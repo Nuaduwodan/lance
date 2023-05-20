@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides some helper functions
 /// </summary>
-public class FileUtil
+public static class FileUtil
 {
     /// <summary>
     /// Returns uris of all files in the given directory matching the filter.
@@ -64,10 +64,8 @@ public class FileUtil
     }
 
     /// <summary>
-    /// Returns 
+    /// Returns the lowercase file extension from a uri.
     /// </summary>
-    /// <param name="uri"></param>
-    /// <returns></returns>
     public static string FileExtensionFromUri(Uri uri)
     {
         return Path.GetExtension(uri.LocalPath).ToLower();
