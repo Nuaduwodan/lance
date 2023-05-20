@@ -9,6 +9,10 @@
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <NoWarn>CS3021</NoWarn>
+    </PropertyGroup>
+    
     <ItemGroup>
         <PackageReference Include="Antlr4.Runtime.Standard" Version="4.11.1" />
         <PackageReference Include="LspTypes" Version="3.16.6" />
