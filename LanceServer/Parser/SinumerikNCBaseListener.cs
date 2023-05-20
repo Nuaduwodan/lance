@@ -1556,18 +1556,6 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitArguments([NotNull] SinumerikNCParser.ArgumentsContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.freeArguments"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFreeArguments([NotNull] SinumerikNCParser.FreeArgumentsContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.freeArguments"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFreeArguments([NotNull] SinumerikNCParser.FreeArgumentsContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.predefinedProcedure"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

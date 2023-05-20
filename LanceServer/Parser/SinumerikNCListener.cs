@@ -1311,16 +1311,6 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitArguments([NotNull] SinumerikNCParser.ArgumentsContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.freeArguments"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterFreeArguments([NotNull] SinumerikNCParser.FreeArgumentsContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.freeArguments"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitFreeArguments([NotNull] SinumerikNCParser.FreeArgumentsContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.predefinedProcedure"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
