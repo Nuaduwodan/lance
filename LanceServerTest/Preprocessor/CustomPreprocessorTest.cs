@@ -285,6 +285,52 @@ public class CustomPreprocessorTest
     }
         
     [TestMethod]
+    public void FilterTest_ReplaceInSymbolNameWhileSameAloneOnLine()
+    {
+        // Arrange
+        var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
+        var code = 
+            @"proc Procedure<InstanceName>(int testparam)
+
+                <InstanceName>
+
+                define definedMacro as 42
+                def int declaredVariable
+                def real definedVariable = 2.3
+
+                if (definedMacro > definedVariable) or (testparam < 0)
+                    declaredVariable = 7
+                endif
+
+                ret
+                endproc";
+        var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
+
+        var expectedResult = 
+            @"proc Procedure_InstanceName_(int testparam)
+
+                
+
+                define definedMacro as 42
+                def int declaredVariable
+                def real definedVariable = 2.3
+
+                if (definedMacro > definedVariable) or (testparam < 0)
+                    declaredVariable = 7
+                endif
+
+                ret
+                endproc";
+
+        // Act
+        var actualResult = preprocessor.Filter(document);
+            
+        // Assert
+        Assert.AreEqual(expectedResult, actualResult.Code);
+        Assert.IsTrue(actualResult.PlaceholderTable.ContainsPlaceholder(expectedResult));
+    }
+        
+    [TestMethod]
     public void FilterTest_NonMatchingFileEnding()
     {
         // Arrange

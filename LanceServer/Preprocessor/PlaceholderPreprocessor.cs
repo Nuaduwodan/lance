@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using LanceServer.Core.Configuration;
 using LanceServer.Core.Document;
 
@@ -6,7 +7,7 @@ namespace LanceServer.Preprocessor;
 
 public class PlaceholderPreprocessor : IPlaceholderPreprocessor
 {
-    private IConfigurationManager _configurationManager;
+    private readonly IConfigurationManager _configurationManager;
 
     public PlaceholderPreprocessor(IConfigurationManager configurationManager)
     {
@@ -24,7 +25,9 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
             return new PlaceholderPreprocessedDocument(document, document.RawContent, new PlaceholderTable(placeholders));
         }
 
-        var result = document.RawContent;
+        var resultBuilder = new StringBuilder();
+        
+        var rawLines = Regex.Split(document.RawContent, @"(?<=[\n])");
         foreach (var placeholder in preprocessorConfiguration.Placeholders)
         {
             var pattern = placeholder;
@@ -32,30 +35,31 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
             {
                 pattern = Regex.Escape(placeholder);
             }
- 
-            var matches = Regex.Matches(result, pattern, RegexOptions.Multiline).Select(match => match.Value);
-            foreach (var match in matches)
+
+            foreach (var rawLine in rawLines)
             {
-                if (IsAloneOnLine(result, match))
+                var matches = Regex.Matches(rawLine, pattern).Select(match => match.Value);
+                var line = rawLine;
+                foreach (var match in matches)
                 {
-                    result = Regex.Replace(result, match, "");
+                    if (rawLine.Trim() == match)
+                    {
+                        line = Regex.Replace(line, match, "");
+                    }
+                    else
+                    {
+                        var processedMatch = Regex.Replace(match, "[^a-zA-Z0-9_]", "_");
+                        line = Regex.Replace(line, match, processedMatch);
+                        placeholders.TryAdd(processedMatch, match);
+                    }
                 }
-                else
-                {
-                    var processedMatch = Regex.Replace(match, "[^a-zA-Z0-9_]", "_");
-                    result = Regex.Replace(result, match, processedMatch);
-                    placeholders.TryAdd(processedMatch, match);
-                }
+
+                resultBuilder.Append(line);
             }
         }
 
         placeholders = placeholders.OrderByDescending(pair => pair.Key.Length).ToDictionary(pair => pair.Key, pair => pair.Value);
             
-        return new PlaceholderPreprocessedDocument(document, result, new PlaceholderTable(placeholders));
-    }
-
-    private bool IsAloneOnLine(string text, string match)
-    {
-        return Regex.Match(text, "^\\s*" + match + "\\s*$", RegexOptions.Multiline).Value.Trim() == match;
+        return new PlaceholderPreprocessedDocument(document, resultBuilder.ToString(), new PlaceholderTable(placeholders));
     }
 }
