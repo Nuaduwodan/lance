@@ -11,13 +11,16 @@ Semantic syntax highlighting with theme support.
 
 ![Syntax highlighting](images/syntax_highlight_feature.gif)
 
-Hover over symbols to see the definition of them. This works for procedures, macros, variables, parameters, labels and block numbers.
+Hover over symbols to see the definition of them. This works for procedures, macros, variables, parameters, labels and block numbers. If you hover over functions or keywords of the language you see a short description.
 
 ![Hover definition](images/hover_feature.gif)
 
 Depending on your hotkey configuration you can ctrl + click on a symbol to jump to its definition. This works for procedures, macros, variables, parameters, labels and block numbers.
 
 ![Goto definition](images/goto_feature.gif)
+
+After the workspace you have opened is completely parsed, you will get some diagnostic information about the documents you have opened. The erroneous parts are underlined in different colors depending on the severity of the problem.
+![diagnostics](images/diagnostic_feature.gif)
 
 ## Getting started
 Make sure you have a .NET runtime with version 6.0 or newer. if not, you can get it from the official [microsoft download page](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
@@ -31,6 +34,5 @@ There are also some settings for a customizable preprocessor. It can be used to 
 
 ## Known Issues
 
-
-
 If you have any problems, see if there is a related issue or write me one on [github](https://github.com/Nuaduwodan/lance/issues).
+If you write me a ticket, it helps me a lot if you add the contents of the Lance output console to it. You can find that under "View" -> "Output" and then select "Lance" in the dropdown in the bottom right.
