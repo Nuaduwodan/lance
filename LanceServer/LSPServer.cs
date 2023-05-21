@@ -28,7 +28,6 @@ class LSPServer : IDisposable
     private readonly JsonRpc _rpc;
         
     private readonly ManualResetEvent _disconnectEvent = new(false);
-    private bool _trace = true;
 
     private bool _isDisposed;
 
@@ -106,10 +105,7 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Methods.InitializeName)]
     public InitializeResult Initialize(int? processId, string? rootUri, ClientCapabilities capabilities, _InitializeParams_ClientInfo? clientInfo = null, string? locale = "utf-8", string? rootPath = null, object? initializationOptions = null, TraceValue trace = TraceValue.Off, WorkspaceFolder[]? workspaceFolders = null)
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(Initialize));
-        }
+        Console.Error.WriteLine(TraceIn + nameof(Initialize));
 
         InitializeResult result = new InitializeResult();
             
@@ -191,11 +187,8 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
             
-        if (_trace)
-        {
-            Console.Error.Write(TraceOut + nameof(InitializedAsync));
-        }
-            
+        Console.Error.Write(TraceOut + nameof(InitializedAsync));
+
         return result;
     }
 
@@ -206,11 +199,8 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Methods.InitializedName)]
     public async Task InitializedAsync()
     {
-        if (_trace)
-        {
-            await Console.Error.WriteLineAsync(TraceIn + nameof(InitializedAsync));
-        }
-            
+        await Console.Error.WriteLineAsync(TraceIn + nameof(InitializedAsync));
+
         try
         {
             var token = Guid.NewGuid().ToString();
@@ -252,10 +242,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
             
-        if (_trace)
-        {
-            await Console.Error.WriteAsync(TraceOut + nameof(InitializedAsync));
-        }
+        await Console.Error.WriteAsync(TraceOut + nameof(InitializedAsync));
     }
 
     /// <summary>
@@ -264,11 +251,8 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Methods.ShutdownName)]
     public JToken Shutdown()
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(Shutdown));
-        }
-            
+        Console.Error.WriteLine(TraceIn + nameof(Shutdown));
+
         try
         {
             return new JObject();
@@ -286,11 +270,8 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Methods.ExitName)]
     public void Exit()
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(Exit));
-        }
-            
+        Console.Error.WriteLine(TraceIn + nameof(Exit));
+
         try
         {
             InternalExit();
@@ -310,10 +291,7 @@ class LSPServer : IDisposable
     [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits")]
     public ServerConfiguration RequestConfiguration()
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceOut + nameof(RequestConfiguration));
-        }
+        Console.Error.WriteLine(TraceOut + nameof(RequestConfiguration));
 
         ServerConfiguration result;
         
@@ -340,10 +318,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        if (_trace)
-        {
-            Console.Error.Write(TraceIn + nameof(RequestConfiguration));
-        }
+        Console.Error.Write(TraceIn + nameof(RequestConfiguration));
 
         return result;
     }
@@ -353,10 +328,7 @@ class LSPServer : IDisposable
     /// </summary>
     public async Task<bool> RequestDiagnosticRefreshAsync()
     {
-        if (_trace)
-        {
-            await Console.Error.WriteLineAsync(TraceOut + nameof(RequestDiagnosticRefreshAsync));
-        }
+        await Console.Error.WriteLineAsync(TraceOut + nameof(RequestDiagnosticRefreshAsync));
 
         var result = false;
         try
@@ -373,10 +345,7 @@ class LSPServer : IDisposable
             await Console.Error.WriteLineAsync(exception.ToString());
         }
 
-        if (_trace)
-        {
-            await Console.Error.WriteLineAsync(TraceIn + nameof(RequestDiagnosticRefreshAsync));
-        }
+        await Console.Error.WriteLineAsync(TraceIn + nameof(RequestDiagnosticRefreshAsync));
 
         return result;
     }
@@ -386,10 +355,7 @@ class LSPServer : IDisposable
     /// </summary>
     public async Task<bool> RequestSemanticTokensRefreshAsync()
     {
-        if (_trace)
-        {
-            await Console.Error.WriteLineAsync(TraceOut + nameof(RequestSemanticTokensRefreshAsync));
-        }
+        await Console.Error.WriteLineAsync(TraceOut + nameof(RequestSemanticTokensRefreshAsync));
 
         var result = false;
         try
@@ -406,10 +372,7 @@ class LSPServer : IDisposable
             await Console.Error.WriteLineAsync(exception.ToString());
         }
 
-        if (_trace)
-        {
-            await Console.Error.WriteLineAsync(TraceIn + nameof(RequestSemanticTokensRefreshAsync));
-        }
+        await Console.Error.WriteLineAsync(TraceIn + nameof(RequestSemanticTokensRefreshAsync));
 
         return result;
     }
@@ -420,10 +383,7 @@ class LSPServer : IDisposable
     /// <param name="token">The token which will be used.</param>
     public async Task<bool> RequestWorkDoneProgressTokenAsync(string token)
     {
-        if (_trace)
-        {
-            await Console.Error.WriteLineAsync(TraceOut + nameof(RequestWorkDoneProgressTokenAsync));
-        }
+        await Console.Error.WriteLineAsync(TraceOut + nameof(RequestWorkDoneProgressTokenAsync));
 
         var result = false;
         
@@ -444,10 +404,7 @@ class LSPServer : IDisposable
             await Console.Error.WriteLineAsync(exception.ToString());
         }
 
-        if (_trace)
-        {
-            await Console.Error.WriteLineAsync(TraceIn + nameof(RequestWorkDoneProgressTokenAsync));
-        }
+        await Console.Error.WriteLineAsync(TraceIn + nameof(RequestWorkDoneProgressTokenAsync));
 
         return result;
     }
@@ -459,11 +416,8 @@ class LSPServer : IDisposable
     [SuppressMessage("Usage", "VSTHRD110:Observe result of async calls")]
     public void NotifyProgress<T>(T workDoneProgress, SumType<string, int> workDoneToken)
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceOut + nameof(NotifyProgress));
-        }
-        
+        Console.Error.WriteLine(TraceOut + nameof(NotifyProgress));
+
         try
         {
             _rpc.NotifyWithParameterObjectAsync(Methods.ProgressNotificationName, new ProgressParams<T>()
@@ -477,10 +431,7 @@ class LSPServer : IDisposable
             Console.Error.WriteLine(exception.ToString());
         }
 
-        if (_trace)
-        {
-            Console.Error.Write(TraceIn + nameof(NotifyProgress));
-        }
+        Console.Error.Write(TraceIn + nameof(NotifyProgress));
     }
     
     //// Client to server auxiliary requests and notifications
@@ -492,15 +443,11 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Methods.WorkspaceDidChangeConfigurationName)]
     public void WorkspaceDidChangeConfiguration(Settings settings)
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(WorkspaceDidChangeConfiguration));
-        }
+        Console.Error.WriteLine(TraceIn + nameof(WorkspaceDidChangeConfiguration));
 
         try
         {
             _configurationManager.ExtractConfiguration(settings.Lance);
-            _trace = settings.Lance.Trace;
         }
         catch (Exception exception)
         {
@@ -508,10 +455,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        if (_trace)
-        {
-            Console.Error.Write(TraceOut + nameof(WorkspaceDidChangeConfiguration));
-        }
+        Console.Error.Write(TraceOut + nameof(WorkspaceDidChangeConfiguration));
     }
     
     /// <summary>
@@ -521,11 +465,8 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Methods.TextDocumentDidChangeName)]
     public void TextDocumentDidChange(VersionedTextDocumentIdentifier textDocument, TextDocumentContentChangeEvent[] contentChanges)
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(TextDocumentDidChange));
-        }
-            
+        Console.Error.WriteLine(TraceIn + nameof(TextDocumentDidChange));
+
         var uri = FileUtil.UriStringToUri(textDocument.Uri);
             
         try
@@ -538,10 +479,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        if (_trace)
-        {
-            Console.Error.Write(TraceOut + nameof(TextDocumentDidChange));
-        }
+        Console.Error.Write(TraceOut + nameof(TextDocumentDidChange));
     }
     
     /// <summary>
@@ -551,11 +489,8 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Methods.TextDocumentDidOpenName)]
     public void TextDocumentDidOpen(TextDocumentItem textDocument)
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(TextDocumentDidOpen));
-        }
-        
+        Console.Error.WriteLine(TraceIn + nameof(TextDocumentDidOpen));
+
         var uri = FileUtil.UriStringToUri(textDocument.Uri);
             
         try
@@ -568,10 +503,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        if (_trace)
-        {
-            Console.Error.Write(TraceOut + nameof(TextDocumentDidOpen));
-        }
+        Console.Error.Write(TraceOut + nameof(TextDocumentDidOpen));
     }
         
     //// Client to server language feature requests
@@ -583,11 +515,8 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Method.TextDocumentDiagnostic)]
     public DocumentDiagnosticReport TextDocumentDiagnostic(TextDocumentIdentifier textDocument, string identifier = "", string previousResultId = "", SumType<string, int>? workDoneToken = null, SumType<string, int>? partialResultToken = null)
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(TextDocumentDiagnostic));
-        }
-            
+        Console.Error.WriteLine(TraceIn + nameof(TextDocumentDiagnostic));
+
         var uri = FileUtil.UriStringToUri(textDocument.Uri);
         
         DocumentDiagnosticReport result;
@@ -611,10 +540,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceOut + nameof(TextDocumentDiagnostic));
-        }
+        Console.Error.WriteLine(TraceOut + nameof(TextDocumentDiagnostic));
 
         return result;
     }
@@ -626,11 +552,8 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Methods.TextDocumentDefinitionName)]
     public LocationLink[] TextDocumentDefinition(TextDocumentIdentifier textDocument, Position position, SumType<string, int>? workDoneToken = null, SumType<string, int>? partialResultToken = null)
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(TextDocumentDefinition));
-        }
-        
+        Console.Error.WriteLine(TraceIn + nameof(TextDocumentDefinition));
+
         var uri = FileUtil.UriStringToUri(textDocument.Uri);
         LocationLink[] result;
             
@@ -645,10 +568,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        if (_trace)
-        {
-            Console.Error.Write(TraceOut + nameof(TextDocumentDefinition));
-        }
+        Console.Error.Write(TraceOut + nameof(TextDocumentDefinition));
 
         return result;
     }
@@ -660,10 +580,7 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Methods.TextDocumentSemanticTokensFull)]
     public SemanticTokens SemanticTokens(TextDocumentIdentifier textDocument, SumType<string, int>? workDoneToken = null, SumType<string, int>? partialResultToken = null)
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(SemanticTokens));
-        }
+        Console.Error.WriteLine(TraceIn + nameof(SemanticTokens));
 
         var uri = FileUtil.UriStringToUri(textDocument.Uri);
         SemanticTokens result;
@@ -680,11 +597,8 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        if (_trace)
-        {
-            Console.Error.Write(TraceOut + nameof(SemanticTokens));
-            Console.Error.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
-        }
+        Console.Error.Write(TraceOut + nameof(SemanticTokens));
+        Console.Error.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
 
         return result;
     }
@@ -696,11 +610,8 @@ class LSPServer : IDisposable
     [JsonRpcMethod(Methods.TextDocumentHoverName)]
     public Hover Hover(TextDocumentIdentifier textDocument, Position position, SumType<string, int>? workDoneToken = null)
     {
-        if (_trace)
-        {
-            Console.Error.WriteLine(TraceIn + nameof(Hover));
-        }
-        
+        Console.Error.WriteLine(TraceIn + nameof(Hover));
+
         var uri = FileUtil.UriStringToUri(textDocument.Uri);
         Hover result;
             
@@ -716,11 +627,8 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        if (_trace)
-        {
-            Console.Error.Write(TraceOut + nameof(Hover));
-            Console.Error.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
-        }
+        Console.Error.Write(TraceOut + nameof(Hover));
+        Console.Error.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
 
         return result;
     }

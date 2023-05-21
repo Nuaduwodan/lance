@@ -1,6 +1,4 @@
 {
-  "maxNumberOfProblems": 1000,
-  "trace": false,
   "placeholderPreprocessor": {
     "placeholderType": "String",
     "fileExtensions": [],

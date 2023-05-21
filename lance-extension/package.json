@@ -40,18 +40,6 @@
         {
             "title": "Lance",
             "properties": {
-              "lance.maxNumberOfProblems": {
-                "type": "number",
-                "default": 100,
-                "description": "Controls the maximum number of problems produced by the server.",
-                "order": 2
-              },
-              "lance.trace": {
-                "type": "boolean",
-                "default": "false",
-                "description": "Traces the communication between VSCode and the Lance server.",
-                "order": 3
-              },
               "lance.symbols.definitionFileExtensions":{
                 "type": "array",
                 "default": [".def"],

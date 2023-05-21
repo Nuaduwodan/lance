@@ -18,8 +18,6 @@ public class ConfigurationManagerTest
         var expectedSymbolTableConfiguration = new SymbolTableConfiguration() { ManufacturerCyclesDirectories = new[] { "asdf" }, DefinitionFileExtensions = new[] { "asdf" }, SubProcedureFileExtensions = new[] { "asdf" }, MainProcedureFileExtensions = new[] { "asdf" } };
             
         var configuration = new ServerConfiguration();
-        configuration.Trace = true;
-        configuration.MaxNumberOfProblems = 100;
         configuration.SymbolTableConfiguration = expectedSymbolTableConfiguration;
         configuration.PlaceholderPreprocessor = expectedCustomPreprocessorConfiguration;
             
