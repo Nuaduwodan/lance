@@ -181,17 +181,17 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic GlobalSymbolHasDuplicates(AbstractSymbol newSymbol, IList<AbstractSymbol> existingSymbols)
+    public static LspTypes.Diagnostic GlobalSymbolHasDuplicates(AbstractSymbol thisSymbol, IList<AbstractSymbol> duplicateSymbols)
     {
-        var relatedInformation = existingSymbols.Select(RelatedDuplicate).ToArray();
+        var relatedInformation = duplicateSymbols.Select(RelatedDuplicate).ToArray();
 
-        var multiple = existingSymbols.Count > 1;
+        var multiple = duplicateSymbols.Count > 1;
         
         return new LspTypes.Diagnostic
         {
-            Code = newSymbol.Identifier,
-            Range = newSymbol.IdentifierRange,
-            Message = $"The global symbol {newSymbol.Identifier} has {(multiple ? existingSymbols.Count : "one")} global duplicate{(multiple ? "s" : "")}.",
+            Code = thisSymbol.Identifier,
+            Range = thisSymbol.IdentifierRange,
+            Message = $"The global symbol {thisSymbol.Identifier} has {(multiple ? duplicateSymbols.Count : "one")} global duplicate{(multiple ? "s" : "")}.",
             RelatedInformation = relatedInformation,
             Severity = DiagnosticSeverity.Information
         };

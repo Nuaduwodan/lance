@@ -5,7 +5,7 @@ namespace LanceServer.Core.Symbol;
 /// <summary>
 /// Represents a symbol.
 /// </summary>
-public abstract class AbstractSymbol
+public abstract class AbstractSymbol : IEquatable<AbstractSymbol>
 {
     /// <summary>
     /// The identifier or name of the symbol.
@@ -49,5 +49,20 @@ public abstract class AbstractSymbol
     public bool ReferencesSymbol(string reference)
     {
         return Identifier.Equals(reference, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public bool Equals(AbstractSymbol? other)
+    {
+        if (ReferenceEquals(null, other))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return Identifier == other.Identifier && SourceDocument.Equals(other.SourceDocument) && IdentifierRange.Equals(other.IdentifierRange);
     }
 }
