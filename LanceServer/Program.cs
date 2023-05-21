@@ -30,10 +30,19 @@ internal static class Program
     {
         var rootCommand = new RootCommand("Lance Server: Language appliance for numerical control code. There is an extension mode and a command line mode.");
 
+        // language server mode
         var languageServerCommand = new Command("language-server", "The mode to run with an extension of an editor supporting the language server protocol");
         languageServerCommand.AddAlias("ls");
+        rootCommand.AddCommand(languageServerCommand);
+
+#pragma warning disable VSTHRD002
+        languageServerCommand.SetHandler(() => StartLanguageServerAsync().Wait());
+#pragma warning restore VSTHRD002
+
+        // command line mode
         var commandLineCommand = new Command("command-line", "The mode to run in the command line, takes a configuration and folders belonging to the same project and prints a report");
         commandLineCommand.AddAlias("cl");
+        rootCommand.AddCommand(commandLineCommand);
         
         var config = new Option<FileInfo>(
             name: "--config-file",
@@ -48,6 +57,7 @@ internal static class Program
                 result.ErrorMessage = $"The file {fileInfo.FullName} does not exist.";
             }
         });
+        commandLineCommand.AddOption(config);
         
         var folders = new Option<DirectoryInfo[]>(
             name: "--workspace-folders",
@@ -64,29 +74,22 @@ internal static class Program
                 return;
             }
         });
+        commandLineCommand.AddOption(folders);
         
         var printLevel = new Option<DiagnosticSeverity>(
             name: "--print-level",
             description: "The minimum severity level to be printed to standard out.",
             getDefaultValue: () => DiagnosticSeverity.Warning);
         printLevel.AddAlias("-p");
+        commandLineCommand.AddOption(printLevel);
         
         var reportLevel = new Option<DiagnosticSeverity>(
             name: "--report-level",
             description: "The minimum severity level to be reported with the return code.",
             getDefaultValue: () => DiagnosticSeverity.Error);
         reportLevel.AddAlias("-r");
-
-        rootCommand.AddCommand(languageServerCommand);
-        rootCommand.AddCommand(commandLineCommand);
-        commandLineCommand.AddOption(config);
-        commandLineCommand.AddOption(folders);
-        commandLineCommand.AddOption(printLevel);
         commandLineCommand.AddOption(reportLevel);
-
-#pragma warning disable VSTHRD002
-        languageServerCommand.SetHandler(() => StartLanguageServerAsync().Wait());
-#pragma warning restore VSTHRD002
+        
         commandLineCommand.SetHandler(StartCommandLine, folders, config, printLevel, reportLevel);
 
         rootCommand.Invoke(args);
