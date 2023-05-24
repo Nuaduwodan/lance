@@ -58,11 +58,14 @@ public class LanguageTokenListener : SinumerikNCBaseListener
         
         var code = context.MCODE().GetText();
         var range = ParserHelper.GetRangeForToken(context.Start);
-        var codeAssignment = context.codeAssignment();
-        string number;
         
+        string number;
+        var codeAssignment = context.codeAssignment();
+        var codeAssignmentParameterized = context.codeAssignmentParameterized();
         if (codeAssignment != null)
         {
+            if (codeAssignment.exception != null) return;
+            
             if (codeAssignment.intUnsigned() != null) // M3
             {
                 number = codeAssignment.intUnsigned().GetText();
@@ -75,9 +78,12 @@ public class LanguageTokenListener : SinumerikNCBaseListener
         }
         else // M1 = 3
         {
-            var codeAssignmentExpression = context.codeAssignmentParameterized().codeAssignmentExpression();
-            number = codeAssignmentExpression.expression().GetText();
+            if (codeAssignmentParameterized.exception != null) return;
+            
+            number = codeAssignmentParameterized.codeAssignmentExpression().expression().GetText();
         }
+
+        if (!short.TryParse(number, out _)) return;
         
         code += number.TrimStart('0').PadLeft(1, '0');
         LanguageTokens.Add(new LanguageToken(code, range));
