@@ -1202,6 +1202,20 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPathUse([NotNull] SinumerikNCParser.PathUseContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by the <c>frameComponentUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFrameComponentUse([NotNull] SinumerikNCParser.FrameComponentUseContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>frameComponentUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFrameComponentUse([NotNull] SinumerikNCParser.FrameComponentUseContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>macroUseLabel</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -1240,17 +1254,17 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitConstant([NotNull] SinumerikNCParser.ConstantContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.numeric"/>.
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.numericUnsigned"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterNumeric([NotNull] SinumerikNCParser.NumericContext context) { }
+	public virtual void EnterNumericUnsigned([NotNull] SinumerikNCParser.NumericUnsignedContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.numeric"/>.
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.numericUnsigned"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitNumeric([NotNull] SinumerikNCParser.NumericContext context) { }
+	public virtual void ExitNumericUnsigned([NotNull] SinumerikNCParser.NumericUnsignedContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.intUnsigned"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -1311,6 +1325,18 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPathElements([NotNull] SinumerikNCParser.PathElementsContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.frameComponent"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFrameComponent([NotNull] SinumerikNCParser.FrameComponentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.frameComponent"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFrameComponent([NotNull] SinumerikNCParser.FrameComponentContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.command"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -1407,42 +1433,6 @@ public partial class SinumerikNCBaseListener : ISinumerikNCListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCommandParameterAssignment([NotNull] SinumerikNCParser.CommandParameterAssignmentContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.spindleSpeed"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSpindleSpeed([NotNull] SinumerikNCParser.SpindleSpeedContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.spindleSpeed"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSpindleSpeed([NotNull] SinumerikNCParser.SpindleSpeedContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.speedAssignment"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSpeedAssignment([NotNull] SinumerikNCParser.SpeedAssignmentContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.speedAssignment"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSpeedAssignment([NotNull] SinumerikNCParser.SpeedAssignmentContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.speedAssignmentParameterized"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSpeedAssignmentParameterized([NotNull] SinumerikNCParser.SpeedAssignmentParameterizedContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.speedAssignmentParameterized"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSpeedAssignmentParameterized([NotNull] SinumerikNCParser.SpeedAssignmentParameterizedContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.axisCode"/>.
 	/// <para>The default implementation does nothing.</para>

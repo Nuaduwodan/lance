@@ -1015,6 +1015,18 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPathUse([NotNull] SinumerikNCParser.PathUseContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>frameComponentUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFrameComponentUse([NotNull] SinumerikNCParser.FrameComponentUseContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>frameComponentUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFrameComponentUse([NotNull] SinumerikNCParser.FrameComponentUseContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>macroUseLabel</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
 	/// </summary>
@@ -1047,15 +1059,15 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitConstant([NotNull] SinumerikNCParser.ConstantContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.numeric"/>.
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.numericUnsigned"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterNumeric([NotNull] SinumerikNCParser.NumericContext context);
+	void EnterNumericUnsigned([NotNull] SinumerikNCParser.NumericUnsignedContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.numeric"/>.
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.numericUnsigned"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitNumeric([NotNull] SinumerikNCParser.NumericContext context);
+	void ExitNumericUnsigned([NotNull] SinumerikNCParser.NumericUnsignedContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.intUnsigned"/>.
 	/// </summary>
@@ -1106,6 +1118,16 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitPathElements([NotNull] SinumerikNCParser.PathElementsContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.frameComponent"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFrameComponent([NotNull] SinumerikNCParser.FrameComponentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.frameComponent"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFrameComponent([NotNull] SinumerikNCParser.FrameComponentContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.command"/>.
 	/// </summary>
@@ -1186,36 +1208,6 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCommandParameterAssignment([NotNull] SinumerikNCParser.CommandParameterAssignmentContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.spindleSpeed"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterSpindleSpeed([NotNull] SinumerikNCParser.SpindleSpeedContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.spindleSpeed"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitSpindleSpeed([NotNull] SinumerikNCParser.SpindleSpeedContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.speedAssignment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterSpeedAssignment([NotNull] SinumerikNCParser.SpeedAssignmentContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.speedAssignment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitSpeedAssignment([NotNull] SinumerikNCParser.SpeedAssignmentContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.speedAssignmentParameterized"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterSpeedAssignmentParameterized([NotNull] SinumerikNCParser.SpeedAssignmentParameterizedContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.speedAssignmentParameterized"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitSpeedAssignmentParameterized([NotNull] SinumerikNCParser.SpeedAssignmentParameterizedContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.axisCode"/>.
 	/// </summary>

@@ -615,6 +615,13 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPathUse([NotNull] SinumerikNCParser.PathUseContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>frameComponentUse</c>
+	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFrameComponentUse([NotNull] SinumerikNCParser.FrameComponentUseContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>macroUseLabel</c>
 	/// labeled alternative in <see cref="SinumerikNCParser.primaryExpression"/>.
 	/// </summary>
@@ -634,11 +641,11 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitConstant([NotNull] SinumerikNCParser.ConstantContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.numeric"/>.
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.numericUnsigned"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNumeric([NotNull] SinumerikNCParser.NumericContext context);
+	Result VisitNumericUnsigned([NotNull] SinumerikNCParser.NumericUnsignedContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.intUnsigned"/>.
 	/// </summary>
@@ -669,6 +676,12 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitPathElements([NotNull] SinumerikNCParser.PathElementsContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.frameComponent"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFrameComponent([NotNull] SinumerikNCParser.FrameComponentContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.command"/>.
 	/// </summary>
@@ -717,24 +730,6 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCommandParameterAssignment([NotNull] SinumerikNCParser.CommandParameterAssignmentContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.spindleSpeed"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSpindleSpeed([NotNull] SinumerikNCParser.SpindleSpeedContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.speedAssignment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSpeedAssignment([NotNull] SinumerikNCParser.SpeedAssignmentContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.speedAssignmentParameterized"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSpeedAssignmentParameterized([NotNull] SinumerikNCParser.SpeedAssignmentParameterizedContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.axisCode"/>.
 	/// </summary>

@@ -305,6 +305,7 @@ CROTS: 'crots';
 CRPL: 'crpl';
 
 ITOR: 'itor';
+RTOI: 'rtoi';
 
 // string
 STRLEN: 'strlen';
@@ -887,7 +888,7 @@ TU:'tu';
 RESERVED: 'con' | 'prn' | 'aux' | 'nul' | 'com'[1-9] | 'lpt'[1-9];
 
 // variables
-SYS_VAR: (('$'[$acmnopstv]+)|'syg_')[a-z0-9_]*; // could be improved
+SYS_VAR: ('$$' | '$'[$acmnopstv]+ | 'syg_')[a-z0-9_]*; // could be improved
 AXIS: [abcquvwxyz];
 R_PARAM: 'r';
 
@@ -949,7 +950,7 @@ accessRights: (accessDesignation intUnsigned)+;
 accessDesignation: ACCESS_READ | ACCESS_WRITE | READ_PROGRAM | WRITE_PROGRAM | READ_OPI | WRITE_OPI;
 variableModifiers: physicalUnit? limitValues?;
 physicalUnit: PHYS_UNIT intUnsigned;
-limitValues: ((LOWER_LIMIT | UPPER_LIMIT) numeric)+;
+limitValues: ((LOWER_LIMIT | UPPER_LIMIT) expression)+;
 
 variableNameDeclaration: NAME (variableAssignmentExpression | arrayDefinition arrayAssignmentExpression?)?;
 
@@ -1059,19 +1060,20 @@ primaryExpression
     | OPEN_PAREN expression CLOSE_PAREN     #nestedExpression
     | axis_spindle_identifier               #axisUse
     | path                                  #pathUse
+    | frameComponent                        #frameComponentUse
     | macroUse+                             #macroUseLabel
     ;
 
 rParam: DOLLAR? R_PARAM (intUnsigned | OPEN_BRACKET expression CLOSE_BRACKET);
 
 constant
-    : numeric
+    : numericUnsigned
     | HEX
     | BIN
     | STRING
     | BOOL;
 
-numeric: intUnsigned | realUnsigned;
+numericUnsigned: intUnsigned | realUnsigned;
 intUnsigned: INT_UNSIGNED;
 realUnsigned: REAL_UNSIGNED;
 
@@ -1079,6 +1081,8 @@ macroUse: NAME;
 
 path: pathElements+;
 pathElements: SLASH | NAME;
+
+frameComponent: TR | FI | RT | SC | MI;
 
 // command
 command
@@ -1167,7 +1171,7 @@ command
     | EAUTO arguments?
     | ENAT arguments?
     | ETAN arguments?
-    | F (numeric | ASSIGNMENT expression)
+    | F (numericUnsigned | ASSIGNMENT expression)
     | FA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | FAD arguments?
     | FB arguments?
@@ -1305,8 +1309,11 @@ command
     | RPL arguments?
     | RTLIOF arguments?
     | RTLION arguments?
+    | S (numericUnsigned | commandParameterAssignment? ASSIGNMENT expression)
     | SCALE arguments?
+    | SCPARA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | SD arguments?
+    | SETINT OPEN_PAREN expression CLOSE_PAREN (PRIO ASSIGNMENT expression)? ownProcedure (LIFTFAST | BLSYNC)?
     | SF arguments?
     | SOFT
     | SOFTA arguments?
@@ -1367,7 +1374,6 @@ command
     | gCode
     | hCode
     | mCode
-    | spindleSpeed
     | axisCode
     | macroUse
     ;
@@ -1382,11 +1388,8 @@ codeAssignmentExpression: expression | QU OPEN_PAREN expression CLOSE_PAREN;
 codeAssignmentParameterized: commandParameterAssignment ASSIGNMENT codeAssignmentExpression; //m1 = 3 | m[1] = 3
 commandParameterAssignment: intUnsigned | OPEN_BRACKET expression CLOSE_BRACKET;
 
-spindleSpeed: S (speedAssignment | speedAssignmentParameterized);
-speedAssignment:  numeric | ASSIGNMENT expression;
-speedAssignmentParameterized: commandParameterAssignment ASSIGNMENT expression;
-
-axisCode: AXIS SUB? numeric | expression ASSIGNMENT axisAssignmentExpression;
+// is this SUB? really valid, if so what about all the other numericUnsigned uses?
+axisCode: AXIS SUB? numericUnsigned | expression ASSIGNMENT axisAssignmentExpression;
 axisAssignmentExpression: expression | (AC | ACN | ACP | CAC | CACN | CACP | DC | IC | CDC | CIC) OPEN_PAREN expression CLOSE_PAREN;
 
 // axis
@@ -1470,7 +1473,7 @@ predefinedProcedure
     | EXTCLOSE arguments?
     | EXTOPEN arguments?
     | FCTDEF arguments?
-    | FGROUP OPEN_PAREN CLOSE_PAREN
+    | FGROUP OPEN_PAREN (expression (COMMA expression)*)? CLOSE_PAREN
     | FILEDATE arguments?
     | FILEINFO arguments?
     | FILESIZE arguments?
@@ -1682,6 +1685,7 @@ mathFunction // done
     | BOUND OPEN_PAREN expression COMMA expression COMMA expression CLOSE_PAREN
     | CALCDAT OPEN_PAREN expression COMMA expression COMMA NAME CLOSE_PAREN
     | ITOR OPEN_PAREN expression CLOSE_PAREN
+    | RTOI OPEN_PAREN expression CLOSE_PAREN
     ;
 
 stringFunction // done
@@ -1703,7 +1707,6 @@ stringFunction // done
 
 keyword
     : APX
-    | BLSYNC
     | COARSEA
     | CPBC OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | CPDEF ASSIGNMENT OPEN_PAREN expression CLOSE_PAREN
@@ -1752,8 +1755,7 @@ keyword
     | DIAMONA
     | DIC
     | FDA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
-    | FGREF
-    | FI
+    | FGREF OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | FINEA
     | FL
     | FMA
@@ -1771,9 +1773,7 @@ keyword
     | IP
     | IPOENDA
     | ISOCALL
-    | LIFTFAST
     | LIMS
-    | MI
     | OS
     | OSB
     | OSCILL
@@ -1793,20 +1793,14 @@ keyword
     | PO
     | POLF OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT axisAssignmentExpression
     | PR
-    | PRIO
     | PRLOC
     | PSISYNRW
     | RAC
     | RIC
-    | RT
-    | SC
     | SCC
-    | SCPARA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
-    | SETINT
     | SRA
     | STA
     | SVC
-    | TR
     ;
 
 cpon: CPON ASSIGNMENT OPEN_PAREN expression CLOSE_PAREN;
