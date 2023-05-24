@@ -34,5 +34,8 @@ There are also some settings for a customizable preprocessor. It can be used to 
 
 ## Known Issues
 
+- macros can only have a literal, a command or a combination of commands which would be valid on a line alone as values.
+- axis names can only have the format \{letter\}\{number\} where letter is one of \[abcquvwxyz\].
+
 If you have any problems, see if there is a related issue or write me one on [github](https://github.com/Nuaduwodan/lance/issues).
 If you write me a ticket, it helps me a lot if you add the contents of the Lance output console to it. You can find that under "View" -> "Output" and then select "Lance" in the dropdown in the bottom right.

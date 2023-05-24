@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2023-05-21
+
+### Added 
+
+- added the itor and rtoi functions which convert between integer and real.
+
+### Changed 
+
+- improved sposa, fgref, fgroup, scpara, setint and coupling definitions.
+- changed the spi function to allow expressions as argument.
+
+### Fixed 
+
+- fixed an issue where a syntactically wrong m code with parameter could lead to a crash.
+
 ## [1.0.0] - 2023-05-21
 
 ### Added 
