@@ -304,6 +304,8 @@ CROT: 'crot';
 CROTS: 'crots';
 CRPL: 'crpl';
 
+ITOR: 'itor';
+
 // string
 STRLEN: 'strlen';
 SPRINT: 'sprint';
@@ -886,7 +888,7 @@ RESERVED: 'con' | 'prn' | 'aux' | 'nul' | 'com'[1-9] | 'lpt'[1-9];
 
 // variables
 SYS_VAR: (('$'[$acmnopstv]+)|'syg_')[a-z0-9_]*; // could be improved
-AXIS: [abcuvwxyz];
+AXIS: [abcquvwxyz];
 R_PARAM: 'r';
 
 // names
@@ -1082,8 +1084,6 @@ pathElements: SLASH | NAME;
 command
     : ACC OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | ACCLIMA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
-    | expression ASSIGNMENT ACN OPEN_PAREN expression CLOSE_PAREN
-    | expression ASSIGNMENT ACP OPEN_PAREN expression CLOSE_PAREN
     | ADIS ASSIGNMENT expression
     | ADISPOS ASSIGNMENT expression
     | ALF arguments?
@@ -1318,6 +1318,7 @@ command
     | SPN arguments?
     | SPOF arguments?
     | SPOS (OPEN_BRACKET expression CLOSE_BRACKET)? ASSIGNMENT axisAssignmentExpression
+    | SPOSA (OPEN_BRACKET expression CLOSE_BRACKET)? ASSIGNMENT axisAssignmentExpression
     | SPP arguments?
     | SR arguments?
     | ST arguments?
@@ -1386,13 +1387,13 @@ speedAssignment:  numeric | ASSIGNMENT expression;
 speedAssignmentParameterized: commandParameterAssignment ASSIGNMENT expression;
 
 axisCode: AXIS SUB? numeric | expression ASSIGNMENT axisAssignmentExpression;
-axisAssignmentExpression: expression | (AC | IC | CAC | CACN | CACP | CDC | CIC | DC) OPEN_PAREN expression CLOSE_PAREN;
+axisAssignmentExpression: expression | (AC | ACN | ACP | CAC | CACN | CACP | DC | IC | CDC | CIC) OPEN_PAREN expression CLOSE_PAREN;
 
 // axis
 // todo how about expressions that lead to an axis
 axis_spindle_identifier: axis_identifier | spindle_identifier;
 axis_identifier: AXIS intUnsigned? | AX OPEN_BRACKET expression CLOSE_BRACKET;
-spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN intUnsigned CLOSE_PAREN;
+spindle_identifier: SPINDLE_IDENTIFIER OPEN_PAREN expression CLOSE_PAREN;
 
 // procedure
 procedure
@@ -1427,13 +1428,13 @@ predefinedProcedure
     | CONTDCON arguments?
     | CONTPRON arguments?
     | CORROF arguments?
-    | COUPDEF arguments?
-    | COUPDEL arguments?
-    | COUPOF arguments?
-    | COUPOFS arguments?
-    | COUPON arguments?
-    | COUPONC arguments?
-    | COUPRES arguments?
+    | COUPDEF OPEN_PAREN expression (COMMA expression?)* CLOSE_PAREN
+    | COUPDEL OPEN_PAREN expression (COMMA expression?)* CLOSE_PAREN
+    | COUPOF OPEN_PAREN expression (COMMA expression?)* CLOSE_PAREN
+    | COUPOFS OPEN_PAREN expression (COMMA expression?)* CLOSE_PAREN
+    | COUPON OPEN_PAREN expression (COMMA expression?)* CLOSE_PAREN
+    | COUPONC OPEN_PAREN expression (COMMA expression?)* CLOSE_PAREN
+    | COUPRES OPEN_PAREN expression (COMMA expression?)* CLOSE_PAREN
     | CPROT arguments?
     | CPROTDEF arguments?
     | CTABDEF arguments?
@@ -1568,7 +1569,7 @@ predefinedProcedure
     | TRANSMIT arguments?
     | TRAORI arguments?
     | UNLOCK arguments?
-    | WAITC arguments?
+    | WAITC OPEN_PAREN expression (COMMA expression?)? (COMMA expression)? (COMMA expression)? CLOSE_PAREN
     | WAITE arguments?
     | WAITENC arguments?
     | WAITM arguments?
@@ -1680,6 +1681,7 @@ mathFunction // done
     | MAXVAL OPEN_PAREN expression COMMA expression CLOSE_PAREN
     | BOUND OPEN_PAREN expression COMMA expression COMMA expression CLOSE_PAREN
     | CALCDAT OPEN_PAREN expression COMMA expression COMMA NAME CLOSE_PAREN
+    | ITOR OPEN_PAREN expression CLOSE_PAREN
     ;
 
 stringFunction // done
@@ -1801,7 +1803,6 @@ keyword
     | SCC
     | SCPARA OPEN_BRACKET expression CLOSE_BRACKET ASSIGNMENT expression
     | SETINT
-    | SPOSA
     | SRA
     | STA
     | SVC
