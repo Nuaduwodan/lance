@@ -10,3 +10,5 @@ lance-extension/server/
 *.vsix
 *.pdf
 LanceServer/preprocessor_config.json
+antlr4-grammar/
+!antlr4-grammar/SinumerikNC.g4
