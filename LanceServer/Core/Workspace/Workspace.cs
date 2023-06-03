@@ -196,6 +196,8 @@ public class Workspace : IWorkspace
         var workspaceFolders = _configurationManager.WorkspaceFolders;
         var fileExtensions = _configurationManager.FileExtensionConfiguration.FileExtensions;
         
+        if (workspaceFolders.Length == 0) return;
+        
         var documentUris = new List<Uri>();
         foreach (var workspaceFolder in workspaceFolders)
         {
