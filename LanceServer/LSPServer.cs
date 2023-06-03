@@ -187,7 +187,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
             
-        Console.Error.Write(TraceOut + nameof(InitializedAsync));
+        Console.Error.WriteLine(TraceOut + nameof(InitializedAsync));
 
         return result;
     }
@@ -318,7 +318,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        Console.Error.Write(TraceIn + nameof(RequestConfiguration));
+        Console.Error.WriteLine(TraceIn + nameof(RequestConfiguration));
 
         return result;
     }
@@ -431,7 +431,7 @@ class LSPServer : IDisposable
             Console.Error.WriteLine(exception.ToString());
         }
 
-        Console.Error.Write(TraceIn + nameof(NotifyProgress));
+        Console.Error.WriteLine(TraceIn + nameof(NotifyProgress));
     }
     
     //// Client to server auxiliary requests and notifications
@@ -455,7 +455,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        Console.Error.Write(TraceOut + nameof(WorkspaceDidChangeConfiguration));
+        Console.Error.WriteLine(TraceOut + nameof(WorkspaceDidChangeConfiguration));
     }
     
     /// <summary>
@@ -479,7 +479,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        Console.Error.Write(TraceOut + nameof(TextDocumentDidChange));
+        Console.Error.WriteLine(TraceOut + nameof(TextDocumentDidChange));
     }
     
     /// <summary>
@@ -495,6 +495,8 @@ class LSPServer : IDisposable
             
         try
         {
+            if (!_workspace.IsWorkspaceInitialised) return;
+            
             _workspace.GetSymbolUseExtractedDocument(uri);
         }
         catch (Exception exception)
@@ -503,7 +505,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        Console.Error.Write(TraceOut + nameof(TextDocumentDidOpen));
+        Console.Error.WriteLine(TraceOut + nameof(TextDocumentDidOpen));
     }
         
     //// Client to server language feature requests
@@ -568,7 +570,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        Console.Error.Write(TraceOut + nameof(TextDocumentDefinition));
+        Console.Error.WriteLine(TraceOut + nameof(TextDocumentDefinition));
 
         return result;
     }
@@ -597,7 +599,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        Console.Error.Write(TraceOut + nameof(SemanticTokens));
+        Console.Error.WriteLine(TraceOut + nameof(SemanticTokens));
         Console.Error.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
 
         return result;
@@ -627,7 +629,7 @@ class LSPServer : IDisposable
             throw new LocalRpcException(exception.Message, exception) { ErrorCode = (int)JsonRpcErrorCode.InternalError };
         }
 
-        Console.Error.Write(TraceOut + nameof(Hover));
+        Console.Error.WriteLine(TraceOut + nameof(Hover));
         Console.Error.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
 
         return result;
