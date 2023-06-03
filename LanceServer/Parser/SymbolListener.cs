@@ -37,6 +37,8 @@ public class SymbolListener : SinumerikNCBaseListener
     /// </summary>
     public override void ExitParameterDefinitionByReference(SinumerikNCParser.ParameterDefinitionByReferenceContext context)
     {
+        if (context.exception != null) return;
+
         var identifier = context.NAME()?.GetText() ?? string.Empty;
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
@@ -60,6 +62,8 @@ public class SymbolListener : SinumerikNCBaseListener
     /// </summary>
     public override void ExitParameterDefinitionByValue(SinumerikNCParser.ParameterDefinitionByValueContext context)
     {
+        if (context.exception != null) return;
+
         var identifier = context.NAME()?.GetText() ?? string.Empty;
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
@@ -85,6 +89,8 @@ public class SymbolListener : SinumerikNCBaseListener
     /// </summary>
     public override void ExitProcedureDefinitionHeader(SinumerikNCParser.ProcedureDefinitionHeaderContext context)
     {
+        if (context.exception != null) return;
+
         var identifier = ReplacePlaceholder(context.NAME()?.GetText() ?? string.Empty);
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
@@ -106,6 +112,8 @@ public class SymbolListener : SinumerikNCBaseListener
     /// </summary>
     public override void ExitMacroDeclaration(SinumerikNCParser.MacroDeclarationContext context)
     {
+        if (context.exception != null) return;
+        
         var identifier = context.NAME()?.GetText() ?? string.Empty;
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
@@ -128,6 +136,8 @@ public class SymbolListener : SinumerikNCBaseListener
     /// </summary>
     public override void ExitVariableDeclaration(SinumerikNCParser.VariableDeclarationContext context)
     {
+        if (context.exception != null) return;
+
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
         var success = GetCompositeDataType(context.type(), out var dataType);
@@ -160,6 +170,8 @@ public class SymbolListener : SinumerikNCBaseListener
     /// </summary>
     public override void ExitLabelDefinition(SinumerikNCParser.LabelDefinitionContext context)
     {
+        if (context.exception != null || context.NAME() == null) return;
+
         var identifier = context.NAME().GetText();
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
@@ -174,6 +186,8 @@ public class SymbolListener : SinumerikNCBaseListener
     /// </summary>
     public override void ExitBlockNumberDefinition(SinumerikNCParser.BlockNumberDefinitionContext context)
     {
+        if (context.exception != null) return;
+
         var identifier = context.GetText();
         var uri = _document.Information.Uri;
         var symbolRange = ParserHelper.GetRangeFromStartToEndToken(context.Start, context.Stop);
