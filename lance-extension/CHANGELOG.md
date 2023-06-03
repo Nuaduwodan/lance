@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added 
 
-- added the itor and rtoi functions which convert between integer and real.
+- added the itor and rtoi functions which convert between integer and real values.
+- added repeatb and repeat using labels.
 
 ### Changed 
 
@@ -19,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed 
 
 - fixed an issue where a syntactically wrong m code with parameter could lead to a crash.
+- fixed an issue where a syntactically wrong macro could lead to a crash.
+- fixed inline position for lexer problems.
 
 ## [1.0.0] - 2023-05-21
 
