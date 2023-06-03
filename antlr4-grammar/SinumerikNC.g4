@@ -916,7 +916,7 @@ block: (lineStart? labelDefinition? statement | lineStart? labelDefinition | lin
 lineStart: SLASH? blockNumberDefinition | SLASH;
 blockNumberDefinition: blockNumber;
 blockNumber: BLOCK_NUMBER intUnsigned;
-labelDefinition: NAME DOUBLE_COLON;
+labelDefinition: (NAME | LABEL_END) DOUBLE_COLON;
 
 // procedure
 procedureDefinition: procedureDefinitionHeader NEWLINE+ content PROC_END NEWLINE+?;
@@ -997,11 +997,14 @@ ifStatementElse: lineStart? ELSE NEWLINE* scope;
 
 caseStatement: CASE expression CASE_OF NEWLINE* (lineStart? primaryExpression gotoStatement NEWLINE*)+ (lineStart? CASE_DEFAULT gotoStatement)?;
 
-iterativeStatement: iterativeWhile | iterativeFor | iterativeRepeat | iterativeLoop;
+iterativeStatement: iterativeWhile | iterativeFor | iterativeLoop | iterativeRepeat | jumpRepeat | jumpRepeatBlock;
 iterativeWhile: WHILE expression NEWLINE* scope lineStart? WHILE_END;
 iterativeFor: FOR variableAssignment TO expression NEWLINE* scope lineStart? FOR_END;
-iterativeRepeat: REPEAT NEWLINE* scope lineStart? REPEAT_END expression;
 iterativeLoop: LOOP NEWLINE* scope lineStart? LOOP_END;
+iterativeRepeat: REPEAT NEWLINE* scope lineStart? REPEAT_END expression;
+jumpRepeat: REPEAT startLabel=gotoTarget (endLabel=gotoTarget | LABEL_END)? repetitionAssignmentExpression?;
+jumpRepeatBlock: REPEAT_BLOCK gotoTarget repetitionAssignmentExpression?;
+repetitionAssignmentExpression: P ASSIGNMENT expression;
 
 jumpStatement
     : gotoStatement

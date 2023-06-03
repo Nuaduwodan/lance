@@ -577,6 +577,16 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitIterativeFor([NotNull] SinumerikNCParser.IterativeForContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.iterativeLoop"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIterativeLoop([NotNull] SinumerikNCParser.IterativeLoopContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.iterativeLoop"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIterativeLoop([NotNull] SinumerikNCParser.IterativeLoopContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.iterativeRepeat"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -587,15 +597,35 @@ public interface ISinumerikNCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitIterativeRepeat([NotNull] SinumerikNCParser.IterativeRepeatContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="SinumerikNCParser.iterativeLoop"/>.
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.jumpRepeat"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterIterativeLoop([NotNull] SinumerikNCParser.IterativeLoopContext context);
+	void EnterJumpRepeat([NotNull] SinumerikNCParser.JumpRepeatContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="SinumerikNCParser.iterativeLoop"/>.
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.jumpRepeat"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitIterativeLoop([NotNull] SinumerikNCParser.IterativeLoopContext context);
+	void ExitJumpRepeat([NotNull] SinumerikNCParser.JumpRepeatContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.jumpRepeatBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterJumpRepeatBlock([NotNull] SinumerikNCParser.JumpRepeatBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.jumpRepeatBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitJumpRepeatBlock([NotNull] SinumerikNCParser.JumpRepeatBlockContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SinumerikNCParser.repetitionAssignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRepetitionAssignmentExpression([NotNull] SinumerikNCParser.RepetitionAssignmentExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SinumerikNCParser.repetitionAssignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRepetitionAssignmentExpression([NotNull] SinumerikNCParser.RepetitionAssignmentExpressionContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="SinumerikNCParser.jumpStatement"/>.
 	/// </summary>

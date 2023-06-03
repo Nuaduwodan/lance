@@ -358,17 +358,35 @@ public interface ISinumerikNCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitIterativeFor([NotNull] SinumerikNCParser.IterativeForContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.iterativeLoop"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIterativeLoop([NotNull] SinumerikNCParser.IterativeLoopContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.iterativeRepeat"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIterativeRepeat([NotNull] SinumerikNCParser.IterativeRepeatContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="SinumerikNCParser.iterativeLoop"/>.
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.jumpRepeat"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitIterativeLoop([NotNull] SinumerikNCParser.IterativeLoopContext context);
+	Result VisitJumpRepeat([NotNull] SinumerikNCParser.JumpRepeatContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.jumpRepeatBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitJumpRepeatBlock([NotNull] SinumerikNCParser.JumpRepeatBlockContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SinumerikNCParser.repetitionAssignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRepetitionAssignmentExpression([NotNull] SinumerikNCParser.RepetitionAssignmentExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="SinumerikNCParser.jumpStatement"/>.
 	/// </summary>
