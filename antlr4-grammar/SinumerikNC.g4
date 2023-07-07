@@ -1379,10 +1379,12 @@ command
     ;
 
 gCode: GCODE codeAssignment;
-hCode: HCODE (codeAssignment | codeAssignmentParameterized);
+hCode: HCODE (codeAssignment | codeAssignmentParameterized); // according to eric this is different with H codes than M codes. 
+                                                             // h1 | h = 1 | h3 = 1 | h[3] = 1 | h3 = qu(1) | ...
+                                                             // where 1 is the parameter and 3 is the h code where 0 is implied if it is omitted
 mCode: MCODE (codeAssignment | codeAssignmentParameterized);
 
-codeAssignment: intUnsigned | ASSIGNMENT codeAssignmentExpression; // m1 | m = 1
+codeAssignment: intUnsigned | ASSIGNMENT codeAssignmentExpression; // m3 | m = 3
 codeAssignmentExpression: expression | QU OPEN_PAREN expression CLOSE_PAREN;
 
 codeAssignmentParameterized: commandParameterAssignment ASSIGNMENT codeAssignmentExpression; //m1 = 3 | m[1] = 3
