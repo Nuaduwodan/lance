@@ -1,4 +1,6 @@
-﻿namespace LanceServer.RequestHandler.SemanticToken;
+﻿using System.Collections.Immutable;
+
+namespace LanceServer.RequestHandler.SemanticToken;
 
 /// <summary>
 /// Represents the data for the semantic tokens and provides a method to convert to the LSP specific data structure.
@@ -20,16 +22,16 @@ public class SemanticTokenData
     /// Converts and returns this list of <see cref="SemanticTokenDataElement"/>s in the structure defined by the LSP.
     /// See <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_semanticTokens">LSP specification</a>
     /// </summary>
-    public uint[] ToDataFormat()
+    public ImmutableArray<int> ToDataFormat()
     {
-        var intData = _data.Select(element => new[]
+        ImmutableArray<int> intData = _data.Select(element => new[]
         {
-            Convert.ToUInt32(element.DeltaLine), 
-            Convert.ToUInt32(element.DeltaChar), 
-            Convert.ToUInt32(element.Length), 
-            Convert.ToUInt32(element.TokenType),
-            Convert.ToUInt32(element.TokenModifiers)
-        }).SelectMany(e => e).ToArray();
+            element.DeltaLine, 
+            element.DeltaChar, 
+            element.Length, 
+            element.TokenType,
+            element.TokenModifiers
+        }).SelectMany(e => e).ToImmutableArray();
         return intData;
     }
 }

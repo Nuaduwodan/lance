@@ -1,4 +1,4 @@
-using Range = LspTypes.Range;
+using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
 namespace LanceServer.Core.Symbol;
 

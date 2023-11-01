@@ -1,17 +1,24 @@
 ﻿using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
-using LanceServer.Protocol;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
-namespace LanceServer.RequestHandler.Diagnostic;
+namespace LanceServer.RequestHandler.DiagnosticHandler;
 
-/// <inheritdoc />
-public class DiagnosticHandler : IDiagnosticHandler
+/// <summary>
+/// Handles diagnostic requests
+/// </summary>
+public class DocumentDiagnosticLogic
 {
-    /// <inheritdoc />
-    public DocumentDiagnosticReport HandleRequest(LanguageTokenExtractedDocument document, IWorkspace workspace)
+    /// <summary>
+    /// Handle a diagnostic request
+    /// </summary>
+    /// <param name="document">The document with the necessary symbol information</param>
+    /// <param name="workspace">The workspace</param>
+    /// <returns>The diagnostic report to be sent back.</returns>
+    public IEnumerable<Diagnostic> HandleRequest(LanguageTokenExtractedDocument document, IWorkspace workspace)
     {
-        var diagnostics = new List<LspTypes.Diagnostic>();
+        var diagnostics = new List<Diagnostic>();
         
         diagnostics.AddRange(document.ParserDiagnostics);
         
@@ -106,6 +113,6 @@ public class DiagnosticHandler : IDiagnosticHandler
             }
         }
         
-        return new DocumentDiagnosticReport { Items = diagnostics.ToArray() };
+        return diagnostics;
     }
 }

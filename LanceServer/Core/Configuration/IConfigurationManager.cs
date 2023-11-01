@@ -1,5 +1,6 @@
 ﻿using LanceServer.Core.Configuration.DataModel;
-using LspTypes;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace LanceServer.Core.Configuration;
 

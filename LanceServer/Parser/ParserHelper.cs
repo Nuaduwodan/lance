@@ -1,6 +1,6 @@
 ﻿using Antlr4.Runtime;
-using LspTypes;
-using Range = LspTypes.Range;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
 namespace LanceServer.Parser;
 
@@ -14,10 +14,10 @@ public static class ParserHelper
     /// </summary>
     public static Range GetRangeFromStartToEndToken(IToken startToken, IToken endToken)
     {
-        var lineStart = (uint)startToken.Line - 1;
-        var characterStart = (uint)startToken.Column;
-        var lineEnd = (uint)endToken.Line - 1;
-        var characterEnd = (uint)endToken.Column + (uint)endToken.Text.Length;
+        var lineStart = startToken.Line - 1;
+        var characterStart = startToken.Column;
+        var lineEnd = endToken.Line - 1;
+        var characterEnd = endToken.Column + endToken.Text.Length;
         return new Range { Start = new Position(lineStart, characterStart), End = new Position(lineEnd, characterEnd) };
     }
 

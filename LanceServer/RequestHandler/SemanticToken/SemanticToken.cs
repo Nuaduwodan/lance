@@ -1,4 +1,4 @@
-﻿using LspTypes;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace LanceServer.RequestHandler.SemanticToken;
 
@@ -10,11 +10,4 @@ namespace LanceServer.RequestHandler.SemanticToken;
 /// <param name="Length">The length of the token.</param>
 /// <param name="Type">The type of the token.</param>
 /// <param name="Modifiers">The modifiers of the token.</param>
-public record SemanticToken(uint Line, uint StartCharacter, uint Length, uint Type, uint Modifiers)
-{
-    public readonly uint Line = Line;
-    public readonly uint StartCharacter = StartCharacter;
-    public readonly uint Length = Length;
-    public readonly uint Type = Type;
-    public readonly uint Modifiers = Modifiers;
-}
+public readonly record struct SemanticToken(int Line, int StartCharacter, int Length, int Type, int Modifiers);

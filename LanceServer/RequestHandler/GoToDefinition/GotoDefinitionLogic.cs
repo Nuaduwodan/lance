@@ -1,13 +1,20 @@
 ﻿using LanceServer.Core.Document;
 using LanceServer.Core.Workspace;
-using LspTypes;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace LanceServer.RequestHandler.GoToDefinition;
 
-/// <inheritdoc />
-public class GotoDefinitionHandler : IGotoDefinitionHandler
+/// <summary>
+/// Handles goto definition requests
+/// </summary>
+public class GotoDefinitionLogic
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Handle a goto definition request
+    /// </summary>
+    /// <param name="document">The document with the necessary symbol information</param>
+    /// <param name="position">The position where the goto is requested</param>
+    /// <param name="workspace">The workspace</param>
     public LocationLink[] HandleRequest(LanguageTokenExtractedDocument document, Position position, IWorkspace workspace)
     {
         if (!document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))

@@ -5,6 +5,10 @@
   &lt;Assembly Path="C:\Users\YBigler\.nuget\packages\mstest.testframework\2.2.8\lib\netstandard1.0\Microsoft.VisualStudio.TestPlatform.TestFramework.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\YBigler\.nuget\packages\lsptypes\3.16.6\lib\netstandard2.0\LspTypes.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\YBigler\.nuget\packages\streamjsonrpc\2.6.121\lib\netcoreapp2.1\StreamJsonRpc.dll" /&gt;&#xD;
+  &lt;PhysicalFolder Path="C:\Users\YBigler\.nuget\packages\omnisharp.extensions.languageprotocol\0.19.0" Loaded="True" /&gt;&#xD;
+  &lt;PhysicalFolder Path="C:\Users\YBigler\.nuget\packages\omnisharp.extensions.languageprotocol\0.19.6" Loaded="True" /&gt;&#xD;
+  &lt;PhysicalFolder Path="C:\Users\YBigler\.nuget\packages\omnisharp.extensions.languageprotocol\0.19.7" Loaded="True" /&gt;&#xD;
+  &lt;PhysicalFolder Path="C:\Users\YBigler\.nuget\packages\omnisharp.extensions.languageprotocol\0.19.9" Loaded="True" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8bfb1b0e_002Dafdc_002D490a_002Dafc5_002D790fce28753c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="EmptyData" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;

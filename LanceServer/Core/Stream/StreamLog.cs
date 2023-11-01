@@ -51,7 +51,7 @@ class StreamLog : System.IO.Stream
     {
         DateTime now = DateTime.Now;
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine("Raw message from " + _name + " " + now.ToString("MM/dd/yyyy hh:mm:ss.fff tt"));
+        sb.AppendLine("Raw message from " + _name + " " + now.ToString("yyyy-MM-dd HH:mm:ss.fff tt"));
         var truncatedArray = new byte[count];
         for (int i = offset; i < offset + count; ++i)
             truncatedArray[i - offset] = buffer[i];

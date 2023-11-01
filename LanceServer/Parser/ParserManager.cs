@@ -2,8 +2,8 @@
 using Antlr4.Runtime.Tree;
 using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
-using LspTypes;
-using Range = LspTypes.Range;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
 namespace LanceServer.Parser;
 

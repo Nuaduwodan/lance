@@ -1,6 +1,6 @@
 ﻿using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
-using LspTypes;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace LanceServer.Core.Workspace;
 
@@ -68,7 +68,7 @@ public interface IWorkspace
     /// <summary>
     /// Loads all the files of a workspace to be able to provide project wide insights.
     /// </summary>
-    public Task InitWorkspaceAsync(Progress<WorkDoneProgressReport> progress);
+    public Task InitWorkspaceAsync(IProgress<WorkDoneProgressReport> progress, IEnumerable<WorkspaceFolder> currentWorkspaceFolders);
 
     /// <summary>
     /// Returns a list of found symbols

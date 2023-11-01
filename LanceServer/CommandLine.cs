@@ -1,6 +1,6 @@
 using LanceServer.Core.Workspace;
-using LanceServer.RequestHandler.Diagnostic;
-using LspTypes;
+using LanceServer.RequestHandler.DiagnosticHandler;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace LanceServer;
 
@@ -10,12 +10,12 @@ namespace LanceServer;
 public class CommandLine
 {
     private readonly Workspace _workspace;
-    private readonly DiagnosticHandler _diagnosticHandler;
+    private readonly DocumentDiagnosticLogic _documentDiagnosticLogic;
 
-    public CommandLine(Workspace workspace, DiagnosticHandler diagnosticHandler)
+    public CommandLine(Workspace workspace, DocumentDiagnosticLogic documentDiagnosticLogic)
     {
         _workspace = workspace;
-        _diagnosticHandler = diagnosticHandler;
+        _documentDiagnosticLogic = documentDiagnosticLogic;
     }
 
     /// <summary>
@@ -29,7 +29,7 @@ public class CommandLine
         var progressToken = new Progress<WorkDoneProgressReport>();
         progressToken.ProgressChanged += ReportProgress();
         
-        _workspace.InitWorkspace(progressToken);
+        //_workspace.InitWorkspace(progressToken);
 
         var documentUris = _workspace.GetAllDocumentUris();
         var diagnostics = new List<KeyValuePair<Uri, Diagnostic>>();
@@ -37,8 +37,8 @@ public class CommandLine
         foreach (var uri in documentUris)
         {
             var document = _workspace.GetSymbolUseExtractedDocument(uri);
-            var diagnosticReport = _diagnosticHandler.HandleRequest(document, _workspace);
-            foreach (var diagnostic in diagnosticReport.Items)
+            var diagnosticReport = _documentDiagnosticLogic.HandleRequest(document, _workspace);
+            foreach (var diagnostic in diagnosticReport)
             {
                 diagnostics.Add(new KeyValuePair<Uri, Diagnostic>(uri, diagnostic));
             }

@@ -21,7 +21,7 @@ public class ConfigurationManagerTest
         configuration.SymbolTableConfiguration = expectedSymbolTableConfiguration;
         configuration.PlaceholderPreprocessor = expectedCustomPreprocessorConfiguration;
             
-        var configurationManager = new ConfigurationManager(new DocumentationConfiguration());
+        var configurationManager = new ConfigurationManager();
             
         // Act
         configurationManager.ExtractConfiguration(configuration);

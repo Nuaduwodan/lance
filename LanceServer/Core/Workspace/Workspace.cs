@@ -4,8 +4,8 @@ using LanceServer.Core.Document;
 using LanceServer.Parser;
 using LanceServer.Core.Symbol;
 using LanceServer.Preprocessor;
-using LanceServer.RequestHandler.Diagnostic;
-using LspTypes;
+using LanceServer.RequestHandler.DiagnosticHandler;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace LanceServer.Core.Workspace;
 
@@ -16,7 +16,6 @@ public class Workspace : IWorkspace
     public GlobalSymbolTable GlobalSymbolTable { get; } = new();
         
     private IParserManager _parserManager;
-
     private IPlaceholderPreprocessor _placeholderPreprocessor;
     private readonly IConfigurationManager _configurationManager;
 
@@ -184,16 +183,16 @@ public class Workspace : IWorkspace
     }
     
     /// <inheritdoc />
-    public async Task InitWorkspaceAsync(Progress<WorkDoneProgressReport> progress)
+    public async Task InitWorkspaceAsync(IProgress<WorkDoneProgressReport> progress, IEnumerable<WorkspaceFolder> currentWorkspaceFolders)
     {
-        await Task.Run(() => InitWorkspace(progress));
+        await Task.Run(() => InitWorkspace(progress, currentWorkspaceFolders)).ConfigureAwait(false);
     }
 
-    public void InitWorkspace(IProgress<WorkDoneProgressReport> progress)
+    public void InitWorkspace(IProgress<WorkDoneProgressReport> progress, IEnumerable<WorkspaceFolder> currentWorkspaceFolders)
     {
         const int MAX_PARALLEL = 10;
-        
-        var workspaceFolders = _configurationManager.WorkspaceFolders;
+
+        var workspaceFolders = currentWorkspaceFolders.Select(folder => folder.Uri.ToUri()).ToArray();
         var fileExtensions = _configurationManager.FileExtensionConfiguration.FileExtensions;
         
         var documentUris = new List<Uri>();
@@ -223,9 +222,8 @@ public class Workspace : IWorkspace
             
             progress.Report(new WorkDoneProgressReport
             {
-                Kind = "report",
                 Message = $"{currentCount}/{maxCount} {uri.LocalPath}",
-                Percentage = (uint)Math.Floor(currentCount / maxCount * 100)
+                Percentage = (int)Math.Floor(currentCount / maxCount * 100)
             });
         });
         

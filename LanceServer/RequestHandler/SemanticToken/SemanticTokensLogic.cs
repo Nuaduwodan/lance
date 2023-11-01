@@ -1,16 +1,20 @@
 ﻿using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
-using LspTypes;
-using Range = LspTypes.Range;
+using OmniSharp.Extensions.LanguageServer.Protocol.Document;
+using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
 namespace LanceServer.RequestHandler.SemanticToken;
 
-/// <inheritdoc />
-public class SemanticTokenHandler : ISemanticTokenHandler
+/// <summary>
+/// Class responsible for handling semantic token requests
+/// </summary>
+public class SemanticTokensLogic
 {
-    /// <inheritdoc />
-    public SemanticTokens ProcessRequest(LanguageTokenExtractedDocument document, IWorkspace workspace)
+    /// <summary>
+    /// Handles the semantic token request.
+    /// </summary>
+    public void ProcessRequest(LanguageTokenExtractedDocument document, IWorkspace workspace, SemanticTokensBuilder builder)
     {
         var localSymbols = document.SymbolTable.GetAll();
         var globalSymbols = workspace.GlobalSymbolTable.GetGlobalSymbolsOfDocument(document.Information.Uri);
@@ -27,35 +31,12 @@ public class SemanticTokenHandler : ISemanticTokenHandler
 
         var orderedSemanticTokens = semanticTokens.Distinct().OrderBy(symbolUse => symbolUse.Line).ThenBy(symbolUse => symbolUse.StartCharacter);
         
-        return ConvertToRelativeDataStructure(orderedSemanticTokens);
-    }
-
-    private static SemanticTokens ConvertToRelativeDataStructure(IOrderedEnumerable<SemanticToken> orderedSemanticTokens)
-    {
-        var tokenData = new SemanticTokenData();
-        uint previousLine = 0;
-        uint previousCharacter = 0;
-        foreach (var semanticToken in orderedSemanticTokens)
+        foreach (var token in orderedSemanticTokens)
         {
-            var deltaLine = semanticToken.Line - previousLine;
-
-            if (deltaLine > 0)
-            {
-                previousLine = semanticToken.Line;
-                previousCharacter = 0;
-            }
-
-            var deltaCharacter = semanticToken.StartCharacter - previousCharacter;
-
-            previousCharacter = semanticToken.StartCharacter;
-
-            tokenData.AddElement(new SemanticTokenDataElement(deltaLine, deltaCharacter, semanticToken.Length, semanticToken.Type, semanticToken.Modifiers));
+            builder.Push(token.Line, token.StartCharacter, token.Length, token.Type, token.Modifiers);
         }
 
-        return new SemanticTokens
-        {
-            Data = tokenData.ToDataFormat()
-        };
+        builder.Commit();
     }
 
     private SemanticToken CreateSemanticToken(AbstractSymbol symbol)
@@ -69,7 +50,8 @@ public class SemanticTokenHandler : ISemanticTokenHandler
         return new SemanticToken(range.Start.Line, startCharacter, range.End.Character - startCharacter, TransformType(symbol), GetModifiers(symbol));
     }
 
-    private uint GetModifiers(AbstractSymbol symbol)
+    // ReSharper disable once UnusedParameter.Local
+    private int GetModifiers(AbstractSymbol symbol)
     {
         return 0;
     }
@@ -77,21 +59,21 @@ public class SemanticTokenHandler : ISemanticTokenHandler
     /// <summary>
     /// Maps the symbol type to a type as defined by the LSP.
     /// </summary>
-    private uint TransformType(AbstractSymbol symbol)
+    private int TransformType(AbstractSymbol symbol)
     {
         switch (symbol)
         {
             case MacroSymbol:
-                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Macro;
+                return (int)SemanticTokenTypeHelper.SemanticTokenType.Macro;
             case ProcedureSymbol:
-                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Function;
+                return (int)SemanticTokenTypeHelper.SemanticTokenType.Function;
             case ParameterSymbol:
-                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Parameter;
+                return (int)SemanticTokenTypeHelper.SemanticTokenType.Parameter;
             case LabelSymbol:
             case BlockNumberSymbol:
-                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Decorator;
+                return (int)SemanticTokenTypeHelper.SemanticTokenType.Decorator;
             case VariableSymbol:
-                return (uint)SemanticTokenTypeHelper.SemanticTokenType.Variable;
+                return (int)SemanticTokenTypeHelper.SemanticTokenType.Variable;
             default:
                 throw new NotImplementedException();
         }

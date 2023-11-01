@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using LanceServer.Protocol;
-using LspTypes;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace LanceServer.Core.Symbol;
 

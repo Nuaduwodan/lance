@@ -48,14 +48,6 @@ public static class FileUtil
     }
 
     /// <summary>
-    /// Converts an escaped string to a <see cref="Uri"/>.
-    /// </summary>
-    public static Uri UriStringToUri(string escapedUriString)
-    {
-        return new Uri(Uri.UnescapeDataString(escapedUriString).Replace("#", "%23"));
-    }
-
-    /// <summary>
     /// Converts a uri to an escaped string.
     /// </summary>
     public static string UriToUriString(Uri uri)

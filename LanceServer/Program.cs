@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using System.Diagnostics;
 using System.Reflection;
 using LanceServer.Core.Configuration;
 using LanceServer.Core.Configuration.DataModel;
@@ -6,13 +7,9 @@ using LanceServer.Core.Stream;
 using LanceServer.Core.Workspace;
 using LanceServer.Parser;
 using LanceServer.Preprocessor;
-using LanceServer.RequestHandler.Diagnostic;
-using LanceServer.RequestHandler.GoToDefinition;
-using LanceServer.RequestHandler.Hover;
-using LanceServer.RequestHandler.SemanticToken;
-using LspTypes;
+using LanceServer.RequestHandler.DiagnosticHandler;
 using Newtonsoft.Json;
-using StreamJsonRpc;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Command = System.CommandLine.Command;
 
 namespace LanceServer;
@@ -102,40 +99,14 @@ internal static class Program
         return new FileInfo(defaultConfigPath);
     }
 
-    private static async Task StartLanguageServerAsync()
+    private static Task StartLanguageServerAsync()
     {
         Stream receivingStream = new StreamSplitter(Console.OpenStandardInput(), new StreamLog("editor"), StreamSplitter.StreamOwnership.OwnNone);
         Stream sendingStream = new StreamSplitter(Console.OpenStandardOutput(), new StreamLog("server"), StreamSplitter.StreamOwnership.OwnNone);
-        var formatter = new JsonMessageFormatter();
-        var rpcMessageHandler = new HeaderDelimitedMessageHandler(sendingStream, receivingStream, formatter);
-        var jsonRpc = new JsonRpc(rpcMessageHandler);
-
-        var docConfig = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "language_token_documentation.json");
-        var documentation = JsonConvert.DeserializeObject<DocumentationConfiguration>(FileUtil.ReadFileContent(docConfig)) 
-                            ?? throw new FileNotFoundException(docConfig + " not found");
-        var config = new ConfigurationManager(documentation);
-        var parser = new ParserManager();
-        var customPreprocessor = new PlaceholderPreprocessor(config);
-        var workspace = new Workspace(parser, customPreprocessor, config);
-        var semanticTokenHandler = new SemanticTokenHandler();
-        var hoverHandler = new HoverHandler(config);
-        var gotoDefinitionHandler = new GotoDefinitionHandler();
-        var diagnosticHandler = new DiagnosticHandler();
-        
-        // ReSharper disable once UnusedVariable
-        var lsp = new LSPServer(
-            jsonRpc,
-            workspace,
-            config,
-            semanticTokenHandler,
-            hoverHandler,
-            gotoDefinitionHandler,
-            diagnosticHandler
-        );
-            
-        await Task.Delay(-1);
+        var server = new LSPServer(receivingStream, sendingStream);
+        return server.RunAsync();
     }
-
+    
     private static void StartCommandLine(DirectoryInfo[] directories, FileInfo configFileInfo, DiagnosticSeverity printLevel, DiagnosticSeverity reportLevel)
     {
         if (directories.Length == 0)
@@ -153,11 +124,11 @@ internal static class Program
                            ?? throw new FileNotFoundException(serverConfigPath + " not found");
 
         var uris = directories.Select(directory => new Uri(directory.FullName)).ToArray();
-        var config = new ConfigurationManager(docConfig, uris, serverConfig);
+        var config = new ConfigurationManager(uris, serverConfig);
         var parser = new ParserManager();
         var customPreprocessor = new PlaceholderPreprocessor(config);
         var workspace = new Workspace(parser, customPreprocessor, config);
-        var diagnosticHandler = new DiagnosticHandler();
+        var diagnosticHandler = new DocumentDiagnosticLogic();
 
         var commandLine = new CommandLine(workspace, diagnosticHandler);
 

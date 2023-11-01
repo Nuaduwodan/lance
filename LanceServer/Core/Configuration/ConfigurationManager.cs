@@ -1,6 +1,9 @@
-﻿using LanceServer.Core.Configuration.DataModel;
+﻿using System.Reflection;
+using LanceServer.Core.Configuration.DataModel;
 using LanceServer.Core.Workspace;
-using LspTypes;
+using Newtonsoft.Json;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace LanceServer.Core.Configuration;
 
@@ -29,16 +32,21 @@ public class ConfigurationManager : IConfigurationManager
     /// Instantiates a new <see cref="ConfigurationManager"/>
     /// This constructor is used for the <see cref="LSPServer"/>
     /// </summary>
-    public ConfigurationManager(DocumentationConfiguration documentationConfiguration)
+    public ConfigurationManager()
     {
-        DocumentationConfiguration = documentationConfiguration;
+        var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var docConfigPath = Path.Join(basePath, "language_token_documentation.json");
+        var docConfig = JsonConvert.DeserializeObject<DocumentationConfiguration>(FileUtil.ReadFileContent(docConfigPath)) 
+                        ?? throw new FileNotFoundException(docConfigPath + " not found");
+        
+        DocumentationConfiguration = docConfig;
     }
     
     /// <summary>
     /// Instantiates a new <see cref="ConfigurationManager"/>
     /// This constructor is used for the <see cref="CommandLine"/>
     /// </summary>
-    public ConfigurationManager(DocumentationConfiguration documentationConfiguration, Uri[] uris, ServerConfiguration serverConfiguration) : this(documentationConfiguration)
+    public ConfigurationManager(Uri[] uris, ServerConfiguration serverConfiguration) : this()
     {
         ExtractConfiguration(serverConfiguration);
         WorkspaceFolders = uris;
@@ -66,6 +74,6 @@ public class ConfigurationManager : IConfigurationManager
     public void SetWorkspaceFolders(WorkspaceFolder[]? workspaceFolders)
     {
         workspaceFolders ??= Array.Empty<WorkspaceFolder>();
-        WorkspaceFolders = workspaceFolders.Select(folder => FileUtil.UriStringToUri(folder.Uri)).ToArray();
+        WorkspaceFolders = workspaceFolders.Select(folder => folder.Uri.ToUri()).ToArray();
     }
 }

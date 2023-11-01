@@ -1,5 +1,5 @@
 ﻿using Antlr4.Runtime.Tree;
-using LspTypes;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace LanceServer.Core.Document;
 

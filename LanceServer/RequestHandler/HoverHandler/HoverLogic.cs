@@ -3,28 +3,36 @@ using LanceServer.Core.Configuration;
 using LanceServer.Core.Document;
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
-using LspTypes;
-using Range = LspTypes.Range;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
-namespace LanceServer.RequestHandler.Hover;
+namespace LanceServer.RequestHandler.HoverHandler;
 
-/// <inheritdoc />
-public class HoverHandler : IHoverHandler
+/// <summary>
+/// Handles hover requests and returns the respective data to be displayed
+/// </summary>
+public class HoverLogic
 {
     private readonly IConfigurationManager _configurationManager;
 
     /// <summary>
-    /// Instantiates a new <see cref="HoverHandler"/>
+    /// Instantiates a new <see cref="HoverLogic"/>
     /// </summary>
-    public HoverHandler(IConfigurationManager configurationManager)
+    public HoverLogic(IConfigurationManager configurationManager)
     {
         _configurationManager = configurationManager;
     }
 
-    /// <inheritdoc/>
-    public LspTypes.Hover HandleRequest(LanguageTokenExtractedDocument document, Position position, IWorkspace workspace)
+    /// <summary>
+    /// Handles the hover request.
+    /// </summary>
+    /// <param name="document">The document with the necessary symbol information</param>
+    /// <param name="position">The hover position</param>
+    /// <param name="workspace">The workspace</param>
+    /// <returns>The hover response <see cref="Hover"/></returns>
+    public Hover HandleRequest(LanguageTokenExtractedDocument document, Position position, IWorkspace workspace)
     {
-        var hover = new LspTypes.Hover();
+        var hover = new Hover();
         
         if (document.SymbolUseTable.TryGetSymbol(position, out var symbolUse))
         {
@@ -54,11 +62,11 @@ public class HoverHandler : IHoverHandler
         return hover;
     }
 
-    private LspTypes.Hover CreateHover(string value, Range range)
+    private Hover CreateHover(string value, Range range)
     {
-        return new LspTypes.Hover()
+        return new Hover()
         {
-            Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(new MarkupContent()
+            Contents = new MarkedStringsOrMarkupContent(new MarkupContent()
             {
                 Kind = MarkupKind.Markdown, Value = value
             }),

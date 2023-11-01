@@ -1,7 +1,7 @@
 ﻿using Antlr4.Runtime;
-using LanceServer.RequestHandler.Diagnostic;
-using LspTypes;
-using Range = LspTypes.Range;
+using LanceServer.RequestHandler.DiagnosticHandler;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
 namespace LanceServer.Parser;
 
@@ -26,7 +26,7 @@ public class ErrorListener : BaseErrorListener, IAntlrErrorListener<int>
     {
         var token = msg.Split('\'')[1];
         var characterEnd = charPositionInLine + token.Length;
-        var range = new Range { Start = new Position((uint)line, (uint)charPositionInLine), End = new Position((uint)line, (uint)characterEnd) };
+        var range = new Range { Start = new Position(line, charPositionInLine), End = new Position(line, characterEnd) };
         Diagnostics.Add(DiagnosticMessage.LexingError(range, token));
     }
 }

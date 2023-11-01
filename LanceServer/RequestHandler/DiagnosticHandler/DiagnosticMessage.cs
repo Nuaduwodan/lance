@@ -1,9 +1,10 @@
 using LanceServer.Core.Symbol;
 using LanceServer.Core.Workspace;
-using LspTypes;
-using Range = LspTypes.Range;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Diagnostic = OmniSharp.Extensions.LanguageServer.Protocol.Models.Diagnostic;
+using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
-namespace LanceServer.RequestHandler.Diagnostic;
+namespace LanceServer.RequestHandler.DiagnosticHandler;
 
 /// <summary>
 /// Contains the functions to create meaningful diagnostic messages.
@@ -27,9 +28,9 @@ public static class DiagnosticMessage
 
     private const string DiagnosticSource = "Lance";
     
-    public static LspTypes.Diagnostic SymbolHasDifferentCapitalisation(AbstractSymbolUse symbolUse, AbstractSymbol symbol)
+    public static Diagnostic SymbolHasDifferentCapitalisation(AbstractSymbolUse symbolUse, AbstractSymbol symbol)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Code = symbolUse.Identifier,
             Range = symbolUse.Range,
@@ -51,9 +52,9 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic UnnecessaryExtern(AbstractSymbolUse symbolUse)
+    public static Diagnostic UnnecessaryExtern(AbstractSymbolUse symbolUse)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Range = symbolUse.Range,
             Severity = DiagnosticSeverity.Warning,
@@ -62,9 +63,9 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic CannotResolveSymbol(AbstractSymbolUse symbolUse)
+    public static Diagnostic CannotResolveSymbol(AbstractSymbolUse symbolUse)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Range = symbolUse.Range,
             Severity = DiagnosticSeverity.Error,
@@ -73,7 +74,7 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic SymbolHasNoUse(AbstractSymbol symbol)
+    public static Diagnostic SymbolHasNoUse(AbstractSymbol symbol)
     {
         var severity = symbol switch
         {
@@ -82,7 +83,7 @@ public static class DiagnosticMessage
             _ => DiagnosticSeverity.Warning
         };
 
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Range = symbol.IdentifierRange,
             Severity = severity,
@@ -92,9 +93,9 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic SymbolTooLong(AbstractSymbol symbol)
+    public static Diagnostic SymbolTooLong(AbstractSymbol symbol)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Range = symbol.IdentifierRange,
             Severity = DiagnosticSeverity.Error,
@@ -103,9 +104,9 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic FilenameTooLong(string filename)
+    public static Diagnostic FilenameTooLong(string filename)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Range = new Range { Start = new Position(0, 0), End = new Position(0, 0) },
             Severity = DiagnosticSeverity.Error,
@@ -114,9 +115,9 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic MissingExtern(AbstractSymbolUse symbolUse)
+    public static Diagnostic MissingExtern(AbstractSymbolUse symbolUse)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Range = symbolUse.Range,
             Severity = DiagnosticSeverity.Error,
@@ -125,9 +126,9 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic ProcedureFileNameMismatch(AbstractSymbol procedureSymbol, string filename)
+    public static Diagnostic ProcedureFileNameMismatch(AbstractSymbol procedureSymbol, string filename)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Range = procedureSymbol.IdentifierRange,
             Severity = DiagnosticSeverity.Warning,
@@ -136,9 +137,9 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic ParsingError(Range range, string message)
+    public static Diagnostic ParsingError(Range range, string message)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Range = range,
             Severity = DiagnosticSeverity.Error,
@@ -147,9 +148,9 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic LexingError(Range range, string token)
+    public static Diagnostic LexingError(Range range, string token)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Range = range,
             Severity = DiagnosticSeverity.Error,
@@ -158,9 +159,9 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic ParameterMismatch(AbstractSymbolUse declarationUse, ProcedureSymbol procedureSymbol)
+    public static Diagnostic ParameterMismatch(AbstractSymbolUse declarationUse, ProcedureSymbol procedureSymbol)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Range = declarationUse.Range,
             Severity = DiagnosticSeverity.Warning,
@@ -169,9 +170,9 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic LocalSymbolAlreadyExists(AbstractSymbol symbol, AbstractSymbol existingSymbol)
+    public static Diagnostic LocalSymbolAlreadyExists(AbstractSymbol symbol, AbstractSymbol existingSymbol)
     {
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Code = symbol.Identifier,
             Range = symbol.IdentifierRange,
@@ -181,13 +182,13 @@ public static class DiagnosticMessage
         };
     }
 
-    public static LspTypes.Diagnostic GlobalSymbolHasDuplicates(AbstractSymbol thisSymbol, IList<AbstractSymbol> duplicateSymbols)
+    public static Diagnostic GlobalSymbolHasDuplicates(AbstractSymbol thisSymbol, IList<AbstractSymbol> duplicateSymbols)
     {
         var relatedInformation = duplicateSymbols.Select(RelatedDuplicate).ToArray();
 
         var multiple = duplicateSymbols.Count > 1;
         
-        return new LspTypes.Diagnostic
+        return new Diagnostic
         {
             Code = thisSymbol.Identifier,
             Range = thisSymbol.IdentifierRange,
