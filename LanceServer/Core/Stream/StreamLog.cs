@@ -56,7 +56,7 @@ class StreamLog : System.IO.Stream
         for (int i = offset; i < offset + count; ++i)
             truncatedArray[i - offset] = buffer[i];
         string str = Encoding.Default.GetString(truncatedArray);
-        sb.AppendLine("data (length " + str.Length + ")= '" + str + "'");
+        sb.AppendLine("data (length " + str.Length + ")= " + str);
         Console.Error.WriteLine(sb.ToString());
     }
 }
