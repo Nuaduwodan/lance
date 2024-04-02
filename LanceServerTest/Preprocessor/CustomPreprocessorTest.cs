@@ -19,7 +19,7 @@ public class CustomPreprocessorTest
     {
         var configurationManagerMock = new Mock<IConfigurationManager>();
 
-        configurationManagerMock.Setup(m => m.CustomPreprocessorConfiguration)
+        configurationManagerMock.Setup(mock => mock.GetCustomPreprocessorConfiguration())
             .Returns(() => _customPreprocessorConfiguration);
 
         _configurationManagerMock = configurationManagerMock.Object;
@@ -29,12 +29,7 @@ public class CustomPreprocessorTest
     public void FilterTest_Empty()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "<[a-zA-Z0-9\\.]+>" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = "";
         var document = new PreprocessedDocument(new DocumentInformationMock(new Uri("file:///testfile.tpl"), ".tpl", DocumentType.SubProcedure), code, code, new PlaceholderTable(new Dictionary<string, string>()), "");
@@ -52,12 +47,7 @@ public class CustomPreprocessorTest
     public void FilterTest_Identical()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "<[a-zA-Z0-9\\.]+>" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc testProcedure(int testparam)
@@ -87,12 +77,7 @@ public class CustomPreprocessorTest
     public void FilterTest_Replace()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "<[a-zA-Z0-9\\.]+>" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc testProcedure(int testparam)
@@ -134,12 +119,7 @@ public class CustomPreprocessorTest
     public void FilterTest_ReplaceInString()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "<[a-zA-Z0-9\\.]+>" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc testProcedure(int testparam)
@@ -181,12 +161,7 @@ public class CustomPreprocessorTest
     public void FilterTest_ReplaceInSymbolName()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "<[a-zA-Z0-9\\.]+>" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc <InstanceName>Procedure(int testparam)
@@ -228,12 +203,7 @@ public class CustomPreprocessorTest
     public void FilterTest_ReplaceMultipleInSymbolName()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "<[a-zA-Z0-9\\.]+>" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc First<InstanceName>Procedure<Second.Part>End(int testparam)
@@ -275,12 +245,11 @@ public class CustomPreprocessorTest
     public void FilterTest_MultiplePlaceholders_ReplaceMultiple()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<InstanceName>", "Second\\.Part" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(
+            PlaceholderType.RegEx, 
+            new[] { ".tpl" }, 
+            new[] { "<InstanceName>", "Second\\.Part" }
+        );
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc First<InstanceName>Procedure<Second.Part>End(int testparam)
@@ -322,12 +291,7 @@ public class CustomPreprocessorTest
     public void FilterTest_ReplaceAloneOnLine()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "<[a-zA-Z0-9\\.]+>" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc Procedure(int testparam)
@@ -373,12 +337,7 @@ public class CustomPreprocessorTest
     public void FilterTest_ReplaceInSymbolNameWhileSameAloneOnLine()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "<[a-zA-Z0-9\\.]+>" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc Procedure<InstanceName>(int testparam)
@@ -425,12 +384,7 @@ public class CustomPreprocessorTest
     public void FilterTest_NonMatchingFileEnding()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "<[a-zA-Z0-9\\.]+>" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc testProcedure(int testparam)
@@ -460,12 +414,7 @@ public class CustomPreprocessorTest
     public void FilterTest_DifferentExtensionCapitalisation_Replace()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "<[a-zA-Z0-9\\.]+>" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "<[a-zA-Z0-9\\.]+>" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc testProcedure(int testparam)
@@ -507,12 +456,7 @@ public class CustomPreprocessorTest
     public void FilterTest_CodeSnippet_Replace()
     {
         // Arrange
-        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration
-        {
-            PlaceholderType = PlaceholderType.RegEx,
-            FileExtensions = new[] { ".tpl" },
-            Placeholders = new[] { "mod[ 012\\+]" }
-        };
+        _customPreprocessorConfiguration = new CustomPreprocessorConfiguration(PlaceholderType.RegEx, new[] { ".tpl" }, new[] { "mod[ 012\\+]" });
         var preprocessor = new PlaceholderPreprocessor(_configurationManagerMock);
         var code = 
             @"proc testProcedure(int testparam)

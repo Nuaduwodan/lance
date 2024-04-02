@@ -2,13 +2,12 @@
 using System.Diagnostics;
 using System.Reflection;
 using LanceServer.Core.Configuration;
-using LanceServer.Core.Configuration.DataModel;
 using LanceServer.Core.Stream;
 using LanceServer.Core.Workspace;
 using LanceServer.Parser;
 using LanceServer.Preprocessor;
 using LanceServer.RequestHandler.DiagnosticHandler;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Command = System.CommandLine.Command;
 
@@ -25,6 +24,13 @@ internal static class Program
     /// </summary>
     private static void Main(string[] args)
     {
+        var waitForDebugger = false;
+        
+        while (waitForDebugger && !Debugger.IsAttached)
+        {
+            Thread.Sleep(100);
+        }
+        
         var rootCommand = new RootCommand("Lance Server: Language appliance for numerical control code. There is an extension mode and a command line mode.");
 
         // language server mode
@@ -115,16 +121,12 @@ internal static class Program
             return;
         }
 
-        var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var docConfigPath = Path.Join(basePath, "language_token_documentation.json");
-        var docConfig = JsonConvert.DeserializeObject<DocumentationConfiguration>(FileUtil.ReadFileContent(docConfigPath)) 
-                        ?? throw new FileNotFoundException(docConfigPath + " not found");
         var serverConfigPath = configFileInfo.Name;
-        var serverConfig = JsonConvert.DeserializeObject<ServerConfiguration>(FileUtil.ReadFileContent(serverConfigPath)) 
-                           ?? throw new FileNotFoundException(serverConfigPath + " not found");
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile(serverConfigPath)
+            .Build();
 
-        var uris = directories.Select(directory => new Uri(directory.FullName)).ToArray();
-        var config = new ConfigurationManager(uris, serverConfig);
+        var config = new CommandLineConfigurationManager(configuration);
         var parser = new ParserManager();
         var customPreprocessor = new PlaceholderPreprocessor(config);
         var workspace = new Workspace(parser, customPreprocessor, config);
@@ -132,6 +134,6 @@ internal static class Program
 
         var commandLine = new CommandLine(workspace, diagnosticHandler);
 
-        Environment.ExitCode = commandLine.ProcessFiles(printLevel, reportLevel);
+        Environment.ExitCode = commandLine.ProcessFiles(directories, printLevel, reportLevel);
     }
 }

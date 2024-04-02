@@ -52,7 +52,7 @@ public class HoverLogic
 
         if (document.LanguageTokenTable.TryGetToken(position, out var languageToken))
         {
-            var token = _configurationManager.DocumentationConfiguration.LanguageTokens.FirstOrDefault(token => token.Code == languageToken.Code);
+            var token = _configurationManager.GetDocumentationConfiguration().LanguageTokens.FirstOrDefault(token => token.Code == languageToken.Code);
             if (token != null)
             {
                 hover = CreateHover(token.Description, languageToken.Range);

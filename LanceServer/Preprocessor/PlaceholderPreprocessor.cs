@@ -18,7 +18,7 @@ public class PlaceholderPreprocessor : IPlaceholderPreprocessor
     /// <inheritdoc />
     public PlaceholderPreprocessedDocument Filter(ReadDocument document)
     {
-        var preprocessorConfiguration = _configurationManager.CustomPreprocessorConfiguration;
+        var preprocessorConfiguration = _configurationManager.GetCustomPreprocessorConfiguration();
 
         var placeholders = new Dictionary<string, string>();
             

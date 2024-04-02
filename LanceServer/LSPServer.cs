@@ -17,7 +17,7 @@ namespace LanceServer;
 /// </summary>
 class LSPServer : IDisposable
 {
-    private ILanguageServer _server;
+    private ILanguageServer? _server;
     private Stream _receivingStream;
     private Stream _sendingStream;
 
@@ -37,12 +37,10 @@ class LSPServer : IDisposable
                     .WithOutput(_sendingStream)
                     .WithServices(RegisterServices)
                     .WithHandler<WorkspaceHandler>()
-                    .WithHandler<ConfigurationHandler>()
                     .WithHandler<SemanticTokensHandler>()
                     .WithHandler<HoverHandler>()
-                    .WithHandler<DefinitionHandler>();
-
-                //.WithHandler<DocumentDiagnosticHandler>(); // currently not working
+                    .WithHandler<DefinitionHandler>()
+                    .WithHandler<DocumentDiagnosticHandler>(); // currently not working
             });
         await _server.WaitForExit.ConfigureAwait(false);
     }
@@ -58,6 +56,6 @@ class LSPServer : IDisposable
 
     public void Dispose()
     {
-        _server.Dispose();
+        _server?.Dispose();
     }
 }

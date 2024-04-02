@@ -173,7 +173,7 @@ public class Workspace : IWorkspace
             return document;
         }
 
-        var config = _configurationManager.SymbolTableConfiguration;
+        var config = _configurationManager.GetSymbolTableConfiguration();
 
         var documentInformation = new DocumentInformation(uri, config);
         var newDocument = new Document.Document(documentInformation);
@@ -193,7 +193,7 @@ public class Workspace : IWorkspace
         const int MAX_PARALLEL = 10;
 
         var workspaceFolders = currentWorkspaceFolders.Select(folder => folder.Uri.ToUri()).ToArray();
-        var fileExtensions = _configurationManager.FileExtensionConfiguration.FileExtensions;
+        var fileExtensions = _configurationManager.GetFileExtensionConfiguration().FileExtensions;
         
         var documentUris = new List<Uri>();
         foreach (var workspaceFolder in workspaceFolders)

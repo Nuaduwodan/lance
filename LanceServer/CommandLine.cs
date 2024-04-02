@@ -21,15 +21,18 @@ public class CommandLine
     /// <summary>
     /// Processes all files in the workspace and prints a report for the requested severity levels.
     /// </summary>
+    /// <param name="directories">The directories to be processed.</param>
     /// <param name="printLevel">The minimum severity of problems to be printed.</param>
     /// <param name="reportLevel">The minimum severity of problems to be counted as problem.</param>
     /// <returns>The number of problems to report.</returns>
-    public int ProcessFiles(DiagnosticSeverity printLevel, DiagnosticSeverity reportLevel)
+    public int ProcessFiles(DirectoryInfo[] directories, DiagnosticSeverity printLevel, DiagnosticSeverity reportLevel)
     {
+        var workspaceFolders = directories.Select(directory => new WorkspaceFolder { Uri = new Uri(directory.FullName) }).ToList();
+        
         var progressToken = new Progress<WorkDoneProgressReport>();
         progressToken.ProgressChanged += ReportProgress();
         
-        //_workspace.InitWorkspace(progressToken);
+        _workspace.InitWorkspace(progressToken, workspaceFolders);
 
         var documentUris = _workspace.GetAllDocumentUris();
         var diagnostics = new List<KeyValuePair<Uri, Diagnostic>>();
