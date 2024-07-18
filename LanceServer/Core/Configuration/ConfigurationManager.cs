@@ -12,14 +12,17 @@ namespace LanceServer.Core.Configuration;
 public class ConfigurationManager : IConfigurationManager
 {
     private DocumentationConfiguration? _documentationConfiguration;
+    private SymbolTableConfiguration? _symbolTableConfiguration;
+    private FileExtensionConfiguration? _fileExtensionConfiguration;
+    private CustomPreprocessorConfiguration? _customPreprocessorConfiguration;
     private readonly ILanguageServerConfiguration _languageServerConfiguration;
-    private const string DefinitionFileExtensionsKey = "definitionFileExtensions";
-    private const string SubProcedureFileExtensionsKey = "subProcedureFileExtensions";
-    private const string MainProcedureFileExtensionsKey = "mainProcedureFileExtensions";
-    private const string ManufacturerCyclesDirectoriesKey = "manufacturerCyclesDirectories";
-    private const string PlaceholderTypeKey = "placeholderType";
-    private const string FileExtensionsKey = "fileExtensions";
-    private const string PlaceholdersKey = "placeholders";
+    private const string DefinitionFileExtensionsKey = "symbols.definitionFileExtensions";
+    private const string SubProcedureFileExtensionsKey = "symbols.subProcedureFileExtensions";
+    private const string MainProcedureFileExtensionsKey = "symbols.mainProcedureFileExtensions";
+    private const string ManufacturerCyclesDirectoriesKey = "symbols.manufacturerCyclesDirectories";
+    private const string PlaceholderTypeKey = "placeholderPreprocessor.placeholderType";
+    private const string FileExtensionsKey = "placeholderPreprocessor.fileExtensions";
+    private const string PlaceholdersKey = "placeholderPreprocessor.placeholders";
 
     public ConfigurationManager(ILanguageServerConfiguration languageServerConfiguration)
     {
@@ -29,7 +32,17 @@ public class ConfigurationManager : IConfigurationManager
     /// <inheritdoc />
     public SymbolTableConfiguration GetSymbolTableConfiguration()
     { 
-        var config = _languageServerConfiguration.GetConfiguration(new ConfigurationItem { Section = "symbols" }).Result;
+        if (_symbolTableConfiguration == null)
+        {
+            var config = Task.Run(() => _languageServerConfiguration.GetConfiguration(new ConfigurationItem { Section = "lance" })).Result;
+            _symbolTableConfiguration = ExtractSymbolTableConfiguration(config);
+        }
+        
+        return _symbolTableConfiguration;
+    }
+
+    private SymbolTableConfiguration ExtractSymbolTableConfiguration(IConfiguration config)
+    {
         return new SymbolTableConfiguration(
             config.GetSection(DefinitionFileExtensionsKey).Get<string[]>(),
             config.GetSection(SubProcedureFileExtensionsKey).Get<string[]>(),
@@ -40,25 +53,33 @@ public class ConfigurationManager : IConfigurationManager
     /// <inheritdoc />
     public FileExtensionConfiguration GetFileExtensionConfiguration()
     {
-        var config = _languageServerConfiguration.GetConfiguration(new ConfigurationItem { Section = "symbols" }).Result;
+        if (_fileExtensionConfiguration == null)
+        {
+            var config = Task.Run(() => _languageServerConfiguration.GetConfiguration(new ConfigurationItem { Section = "lance" })).Result;
+            _fileExtensionConfiguration = ExtractFileExtensionConfiguration(config);
+        }
+
+        return _fileExtensionConfiguration;
+    }
+
+    private FileExtensionConfiguration ExtractFileExtensionConfiguration(IConfiguration config)
+    {
         return new FileExtensionConfiguration(
             config.GetSection(DefinitionFileExtensionsKey).Get<string[]>().Concat(
-            config.GetSection(SubProcedureFileExtensionsKey).Get<string[]>()).Concat(
+                config.GetSection(SubProcedureFileExtensionsKey).Get<string[]>()).Concat(
                 config.GetSection(MainProcedureFileExtensionsKey).Get<string[]>()).ToArray());
     }
 
     /// <inheritdoc />
     public DocumentationConfiguration GetDocumentationConfiguration()
     {
-        if (_documentationConfiguration != null)
+        if (_documentationConfiguration == null)
         {
-            return _documentationConfiguration;
+            var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var docConfigPath = Path.Join(basePath, "language_token_documentation.json");
+            _documentationConfiguration = JsonConvert.DeserializeObject<DocumentationConfiguration>(FileUtil.ReadFileContent(docConfigPath))
+                                          ?? throw new FileNotFoundException(docConfigPath + " not found");
         }
-
-        var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var docConfigPath = Path.Join(basePath, "language_token_documentation.json");
-        _documentationConfiguration = JsonConvert.DeserializeObject<DocumentationConfiguration>(FileUtil.ReadFileContent(docConfigPath)) 
-                                      ?? throw new FileNotFoundException(docConfigPath + " not found");
 
         return _documentationConfiguration;
     }
@@ -66,10 +87,28 @@ public class ConfigurationManager : IConfigurationManager
     /// <inheritdoc />
     public CustomPreprocessorConfiguration GetCustomPreprocessorConfiguration()
     {
-        var config = _languageServerConfiguration.GetConfiguration(new ConfigurationItem { Section = "placeholderPreprocessor" }).Result;
+        if (_customPreprocessorConfiguration == null)
+        {
+            var config = Task.Run(() => _languageServerConfiguration.GetConfiguration(new ConfigurationItem { Section = "lance" })).Result;
+            _customPreprocessorConfiguration = ExtractCustomPreprocessorConfiguration(config);
+        }
+
+        return _customPreprocessorConfiguration;
+    }
+
+    private CustomPreprocessorConfiguration ExtractCustomPreprocessorConfiguration(IConfiguration config)
+    {
         return new CustomPreprocessorConfiguration(
-            config.GetSection(PlaceholderTypeKey).Get<PlaceholderType>(), 
-            config.GetSection(FileExtensionsKey).Get<string[]>(), 
+            config.GetSection(PlaceholderTypeKey).Get<PlaceholderType>(),
+            config.GetSection(FileExtensionsKey).Get<string[]>(),
             config.GetSection(PlaceholdersKey).Get<string[]>());
+    }
+
+    public void ExtractConfiguration(IConfigurationRoot config)
+    {
+        var lanceConfig = config.GetSection("lance");
+        _symbolTableConfiguration = ExtractSymbolTableConfiguration(lanceConfig);
+        _customPreprocessorConfiguration = ExtractCustomPreprocessorConfiguration(lanceConfig);
+        _fileExtensionConfiguration = ExtractFileExtensionConfiguration(lanceConfig);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LanceServer.Core.Configuration.DataModel;
+using Microsoft.Extensions.Configuration;
 
 namespace LanceServer.Core.Configuration;
 
@@ -26,4 +27,6 @@ public interface IConfigurationManager
     /// Returns the <see cref="CustomPreprocessorConfiguration"/>
     /// </summary>
     public CustomPreprocessorConfiguration GetCustomPreprocessorConfiguration();
+
+    public void ExtractConfiguration(IConfigurationRoot config);
 }

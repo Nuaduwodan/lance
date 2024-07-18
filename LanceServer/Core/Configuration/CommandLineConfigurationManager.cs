@@ -33,5 +33,10 @@ public class CommandLineConfigurationManager : IConfigurationManager
         throw new NotImplementedException();
     }
 
+    public void ExtractConfiguration(IConfigurationRoot config)
+    {
+        throw new NotImplementedException();
+    }
+
     public ClientCapabilities ClientCapabilities { get; set; }
 }

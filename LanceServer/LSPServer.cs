@@ -7,8 +7,11 @@ using LanceServer.RequestHandler.GoToDefinition;
 using LanceServer.RequestHandler.HoverHandler;
 using LanceServer.RequestHandler.SemanticToken;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Server;
+using Serilog;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace LanceServer;
 
@@ -35,12 +38,13 @@ class LSPServer : IDisposable
                 options
                     .WithInput(_receivingStream)
                     .WithOutput(_sendingStream)
+                    //.ConfigureLogging(x => x.AddLanguageProtocolLogging().SetMinimumLevel(LogLevel.Debug))
                     .WithServices(RegisterServices)
                     .WithHandler<WorkspaceHandler>()
                     .WithHandler<SemanticTokensHandler>()
                     .WithHandler<HoverHandler>()
-                    .WithHandler<DefinitionHandler>()
-                    .WithHandler<DocumentDiagnosticHandler>(); // currently not working
+                    .WithHandler<DefinitionHandler>();
+                    //.WithHandler<DocumentDiagnosticHandler>(); // currently not working
             });
         await _server.WaitForExit.ConfigureAwait(false);
     }

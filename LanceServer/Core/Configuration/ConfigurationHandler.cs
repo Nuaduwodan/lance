@@ -1,5 +1,6 @@
 using LanceServer.Core.Configuration.DataModel;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
@@ -7,7 +8,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 
 namespace LanceServer.Core.Configuration;
 
-public class ConfigurationHandler : IOnLanguageServerInitialize, IDidChangeConfigurationHandler
+public class ConfigurationHandler : IDidChangeConfigurationHandler
 {
     IConfigurationManager _configurationManager;
 
@@ -18,13 +19,19 @@ public class ConfigurationHandler : IOnLanguageServerInitialize, IDidChangeConfi
 
     public Task OnInitialize(ILanguageServer server, InitializeParams request, CancellationToken cancellationToken)
     {
-        _configurationManager.SetWorkspaceFolders(server.WorkspaceFolderManager.CurrentWorkspaceFolders.ToArray());
+        //_configurationManager.SetWorkspaceFolders(server.WorkspaceFolderManager.CurrentWorkspaceFolders.ToArray());
         return Task.CompletedTask;
     }
 
     public Task<Unit> Handle(DidChangeConfigurationParams request, CancellationToken cancellationToken)
     {
-        _configurationManager.ExtractConfiguration(request.Settings.ToObject<Settings>().Lance);
+        var dictionary = request.Settings.ToObject<Dictionary<string, object>>().ToDictionary(k => k.Key, v => v.Value?.ToString());
+
+        // Create ConfigurationBuilder and add Dictionary
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(dictionary)
+            .Build();
+        _configurationManager.ExtractConfiguration(config);
         return Unit.Task;
     }
 

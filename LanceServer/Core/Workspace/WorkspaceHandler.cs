@@ -50,6 +50,8 @@ public class WorkspaceHandler : IOnLanguageServerStarted, IDidOpenTextDocumentHa
                         
         await _workspace.InitWorkspaceAsync(progress, server.WorkspaceFolderManager.CurrentWorkspaceFolders).ConfigureAwait(false);
         
+        observer.OnCompleted();
+        
         server.SendNotification(new DiagnosticRefreshParams());
     }
 }

@@ -8,6 +8,7 @@ using LanceServer.Parser;
 using LanceServer.Preprocessor;
 using LanceServer.RequestHandler.DiagnosticHandler;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Command = System.CommandLine.Command;
 
@@ -24,7 +25,7 @@ internal static class Program
     /// </summary>
     private static void Main(string[] args)
     {
-        var waitForDebugger = false;
+        var waitForDebugger = true;
         
         while (waitForDebugger && !Debugger.IsAttached)
         {
