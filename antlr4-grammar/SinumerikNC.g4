@@ -1379,6 +1379,7 @@ command
     | mCode
     | axisCode
     | macroUse
+    | accessRights
     ;
 
 gCode: GCODE codeAssignment;
